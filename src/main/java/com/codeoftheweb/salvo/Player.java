@@ -15,10 +15,17 @@ public class Player {
     private long id;
     private String firstName;
     private String lastName;
+    private String userName;
 
     public Player() { }
 
     public Player(String first, String last) {
+        this.firstName = first;
+        this.lastName = last;
+    }
+
+    public Player(String first, String last, String nickName) {
+        this.userName = nickName;
         this.firstName = first;
         this.lastName = last;
     }
@@ -37,6 +44,14 @@ public class Player {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String nickName) {
+        this.userName = nickName;
     }
 
     public String toString() {
