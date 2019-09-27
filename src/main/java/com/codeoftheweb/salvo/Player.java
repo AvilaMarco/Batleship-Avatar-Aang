@@ -15,12 +15,14 @@ public class Player {
     private long id;
     private String firstName;
     private String lastName;
+    private String correo;
 
     public Player() { }
 
-    public Player(String first, String last) {
+    public Player(String first, String last, String email) {
         this.firstName = first;
         this.lastName = last;
+        this.correo = email;
     }
 
     public String getFirstName() {
@@ -31,15 +33,17 @@ public class Player {
         this.firstName = firstName;
     }
 
+    public String getCorreo() {
+        return correo;
+    }
+
+    public void setCorreo(String email) { this.correo = email;}
+
     public String getLastName() {
         return lastName;
     }
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    public String toString() {
-        return firstName + " " + lastName;
     }
 }
