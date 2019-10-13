@@ -1,12 +1,15 @@
-package com.codeoftheweb.salvo;
+package com.codeoftheweb.salvo.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 
-@Entity
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
+
+@Entity //le dice a spring que cree una tabla de la clase
 public class Player {
 
     @Id
@@ -16,6 +19,9 @@ public class Player {
     private String firstName;
     private String lastName;
     private String correo;
+    //mappedBy="player" la clase muchos tiene una variable con este nombre
+    @OneToMany(mappedBy="player", fetch=FetchType.EAGER, cascade= CascadeType.ALL)
+    private Set<GamePlayer> gamePlayers = new HashSet<>();
 
     public Player() { }
 
@@ -45,5 +51,21 @@ public class Player {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    @JsonIgnore
+    public Set<GamePlayer> getGamePlayers(){return gamePlayers;}
+
+    //dto
+    public Map<String, Object> playersDTO(){
+        Map<String, Object> dto = new LinkedHashMap<>();
+        dto.put("id",this.id);
+        dto.put("complete_name", this.firstName + ' '+this.lastName );
+        dto.put("email", this.correo);
+        return dto;
     }
 }
