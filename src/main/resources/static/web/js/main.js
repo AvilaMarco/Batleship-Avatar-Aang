@@ -23,10 +23,10 @@ function runWeb(){
                 <p>${games[i].created}</p>
             </td>
             <td>
-                <p>${games[i].players[0].id}</p>
+                <p>${games[i].gameplayer[0].player.id}</p>
             </td>
             <td>
-                <p>${games[i].players[1].id}</p>
+                <p>${games[i].gameplayer[1].player.id}</p>
             </td>
         </tr>`
     }
@@ -68,13 +68,18 @@ function createShipsWeb(json){
     }
 
     //pinto los disparos propios
+    let idPlayer = json.gamePlayers[0].id
     for(let i = 0; i < json.salvoes.length; i++){
-    json.salvoes[i].locations.forEach(e=> document.querySelector("#salvoes"+e).style.background = "green")
+        if(json.salvoes[i].player == idPlayer){
+            json.salvoes[i].locations.forEach(e=> document.querySelector("#salvoes"+e).style.background = "green")
+        }else{
+            json.salvoes[i].locations.forEach(e=> document.querySelector("#ships"+e).style.background =  "red")
+        }
     }
 
-    //pinto los disparos del oponente
-    for(let i = 0; i < json.salvoes_opponent.length; i++){
-        json.salvoes_opponent[i].locations.forEach(e=> document.querySelector("#ships"+e).style.background =  "red")
-        }
+//    //pinto los disparos del oponente
+//    for(let i = 0; i < json.salvoes_opponent.length; i++){
+//        json.salvoes_opponent[i].locations.forEach(e=> document.querySelector("#ships"+e).style.background =  "red")
+//        }
 }
 

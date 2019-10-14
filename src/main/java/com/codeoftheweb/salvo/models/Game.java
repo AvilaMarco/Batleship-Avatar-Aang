@@ -22,6 +22,8 @@ public class Game {
     private String winner;
     @OneToMany(mappedBy="game", fetch=FetchType.EAGER, cascade= CascadeType.ALL)
     private Set<GamePlayer> gamePlayers = new HashSet<>();
+    @OneToMany(mappedBy="game", fetch=FetchType.EAGER, cascade= CascadeType.ALL)
+    private Set<Score> score = new HashSet<>();
 
     //constructores
     public Game(){}
@@ -47,10 +49,6 @@ public class Game {
         this.creationDate = creationDate;
     }
 
-    public Set<GamePlayer> getGamePlayers() {
-        return gamePlayers;
-    }
-
     public long getId() {
         return id;
     }
@@ -65,7 +63,7 @@ public class Game {
     }
 
     @JsonIgnore
-    public Set<GamePlayer> getGamePlayer(){
+    public Set<GamePlayer> getGamePlayers(){
         return this.gamePlayers;
     }
 
@@ -74,8 +72,7 @@ public class Game {
         Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("id", this.id);
         dto.put("created",this.creationDate);
-        dto.put("gameplayer",this.getGamePlayer().stream().map(GamePlayer::getId));
-        dto.put("players", this.getPlayers().stream().map(Player::playersDTO));
+        dto.put("gameplayers",this.getGamePlayers().stream().map(e->e.gamePlayerDTO()));
         return dto;
     }
     //method static(pertenecen a la clase)

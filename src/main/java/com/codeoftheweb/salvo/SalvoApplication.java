@@ -2,15 +2,13 @@ package com.codeoftheweb.salvo;
 
 import com.codeoftheweb.salvo.enums.TypeShips;
 import com.codeoftheweb.salvo.models.*;
-import com.codeoftheweb.salvo.repository.GamePlayerRepository;
-import com.codeoftheweb.salvo.repository.GameRepository;
-import com.codeoftheweb.salvo.repository.PlayerRepository;
-import com.codeoftheweb.salvo.repository.ShipRepository;
+import com.codeoftheweb.salvo.repository.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -26,7 +24,7 @@ public class SalvoApplication {
 
     @Bean
     public CommandLineRunner initData(PlayerRepository PlayerRepository, GameRepository GameRepository,
-                                      GamePlayerRepository GamePlayerRepository, ShipRepository ShipRepository) {
+          GamePlayerRepository GamePlayerRepository, ShipRepository ShipRepository, ScoreRepository ScoreRepository) {
         return (args) -> {
             //variables pruebas
             Player jack = new Player("Jack", "Bauer","j.bauer@ctu.gov");
@@ -97,6 +95,14 @@ public class SalvoApplication {
             GamePlayer GamePlayer4 = new GamePlayer(jack,two);
             GamePlayer GamePlayer5 = new GamePlayer(jack,three);
             GamePlayer GamePlayer6 = new GamePlayer(Tony,three);
+
+            //scores games
+            Score puntaja1 = new Score(jack,one,3, LocalDateTime.now());
+            Score puntaja2 = new Score(Chloe,one,0, LocalDateTime.now());
+            Score puntaja3 = new Score(jack,two,1, LocalDateTime.now());
+            Score puntaja4 = new Score(Tony,two,1, LocalDateTime.now());
+            Score puntaja5 = new Score(Tony,three,3, LocalDateTime.now());
+            Score puntaja6 = new Score(Chloe,three,0, LocalDateTime.now());
             // save players in the PlayerRepository
             PlayerRepository.save(jack);
             PlayerRepository.save(Chloe);
@@ -115,6 +121,15 @@ public class SalvoApplication {
             GamePlayerRepository.save(GamePlayer4);
             GamePlayerRepository.save(GamePlayer5);
             GamePlayerRepository.save(GamePlayer6);
+
+            //guardo scores
+            ScoreRepository.save(puntaja1);
+            ScoreRepository.save(puntaja2);
+            ScoreRepository.save(puntaja3);
+            ScoreRepository.save(puntaja4);
+            ScoreRepository.save(puntaja5);
+            ScoreRepository.save(puntaja6);
+
         };
     }
 }

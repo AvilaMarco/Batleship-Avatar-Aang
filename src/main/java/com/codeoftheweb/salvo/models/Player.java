@@ -22,6 +22,8 @@ public class Player {
     //mappedBy="player" la clase muchos tiene una variable con este nombre
     @OneToMany(mappedBy="player", fetch=FetchType.EAGER, cascade= CascadeType.ALL)
     private Set<GamePlayer> gamePlayers = new HashSet<>();
+    @OneToMany(mappedBy="player", fetch=FetchType.EAGER, cascade= CascadeType.ALL)
+    private Set<Score> score = new HashSet<>();
 
     public Player() { }
 
@@ -53,6 +55,10 @@ public class Player {
         this.lastName = lastName;
     }
 
+    public Set<Score> getScore() {
+        return score;
+    }
+
     public long getId() {
         return id;
     }
@@ -61,7 +67,7 @@ public class Player {
     public Set<GamePlayer> getGamePlayers(){return gamePlayers;}
 
     //dto
-    public Map<String, Object> playersDTO(){
+    public Map<String, Object> playerDTO(){
         Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("id",this.id);
         dto.put("complete_name", this.firstName + ' '+this.lastName );
