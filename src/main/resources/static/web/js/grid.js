@@ -114,7 +114,6 @@ const createGrid = function(size, element, id){
 
 createGrid(11, document.getElementById('grid'), 'ships')
 
-
 function checkBusyCells(ship, cell){
 
     let id = (cell.id).match(new RegExp(`[^${cell.dataset.y}|^${cell.dataset.x}]`, 'g')).join('')
