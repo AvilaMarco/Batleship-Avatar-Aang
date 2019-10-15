@@ -79,11 +79,17 @@ public class GamePlayer {
         return this.salvo;
     }
 
+    @JsonIgnore
+    public int getScore(){
+        return this.player.getScore(this.game).getScore();
+    }
+
     //dto
     public Map<String, Object> gamePlayerDTO(){
         Map<String, Object> dto = new HashMap<>();
         dto.put("id",this.id);
         dto.put("player",this.player.playerDTO());
+//        dto.put("Score",this.getScore());
         return dto;
     }
 
@@ -91,7 +97,7 @@ public class GamePlayer {
         Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("id", this.id);
         dto.put("created",this.joinDate);
-        dto.put("gamePlayers", this.game.getPlayers().stream().map(Player::playerDTO));
+        dto.put("gamePlayers", this.game.getGamePlayers().stream().map(GamePlayer::gamePlayerDTO));
         dto.put("ships",this.getShips().stream().map(Ship::shipsDTO));
         dto.put("salvoes",this.getGame().getGamePlayers().stream().flatMap(gp -> gp.getSalvo().stream().map(Salvo::salvoDTO)));
         return dto;

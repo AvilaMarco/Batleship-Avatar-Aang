@@ -72,7 +72,7 @@ public class Game {
         Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("id", this.id);
         dto.put("created",this.creationDate);
-        dto.put("gameplayers",this.getGamePlayers().stream().map(e->e.gamePlayerDTO()));
+        dto.put("gameplayers",this.getGamePlayers().stream().map(GamePlayer::gamePlayerDTO));
         return dto;
     }
     //method static(pertenecen a la clase)

@@ -23,7 +23,7 @@ public class Player {
     @OneToMany(mappedBy="player", fetch=FetchType.EAGER, cascade= CascadeType.ALL)
     private Set<GamePlayer> gamePlayers = new HashSet<>();
     @OneToMany(mappedBy="player", fetch=FetchType.EAGER, cascade= CascadeType.ALL)
-    private Set<Score> score = new HashSet<>();
+    private Set<Score> scores = new HashSet<>();
 
     public Player() { }
 
@@ -55,8 +55,15 @@ public class Player {
         this.lastName = lastName;
     }
 
-    public Set<Score> getScore() {
-        return score;
+    @JsonIgnore
+    public Score getScore(Game game) {
+
+        return this.scores.stream().filter(e->e.getGame().getId() == game.getId()).findFirst().orElse(null);
+    }
+    @JsonIgnore
+    public Set<Score> getScores() {
+
+        return scores;
     }
 
     public long getId() {
