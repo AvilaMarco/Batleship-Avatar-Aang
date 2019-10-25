@@ -12,14 +12,16 @@ public class Score {
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
     private long id;
+    private int score;
+    private LocalDateTime finishDate;
+
+    //relaciones
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="game_id")
     private Game game;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="player_id")
     private Player player;
-    private int score;
-    private LocalDateTime finishDate;
 
     //constructores
     public Score() {

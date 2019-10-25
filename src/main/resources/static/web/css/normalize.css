@@ -7,6 +7,11 @@
 /**
  * Correct `block` display not defined in IE 6/7/8/9 and Firefox 3.
  */
+*{
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
 
 article,
 aside,

@@ -20,10 +20,12 @@ public class Game {
     private long id;
     private LocalDateTime creationDate;
     private String winner;
+
+    //relaciones
     @OneToMany(mappedBy="game", fetch=FetchType.EAGER, cascade= CascadeType.ALL)
     private Set<GamePlayer> gamePlayers = new HashSet<>();
     @OneToMany(mappedBy="game", fetch=FetchType.EAGER, cascade= CascadeType.ALL)
-    private Set<Score> score = new HashSet<>();
+    private Set<Score> scores = new HashSet<>();
 
     //constructores
     public Game(){}
@@ -53,12 +55,8 @@ public class Game {
         return id;
     }
 
-    //Método que busca en las blueCards asociadas con el conductor los vehículos que le pertenecen
     @JsonIgnore
     public Set<Player> getPlayers(){
-        //lamamos a la propiedad blueCards que contiene a todos los blueCards relacionados con el conductor
-        //la recorremos y por cada una llamamos a su getter de Vehicle, para almacenar cada vehículo
-        //en la lista que devuelve el método.
         return this.gamePlayers.stream().map(GamePlayer::getPlayer).collect(Collectors.toSet());
     }
 

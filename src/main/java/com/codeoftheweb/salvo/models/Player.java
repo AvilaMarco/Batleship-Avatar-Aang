@@ -19,18 +19,35 @@ public class Player {
     private String firstName;
     private String lastName;
     private String correo;
+    private String username;
+    private String password;
+
+    //relaciones
     //mappedBy="player" la clase muchos tiene una variable con este nombre
+    //nombre del atributo que guarda la relacion en gameplayers
     @OneToMany(mappedBy="player", fetch=FetchType.EAGER, cascade= CascadeType.ALL)
     private Set<GamePlayer> gamePlayers = new HashSet<>();
     @OneToMany(mappedBy="player", fetch=FetchType.EAGER, cascade= CascadeType.ALL)
     private Set<Score> scores = new HashSet<>();
 
+    //constructores
     public Player() { }
-
-    public Player(String first, String last, String email) {
+    public Player(String first, String last, String email, String username, String password) {
         this.firstName = first;
         this.lastName = last;
         this.correo = email;
+        this.username = username;
+        this.password = password;
+    }
+
+    //getter and setters
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public String getFirstName() {
@@ -55,9 +72,9 @@ public class Player {
         this.lastName = lastName;
     }
 
+    //otros metodos
     @JsonIgnore
     public Score getScore(Game game) {
-
         return this.scores.stream().filter(e->e.getGame().getId() == game.getId()).findFirst().orElse(null);
     }
     @JsonIgnore
@@ -78,7 +95,17 @@ public class Player {
         Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("id",this.id);
         dto.put("complete_name", this.firstName + ' '+this.lastName );
+        dto.put("nick",this.username);
         dto.put("email", this.correo);
+        return dto;
+    }
+
+    public Map<String, Object> playerScoreDTO(){
+        Map<String, Object> dto = new LinkedHashMap<>();
+        dto.put("id",this.id);
+        dto.put("complete_name", this.firstName + ' '+this.lastName );
+        dto.put("email", this.correo);
+        dto.put("scores",this.scores.stream().map(Score::getScore));
         return dto;
     }
 }

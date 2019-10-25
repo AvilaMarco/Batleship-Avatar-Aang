@@ -13,11 +13,12 @@ public class Ship {
     @GenericGenerator(name = "native", strategy = "native")
     private long id;
 
-    private TypeShips typeShips;
+    private TypeShips typeShip;
 
     @ElementCollection
-    private List<String> shipLocation;
+    private List<String> shipLocations;
 
+    //relaciones
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="gamePlayer_id")
     private GamePlayer gamePlayer;
@@ -25,9 +26,9 @@ public class Ship {
     //constructores
     public Ship(){}
 
-    public Ship(TypeShips typeShips,List<String> shipLocation){
-        this.typeShips = typeShips;
-        this.shipLocation = shipLocation;
+    public Ship(TypeShips typeShip, List<String> shipLocations){
+        this.typeShip = typeShip;
+        this.shipLocations = shipLocations;
     }
 
     //gets and sets
@@ -45,14 +46,14 @@ public class Ship {
     }
 
     public TypeShips getTypeShips() {
-        return this.typeShips;
+        return this.typeShip;
     }
 
     //data transfer object
     public Map<String,Object> shipsDTO(){
         Map<String,Object> dto = new HashMap<>();
-        dto.put("type_Ship",this.typeShips);
-        dto.put("locations",this.shipLocation);
+        dto.put("type_Ship",this.typeShip);
+        dto.put("locations",this.shipLocations);
         return dto;
     }
 }

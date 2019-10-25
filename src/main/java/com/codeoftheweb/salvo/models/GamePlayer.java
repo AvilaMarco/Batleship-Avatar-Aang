@@ -1,7 +1,6 @@
 package com.codeoftheweb.salvo.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sun.org.apache.xpath.internal.objects.XNull;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -18,6 +17,7 @@ public class GamePlayer {
 
     private LocalDateTime joinDate;
 
+    //relaciones
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "game_id")
     private Game game;
@@ -30,7 +30,7 @@ public class GamePlayer {
     private Set<Ship> ships = new HashSet<>();
 
     @OneToMany(mappedBy = "gamePlayer", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Set<Salvo> salvo = new HashSet<>();
+    private Set<Salvo> salvos = new HashSet<>();
 
     //constructores
     public GamePlayer() {
@@ -65,7 +65,7 @@ public class GamePlayer {
     }
 
     public void addSalvo(Salvo salvo) {
-        this.salvo.add(salvo);
+        this.salvos.add(salvo);
         salvo.setGamePlayer(this);
     }
 
@@ -75,13 +75,18 @@ public class GamePlayer {
     }
 
     @JsonIgnore
-    public Set<Salvo> getSalvo() {
-        return this.salvo;
+    public Set<Salvo> getSalvos() {
+        return this.salvos;
     }
 
     @JsonIgnore
-    public int getScore(){
-        return this.player.getScore(this.game).getScore();
+    public Object getScore(){
+        Score score = this.player.getScore(this.game);
+        if(score != null){
+            return score.getScore();
+        }else{
+            return null;
+        }
     }
 
     //dto
@@ -89,7 +94,7 @@ public class GamePlayer {
         Map<String, Object> dto = new HashMap<>();
         dto.put("id",this.id);
         dto.put("player",this.player.playerDTO());
-//        dto.put("Score",this.getScore());
+        dto.put("Score",this.getScore());
         return dto;
     }
 
@@ -99,7 +104,7 @@ public class GamePlayer {
         dto.put("created",this.joinDate);
         dto.put("gamePlayers", this.game.getGamePlayers().stream().map(GamePlayer::gamePlayerDTO));
         dto.put("ships",this.getShips().stream().map(Ship::shipsDTO));
-        dto.put("salvoes",this.getGame().getGamePlayers().stream().flatMap(gp -> gp.getSalvo().stream().map(Salvo::salvoDTO)));
+        dto.put("salvoes",this.getGame().getGamePlayers().stream().flatMap(gp -> gp.getSalvos().stream().map(Salvo::salvoDTO)));
         return dto;
     }
 }

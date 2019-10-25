@@ -3,39 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="css/normalize.css" />
+    <link rel="stylesheet" type="text/css" href="css/Utilitis.css">
     <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" type="text/css" href="css/css.css">
 </head>
-    <title>Salvo!</title>
+<title>Salvo!</title>
 </head>
-<body><div>
-    <h1>tabla de juegos</h1>
-    <div id="duelo">
-
-    </div>
-    <table>
-        <thead>
-        <tr>
-            <th>id</th>
-            <th>created</th>
-            <th>player 1</th>
-            <th>player 2</th>
-        </tr>
-        </thead>
-        <tbody id="tableGames">
-
-        </tbody>
-    </table>
+<body>
+<!-- REGISTRO -->
+<div id="modal-registre" class="modal-style">
+    <button id="btn-close" class="btn modal-btn">&#88</button>
+    <input type="text" name="registre firstName" class="login-input" placeholder=" firstName">
+    <input type="text" name="registre lastName" class="login-input" placeholder="lastName">
+    <input type="text" name="registre Username" class="login-input" placeholder="Username">
+    <input type="text" name="registre Email" class="login-input" placeholder="Email">
+    <input type="email" name="registre password" class="login-input" placeholder="password">
+    <button id="btn-registre" class="btn btn-block">Registre</button>
 </div>
-
-    <div class="flex-container">
-
+<div class="container">
+    <header class="f">
+        <!-- logo del juego -->
+        <div class="w-50 logo-main">
+            <img src="assets/img/logo.png">
+        </div>
+        <!-- login user -->
+        <div class="w-50 login">
+            <input type="text" class="login-input" name="user-name" placeholder="Username/Email">
+            <input type="text" class="login-input" name="user-password" placeholder="Password">
+            <button name="registre" id="registre" class="btn login-input">Registre</button>
+            <button name="CreateGame" class="btn login-input d-none">Create Game</button>
+            <button name="login" id="btn-login" class="btn login-input">Enter</button>
+            <button name="logout" id="btn-logout" class="btn login-input d-none">Logout</button>
+        </div>
+    </header>
+    <main class="f">
+        <!-- table ranked -->
+        <div id="ranked" class="w-50 table-ranked">
+            <h1>ranked player</h1>
+            <div class="table-scroll">
+                <table class="table">
+                    <thead class="">
+                        <tr>
+                            <th>Player</th>
+                            <th>Score</th>
+                            <th>Win</th>
+                            <th>Lose</th>
+                            <th>Tied</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ranked-body"></tbody>
+                </table>
+            </div>
+        </div>
+        <!-- table games -->
+        <div id="game" class="w-50 table-games">
+            <h1>Games</h1>
+            <div class="table-scroll">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Game</th>
+                            <th>Create</th>
+                            <th>Status</th>
+                            <th>Player One</th>
+                            <th>Player Two</th>
+                        </tr>
+                    </thead>
+                    <tbody id="game-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+    <div class="player d-none flex-container">
         <div id="dock">
             <div id="display">
                 <p>Welcome...</p>
             </div>
-
             <!--The new ships will show up here, waiting for been placed in the grid -->
-
         </div>
 
         <div id="grid">
@@ -46,6 +91,7 @@
             <!--The grid will appear here -->
         </div>
     </div>
+</div>
 <script src="js/ships.js"></script>
 <script src="js/grid.js"></script>
 <script src="js/main.js"></script>
