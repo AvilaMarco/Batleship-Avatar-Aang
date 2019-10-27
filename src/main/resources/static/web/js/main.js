@@ -63,8 +63,8 @@ function accessWeb(event){
     let username = document.querySelector("input[name*=user-name]").value
     let password = document.querySelector("input[name*=user-password]").value
     let formData = new FormData();
-        formData.append("password",password)
-        formData.append("username",username)
+        formData.append("user-name",username)
+        formData.append("user-password",password)
     if (event.target.name == "login") {
         fetch('/api/login',{
             method:'POST',
@@ -168,7 +168,7 @@ function createTableGames(){
                 if (player.id == games[i].gameplayers[0].player.id) {
                 tabla +=`
                 <td>
-                    <button data-gameid="games[i].id">enter game</button>
+                    <button id="entergame" data-players="${games[i].gameplayers.map(e=>e.player.id)}" data-gameid="${games[i].id}">enter game</button>
                 </td>
                 <td>
                     <p>${(games[i].gameplayers.length==2?games[i].gameplayers[1].player.id : "non-rival")}</p>
@@ -180,23 +180,15 @@ function createTableGames(){
                 </td>
                 <td>
                     <p>${(games[i].gameplayers.length==2?games[i].gameplayers[1].player.id : "non-rival")}</p>
-                    <button>join game</button>
+                    <button id="joingame" data-players="${games[i].gameplayers.map(e=>e.player.id)}" data-gameid="${games[i].id}">join game</button>
                 </td>
             </tr>`
                 }
-            }else{
-                tabla +=`
-                <td>
-                    <p>${games[i].gameplayers[0].player.id}</p>
-                </td>
-                <td>
-                    <p>${(games[i].gameplayers.length==2?games[i].gameplayers[1].player.id : "non-rival")}</p>
-                    <button>join game</button>
-                </td>
-            </tr>`
             }
     }
 tablegame.innerHTML = tabla
+    document.querySelector('#entergame').addEventListener('click',enterGame)
+    document.querySelector('#joingame').addEventListener('click',joinGame)
     });
 }
             // <td>
@@ -252,13 +244,15 @@ var gp = querysUrl(window.location.href).gp
 // document.querySelector("#form").addEventListener('submit',accessWeb)
 // document.querySelector("#registre").addEventListener('submit',registre);
 
-function joinGame(gameid){
-    fetch('/api/game/'+gameid+'/players',{
+function joinGame(event){
+    fetch('/api/game/'+event.target.dataset.gameid+'/players',{
     method: 'POST',
     }).then(function(response){if(response.ok){return response.json()}
-    }).then(function(JSON){
-        console.log(JSON.gpid)
-    });
+    }).then(function(json){
+        console.log(json.gpid)
+    }).catch(function(error) {
+  console.log('Hubo un problema con la petición Fetch:' + error.message);
+});
 }
 
 function enterGame(event){
