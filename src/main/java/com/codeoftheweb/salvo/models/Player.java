@@ -40,6 +40,13 @@ public class Player {
         this.password = password;
     }
 
+    public Player(String first, String last, String email, String password) {
+        this.firstName = first;
+        this.lastName = last;
+        this.correo = email;
+        this.password = password;
+    }
+
     //getter and setters
 
     public String getUsername() {

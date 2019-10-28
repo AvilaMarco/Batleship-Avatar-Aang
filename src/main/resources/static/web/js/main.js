@@ -7,6 +7,9 @@ fetch('http://localhost:8080/api/games',{
     }).then(function(json){
     games = json.games;
     players = json.playerScore;
+    if(json.player != "guest"){
+        botoneslogin()
+    }
     runweb();
 });
 //referencias al DOM
@@ -56,12 +59,34 @@ function registre(){
         method:'POST',
         body:formData
     })
-    .then(function(response){if(response.ok){console.log("registre")}})
+    .then(function(response){
+        if(response.ok){
+            console.log("registre")
+            accessWeb(null,username,password)
+        }
+    })
 }
 
-function accessWeb(event){
+function botoneslogin()
+{
+    let creategame = document.querySelector("button[name*=CreateGame]")
+    //variar botenes dependiendo si hay un usuario
+    document.querySelector("button[name*=logout]").classList.remove("d-none")
+    document.querySelector("button[name*=login]").classList.add("d-none")
+    creategame.classList.remove("d-none")
+    creategame.addEventListener('click',createGame)
+    document.querySelector("button[name*=registre]").classList.add("d-none")
+    document.querySelector("input[name*=user-name]").classList.add("d-none")
+    document.querySelector("input[name*=user-password]").classList.add("d-none")
+}
+
+function accessWeb(event,usernameparam,passwordparam){
     let username = document.querySelector("input[name*=user-name]").value
     let password = document.querySelector("input[name*=user-password]").value
+    if (usernameparam != null && passwordparam != null) {
+        username = usernameparam
+        password =passwordparam
+    }
     let formData = new FormData();
         formData.append("user-name",username)
         formData.append("user-password",password)
@@ -74,13 +99,7 @@ function accessWeb(event){
             if(response.ok){
                 console.log("nicelog")
                 createTableGames()
-                let creategame = document.querySelector("button[name*=CreateGame]")
-                //variar botenes dependiendo si hay un usuario
-                document.querySelector("button[name*=logout]").classList.remove("d-none")
-                document.querySelector("button[name*=login]").classList.add("d-none")
-                creategame.classList.remove("d-none")
-                creategame.addEventListener('click',createGame)
-                document.querySelector("button[name*=registre]").classList.add("d-none")
+                botoneslogin()
             }
         })
     }else if(event.target.name == "logout"){
@@ -90,6 +109,8 @@ function accessWeb(event){
         .then(function(response){
             if(response.ok){
                 console.log("nice")
+                document.querySelector("input[name*=user-name]").classList.remove("d-none")
+                document.querySelector("input[name*=user-password]").classList.remove("d-none")
                 document.querySelector("button[name*=logout]").classList.add("d-none")
                 document.querySelector("button[name*=login]").classList.remove("d-none")
                 document.querySelector("button[name*=CreateGame]").classList.add("d-none")
@@ -155,45 +176,59 @@ function createTableGames(){
     let tabla = "";
     for(let i = 0;i<games.length;i++){
         tabla +=`<tr>
-            <td>
-                <p>${games[i].id}</p>
-            </td>
-            <td>
-                <p>${games[i].created}</p>
-            </td>
-            <td>
-                <p>finish</p>
-            </td>`
-            if (player != "guest") {
-                if (player.id == games[i].gameplayers[0].player.id) {
-                tabla +=`
+        <td>
+            <p>${games[i].id}</p>
+        </td>
+        <td>
+            <p>${games[i].created}</p>
+        </td>
+        <td>
+            <p>finish</p>
+        </td>`
+        if (player != "guest") {
+            if (games[i].gameplayers.map(e=>e.player.id).includes(player.id)) {
+               tabla +=`
                 <td>
                     <button id="entergame" data-players="${games[i].gameplayers.map(e=>e.player.id)}" data-gameid="${games[i].id}">enter game</button>
                 </td>
                 <td>
+                    <p>${(games[i].gameplayers.length==2?
+                        (games[i].gameplayers[1].player.id == player.id?games[i].gameplayers[0].player.id:games[i].gameplayers[1].player.id) : "non-rival")}</p>
+                </td>`
+            }else if(games[i].gameplayers.length==1){
+                tabla +=`
+                <td>
+                   <p>${games[i].gameplayers[0].player.id}</p> 
+                </td>
+                <td>
+                    <button id="joingame" data-players="${games[i].gameplayers.map(e=>e.player.id)}" data-gameid="${games[i].id}">join game</button>
+                </td>`
+            }else{
+                tabla +=`
+                <td>
+                   <p>${games[i].gameplayers[0].player.id}</p> 
+                </td>
+                <td>
+                    <p>${games[i].gameplayers[1].player.id}</p>
+                </td>`
+            }
+        }else{
+            tabla +=`
+                <td>
+                   <p>${games[i].gameplayers[0].player.id}</p> 
+                </td>
+                <td>
                     <p>${(games[i].gameplayers.length==2?games[i].gameplayers[1].player.id : "non-rival")}</p>
                 </td>`
-                }else{
-                    tabla +=`
-                <td>
-                    <p>${games[i].gameplayers[0].player.id}</p>
-                </td>
-                <td>
-                    <p>${(games[i].gameplayers.length==2?games[i].gameplayers[1].player.id : "non-rival")}</p>
-                    <button id="joingame" data-players="${games[i].gameplayers.map(e=>e.player.id)}" data-gameid="${games[i].id}">join game</button>
-                </td>
-            </tr>`
-                }
-            }
-    }
+        }
+
+    }    
 tablegame.innerHTML = tabla
-    document.querySelector('#entergame').addEventListener('click',enterGame)
-    document.querySelector('#joingame').addEventListener('click',joinGame)
+    document.querySelectorAll('#entergame').forEach(e=>e.addEventListener('click',enterGame))
+    document.querySelectorAll('#joingame').forEach(e=>e.addEventListener('click',joinGame))
     });
 }
-            // <td>
-            //     <button data-gameid="${games[i].id}" data-players="${games[i].gameplayers.map(e=>e.player.id)}" class="join-created">join / enter</button>
-            // </td>
+
 function createGame(){
     fetch('/api/games',{
         method:'POST'
@@ -208,47 +243,19 @@ function createGame(){
     })
     .then(function(JSON){
         console.log("entrar al juego")
-        // location.assign(location.href+"?gp="+JSON.gpid);
+        console.log(JSON.gpid)
+        location.assign("/web/game.html?gp="+JSON.gpid);
     })
     .catch(error => error)
     .then(json => console.log(json))
 }
-//TABLE SALVO
-
-//NAV SALVO
-
-
-
-
-
-// obtener querys de el link de la pagina
-// let params = new URLSearchParams(location.search)
-// let gp = params.get("gp")
-var gp = querysUrl(window.location.href).gp
-//creo la grila
-
-// let webJuegos = document.querySelector(".juegos")
-// let webRanking = document.querySelector(".ranking")
-// let webPlayer = document.querySelector(".player")
-// let webAccess = document.querySelector(".access")
-// let webRegistre = document.querySelector(".registre")
-//botones
-//event listener
-// btnGames.addEventListener('click',cambiarPage);
-// btnRank.addEventListener('click',cambiarPage);
-// btnPlayer.addEventListener('click',cambiarPage);
-// btnAccess.addEventListener('click',cambiarPage);
-// btnLogout.addEventListener('click',accessWeb);
-// btnRegistre.addEventListener('click',cambiarPage);
-// //registro
-// document.querySelector("#form").addEventListener('submit',accessWeb)
-// document.querySelector("#registre").addEventListener('submit',registre);
 
 function joinGame(event){
     fetch('/api/game/'+event.target.dataset.gameid+'/players',{
     method: 'POST',
     }).then(function(response){if(response.ok){return response.json()}
     }).then(function(json){
+        location.assign("/web/game.html?gp="+json.gpid);
         console.log(json.gpid)
     }).catch(function(error) {
   console.log('Hubo un problema con la petición Fetch:' + error.message);
@@ -264,7 +271,8 @@ function enterGame(event){
             let game = JSON.games.filter(e=>e.id == event.target.dataset.gameid); 
             if (event.target.dataset.players.includes((""+JSON.player.id))) {
                 let gp = game[0].gameplayers.filter(e=>e.player.id == JSON.player.id)
-                location.assign(location.href+"?gp="+gp[0].id);
+                location.assign("/web/game.html?gp="+gp[0].id);
+                console.log(gp[0].id)
             }else if (game[0].gameplayers.length == 1) {
                 joinGame(game[0].id)
             }else{
@@ -276,65 +284,14 @@ function enterGame(event){
     });
 }
 
-function viewPlayer(){
-//    document.location.replace("/web/games.html?gp="+player_id)
-//    let direccion = window.location.href
-    fetch('/api/gp/'+gp,{
-    	method: 'GET',})
-    .then(function(response){
-        if(response.ok){
-            return response.json()
-        }else{
-           return Promise.reject(response.json())
-        }
-    })
-    .then(function(JSON){
-    	console.log(JSON)
-    	createShipsWeb(JSON)
-    })
-    .catch(error => error)
-    .then(json => console.log(json.error))
+// function querysUrl(search) {
+//   var obj = {};
+//   var reg = /(?:[?&]([^?&#=]+)(?:=([^&#]*))?)(?:#.*)?/g;
 
-}
+//   search.replace(reg, function(match, param, val) {
+//     obj[decodeURIComponent(param)] = val === undefined ? "" : decodeURIComponent(val);
+//   });
 
+//   return obj;
+// }
 
-
-
-
-function querysUrl(search) {
-  var obj = {};
-  var reg = /(?:[?&]([^?&#=]+)(?:=([^&#]*))?)(?:#.*)?/g;
-
-  search.replace(reg, function(match, param, val) {
-    obj[decodeURIComponent(param)] = val === undefined ? "" : decodeURIComponent(val);
-  });
-
-  return obj;
-}
-
-function createShipsWeb(json){
-    //creo los bracos en la grilla
-    for(let i = 0; i < json.ships.length;i++){
-        let location = json.ships[i].locations[0]
-        let orientation = json.ships[i].locations[0].substring(1) == json.ships[i].locations[1].substring(1) ? 'vertical' : 'horizontal'
-        let type = json.ships[i].type_Ship
-        let tamaño = json.ships[i].locations.length
-        createShips(type, tamaño, orientation, document.getElementById('ships'+location),true)
-    }
-
-    let idPlayer = json.gamePlayers.filter(e=>e.id == gp)[0].player.id
-    for(let i = 0; i < json.salvoes.length; i++){
-        if(json.salvoes[i].player == idPlayer){
-            //pinto los disparos propios
-            json.salvoes[i].locations.forEach(e=> document.querySelector("#salvoes"+e).style.background = "green")
-        }else{
-            //pinto los disparos del oponente
-            json.salvoes[i].locations.forEach(e=> {
-            if((json.ships.flatMap(s=>s.locations.map(p=>p))).includes(e)){
-
-            document.querySelector("#ships"+e).style.background =  "red"
-            }
-            })
-        }
-    }
-}

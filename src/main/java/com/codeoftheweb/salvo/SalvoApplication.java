@@ -72,16 +72,27 @@ public class SalvoApplication {
             List<String> position10 = Arrays.asList("C5", "C6");
 
 
-            Ship carrier = new Ship(TypeShips.carrier,position01);
-            Ship battleship = new Ship(TypeShips.battleship,position02);
-            Ship submarine = new Ship(TypeShips.submarine,position03);
-            Ship destroyer = new Ship(TypeShips.destroyer,position04);
-            Ship patrolBoat = new Ship(TypeShips.patrol_boat,position05);
-            Ship carrier2 = new Ship(TypeShips.carrier,position06);
-            Ship battleship2 = new Ship(TypeShips.battleship,position07);
-            Ship submarine2 = new Ship(TypeShips.submarine,position08);
-            Ship destroyer2 = new Ship(TypeShips.destroyer,position09);
-            Ship patrolBoat2 = new Ship(TypeShips.patrol_boat,position10);
+            Ship carrier = new Ship("carrier",position01);
+            Ship battleship = new Ship("battleship",position02);
+            Ship submarine = new Ship("submarine",position03);
+            Ship destroyer = new Ship("destroyer",position04);
+            Ship patrolBoat = new Ship("patrol_boat",position05);
+            Ship carrier2 = new Ship("carrier",position06);
+            Ship battleship2 = new Ship("battleship",position07);
+            Ship submarine2 = new Ship("submarine",position08);
+            Ship destroyer2 = new Ship("destroyer",position09);
+            Ship patrolBoat2 = new Ship("patrol_boat",position10);
+
+//            Ship carrier = new Ship(TypeShips.CARRIER,position01);
+//            Ship battleship = new Ship(TypeShips.BATTLESHIP,position02);
+//            Ship submarine = new Ship(TypeShips.SUBMARINE,position03);
+//            Ship destroyer = new Ship(TypeShips.DESTROYER,position04);
+//            Ship patrolBoat = new Ship(TypeShips.PATROL_BOAT,position05);
+//            Ship carrier2 = new Ship(TypeShips.CARRIER,position06);
+//            Ship battleship2 = new Ship(TypeShips.BATTLESHIP,position07);
+//            Ship submarine2 = new Ship(TypeShips.SUBMARINE,position08);
+//            Ship destroyer2 = new Ship(TypeShips.DESTROYER,position09);
+//            Ship patrolBoat2 = new Ship(TypeShips.PATROL_BOAT,position10);
 
             //salvo position
             List<String> sPosition01 = Arrays.asList("B5","C5","F1");

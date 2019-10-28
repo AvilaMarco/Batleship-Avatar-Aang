@@ -26,12 +26,35 @@ public class Ship {
     //constructores
     public Ship(){}
 
-    public Ship(TypeShips typeShip, List<String> shipLocations){
-        this.typeShip = typeShip;
+    public Ship(String typeShip, List<String> shipLocations){
+        switch (typeShip){
+            case "carrier":
+                this.typeShip = TypeShips.CARRIER;
+                break;
+            case "battleship":
+                this.typeShip = TypeShips.BATTLESHIP;
+                break;
+            case "submarine":
+                this.typeShip = TypeShips.SUBMARINE;
+                break;
+            case "destroyer":
+                this.typeShip = TypeShips.DESTROYER;
+                break;
+            case "patrol_boat":
+                this.typeShip = TypeShips.PATROL_BOAT;
+                break;
+            default:
+                this.typeShip = TypeShips.NONAME;
+        }
+//        this.typeShip = typeShip;
         this.shipLocations = shipLocations;
     }
 
     //gets and sets
+
+    public List<String> getShipLocations() {
+        return shipLocations;
+    }
 
     public long getId() {
         return this.id;

@@ -4,6 +4,7 @@ import com.codeoftheweb.salvo.models.Game;
 import com.codeoftheweb.salvo.models.GamePlayer;
 import com.codeoftheweb.salvo.models.Player;
 
+import com.codeoftheweb.salvo.models.Ship;
 import com.codeoftheweb.salvo.repository.GameRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,11 +15,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.awt.image.ImageProducer;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static java.lang.Integer.parseInt;
 
 /*Anotación que le dice a Spring que vamos a hacer un controller que cumple con los requisitos REST.
 Es decir, que vamos a utilizar entre otras cosas los métodos GET, POST, PUT, etc.
@@ -46,6 +46,70 @@ public class SalvoController {
 
         private boolean isGuest(Authentication authentication) {
             return authentication == null || authentication instanceof AnonymousAuthenticationToken;
+        }
+
+        private boolean insideTheRange(Set<Ship> ships){
+            return ships.stream()
+                    .allMatch(e->e.getShipLocations().stream()
+                    .allMatch(location-> location instanceof String &&
+                        location.charAt(0) >= 'A' && location.charAt(0) <= 'J' &&
+                        parseInt(location.substring(1)) >= 1 && parseInt(location.substring(1)) <= 10
+                    ));
+        }
+
+        private boolean isConsecutive(Set<Ship> ships){
+            //codigo
+            List<Boolean> list=new ArrayList<Boolean>(Arrays.asList(new Boolean[0]));
+            ships.stream()
+                .forEach(e -> {
+                    for (byte i = 0; i < e.getShipLocations().size();i++) {
+                        //me fijo que es horizontal
+                        if (e.getShipLocations().get(i).substring(0,1) == e.getShipLocations().get(i+1).substring(0,1)){
+                            int aux = i;
+                            //me fijo que es horizontal efectivamente
+                            if(e.getShipLocations().stream().allMatch(p->p.substring(0,1)== e.getShipLocations().get(aux).substring(0,1)) &&
+                                    //me fijo que no se pase
+                                    i+1 < e.getShipLocations().size() &&
+                                    //me fijo que un posicion sea menor a la siguiente
+                            parseInt(e.getShipLocations().get(i).substring(1)) < parseInt(e.getShipLocations().get(i+1).substring(1))){
+                                list.add(true);
+                            }else{
+                                list.add(false);
+                            }
+                            //es vertical
+                        }else{
+                            int aux = i;
+                            //me fijo que sea efectivamente vertical
+                            if(e.getShipLocations().stream().allMatch(p->p.substring(1)== e.getShipLocations().get(aux).substring(1)) &&
+                                    //me fijo que no se pase
+                                    i+1 < e.getShipLocations().size() &&
+                                    //me fijo que un posicion sea menor a la siguiente en relacion a las letras
+                                    e.getShipLocations().get(i).charAt(0) < e.getShipLocations().get(i+1).charAt(0)){
+                                list.add(true);
+                            }else{
+                                list.add(false);
+                            }
+                        }
+                    }
+                });
+                //me fijo la orientacion del barco y compruebo que sean consecutivos
+                //si es horizontal tieneen que tener el mismo caracter inicial por ejemplo b, y tener el siguiente numero consecutivo
+                //si es vertital tiene que tener el mismo numero y distinta letra que debe ser consecutiva
+                    return  list.stream().allMatch(b->b);
+        }
+
+        private boolean positionsNotRepeated(Set<Ship> ships){
+            //codigo
+            List<String> positionShips = new ArrayList<>();
+             ships.forEach(e->positionShips.addAll(e.getShipLocations()));
+             int tamañoOriginal = positionShips.size();
+            Set<String> set = new HashSet<>(positionShips);
+            int tamañoReal = set.size();
+            if(tamañoOriginal == tamañoReal){
+                return  true;
+            }else{
+                return false;
+            }
         }
         //Creamos nuestro primer end-point con la dirección '/api/drivers'
         @RequestMapping("/games")
@@ -82,6 +146,54 @@ public class SalvoController {
             }else{
                 error.put("error","no se encontro el juego: "+id);
                 return new ResponseEntity<Map<String, Object>>(error, HttpStatus.FORBIDDEN);
+            }
+        }
+
+        //setear barcos
+        @RequestMapping(path ="/games/players/{gamePlayerId}/ships", method = RequestMethod.POST)
+        public ResponseEntity<Map<String, Object>> createShips(Authentication authentication, @PathVariable Long gamePlayerId, @RequestBody Set<Ship> ships){
+            Map<String, Object> respuesta = new HashMap<>();
+            if(!isGuest(authentication)) {
+                Player player = PlayerRepository.findByUsername(authentication.getName());
+                if (player != null) {
+                    GamePlayer gp = gamePlayerRepository.findById(gamePlayerId).orElse(null);
+                    if (gp != null && gp.getPlayer().getId() == player.getId()){
+                        //codigo para crear los barcos y agregarlos a el gameplayer
+                        if (ships.size() == 5){
+//      ships.stream().allMatch(e->e.getTypeShips()!=null
+                            //dentro del rango
+//                            if (!insideTheRange(ships)){
+//                                respuesta.put("error","UNAUTHORIZED");
+//                                return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
+//                            }
+//                            //que sean consecutivas
+//                            if (!isConsecutive(ships)){
+//                                respuesta.put("error","UNAUTHORIZED");
+//                                return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
+//                            }
+//                            //que no se pisen
+//                            if (!positionsNotRepeated(ships)){
+//                                respuesta.put("error","UNAUTHORIZED");
+//                                return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
+//                            }
+                            ships.stream().forEach(e-> gp.addShip(e));
+                        }else{
+                            respuesta.put("error","UNAUTHORIZED");
+                            return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
+                        }
+                        gamePlayerRepository.save(gp);
+                        return new ResponseEntity<>(respuesta, HttpStatus.ACCEPTED);
+                    }else{
+                        respuesta.put("error","UNAUTHORIZED");
+                        return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
+                    }
+                }else{
+                    respuesta.put("error","UNAUTHORIZED");
+                    return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
+                }
+            }else{
+                respuesta.put("error", "you need to login");
+                return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
             }
         }
 
@@ -123,6 +235,10 @@ public class SalvoController {
                     respuesta.put("error","Game is full");
                     return new ResponseEntity<>(respuesta, HttpStatus.FORBIDDEN);
                 }
+                if(game.getPlayers().stream().anyMatch(e->e.getId()==player.getId())){
+                    respuesta.put("error","you are already in the game");
+                    return new ResponseEntity<>(respuesta, HttpStatus.FORBIDDEN);
+                }
                 GamePlayer gamePlayer = new GamePlayer(player, game);
                 gameRepository.save(game);
                 gamePlayerRepository.save(gamePlayer);
@@ -148,7 +264,11 @@ public class SalvoController {
                 return new ResponseEntity<>("Name already in use", HttpStatus.FORBIDDEN);
             }
 
-            PlayerRepository.save(new Player(firstName, lastName, email, username, passwordEncoder.encode(password)));
+            if(username.isEmpty()){
+                PlayerRepository.save(new Player(firstName, lastName, email, passwordEncoder.encode(password)));
+            }else{
+                PlayerRepository.save(new Player(firstName, lastName, email, username, passwordEncoder.encode(password)));
+            }
             return new ResponseEntity<>(HttpStatus.CREATED);
         }
 }
