@@ -4,8 +4,50 @@ let shipsName = ["carrier","battleship","submarine","destroyer","patrol_boat"]
 // creola grilla de salvos 
 document.querySelector("#backmenu").addEventListener('click',backmenu)
 document.querySelector("#sendShips").addEventListener('click',sendShips)
+document.querySelector("#sendSalvo").addEventListener('click',sendSalvo)
 createGrid(11, document.getElementById('grid_salvoes'), 'salvoes')
 viewPlayer(gp)
+celdaSalvo()
+function celdaSalvo(){
+    let celdaSalvo = document.querySelectorAll("#grid_salvoes div[data-y]")
+    celdaSalvo.forEach(e=>e.addEventListener('click',addsalvo))
+}
+
+function addsalvo(event){
+    let celda = event.target;
+    let salvo = document.querySelectorAll("#grid_salvoes div[data-salvo]")
+    if(salvo.length < 5){
+        celda.style.background = "green"
+        celda.dataset.salvo = true
+        console.log(celda)
+    }
+}
+
+function sendSalvo(){
+    let auxsalvo = document.querySelectorAll("#grid_salvoes div[data-salvo]")
+    if(auxsalvo.length == 5){
+        let salvo = []
+        auxsalvo.forEach(p=>salvo.push(p.dataset.y+p.dataset.x))
+        console.log(JSON.stringify(salvo))
+        fetch('/api/games/players/'+gp+'/salvos',{
+            method:'POST',
+            body:JSON.stringify(salvo),
+            headers:{
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(function(response){
+            if(response.ok){
+                console.log("good fetch")
+            }else{
+                throw new Error(response)
+            }
+        })
+        .catch(error => console.log(error))
+    }else{
+        console.log("todavia te quedan disparos")
+    }
+}
 
 function sendShips(){
     let shipsObjects = []
@@ -17,10 +59,10 @@ function sendShips(){
                 if (barco.orientation == "horizontal") {
                     position.push(barco.y+(parseInt(barco.x)+i))
                 }else{
-                    position.push(String.fromCharCode(barco.y+i)+(barco.x))
+                    position.push(String.fromCharCode(barco.y.charCodeAt(0)+i)+(barco.x))
                 }
             }
-            shipsObjects.push({"typeShip":e,"shipLocations":position})
+            shipsObjects.push({"typeShip":e.toUpperCase(),"shipLocations":position})
         })
         console.log(JSON.stringify(shipsObjects))
         fetch('/api/games/players/'+gp+'/ships',{
@@ -94,13 +136,24 @@ function createShipsWeb(json){
     for(let i = 0; i < json.salvoes.length; i++){
         if(json.salvoes[i].player == idPlayer){
             //pinto los disparos propios
-            json.salvoes[i].locations.forEach(e=> document.querySelector("#salvoes"+e).style.background = "green")
+            json.salvoes[i].locations.forEach(e=> {
+                let textNode = document.createElement('SPAN')
+                textNode.innerText = json.salvoes[i].turn
+                document.querySelector("#salvoes"+e).appendChild(textNode)
+                if(json.salvoes[i].nice_shoot.length!=0 && json.salvoes[i].nice_shoot.includes(e)){
+                    document.querySelector("#salvoes"+e).style.background = "red"
+                }else{
+                    document.querySelector("#salvoes"+e).style.background = "green"   
+                }
+            })
         }else{
             //pinto los disparos del oponente
             json.salvoes[i].locations.forEach(e=> {
             if((json.ships.flatMap(s=>s.locations.map(p=>p))).includes(e)){
-
-            document.querySelector("#ships"+e).style.background =  "red"
+                let textNode = document.createElement('SPAN')
+                textNode.innerText = json.salvoes[i].turn
+                document.querySelector("#ships"+e).appendChild(textNode)
+                document.querySelector("#ships"+e).style.background =  "red"
             }
             })
         }

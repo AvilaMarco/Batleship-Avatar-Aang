@@ -1,10 +1,7 @@
 package com.codeoftheweb.salvo.controller;
 
-import com.codeoftheweb.salvo.models.Game;
-import com.codeoftheweb.salvo.models.GamePlayer;
-import com.codeoftheweb.salvo.models.Player;
+import com.codeoftheweb.salvo.models.*;
 
-import com.codeoftheweb.salvo.models.Ship;
 import com.codeoftheweb.salvo.repository.GameRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -62,48 +59,35 @@ public class SalvoController {
             List<Boolean> list=new ArrayList<Boolean>(Arrays.asList(new Boolean[0]));
             ships.stream()
                 .forEach(e -> {
-                    for (byte i = 0; i < e.getShipLocations().size();i++) {
+                    for (int i = 0; i < e.getShipLocations().size();i++) {
+                        int aux = i;
+                        int aux2 = i+1;
                         //me fijo que es horizontal
-                        if (e.getShipLocations().get(i).substring(0,1) == e.getShipLocations().get(i+1).substring(0,1)){
-                            int aux = i;
-                            //me fijo que es horizontal efectivamente
-                            if(e.getShipLocations().stream().allMatch(p->p.substring(0,1)== e.getShipLocations().get(aux).substring(0,1)) &&
-                                    //me fijo que no se pase
-                                    i+1 < e.getShipLocations().size() &&
-                                    //me fijo que un posicion sea menor a la siguiente
-                            parseInt(e.getShipLocations().get(i).substring(1)) < parseInt(e.getShipLocations().get(i+1).substring(1))){
-                                list.add(true);
-                            }else{
-                                list.add(false);
-                            }
-                            //es vertical
+                        if (e.getShipLocations().stream().allMatch(p->p.charAt(0)== e.getShipLocations().get(aux).charAt(0))
+                            &&  aux2 < e.getShipLocations().size() &&
+                            parseInt(e.getShipLocations().get(aux).substring(1))+1 == parseInt(e.getShipLocations().get(aux2).substring(1))
+                        ){
+                            list.add(true);
+                        //es vertical
+                        }else if(e.getShipLocations().stream().allMatch(p->parseInt(p.substring(1)) == parseInt(e.getShipLocations().get(aux).substring(1)))
+                            && aux2 < e.getShipLocations().size() &&
+                            e.getShipLocations().get(aux).charAt(0)+1 == e.getShipLocations().get(aux2).charAt(0)
+                        ){
+                            list.add(true);
+                        }else if(aux2 == e.getShipLocations().size()){
+                            continue;
                         }else{
-                            int aux = i;
-                            //me fijo que sea efectivamente vertical
-                            if(e.getShipLocations().stream().allMatch(p->p.substring(1)== e.getShipLocations().get(aux).substring(1)) &&
-                                    //me fijo que no se pase
-                                    i+1 < e.getShipLocations().size() &&
-                                    //me fijo que un posicion sea menor a la siguiente en relacion a las letras
-                                    e.getShipLocations().get(i).charAt(0) < e.getShipLocations().get(i+1).charAt(0)){
-                                list.add(true);
-                            }else{
-                                list.add(false);
-                            }
+                            list.add(false);
                         }
                     }
                 });
-                //me fijo la orientacion del barco y compruebo que sean consecutivos
-                //si es horizontal tieneen que tener el mismo caracter inicial por ejemplo b, y tener el siguiente numero consecutivo
-                //si es vertital tiene que tener el mismo numero y distinta letra que debe ser consecutiva
                     return  list.stream().allMatch(b->b);
         }
 
-        private boolean positionsNotRepeated(Set<Ship> ships){
+        private boolean positionsNotRepeated(List<String> lista){
             //codigo
-            List<String> positionShips = new ArrayList<>();
-             ships.forEach(e->positionShips.addAll(e.getShipLocations()));
-             int tamañoOriginal = positionShips.size();
-            Set<String> set = new HashSet<>(positionShips);
+            int tamañoOriginal = lista.size();
+            Set<String> set = new HashSet<>(lista);
             int tamañoReal = set.size();
             if(tamañoOriginal == tamañoReal){
                 return  true;
@@ -149,6 +133,34 @@ public class SalvoController {
             }
         }
 
+        //setear salvo
+        @RequestMapping(path ="/games/players/{gamePlayerId}/salvos", method = RequestMethod.POST)
+        public ResponseEntity<Map<String, Object>> createSalvos(Authentication authentication, @PathVariable Long gamePlayerId,@RequestBody List<String> salvostring){
+            Map<String, Object> respuesta = new HashMap<>();
+            if(!isGuest(authentication)) {
+                Player player = PlayerRepository.findByUsername(authentication.getName());
+                if (player != null) {
+                    GamePlayer gp = gamePlayerRepository.findById(gamePlayerId).orElse(null);
+                                                                                //esta parte depende de la cantidad de ships?
+                    if (gp != null && gp.getPlayer().getId() == player.getId() && salvostring.size() == 5 && positionsNotRepeated(salvostring)){
+                        Salvo salvo = new Salvo(salvostring,gp.getSalvos().size()+1);
+                        gp.addSalvo(salvo);
+                    }else{
+                        respuesta.put("error","no se envia la cantidad coreecta de salvos o los salvos estan repetidos");
+                        return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
+                    }
+                    gamePlayerRepository.save(gp);
+                    return new ResponseEntity<>(respuesta, HttpStatus.ACCEPTED);
+                }else{
+                    respuesta.put("error","el jugador no existe");
+                    return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
+                }
+            }else{
+                respuesta.put("error","necesitas estar logeado para enviar salvo");
+                return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
+            }
+        }
+
         //setear barcos
         @RequestMapping(path ="/games/players/{gamePlayerId}/ships", method = RequestMethod.POST)
         public ResponseEntity<Map<String, Object>> createShips(Authentication authentication, @PathVariable Long gamePlayerId, @RequestBody Set<Ship> ships){
@@ -159,36 +171,42 @@ public class SalvoController {
                     GamePlayer gp = gamePlayerRepository.findById(gamePlayerId).orElse(null);
                     if (gp != null && gp.getPlayer().getId() == player.getId()){
                         //codigo para crear los barcos y agregarlos a el gameplayer
-                        if (ships.size() == 5){
-//      ships.stream().allMatch(e->e.getTypeShips()!=null
+                        if(ships.size() == 5 && ships.stream().allMatch(e->e.getTypeShip()!= null)){
                             //dentro del rango
-//                            if (!insideTheRange(ships)){
-//                                respuesta.put("error","UNAUTHORIZED");
-//                                return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
-//                            }
-//                            //que sean consecutivas
-//                            if (!isConsecutive(ships)){
-//                                respuesta.put("error","UNAUTHORIZED");
-//                                return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
-//                            }
-//                            //que no se pisen
-//                            if (!positionsNotRepeated(ships)){
-//                                respuesta.put("error","UNAUTHORIZED");
-//                                return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
-//                            }
+                            if (!insideTheRange(ships)){
+                                respuesta.put("error","las posiciones estan fuera del rango de la grilla");
+                                return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
+                            }
+                            //que sean consecutivas
+                            if (!isConsecutive(ships)){
+                                respuesta.put("error","las posiciones de los barcos no son correctas");
+                                return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
+                            }
+                            //que no se pisen
+                            List<String> positionShips = new ArrayList<>();
+                            ships.forEach(e->positionShips.addAll(e.getShipLocations()));
+                            if (!positionsNotRepeated(positionShips)){
+                                respuesta.put("error","las posiciones de los barcos se pisan, hay posiciones repetidas");
+                                return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
+                            }
+
+                            if(gp.getShips().size() != 0){
+                                respuesta.put("error","ya tienes barcos cargados");
+                                return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
+                            }
                             ships.stream().forEach(e-> gp.addShip(e));
                         }else{
-                            respuesta.put("error","UNAUTHORIZED");
+                            respuesta.put("error","el tipo de barco o la cantidad no es correcta");
                             return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
                         }
                         gamePlayerRepository.save(gp);
                         return new ResponseEntity<>(respuesta, HttpStatus.ACCEPTED);
                     }else{
-                        respuesta.put("error","UNAUTHORIZED");
+                        respuesta.put("error","no perteneces al juego");
                         return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
                     }
                 }else{
-                    respuesta.put("error","UNAUTHORIZED");
+                    respuesta.put("error","no estas registrado");
                     return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
                 }
             }else{

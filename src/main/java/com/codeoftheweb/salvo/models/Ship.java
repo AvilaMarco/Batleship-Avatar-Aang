@@ -26,27 +26,8 @@ public class Ship {
     //constructores
     public Ship(){}
 
-    public Ship(String typeShip, List<String> shipLocations){
-        switch (typeShip){
-            case "carrier":
-                this.typeShip = TypeShips.CARRIER;
-                break;
-            case "battleship":
-                this.typeShip = TypeShips.BATTLESHIP;
-                break;
-            case "submarine":
-                this.typeShip = TypeShips.SUBMARINE;
-                break;
-            case "destroyer":
-                this.typeShip = TypeShips.DESTROYER;
-                break;
-            case "patrol_boat":
-                this.typeShip = TypeShips.PATROL_BOAT;
-                break;
-            default:
-                this.typeShip = TypeShips.NONAME;
-        }
-//        this.typeShip = typeShip;
+    public Ship(TypeShips typeShip, List<String> shipLocations){
+        this.typeShip = typeShip;
         this.shipLocations = shipLocations;
     }
 
@@ -68,14 +49,14 @@ public class Ship {
         this.gamePlayer = GamePlayer;
     }
 
-    public TypeShips getTypeShips() {
+    public TypeShips getTypeShip() {
         return this.typeShip;
     }
 
     //data transfer object
     public Map<String,Object> shipsDTO(){
         Map<String,Object> dto = new HashMap<>();
-        dto.put("type_Ship",this.typeShip);
+        dto.put("type_Ship",this.getTypeShip());
         dto.put("locations",this.shipLocations);
         return dto;
     }
