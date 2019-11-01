@@ -55,11 +55,12 @@ public class Salvo {
 
     @JsonIgnore
     public List<String> goodShoot(List<String> shoots){
-        GamePlayer gp =  this.gamePlayer.getGame().getGamePlayers().stream().filter(gamep-> gamep.getId()!=this.id).findFirst().orElse(null);
-        if (gp != null && shoots.size()!=0){
-            List<String> positionShips = new ArrayList<>();
-            List<String> niceshoots = new ArrayList<>();
-            gp.getShips().forEach(e->positionShips.addAll(e.getShipLocations()));
+        long migp = this.gamePlayer.getId();
+        GamePlayer gp =  this.gamePlayer.getGame().getGamePlayers().stream().filter(gamep-> gamep.getId()!=migp).findFirst().orElse(null);
+        System.out.println(gp);
+        if (gp != null && shoots.size()==5){
+            List<String> positionShips = gp.getShips().stream().flatMap(e -> e.getShipLocations().stream().map(l->l)).collect(Collectors.toList());
+            System.out.println(positionShips);
             return shoots.stream().filter(s-> positionShips.stream().anyMatch(p->p.equals(s))).collect(Collectors.toList());
         }else {
             return null;
@@ -67,10 +68,22 @@ public class Salvo {
     }
 
     @JsonIgnore
-    public List<Ship> shipsDead(){
-        List<String> salvos = new ArrayList<>();
-        this.gamePlayer.getSalvos().stream().forEach(s->salvos.addAll(s.salvoLocations));
-        this.gamePlayer.getShips().stream().filter(s-> s.getShipLocations().stream().allMatch(l->salvos.stream().anyMatch()));
+    public List<Map<String, Object>> shipsDead(){
+        List<String> salvosposition = new ArrayList<>();
+        this.gamePlayer.getSalvos().forEach(salvo->salvosposition.addAll(salvo.salvoLocations));
+        long migp = this.gamePlayer.getId();
+        GamePlayer gp =  this.gamePlayer.getGame().getGamePlayers().stream().filter(gamep-> gamep.getId()!=migp).findFirst().orElse(null);
+        if (gp !=null){
+            List<Ship> ships = new ArrayList<>(gp.getShips());
+            List<Ship> shipsDead = new ArrayList<>(ships.stream().filter(s -> s.getShipLocations().stream().allMatch(position -> salvosposition.stream().anyMatch(sp -> sp.equals(position)))).collect(Collectors.toList()));
+            if (shipsDead.size()!=0){
+                return shipsDead.stream().map(Ship::shipsDTO).collect(Collectors.toList());
+            }else {
+                return null;
+            }
+        }else {
+            return null;
+        }
     }
     //dto
     public Map<String, Object> salvoDTO(){

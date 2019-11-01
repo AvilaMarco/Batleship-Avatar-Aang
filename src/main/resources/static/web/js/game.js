@@ -16,7 +16,7 @@ function celdaSalvo(){
 function addsalvo(event){
     let celda = event.target;
     let salvo = document.querySelectorAll("#grid_salvoes div[data-salvo]")
-    if(salvo.length < 5){
+    if(salvo.length < 5 && celda.dataset.salvoes == undefined){
         celda.style.background = "green"
         celda.dataset.salvo = true
         console.log(celda)
@@ -140,11 +140,12 @@ function createShipsWeb(json){
                 let textNode = document.createElement('SPAN')
                 textNode.innerText = json.salvoes[i].turn
                 document.querySelector("#salvoes"+e).appendChild(textNode)
-                if(json.salvoes[i].nice_shoot.length!=0 && json.salvoes[i].nice_shoot.includes(e)){
+                if(json.salvoes[i].player == idPlayer && json.salvoes[i].nice_shoot!=null && json.salvoes[i].nice_shoot.includes(e)){
                     document.querySelector("#salvoes"+e).style.background = "red"
                 }else{
                     document.querySelector("#salvoes"+e).style.background = "green"   
                 }
+                document.querySelector("#salvoes"+e).dataset.salvoes = true
             })
         }else{
             //pinto los disparos del oponente

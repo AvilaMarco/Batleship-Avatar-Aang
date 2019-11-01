@@ -95,10 +95,10 @@ public class SalvoApplication {
             Ship patrolBoat2 = new Ship(TypeShips.PATROL_BOAT,position10);
 
             //salvo position
-            List<String> sPosition01 = Arrays.asList("B5","C5","F1");
-            List<String> sPosition02 = Arrays.asList("B4","B5","B6");
-            List<String> sPosition03 = Arrays.asList("F2","D5");
-            List<String> sPosition04 = Arrays.asList("E1", "H3", "A2");
+            List<String> sPosition01 = Arrays.asList("B5","C5","F1","J10","A1");
+            List<String> sPosition02 = Arrays.asList("B4","B5","B6","F5","F6");
+            List<String> sPosition03 = Arrays.asList("F2","D5","G3","G2","G1");
+            List<String> sPosition04 = Arrays.asList("E1", "H3", "A2","C2","C3");
             List<String> sPosition05 = Arrays.asList("A2", "A4","G6");
             List<String> sPosition06 = Arrays.asList("B5", "D5","C7");
 
