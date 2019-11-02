@@ -1,7 +1,7 @@
 //cargar datos
 let games = [];
 let players = [];
-fetch('http://localhost:8080/api/games',{
+fetch('/api/games',{
     method: 'GET',
     }).then(function(response){if(response.ok){return response.json()}
     }).then(function(json){
@@ -166,7 +166,7 @@ function createTableRanking(){
 //TABLE GAMES
 function createTableGames(){
     let player;
-    fetch('http://localhost:8080/api/games',{
+    fetch('/api/games',{
     method: 'GET',
     }).then(function(response){if(response.ok){return response.json()}
     }).then(function(json){
@@ -263,7 +263,7 @@ function joinGame(event){
 }
 
 function enterGame(event){
-    fetch('http://localhost:8080/api/games',{
+    fetch('/api/games',{
     method: 'GET',
     }).then(function(response){if(response.ok){return response.json()}
     }).then(function(JSON){
