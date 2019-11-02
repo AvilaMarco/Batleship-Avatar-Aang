@@ -215,7 +215,7 @@ public class SalvoController {
                         respuesta.put("error", "no se envio la cantidad correcta de salvoes");
                         return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
                     }
-                    if (positionsNotRepeated(salvostring) && !gp.gamestard()){
+                    if (!positionsNotRepeated(salvostring) && !gp.gamestard()){
                         respuesta.put("error","los salvos estan repetidos");
                         return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
                     }
