@@ -89,6 +89,53 @@ public class GamePlayer {
         }
     }
 
+    @JsonIgnore
+    public boolean gamestard(){
+        long migpid = this.getId();
+        GamePlayer gpOpponent =  this.getGame().getGamePlayers().stream().filter(gamep-> gamep.getId()!=migpid).findFirst().orElse(null);
+        if (gpOpponent!=null){
+            return this.getGame().getGamePlayers().stream().allMatch(gp->gp.getShips().size()==5);
+        }else{
+            return false;
+        }
+
+    }
+
+    @JsonIgnore
+    public int getMyTurn(){
+        return (this.getSalvos().size()+1);
+    }
+    @JsonIgnore
+    public int getTurnOpponent(){
+        long migpid = this.getId();
+        GamePlayer gpOpponent =  this.getGame().getGamePlayers().stream().filter(gamep-> gamep.getId()!=migpid).findFirst().orElse(null);
+        if (gpOpponent!=null){
+            return (gpOpponent.getSalvos().size()+1);
+        }else {
+            return -1;
+        }
+    }
+    @JsonIgnore
+    public boolean gameover(){
+        long migpid = this.getId();
+        GamePlayer mygp =  this;
+        GamePlayer gpOpponent =  this.getGame().getGamePlayers().stream().filter(gamep-> gamep.getId()!=migpid).findFirst().orElse(null);
+        if (gpOpponent!=null){
+            //empate cuando mis disparos destruyen todos los barcos en el mismo turno que mi oponente hace lo mismo
+            //de mi gp obtengo los barcos que destrui
+            if (mygp.getSalvos().stream().anyMatch(salvo->salvo.shipsDead().size()==5) && gpOpponent.getSalvos().stream().anyMatch(salvo->salvo.shipsDead().size()==5)){
+                return true;
+            }else if (mygp.getSalvos().stream().anyMatch(salvo->salvo.shipsDead().size()==5) || gpOpponent.getSalvos().stream().anyMatch(salvo->salvo.shipsDead().size()==5)){
+                return true;
+            }else{
+                return false;
+            }
+        }else{
+            return false;
+        }
+//        return false;
+    }
+
     //dto
     public Map<String, Object> gamePlayerDTO(){
         Map<String, Object> dto = new HashMap<>();
@@ -102,6 +149,10 @@ public class GamePlayer {
         Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("id", this.id);
         dto.put("created",this.joinDate);
+        dto.put("Game_Started",this.gamestard());
+        dto.put("Game_Over",this.gameover());
+        dto.put("my_turn",this.getMyTurn());
+        dto.put("Opponent_turn",this.getTurnOpponent());
         dto.put("gamePlayers", this.game.getGamePlayers().stream().map(GamePlayer::gamePlayerDTO));
         dto.put("ships",this.getShips().stream().map(Ship::shipsDTO));
         dto.put("salvoes",this.getGame().getGamePlayers().stream().flatMap(gp -> gp.getSalvos().stream().map(Salvo::salvoDTO)));

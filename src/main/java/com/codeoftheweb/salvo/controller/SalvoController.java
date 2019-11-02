@@ -2,7 +2,7 @@ package com.codeoftheweb.salvo.controller;
 
 import com.codeoftheweb.salvo.models.*;
 
-import com.codeoftheweb.salvo.repository.GameRepository;
+import com.codeoftheweb.salvo.repository.GamePlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.awt.image.ImageProducer;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -35,6 +36,9 @@ public class SalvoController {
         @Autowired
         private com.codeoftheweb.salvo.repository.GamePlayerRepository gamePlayerRepository;
 
+    @Autowired
+    private com.codeoftheweb.salvo.repository.ScoreRepository ScoreRepository;
+
         @Autowired
         PasswordEncoder passwordEncoder;
 
@@ -45,13 +49,11 @@ public class SalvoController {
             return authentication == null || authentication instanceof AnonymousAuthenticationToken;
         }
 
-        private boolean insideTheRange(Set<Ship> ships){
-            return ships.stream()
-                    .allMatch(e->e.getShipLocations().stream()
-                    .allMatch(location-> location instanceof String &&
-                        location.charAt(0) >= 'A' && location.charAt(0) <= 'J' &&
+        private boolean insideTheRange(List<String> lista){
+            return lista.stream()
+                    .allMatch(location-> location.charAt(0) >= 'A' && location.charAt(0) <= 'J' &&
                         parseInt(location.substring(1)) >= 1 && parseInt(location.substring(1)) <= 10
-                    ));
+                    );
         }
 
         private boolean isConsecutive(Set<Ship> ships){
@@ -95,6 +97,61 @@ public class SalvoController {
                 return false;
             }
         }
+
+        private boolean realships(Set<Ship> ships){
+            return ships.stream().allMatch(s->{
+                boolean correct = false;
+                switch (s.getTypeShip().toString()){
+                    case "CARRIER":
+                        correct =  s.getShipLocations().size() == 5;
+                        break;
+                    case "BATTLESHIP":
+                        correct = s.getShipLocations().size() == 4;
+                        break;
+                    case "SUBMARINE":
+                        correct = s.getShipLocations().size() == 3;
+                        break;
+                    case "DESTROYER":
+                        correct = s.getShipLocations().size() == 3;
+                        break;
+                    case "PATROL_BOAT":
+                        correct = s.getShipLocations().size() == 2;
+                        break;
+                    default:
+                        correct = false;
+                        break;
+                }
+                return correct;
+            });
+        }
+
+        private void elegirganador(GamePlayer gamepplayer){
+            long migpid = gamepplayer.getId();
+            GamePlayer mygp =  gamepplayer;
+            GamePlayer gpOpponent =  gamepplayer.getGame().getGamePlayers().stream().filter(gamep-> gamep.getId()!=migpid).findFirst().orElse(null);
+            Score mypuntaje = new Score();
+            Score opponentpuntaje = new Score();
+            if (gpOpponent!=null){
+                //empate cuando mis disparos destruyen todos los barcos en el mismo turno que mi oponente hace lo mismo
+                //de mi gp obtengo los barcos que destrui
+                if (mygp.getSalvos().stream().anyMatch(salvo->salvo.shipsDead().size()==5) && gpOpponent.getSalvos().stream().anyMatch(salvo->salvo.shipsDead().size()==5)){
+                    //empate
+                    mypuntaje = new Score(mygp.getPlayer(), mygp.getGame(),1, LocalDateTime.now());
+                    opponentpuntaje = new Score(gpOpponent.getPlayer(), gpOpponent.getGame(),1, LocalDateTime.now());
+                }else if (mygp.getSalvos().stream().anyMatch(salvo->salvo.shipsDead().size()==5)){
+                    //destrui todos los barcos de mi oponente y gane
+                    mypuntaje = new Score(mygp.getPlayer(), mygp.getGame(),3, LocalDateTime.now());
+                    opponentpuntaje = new Score(gpOpponent.getPlayer(), gpOpponent.getGame(),0, LocalDateTime.now());
+                }else if(gpOpponent.getSalvos().stream().anyMatch(salvo->salvo.shipsDead().size()==5)){
+                    //mi oponente destruyo todos mis barcos y perdi
+                    mypuntaje = new Score(mygp.getPlayer(), mygp.getGame(),0, LocalDateTime.now());
+                    opponentpuntaje = new Score(gpOpponent.getPlayer(), gpOpponent.getGame(),3, LocalDateTime.now());
+                }
+                ScoreRepository.save(mypuntaje);
+                ScoreRepository.save(opponentpuntaje);
+            }
+        }
+
         //Creamos nuestro primer end-point con la dirección '/api/drivers'
         @RequestMapping("/games")
         //Definimos un método para administrar la información que brinda nuestro end-point
@@ -120,7 +177,7 @@ public class SalvoController {
             GamePlayer gp = gamePlayerRepository.findById(id).orElse(null);
             Player player = PlayerRepository.findByUsername(authentication.getName());
             Map<String, Object> error = new HashMap<>();
-            if(gp!= null){
+            if(gp!= null && player != null){
                 if (player.getGamePlayers().stream().anyMatch(e->e.getId()==id)){
                     return new ResponseEntity<Map<String, Object>>(gp.gameVIewDTO(), HttpStatus.ACCEPTED);
                 }else{
@@ -141,16 +198,80 @@ public class SalvoController {
                 Player player = PlayerRepository.findByUsername(authentication.getName());
                 if (player != null) {
                     GamePlayer gp = gamePlayerRepository.findById(gamePlayerId).orElse(null);
-                                                                                //esta parte depende de la cantidad de ships?
-                    if (gp != null && gp.getPlayer().getId() == player.getId() && salvostring.size() == 5 && positionsNotRepeated(salvostring)){
-                        Salvo salvo = new Salvo(salvostring,gp.getSalvos().size()+1);
-                        gp.addSalvo(salvo);
-                    }else{
-                        respuesta.put("error","no se envia la cantidad coreecta de salvos o los salvos estan repetidos");
+                    if (!insideTheRange(salvostring)){
+                        respuesta.put("error","los salvoes estan fuera de la grilla");
                         return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
                     }
-                    gamePlayerRepository.save(gp);
-                    return new ResponseEntity<>(respuesta, HttpStatus.ACCEPTED);
+                    if (gp == null)     {
+                        respuesta.put("error","el jurgo no existe");
+                        return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
+                    }
+                    if (gp.getPlayer().getId() != player.getId()){
+                        respuesta.put("error","el jugador no pertenece al juego");
+                        return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
+                    }
+                    //esta parte depende de la cantidaAd de ships
+                    if (!(salvostring.size() ==5)) {
+                        respuesta.put("error", "no se envio la cantidad correcta de salvoes");
+                        return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
+                    }
+                    if (positionsNotRepeated(salvostring) && !gp.gamestard()){
+                        respuesta.put("error","los salvos estan repetidos");
+                        return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
+                    }
+
+                    if (gp.getPlayer().getScore(gp.getGame())!=null){
+                        respuesta.put("error","el juego ya termino");
+                        return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
+                    }
+                    //logica del juego
+                    if (gp.getMyTurn() <= gp.getTurnOpponent()) {
+                        if (gp.gameover()){
+                            Salvo salvo = new Salvo(salvostring, gp.getSalvos().size() + 1);
+                            gp.addSalvo(salvo);
+                            gamePlayerRepository.save(gp);
+                            elegirganador(gp);
+                            respuesta.put("good","fin del juego");
+                            return new ResponseEntity<>(respuesta, HttpStatus.ACCEPTED);
+                        }else{
+                            Salvo salvo = new Salvo(salvostring, gp.getSalvos().size() + 1);
+                            gp.addSalvo(salvo);
+                            gamePlayerRepository.save(gp);
+                            respuesta.put("good","nice");
+                            return new ResponseEntity<>(respuesta, HttpStatus.ACCEPTED);
+                        }
+                    }else{
+                        respuesta.put("error","no es tu turno");
+                        return new ResponseEntity<>(respuesta, HttpStatus.ACCEPTED);
+                    }
+
+
+
+//                            Salvo salvo = new Salvo(salvostring,gp.getSalvos().size()+1);
+//                            gp.addSalvo(salvo);
+//                            gamePlayerRepository.save(gp);
+//                        //else{
+//                            //if (gp.getMyTurn() == gp.getTurnOpponent()){guardo score}
+//                            //else{juego}
+//                            if (gp.getMyTurn() == gp.getTurnOpponent()){
+//                                if (gp.gameover()){
+//                                    //termino el juego
+//                                    elegirganador(gp);
+//                                    System.out.println("fin del juego");
+//                                    respuesta.put("good","fin del juego");
+//                                    return new ResponseEntity<>(respuesta, HttpStatus.ACCEPTED);
+//                                }
+//                            }
+//                            respuesta.put("good","nice");
+//                            return new ResponseEntity<>(respuesta, HttpStatus.ACCEPTED);
+//                        }else{
+//                            respuesta.put("error","el juego ya termino");
+//                            return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
+//                        }
+//                    }else{
+//                        respuesta.put("error","no es tu turno");
+//                        return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
+//                    }
                 }else{
                     respuesta.put("error","el jugador no existe");
                     return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
@@ -173,7 +294,7 @@ public class SalvoController {
                         //codigo para crear los barcos y agregarlos a el gameplayer
                         if(ships.size() == 5 && ships.stream().allMatch(e->e.getTypeShip()!= null)){
                             //dentro del rango
-                            if (!insideTheRange(ships)){
+                            if (!insideTheRange(ships.stream().flatMap(s->s.getShipLocations().stream()).collect(Collectors.toList()))){
                                 respuesta.put("error","las posiciones estan fuera del rango de la grilla");
                                 return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
                             }
@@ -189,7 +310,10 @@ public class SalvoController {
                                 respuesta.put("error","las posiciones de los barcos se pisan, hay posiciones repetidas");
                                 return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
                             }
-
+                            if (!realships(ships)){
+                                respuesta.put("error","la cantidad de posiciones en algun barco no es correcta");
+                                return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
+                            }
                             if(gp.getShips().size() != 0){
                                 respuesta.put("error","ya tienes barcos cargados");
                                 return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);

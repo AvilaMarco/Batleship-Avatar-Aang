@@ -107,7 +107,7 @@ function viewPlayer(gpid){
         if(response.ok){
             return response.json()
         }else{
-           return Promise.reject(response.json())
+           throw new Error(response)
         }
     })
     .then(function(JSON){
@@ -118,8 +118,7 @@ function viewPlayer(gpid){
             defaultships()
         }
     })
-    .catch(error => error)
-    .then(json => console.log(json.error))
+    .catch(error => console.log(error))
 }
 
 function createShipsWeb(json){

@@ -60,4 +60,10 @@ public class Ship {
         dto.put("locations",this.shipLocations);
         return dto;
     }
+
+    public Map<String,Object> shipstypeDTO(){
+        Map<String,Object> dto = new HashMap<>();
+        dto.put("type_Ship",this.getTypeShip());
+        return dto;
+    }
 }

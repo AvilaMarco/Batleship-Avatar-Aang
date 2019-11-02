@@ -68,16 +68,17 @@ public class Salvo {
     }
 
     @JsonIgnore
-    public List<Map<String, Object>> shipsDead(){
+    public List<Ship> shipsDead(){
         List<String> salvosposition = new ArrayList<>();
-        this.gamePlayer.getSalvos().forEach(salvo->salvosposition.addAll(salvo.salvoLocations));
+//        this.gamePlayer.getSalvos().forEach(salvo->salvosposition.addAll(salvo.salvoLocations));
+        this.gamePlayer.getSalvos().stream().filter(salvo -> salvo.getTurn() <= this.getTurn()).forEach(salvo->salvosposition.addAll(salvo.salvoLocations));
         long migp = this.gamePlayer.getId();
         GamePlayer gp =  this.gamePlayer.getGame().getGamePlayers().stream().filter(gamep-> gamep.getId()!=migp).findFirst().orElse(null);
         if (gp !=null){
             List<Ship> ships = new ArrayList<>(gp.getShips());
             List<Ship> shipsDead = new ArrayList<>(ships.stream().filter(s -> s.getShipLocations().stream().allMatch(position -> salvosposition.stream().anyMatch(sp -> sp.equals(position)))).collect(Collectors.toList()));
             if (shipsDead.size()!=0){
-                return shipsDead.stream().map(Ship::shipsDTO).collect(Collectors.toList());
+                return shipsDead;
             }else {
                 return null;
             }
@@ -91,7 +92,11 @@ public class Salvo {
         dto.put("turn",this.turn);
         dto.put("player", this.getIdPlayer());
         dto.put("nice_shoot",this.goodShoot(this.salvoLocations));
-        dto.put("ships_dead",this.shipsDead());
+        if (this.shipsDead() != null){
+            dto.put("ships_dead",this.shipsDead().stream().map(Ship::shipstypeDTO).collect(Collectors.toList()));
+        }else{
+            dto.put("ships_dead",this.shipsDead());
+        }
         dto.put("locations", this.salvoLocations);
         return dto;
     }
