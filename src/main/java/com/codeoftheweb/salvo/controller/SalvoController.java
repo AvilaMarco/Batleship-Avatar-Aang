@@ -215,8 +215,13 @@ public class SalvoController {
                         respuesta.put("error", "no se envio la cantidad correcta de salvoes");
                         return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
                     }
-                    if (!positionsNotRepeated(salvostring) && !gp.gamestard()){
+                    if (!positionsNotRepeated(salvostring)){
                         respuesta.put("error","los salvos estan repetidos");
+                        return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
+                    }
+
+                    if(!gp.gamestard()){
+                        respuesta.put("error","el juego no empezo");
                         return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
                     }
 
@@ -230,6 +235,7 @@ public class SalvoController {
                             Salvo salvo = new Salvo(salvostring, gp.getSalvos().size() + 1);
                             gp.addSalvo(salvo);
                             gamePlayerRepository.save(gp);
+                            //cuando gana el primero en jugar
                             elegirganador(gp);
                             respuesta.put("good","fin del juego");
                             return new ResponseEntity<>(respuesta, HttpStatus.ACCEPTED);
@@ -237,41 +243,20 @@ public class SalvoController {
                             Salvo salvo = new Salvo(salvostring, gp.getSalvos().size() + 1);
                             gp.addSalvo(salvo);
                             gamePlayerRepository.save(gp);
-                            respuesta.put("good","nice");
-                            return new ResponseEntity<>(respuesta, HttpStatus.ACCEPTED);
+                            if (gp.gameover()){
+                                //cuando gana el ultimo en jugar
+                                elegirganador(gp);
+                                respuesta.put("good","fin del juego");
+                                return new ResponseEntity<>(respuesta, HttpStatus.ACCEPTED);
+                            }else{
+                                respuesta.put("good","nice");
+                                return new ResponseEntity<>(respuesta, HttpStatus.ACCEPTED);
+                            }
                         }
                     }else{
                         respuesta.put("error","no es tu turno");
-                        return new ResponseEntity<>(respuesta, HttpStatus.ACCEPTED);
+                        return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
                     }
-
-
-
-//                            Salvo salvo = new Salvo(salvostring,gp.getSalvos().size()+1);
-//                            gp.addSalvo(salvo);
-//                            gamePlayerRepository.save(gp);
-//                        //else{
-//                            //if (gp.getMyTurn() == gp.getTurnOpponent()){guardo score}
-//                            //else{juego}
-//                            if (gp.getMyTurn() == gp.getTurnOpponent()){
-//                                if (gp.gameover()){
-//                                    //termino el juego
-//                                    elegirganador(gp);
-//                                    System.out.println("fin del juego");
-//                                    respuesta.put("good","fin del juego");
-//                                    return new ResponseEntity<>(respuesta, HttpStatus.ACCEPTED);
-//                                }
-//                            }
-//                            respuesta.put("good","nice");
-//                            return new ResponseEntity<>(respuesta, HttpStatus.ACCEPTED);
-//                        }else{
-//                            respuesta.put("error","el juego ya termino");
-//                            return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
-//                        }
-//                    }else{
-//                        respuesta.put("error","no es tu turno");
-//                        return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
-//                    }
                 }else{
                     respuesta.put("error","el jugador no existe");
                     return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);

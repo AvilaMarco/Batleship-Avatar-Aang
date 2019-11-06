@@ -123,9 +123,9 @@ public class GamePlayer {
         if (gpOpponent!=null){
             //empate cuando mis disparos destruyen todos los barcos en el mismo turno que mi oponente hace lo mismo
             //de mi gp obtengo los barcos que destrui
-            if (mygp.getSalvos().stream().anyMatch(salvo->salvo.shipsDead().size()==5) && gpOpponent.getSalvos().stream().anyMatch(salvo->salvo.shipsDead().size()==5)){
+           if (mygp.getSalvos().stream().anyMatch(s->s.shipsDead()!=null?s.shipsDead().size()==5:false) && gpOpponent.getSalvos().stream().anyMatch(s->s.shipsDead()!=null?s.shipsDead().size()==5:false)){
                 return true;
-            }else if (mygp.getSalvos().stream().anyMatch(salvo->salvo.shipsDead().size()==5) || gpOpponent.getSalvos().stream().anyMatch(salvo->salvo.shipsDead().size()==5)){
+            }else if (mygp.getSalvos().stream().anyMatch(s->s.shipsDead()!=null?s.shipsDead().size()==5:false) || gpOpponent.getSalvos().stream().anyMatch(s->s.shipsDead()!=null?s.shipsDead().size()==5:false)){
                 return true;
             }else{
                 return false;
