@@ -243,7 +243,7 @@ public class SalvoController {
                             Salvo salvo = new Salvo(salvostring, gp.getSalvos().size() + 1);
                             gp.addSalvo(salvo);
                             gamePlayerRepository.save(gp);
-                            if (gp.gameover()){
+                            if (gp.gameover() && gp.getMyTurn() == gp.getTurnOpponent()){
                                 //cuando gana el ultimo en jugar
                                 elegirganador(gp);
                                 respuesta.put("good","fin del juego");
