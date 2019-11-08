@@ -32,6 +32,8 @@ function addsalvo(event){
         celda.style.background = "green"
         celda.dataset.salvo = true
         console.log(celda)
+    }else{
+        console.log("mal")
     }
 }
 
@@ -71,7 +73,7 @@ function updateSalvoesgrid(){
         }
     })
     .then(function(JSON){
-       // createSalvoes(JSON)
+       createSalvoes(JSON)
        console.log(JSON)
     })
     .catch(error => console.log(error.message))
@@ -93,9 +95,10 @@ function sendSalvo(){
         .then(function(response){
             if(response.ok){
                 console.log("good fetch")
-                // document.querySelectorAll("#grid_salvoes div[data-salvo]").forEach(e=>{
-                //     e.style.background = ""})
-                // updateSalvoesgrid()
+                document.querySelectorAll("#grid_salvoes div[data-salvo]").forEach(e=>{
+                    e.style.background = ""})
+                document.querySelectorAll("#grid_salvoes div[data-salvo]").forEach(e=>e.removeAttribute("data-salvo"))
+                updateSalvoesgrid()
                 // return response.json()
             }else{
                throw new Error(response)
@@ -205,22 +208,24 @@ function createSalvoes(json){
     let idPlayer = json.gamePlayers.filter(e=>e.id == gp)[0].player.id
     for(let i = 0; i < json.salvoes.length; i++){
         if(json.salvoes[i].player == idPlayer){
-            //pinto los disparos propios
+            //pinto los disparos propios document.querySelector("#salvoes"+e).style.background==""
             json.salvoes[i].locations.forEach(e=> {
-                let textNode = document.createElement('SPAN')
+                if (document.querySelector("#salvoes"+e).style.background=="") {
+                    let textNode = document.createElement('SPAN')
                 textNode.innerText = json.salvoes[i].turn
                 document.querySelector("#salvoes"+e).appendChild(textNode)
-                if(json.salvoes[i].player == idPlayer && json.salvoes[i].nice_shoot!=null && json.salvoes[i].nice_shoot.includes(e) && document.querySelector("#salvoes"+e).style.background==""){
+                if(json.salvoes[i].player == idPlayer && json.salvoes[i].nice_shoot!=null && json.salvoes[i].nice_shoot.includes(e)){
                     document.querySelector("#salvoes"+e).style.background = "red"
                 }else{
                     document.querySelector("#salvoes"+e).style.background = "green"   
                 }
                 document.querySelector("#salvoes"+e).dataset.salvoes = true
+                }
             })
         }else{
             //pinto los disparos del oponente
             json.salvoes[i].locations.forEach(e=> {
-            if((json.ships.flatMap(s=>s.locations.map(p=>p))).includes(e) && document.querySelector("#salvoes"+e).style.background==""){
+            if((json.ships.flatMap(s=>s.locations.map(p=>p))).includes(e) && document.querySelector("#ships"+e).style.background==""){
                 let textNode = document.createElement('SPAN')
                 textNode.innerText = json.salvoes[i].turn
                 document.querySelector("#ships"+e).appendChild(textNode)
