@@ -16,14 +16,24 @@
     border: 2px solid rgb(128,128,128);
     border-bottom: 0;
     border-radius: 10px 10px 0 0;
-    background-image: url('../assets/dock-texture.jpg');
+    /*background-image: url('../assets/dock-texture.jpg');
     background-size: cover;
-    background-repeat: no-repeat;
+    background-repeat: no-repeat;*/
+    /*gradientes*/
+    background-color:silver;
+    background-image:
+    radial-gradient(circle at 100% 150%, silver 24%, white 24%, white 28%, silver 28%, silver 36%, white 36%, white 40%, transparent 40%, transparent),
+    radial-gradient(circle at 0    150%, silver 24%, white 24%, white 28%, silver 28%, silver 36%, white 36%, white 40%, transparent 40%, transparent),
+    radial-gradient(circle at 50%  100%, white 10%, silver 10%, silver 23%, white 23%, white 30%, silver 30%, silver 43%, white 43%, white 50%, silver 50%, silver 63%, white 63%, white 71%, transparent 71%, transparent),
+    radial-gradient(circle at 100% 50%, white 5%, silver 5%, silver 15%, white 15%, white 20%, silver 20%, silver 29%, white 29%, white 34%, silver 34%, silver 44%, white 44%, white 49%, transparent 49%, transparent),
+    radial-gradient(circle at 0    50%, white 5%, silver 5%, silver 15%, white 15%, white 20%, silver 20%, silver 29%, white 29%, white 34%, silver 34%, silver 44%, white 44%, white 49%, transparent 49%, transparent);
+    background-size: 100px 50px;
 }
 
 
 #grid{
-    background-image: url(../assets/ocean.gif);
+    /*background-image: url(../assets/ocean.gif);*/
+    background-image: url(../assets/img/fondotierra.jpg);
     background-size: cover;
     border: 2px solid rgb(128,128,128);
     border-radius: 0 0 10px 10px;
@@ -49,7 +59,7 @@
     box-sizing: border-box;
     width: 30px;
     height: 30px;
-    border: 1.3px solid rgb(128,128,128);
+    border: 1.3px solid rgba(0, 0, 0, 0.71);
     border-radius: 10px;
     vertical-align: middle;
     font-weight: bold;

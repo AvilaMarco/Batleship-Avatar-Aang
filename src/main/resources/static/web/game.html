@@ -5,10 +5,14 @@
 	<meta charset="utf-8">
 	<link rel="stylesheet" href="css/normalize.css" />
 	<link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/game.css">
+    <link rel="stylesheet" href="css/Utilitis.css">
 </head>
 <body>
+    <header>
+        <button id="backmenu">back to menu</button>
+    </header>
 <div class="player flex-container">
-	<button id="backmenu">back to menu</button>
     <div id="dock">
         <div id="display">
             <p>Welcome...</p>
@@ -16,15 +20,16 @@
         <!--The new ships will show up here, waiting for been placed in the grid -->
     </div>
 
+    <div id="grid_salvoes" class="d-none">
+        <!--The grid will appear here -->
+    </div>
+
     <div id="grid">
         <!--The grid will appear here -->
     </div>
 
-    <div id="grid_salvoes">
-        <!--The grid will appear here -->
-    </div>
-	<button id="sendShips">enviar barcos</button>
-	<button id="sendSalvo" style="margin-right: 30px;">enviar salvo</button>
+	<button id="sendShips" class="d-none">enviar barcos</button>
+	<button id="sendSalvo" class="d-none" style="margin-right: 30px;">enviar salvo</button>
 </div>
 <script src="js/ships.js"></script>
 <script src="js/grid.js"></script>

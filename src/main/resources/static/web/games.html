@@ -21,13 +21,13 @@
     <button id="btn-registre" class="btn btn-block">Registre</button>
 </div>
 <div class="container">
-    <header class="f">
+    <header class="d-flex">
         <!-- logo del juego -->
-        <div class="w-50 logo-main">
+        <div class="w-50 logo-main mt-1">
             <img src="assets/img/logo.png">
         </div>
         <!-- login user -->
-        <div class="w-50 login">
+        <div class="w-50 login mt-1">
             <input type="text" class="login-input" name="user-name" placeholder="Username/Email">
             <input type="text" class="login-input" name="user-password" placeholder="Password">
             <button name="registre" id="registre" class="btn login-input">Registre</button>
@@ -36,12 +36,12 @@
             <button name="logout" id="btn-logout" class="btn login-input d-none">Logout</button>
         </div>
     </header>
-    <main class="f">
+    <main class="d-flex">
         <!-- table ranked -->
         <div id="ranked" class="w-50 table-ranked">
             <h1>ranked player</h1>
             <div class="table-scroll">
-                <table class="table">
+                <table class="table theadBlack">
                     <thead class="">
                         <tr>
                             <th>Player</th>
@@ -59,7 +59,7 @@
         <div id="game" class="w-50 table-games">
             <h1>Games</h1>
             <div class="table-scroll">
-                <table class="table">
+                <table class="table theadBlack">
                     <thead>
                         <tr>
                             <th>Game</th>

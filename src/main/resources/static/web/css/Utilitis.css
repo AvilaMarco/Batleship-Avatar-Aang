@@ -2,6 +2,14 @@
 	display: none !important;
 }
 
+/*margenes*/
+.mt-1{
+	margin-top: 1%;
+}
+
+.mr-2{
+	margin-right: 1%;
+}
 input[name*=registre], select {
     padding: 12px 20px;
     border: 1px solid #ccc;
@@ -44,6 +52,11 @@ input[name*=registre], select {
 .table th{
 	position: sticky;
 	top: 0;
+}
+
+.theadBlack th{
+	background-color: black;
+	color: white;
 }
 
 .modal{

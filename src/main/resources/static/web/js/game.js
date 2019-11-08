@@ -1,16 +1,28 @@
 let params = new URLSearchParams(location.search)
 let gp = params.get("gp")
 let shipsName = ["carrier","battleship","submarine","destroyer","patrol_boat"]
+//setinterval
+var intervalGamestard = null
+var updateSalvoes = null
 // creola grilla de salvos 
-document.querySelector("#backmenu").addEventListener('click',backmenu)
-document.querySelector("#sendShips").addEventListener('click',sendShips)
-document.querySelector("#sendSalvo").addEventListener('click',sendSalvo)
 createGrid(11, document.getElementById('grid_salvoes'), 'salvoes')
+//botones dom
+let backMenu = document.querySelector("#backmenu")
+let send_Ships = document.querySelector("#sendShips")
+let send_Salvo = document.querySelector("#sendSalvo")
+let grid_salvoes = document.querySelector("#grid_salvoes")
+//eventlistener
+backMenu.addEventListener('click',backmenu)
+send_Ships.addEventListener('click',sendShips)
+send_Salvo.addEventListener('click',sendSalvo)
 viewPlayer(gp)
-celdaSalvo()
-function celdaSalvo(){
-    let celdaSalvo = document.querySelectorAll("#grid_salvoes div[data-y]")
-    celdaSalvo.forEach(e=>e.addEventListener('click',addsalvo))
+
+
+function dockIsEmpty(){
+    if(document.querySelectorAll("#dock .grid-item").length == 0){
+        document.querySelector("#dock").appendChild(send_Ships)
+        send_Ships.classList.remove("d-none")
+    }   
 }
 
 function addsalvo(event){
@@ -21,6 +33,48 @@ function addsalvo(event){
         celda.dataset.salvo = true
         console.log(celda)
     }
+}
+
+function isGameStart(){
+    fetch("/api/gp/"+gp,{method: 'GET'})
+    .then(function(response){
+        if(response.ok){
+            console.log("game start")
+            return response.json()
+        }else{
+           throw new Error(response)
+        }
+    })
+    .then(function(JSON){
+        if(JSON.Game_Started){
+            console.log("game star 2")
+            document.querySelector("#dock").appendChild(send_Salvo)
+            send_Salvo.classList.remove("d-none")
+            grid_salvoes.classList.remove("d-none")
+            document.querySelectorAll("#grid_salvoes div[data-y]").forEach(e=>e.addEventListener('click',addsalvo))
+            createSalvoes(JSON)
+            intervalGamestard != null ? window.clearInterval(intervalGamestard):null
+            // updateSalvoes = window.setInterval(updateSalvoesgrid, 3000);
+        }
+    })
+    .catch(error => console.log(error))
+}
+
+function updateSalvoesgrid(){
+    fetch('/api/gp/'+gp,{
+        method: 'GET',})
+    .then(function(response){
+        if(response.ok){
+            return response.json()
+        }else{
+           throw new Error(response.text())
+        }
+    })
+    .then(function(JSON){
+       // createSalvoes(JSON)
+       console.log(JSON)
+    })
+    .catch(error => console.log(error.message))
 }
 
 function sendSalvo(){
@@ -39,11 +93,15 @@ function sendSalvo(){
         .then(function(response){
             if(response.ok){
                 console.log("good fetch")
+                // document.querySelectorAll("#grid_salvoes div[data-salvo]").forEach(e=>{
+                //     e.style.background = ""})
+                // updateSalvoesgrid()
+                // return response.json()
             }else{
-                throw new Error(response)
+               throw new Error(response)
             }
         })
-        .catch(error => console.log(error))
+        .catch(error => console.log(error.message))
     }else{
         console.log("todavia te quedan disparos")
     }
@@ -75,11 +133,14 @@ function sendShips(){
         .then(function(response){
             if(response.ok){
                 console.log("good fetch")
+                viewPlayer(gp)
+                send_Ships.classList.add("d-none")
+                intervalGamestard = window.setInterval(isGameStart, 3000);
             }else{
-                throw new Error(response)
+                throw new Error(response.text())
             }
         })
-        .catch(error => console.log(error))
+        .catch(error => console.log(error.message))
     }else{
         console.log("faltan colocar ships")
     }  
@@ -107,21 +168,29 @@ function viewPlayer(gpid){
         if(response.ok){
             return response.json()
         }else{
-           throw new Error(response)
+           throw new Error(response.text())
         }
     })
     .then(function(JSON){
         console.log(JSON)
         if (JSON.ships.length != 0) {
             createShipsWeb(JSON)
+            isGameStart()
         }else{
             defaultships()
         }
     })
-    .catch(error => console.log(error))
+    .catch(error => console.log(error.message))
 }
 
 function createShipsWeb(json){
+    //elimino los barcos para no tener que cargar la pagina otra vez
+    if (shipsName.every(e=>document.querySelector("#"+e)) && shipsName.every(e=>document.querySelector("#"+e).dataset.y != undefined)) {
+        shipsName.forEach(e=>{
+            document.querySelector("#"+e).parentNode.removeChild(document.querySelector("#"+e))
+        })
+    }
+
     //creo los bracos en la grilla
     for(let i = 0; i < json.ships.length;i++){
         let location = json.ships[i].locations[0]
@@ -130,7 +199,9 @@ function createShipsWeb(json){
         let tamaño = json.ships[i].locations.length
         createShips(type.toLowerCase(), tamaño, orientation, document.getElementById('ships'+location),true)
     }
+}
 
+function createSalvoes(json){
     let idPlayer = json.gamePlayers.filter(e=>e.id == gp)[0].player.id
     for(let i = 0; i < json.salvoes.length; i++){
         if(json.salvoes[i].player == idPlayer){
@@ -139,7 +210,7 @@ function createShipsWeb(json){
                 let textNode = document.createElement('SPAN')
                 textNode.innerText = json.salvoes[i].turn
                 document.querySelector("#salvoes"+e).appendChild(textNode)
-                if(json.salvoes[i].player == idPlayer && json.salvoes[i].nice_shoot!=null && json.salvoes[i].nice_shoot.includes(e)){
+                if(json.salvoes[i].player == idPlayer && json.salvoes[i].nice_shoot!=null && json.salvoes[i].nice_shoot.includes(e) && document.querySelector("#salvoes"+e).style.background==""){
                     document.querySelector("#salvoes"+e).style.background = "red"
                 }else{
                     document.querySelector("#salvoes"+e).style.background = "green"   
@@ -149,7 +220,7 @@ function createShipsWeb(json){
         }else{
             //pinto los disparos del oponente
             json.salvoes[i].locations.forEach(e=> {
-            if((json.ships.flatMap(s=>s.locations.map(p=>p))).includes(e)){
+            if((json.ships.flatMap(s=>s.locations.map(p=>p))).includes(e) && document.querySelector("#salvoes"+e).style.background==""){
                 let textNode = document.createElement('SPAN')
                 textNode.innerText = json.salvoes[i].turn
                 document.querySelector("#ships"+e).appendChild(textNode)

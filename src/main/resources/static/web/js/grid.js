@@ -105,7 +105,7 @@ const createGrid = function(size, element, id){
       ev.target.appendChild(ship);
 
       checkBusyCells(ship, ev.target)
-      
+      dockIsEmpty()
     }
 
 
