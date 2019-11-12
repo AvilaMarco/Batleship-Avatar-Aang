@@ -147,7 +147,7 @@ public class GamePlayer {
 
     public Map<String, Object> gameVIewDTO(){
         Map<String, Object> dto = new LinkedHashMap<>();
-        dto.put("id", this.id);
+        dto.put("id", this.getGame().getId());
         dto.put("created",this.joinDate);
         dto.put("Game_Started",this.gamestard());
         dto.put("Game_Over",this.gameover());

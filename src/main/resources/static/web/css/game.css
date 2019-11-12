@@ -1,0 +1,17 @@
+.info{
+	width: 100%;
+	height: 20%;
+	order: 3;
+}
+
+.ships{
+	width: 100%;
+	height: 60%;
+	order: 2;
+}
+
+.municion{
+	width: 100%;
+	height: 20%;
+	order: 1;
+}

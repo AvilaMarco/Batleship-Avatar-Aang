@@ -90,7 +90,7 @@ function accessWeb(event,usernameparam,passwordparam){
     let formData = new FormData();
         formData.append("user-name",username)
         formData.append("user-password",password)
-    if (event.target.name == "login") {
+    if (usernameparam != null || event.target.name == "login") {
         fetch('/api/login',{
             method:'POST',
             body:formData
@@ -100,6 +100,7 @@ function accessWeb(event,usernameparam,passwordparam){
                 console.log("nicelog")
                 createTableGames()
                 botoneslogin()
+                nomodal()
             }
         })
     }else if(event.target.name == "logout"){
@@ -181,12 +182,14 @@ function createTableGames(){
         </td>
         <td>
             <p>${games[i].created}</p>
-        </td>
-        <td>
-            <p>finish</p>
         </td>`
+        if (games[i].gameplayers[0].Score != null) {
+            tabla +=`<td><p>Finish</p></td>`
+        }else{
+            tabla +=`<td><p>in Game</p></td>`
+        }
         if (player != "guest") {
-            if (games[i].gameplayers.map(e=>e.player.id).includes(player.id)) {
+            if (games[i].gameplayers.map(e=>e.player.id).includes(player.id) && games[i].gameplayers[0].Score == null) {
                tabla +=`
                 <td>
                     <button id="entergame" data-players="${games[i].gameplayers.map(e=>e.player.id)}" data-gameid="${games[i].id}">enter game</button>
