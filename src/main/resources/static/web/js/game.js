@@ -114,6 +114,8 @@ function isGameStart(JSON){
   createSalvoes(JSON)
   displayText.firstElementChild.innerText = "game started"
   intervalGamestard != null ? window.clearInterval(intervalGamestard):null
+  document.querySelector("H1").innerText = "player 1 vs player 2"
+  document.querySelector("H2").innerText = "turno player 1 vs turn player 2"
   // updateSalvoes = window.setInterval(updateSalvoesgrid, 3000);
 }
 
@@ -208,10 +210,15 @@ function sendSalvo(){
                 viewPlayer(gp,false,true)
                 // return response.json()
             }else{
-               throw new Error(response.text())
+              // displayText.firstElementChild.innerText = "you can shoot"
+              //console.log(response.text())
+              return Promise.reject(response.json())
             }
+        }).then()
+        .catch(error => error).then(x => {
+        document.querySelector("#display").firstElementChild.innerText = x.error
         })
-        .catch(error => console.log(error.message))
+
     }else{
         console.log("todavia te quedan disparos")
     }

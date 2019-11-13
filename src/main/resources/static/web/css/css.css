@@ -6,12 +6,50 @@
 	width: 100%;
 	height:100%;
 }
+
+/*inicio*/
+#mapa{
+	position: absolute;
+	width: 100%;
+	height: 100vh;
+	z-index: -999;
+}
+
+#login-bg{
+	position: absolute;
+	width: 100%;
+	height:100vh;
+	z-index: -99;
+}
+
+#modal-login{
+    width: 30vw;
+    height: 80vh;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    margin: auto;
+    /*background:url("../assets/img/bg4.jpg");
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;*/
+}
+
+.form-input{
+	width: 100%;
+	margin: 5px;
+	padding:10px;
+	border-radius: 10px;
+}
+
 body{
 	width: 98vw;
 	height: 100vh;
 	background-color: black;
 	color: white;
 	font-size: 22px;
+	/*background: url("../assets/img/bg3.jpg");*/
+	/*background-size: auto;*/
 	/*background-image: url("../img/bg4.jpg");*/
 }
 
@@ -41,9 +79,15 @@ img{
 
 .table-scroll{
 	margin: 10px;
-	width: 49vw;
-	height: 55vh;
+	height: 65vh;
 	overflow: auto;
+}
+
+.table-game{
+	margin: 10px;
+	height: 65vh;
+	overflow: auto;
+	/*background-image: url("../assets/img/bg3.jpg");*/
 }
 
 /*login*/
@@ -65,4 +109,12 @@ table{
 
 table tr th{
 	padding: 25px;
+}
+
+.tabs{
+	position: absolute;
+	display: flex;
+	flex-direction: row;
+	height: 50px;
+	width: 150px;
 }

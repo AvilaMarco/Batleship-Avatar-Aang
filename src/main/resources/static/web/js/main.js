@@ -18,6 +18,7 @@ let tableranking = document.querySelector("#ranked-body");
 let modal = document.querySelector("#registre");
 let container = document.querySelector(".container");
 let modalRegistre = document.querySelector("#modal-registre");
+
 //botones eventlistener
 modal.addEventListener('click',addmodal);
 document.querySelector("#btn-login").addEventListener('click',accessWeb)

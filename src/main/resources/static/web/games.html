@@ -10,7 +10,8 @@
 <title>Salvo!</title>
 </head>
 <body>
-<!-- REGISTRO -->
+    <img id="mapa" src="assets/img/bg3.jpg">
+<!-- Login Acceso -->
 <div id="modal-registre" class="modal-style">
     <button id="btn-close" class="btn modal-btn">&#88</button>
     <input type="text" name="registre firstName" class="login-input" placeholder=" firstName">
@@ -20,8 +21,15 @@
     <input type="email" name="registre password" class="login-input" placeholder="password">
     <button id="btn-registre" class="btn btn-block">Registre</button>
 </div>
-<div class="container">
-    <header class="d-flex">
+<img id="login-bg" src="assets/img/bg4.jpg">
+<div id="modal-login">
+    <input type="text" class="form-input" name="full-name" placeholder="Full-Name" required>
+    <input type="text" class="form-input" name="user-name" placeholder="Username/Email" required>
+    <input type="password" class="form-input" name="user-password" placeholder="Password" required>
+    <button name="login" id="btn-login" class="btn form-input">Registre</button>
+</div>
+<div class="container d-none">
+    <header class="d-flex d-none">
         <!-- logo del juego -->
         <div class="w-50 logo-main mt-1">
             <img src="assets/img/logo.png">
@@ -36,10 +44,18 @@
             <button name="logout" id="btn-logout" class="btn login-input d-none">Logout</button>
         </div>
     </header>
-    <main class="d-flex">
+    <main class="">
+        <div class="d-flex d-none">
+            <button class="tabs">Table Games</button>
+            <button class="tabs">Leaderboard</button>
+            <button class="tabs">Create Game</button>
+        </div>
+        <div class="table-game">
+            
+        </div>
         <!-- table ranked -->
-        <div id="ranked" class="w-50 table-ranked">
-            <h1>ranked player</h1>
+        <div id="ranked" class="table-ranked d-none">
+            <!-- <h1>ranked player</h1> -->
             <div class="table-scroll">
                 <table class="table theadBlack">
                     <thead class="">
@@ -56,8 +72,8 @@
             </div>
         </div>
         <!-- table games -->
-        <div id="game" class="w-50 table-games">
-            <h1>Games</h1>
+        <div id="game" class="table-games d-none">
+            <!-- <h1>Games</h1> -->
             <div class="table-scroll">
                 <table class="table theadBlack">
                     <thead>
