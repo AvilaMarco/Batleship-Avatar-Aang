@@ -7,27 +7,18 @@
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" type="text/css" href="css/css.css">
 </head>
-<title>Salvo!</title>
+<title>Avatar Aang</title>
 </head>
 <body>
     <img id="mapabg" src="assets/fondo-mapa.png">
-    <img id="mapa" src="assets/mapa-game.png">
+    <div id="mapa-div">
+        <img id="mapa" src="assets/mapa-game.png">
+    </div>
+    <button id="logout" class="btn-absolute">Logout</button>
+    <button id="verMapa" class="btn-absolute">Mapa</button>
+    <button id="play" class="btn-absolute">Jugar</button>
+    <button id="info" class="btn-absolute">?</button>
 <div class="container d-none">
-    <header class="d-flex d-none">
-        <!-- logo del juego -->
-        <div class="w-50 logo-main mt-1">
-            <img src="assets/img/logo.png">
-        </div>
-        <!-- login user -->
-        <div class="w-50 login mt-1">
-            <input type="text" class="login-input" name="user-name" placeholder="Username/Email">
-            <input type="text" class="login-input" name="user-password" placeholder="Password">
-            <button name="registre" id="registre" class="btn login-input">Registre</button>
-            <button name="CreateGame" class="btn login-input d-none">Create Game</button>
-            <button name="login" id="btn-login" class="btn login-input">Enter</button>
-            <button name="logout" id="btn-logout" class="btn login-input d-none">Logout</button>
-        </div>
-    </header>
     <main class="">
         <div class="d-flex d-none">
             <button class="tabs">Table Games</button>

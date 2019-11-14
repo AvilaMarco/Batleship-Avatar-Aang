@@ -18,11 +18,14 @@ let tableranking = document.querySelector("#ranked-body");
 let modal = document.querySelector("#registre");
 let container = document.querySelector(".container");
 let modalRegistre = document.querySelector("#modal-registre");
-
+let logout = document.querySelector("#logout")
+let verMapa = document.querySelector("#verMapa")
+let play = document.querySelector("#play")
+let info = document.querySelector("#info")
 //botones eventlistener
-modal.addEventListener('click',addmodal);
-document.querySelector("#btn-login").addEventListener('click',accessWeb)
-document.querySelector("#btn-logout").addEventListener('click',accessWeb)
+// modal.addEventListener('click',addmodal);
+logout.addEventListener('click',logoutFunction)
+verMapa.addEventListener('click',viewMapa)
 
 function nomodal(){
     modalRegistre.classList.remove("modal")
@@ -37,90 +40,94 @@ function addmodal(){
     document.querySelector("#btn-close").addEventListener('click',nomodal)
     document.querySelector("#btn-registre").addEventListener('click',registre)
 }
-
+function viewMapa(event)
+{
+    if (event.target.innerText == "Mapa") {
+        event.target.innerText = "Menu"
+        document.querySelector("#mapabg").classList.add("d-none")
+        toggleBTN()    
+    }else{
+       event.target.innerText = "Mapa"
+        document.querySelector("#mapabg").classList.remove("d-none")
+        toggleBTN()     
+    }
+}
+function toggleBTN()
+{
+   logout.classList.toggle("d-none")
+   play.classList.toggle("d-none")
+   info.classList.toggle("d-none")
+}
 //runweb
 function runweb(){
     createTableRanking()
     createTableGames();
 }
-//LOGIN
-function registre(){
-    let firstName = document.querySelector("input[name*=firstName]").value
-    let lastName = document.querySelector("input[name*=lastName]").value
-    let username = document.querySelector("input[name*=Username]").value
-    let Email = document.querySelector("input[name*=Email]").value
-    let password = document.querySelector("input[name*=password]").value
-    let formData = new FormData();
-        formData.append("firstName",firstName)
-        formData.append("lastName",lastName)
-        formData.append("email",Email)
-        formData.append("password",password)
-        formData.append("username",username)
-    fetch('/api/players',{
-        method:'POST',
-        body:formData
+//LOGOUT
+function logoutFunction()
+{
+    fetch('/api/logout',{
+    method:'POST',
     })
     .then(function(response){
-        if(response.ok){
-            console.log("registre")
-            accessWeb(null,username,password)
-        }
+        location.assign("/");
     })
 }
 
-function botoneslogin()
-{
-    let creategame = document.querySelector("button[name*=CreateGame]")
-    //variar botenes dependiendo si hay un usuario
-    document.querySelector("button[name*=logout]").classList.remove("d-none")
-    document.querySelector("button[name*=login]").classList.add("d-none")
-    creategame.classList.remove("d-none")
-    creategame.addEventListener('click',createGame)
-    document.querySelector("button[name*=registre]").classList.add("d-none")
-    document.querySelector("input[name*=user-name]").classList.add("d-none")
-    document.querySelector("input[name*=user-password]").classList.add("d-none")
-}
 
-function accessWeb(event,usernameparam,passwordparam){
-    let username = document.querySelector("input[name*=user-name]").value
-    let password = document.querySelector("input[name*=user-password]").value
-    if (usernameparam != null && passwordparam != null) {
-        username = usernameparam
-        password =passwordparam
-    }
-    let formData = new FormData();
-        formData.append("user-name",username)
-        formData.append("user-password",password)
-    if (usernameparam != null || event.target.name == "login") {
-        fetch('/api/login',{
-            method:'POST',
-            body:formData
-        })
-        .then(function(response){
-            if(response.ok){
-                console.log("nicelog")
-                createTableGames()
-                botoneslogin()
-                nomodal()
-            }
-        })
-    }else if(event.target.name == "logout"){
-        fetch('/api/logout',{
-        method:'POST',
-        })
-        .then(function(response){
-            if(response.ok){
-                console.log("nice")
-                document.querySelector("input[name*=user-name]").classList.remove("d-none")
-                document.querySelector("input[name*=user-password]").classList.remove("d-none")
-                document.querySelector("button[name*=logout]").classList.add("d-none")
-                document.querySelector("button[name*=login]").classList.remove("d-none")
-                document.querySelector("button[name*=CreateGame]").classList.add("d-none")
-                document.querySelector("button[name*=registre]").classList.remove("d-none")
-            }
-        })
-    }
-}
+// function botoneslogin()
+// {
+//     let creategame = document.querySelector("button[name*=CreateGame]")
+//     //variar botenes dependiendo si hay un usuario
+//     document.querySelector("button[name*=logout]").classList.remove("d-none")
+//     document.querySelector("button[name*=login]").classList.add("d-none")
+//     creategame.classList.remove("d-none")
+//     creategame.addEventListener('click',createGame)
+//     document.querySelector("button[name*=registre]").classList.add("d-none")
+//     document.querySelector("input[name*=user-name]").classList.add("d-none")
+//     document.querySelector("input[name*=user-password]").classList.add("d-none")
+// }
+
+// function accessWeb(event,usernameparam,passwordparam){
+//     let username = document.querySelector("input[name*=user-name]").value
+//     let password = document.querySelector("input[name*=user-password]").value
+//     if (usernameparam != null && passwordparam != null) {
+//         username = usernameparam
+//         password =passwordparam
+//     }
+//     let formData = new FormData();
+//         formData.append("user-name",username)
+//         formData.append("user-password",password)
+//     if (usernameparam != null || event.target.name == "login") {
+//         fetch('/api/login',{
+//             method:'POST',
+//             body:formData
+//         })
+//         .then(function(response){
+//             if(response.ok){
+//                 console.log("nicelog")
+//                 createTableGames()
+//                 botoneslogin()
+//                 nomodal()
+//             }
+//         })
+//     }else if(event.target.name == "logout"){
+//         fetch('/api/logout',{
+//         method:'POST',
+//         })
+//         .then(function(response){
+//             if(response.ok){
+//                 console.log("nice")
+//                 document.querySelector("input[name*=user-name]").classList.remove("d-none")
+//                 document.querySelector("input[name*=user-password]").classList.remove("d-none")
+//                 document.querySelector("button[name*=logout]").classList.add("d-none")
+//                 document.querySelector("button[name*=login]").classList.remove("d-none")
+//                 document.querySelector("button[name*=CreateGame]").classList.add("d-none")
+//                 document.querySelector("button[name*=registre]").classList.remove("d-none")
+//             }
+//         })
+//     }
+// }
 
 //TABLE RANKED
 function createTableRanking(){

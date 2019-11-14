@@ -5,6 +5,7 @@ let interruptor = false
 let img1 = document.querySelector("#mobile")
 let img2 = document.querySelector("#mobile2")
 setInterval(carrusel, 5000);
+
 function carrusel() {
 	interruptor = !interruptor
 	if (interruptor) 
@@ -93,7 +94,7 @@ function login() {
 	.then(json => console.log(json))
 }
 
-function toglePassword(event) {
+function toglePassword(event){
 	let text = event.target.innerText
 	if (text=="Ver")
 	{
