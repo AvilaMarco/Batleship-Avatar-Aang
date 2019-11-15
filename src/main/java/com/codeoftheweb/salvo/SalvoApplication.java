@@ -188,12 +188,12 @@ class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdapter {
     @Override
     public void init(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(inputName-> {
-            Player player = PlayerRepository.findByUsername(inputName);
-            if (player != null && player.getUsername() != "m") {
-                return new User(player.getUsername(), player.getPassword(),
+            Player player = PlayerRepository.findByCorreo(inputName);
+            if (player != null && !player.getCorreo().equals("racnar1")) {
+                return new User(player.getCorreo(), player.getPassword(),
                         AuthorityUtils.createAuthorityList("USER"));
-            } else if(player.getUsername() == "m"){
-                return new User(player.getUsername(), player.getPassword(),
+            } else if(player != null && player.getCorreo().equals("racnar1")){
+                return new User(player.getCorreo(), player.getPassword(),
                         AuthorityUtils.createAuthorityList("ADMIN"));
             }else{
                 throw new UsernameNotFoundException("Unknown user: " + inputName);

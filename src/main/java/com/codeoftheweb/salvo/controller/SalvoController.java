@@ -203,16 +203,11 @@ public class SalvoController {
                         return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
                     }
                     if (gp == null)     {
-                        respuesta.put("error","el jurgo no existe");
+                        respuesta.put("error","el juego no existe");
                         return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
                     }
                     if (gp.getPlayer().getId() != player.getId()){
                         respuesta.put("error","el jugador no pertenece al juego");
-                        return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
-                    }
-                    //esta parte depende de la cantidaAd de ships
-                    if (!(salvostring.size() ==5)) {
-                        respuesta.put("error", "no se envio la cantidad correcta de salvoes");
                         return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
                     }
                     if (!positionsNotRepeated(salvostring)){
@@ -223,6 +218,19 @@ public class SalvoController {
                     if(!gp.gamestard()){
                         respuesta.put("error","el juego no empezo");
                         return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
+                    }
+
+                    //esta parte depende de la cantidaAd de ships
+                    long myid = gp.getId();
+                    GamePlayer gpoppoent = gp.getGame().getGamePlayers().stream().filter(gap->gap.getId()!=myid).findFirst().orElse(null);
+                    if (gpoppoent!=null && gp.getTurnOpponent()!=1){
+                        Salvo salvoess = gpoppoent.getSalvos().stream().filter(salvo->salvo.getTurn()==gp.getTurnOpponent()-1).findFirst().orElse(null);
+                        if (salvoess!=null){
+                            if (!(salvostring.size() == (5 - salvoess.shipsDead().size()) )) {
+                                respuesta.put("error", "no se envio la cantidad correcta de salvoes");
+                                return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
+                            }
+                        }
                     }
 
                     if (gp.getPlayer().getScore(gp.getGame())!=null){
@@ -380,22 +388,17 @@ public class SalvoController {
         //registrar players
         @RequestMapping(path = "/players", method = RequestMethod.POST)
         public ResponseEntity<Object> register(
-                @RequestParam String firstName, @RequestParam String lastName,
-                @RequestParam String email, @RequestParam String password, @RequestParam String username) {
+                @RequestParam String firstName,
+                @RequestParam String email, @RequestParam String password) {
 
-            if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || password.isEmpty()) {
+            if (firstName.isEmpty() || email.isEmpty() || password.isEmpty()) {
                 return new ResponseEntity<>("Missing data", HttpStatus.FORBIDDEN);
             }
 
-            if (PlayerRepository.findByUsername(username) !=  null && PlayerRepository.findByCorreo(email) !=  null) {
+            if (PlayerRepository.findByCorreo(email) !=  null) {
                 return new ResponseEntity<>("Name already in use", HttpStatus.FORBIDDEN);
             }
-
-            if(username.isEmpty()){
-                PlayerRepository.save(new Player(firstName, lastName, email, passwordEncoder.encode(password)));
-            }else{
-                PlayerRepository.save(new Player(firstName, lastName, email, username, passwordEncoder.encode(password)));
-            }
+            PlayerRepository.save(new Player(firstName, email, passwordEncoder.encode(password)));
             return new ResponseEntity<>(HttpStatus.CREATED);
         }
 }

@@ -47,6 +47,12 @@ public class Player {
         this.password = password;
     }
 
+    public Player(String first, String email, String password) {
+        this.firstName = first;
+        this.correo = email;
+        this.password = password;
+    }
+
     //getter and setters
 
     public String getUsername() {
@@ -101,7 +107,7 @@ public class Player {
     public Map<String, Object> playerDTO(){
         Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("id",this.id);
-        dto.put("complete_name", this.firstName + ' '+this.lastName );
+        dto.put("complete_name", this.firstName);
         dto.put("nick",this.username);
         dto.put("email", this.correo);
         return dto;
@@ -110,7 +116,7 @@ public class Player {
     public Map<String, Object> playerScoreDTO(){
         Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("id",this.id);
-        dto.put("complete_name", this.firstName + ' '+this.lastName );
+        dto.put("complete_name", this.firstName);
         dto.put("email", this.correo);
         dto.put("scores",this.scores.stream().map(Score::getScore));
         return dto;
