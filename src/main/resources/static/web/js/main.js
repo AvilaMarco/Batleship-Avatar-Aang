@@ -1,17 +1,28 @@
 //cargar datos
 let games = [];
 let players = [];
-fetch('/api/games',{
-    method: 'GET',
-    }).then(function(response){if(response.ok){return response.json()}
-    }).then(function(json){
-    games = json.games;
-    players = json.playerScore;
-    if(json.player != "guest"){
-        botoneslogin()
-    }
-    runweb();
-});
+let masx,masy = false
+function setNacionPlayer(nacion) {
+    fetch('/api/setNacionPlayer/'+nacion,{
+        method: 'POST',
+    }).then(function(response){
+        if(response.ok){
+            document.querySelector("#webGames").classList.remove("d-none")
+            document.querySelector("#inicoNacion").classList.add("d-none")
+        }
+    })
+}
+// fetch('/api/games',{
+//     method: 'GET',
+//     }).then(function(response){if(response.ok){return response.json()}
+//     }).then(function(json){
+//     games = json.games;
+//     players = json.playerScore;
+//     if(json.player != "guest"){
+//         botoneslogin()
+//     }
+//     runweb();
+// });
 //referencias al DOM
 let tablegame = document.querySelector("#game-body");
 let tableranking = document.querySelector("#ranked-body");
@@ -26,7 +37,7 @@ let info = document.querySelector("#info")
 // modal.addEventListener('click',addmodal);
 logout.addEventListener('click',logoutFunction)
 verMapa.addEventListener('click',viewMapa)
-
+play.addEventListener('click',entergame)
 /*CONFIGURACION MAPA PARA ELEGIR EL LUGAR DE JUEGO*/
 // let img = document.createElement("img");
 //     img.src = "mapa-game-mobile.png"
@@ -57,18 +68,18 @@ ubicacionesMap.forEach(area=>{
     areahtml.alt = "aremap"
     areahtml.title = "hola"
     areahtml.addEventListener("click",selectGame)
-    areahtml.addEventListener("mouseup",positionmouse)
+    // areahtml.addEventListener("mouseup",positionmouse)
     areahtml.coords = area.x+","+area.y+","+area.r
     document.querySelector("map[name*=mapeo]").appendChild(areahtml)
-    let div = document.createElement("div")
-    div.style.top = parseInt(area.y)-30+"px"
-    div.style.left = parseInt(area.x)-35+"px"
-    div.style.width = "70px"
-    div.style.height = "70px"
-    div.classList.add(area.location)
-    div.classList.add("position")
-    div.style.zIndex = 99
-    document.querySelector("#pivotMap").appendChild(div)
+    // let div = document.createElement("div")
+    // div.style.top = parseInt(area.y)-30+"px"
+    // div.style.left = parseInt(area.x)-35+"px"
+    // div.style.width = "70px"
+    // div.style.height = "70px"
+    // div.classList.add(area.location)
+    // div.classList.add("position")
+    // div.style.zIndex = 99
+    // document.querySelector("#pivotMap").appendChild(div)
 })
 // document.querySelector("#mapa-div").appendChild(divPadre)
 // let div = document.createElement("div")
@@ -80,23 +91,49 @@ ubicacionesMap.forEach(area=>{
 // div.style.zIndex = 99
 // div.classList.add("agua")
 // crear divs vacios con las coordenadas de las "area" para luego agregar logos de nacion
-function positionmouse(event) {
-    console.log(event)
-    // body...
+function entergame() {
+    if (document.querySelector("#pivotMap div")!=null) {
+        let datos = document.querySelector("#pivotMap div")
+        console.log(document.querySelector("#pivotMap div"))
+        fetch('/api/games/'+datos.location+'/'+datos.id,{
+            method:'POST'
+        })
+        .then(function(response){
+            if(response.ok){
+                return response.json()
+            }else{
+                throw new Error(response.json());
+            }
+        })
+        .then(function(JSON){
+            console.log("entrar al juego")
+            console.log(JSON.gpid)
+            location.assign("/web/game.html?gp="+JSON.gpid);
+        })
+        .catch(error => error)
+        .then(json => console.log(json))
+    }else{
+        console.log("elegir una ubicacion en el mapa")
+    }
 }
 
 function selectGame(event) {
     let area = event.target
-    console.log(area)
-    // let div = document.createElement("div")
-    // div.style.position = "sticky"
-    // div.style.top = area.coords.split(",")[0]+"px"
-    // div.style.left = area.coords.split(",")[1]+"px"
-    // div.style.width = "70px"
-    // div.style.height = "70px"
-    // div.classList.add(area.dataset.location)
-    // div.style.zIndex = 99
-    // document.querySelector("#mapa-div").appendChild(div)
+    if (document.querySelector("#pivotMap div")!=null) {
+        document.querySelector("#pivotMap").removeChild(document.querySelector("#pivotMap div"))
+    }
+    let div = document.createElement("div")
+    div.name = "selectGame"
+    div.style.top = parseInt(area.coords.split(",")[1])-30+"px"
+    div.style.left = parseInt(area.coords.split(",")[0])-35+"px"
+    div.style.width = "80px"
+    div.style.height = "80px"
+    div.classList.add(area.dataset.location)
+    div.classList.add("shadow"+area.dataset.location)
+    div.style.position ="absolute"
+    div.style.zIndex = 99
+    document.querySelector("#pivotMap").appendChild(div)
+    console.log(div)
 }
 function nomodal(){
     modalRegistre.classList.remove("modal")
@@ -113,14 +150,41 @@ function addmodal(){
 }
 function viewMapa(event)
 {
+    let divselect = document.querySelector("#pivotMap div")
+    let y,x = null
+    if (divselect!=null){
+        y = parseInt(divselect.style.top.split("px")[0])
+        x = parseInt(divselect.style.left.split("px")[0])
+    }
+    let marginMap = document.querySelector("#mapa").style
     if (event.target.innerText == "Mapa") {
         event.target.innerText = "Menu"
         document.querySelector("#mapabg").classList.add("d-none")
-        toggleBTN()    
+        toggleBTN()
+        if (divselect!=null) {
+            document.querySelector("#mapa").style.marginLeft = "0"
+            document.querySelector("#mapa").style.marginTop = "0"
+            if (masx) {
+                divselect.style.left = x - 150 + "px"
+            }else if(masy){
+                divselect.style.top = y - 150 + "px"
+            }
+        }
     }else{
        event.target.innerText = "Mapa"
         document.querySelector("#mapabg").classList.remove("d-none")
-        toggleBTN()     
+        toggleBTN()
+        if (divselect!=null) {
+            if (y < 100) {
+                divselect.style.top = y + 150 + "px"
+                marginMap.marginTop = "150px"
+                masy = true
+            }else if (x < 100) {
+                divselect.style.left = x + 150 + "px"
+                marginMap.marginLeft = "150px"
+                masx = true
+            }
+        }     
     }
 }
 function toggleBTN()

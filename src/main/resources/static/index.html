@@ -31,7 +31,11 @@
 		<button id="registre" class="btn d-none registro">Registre</button> -->
 	</div>
 	<img src="audio.png" class="btn-audio" alt="true" onclick="switchAudio(this)">
-	<audio id="audioMain" src="main.mp3" autoplay="true" loop="true"></audio>
+	
+	<audio id="audioMain" autoplay loop>
+	  <source src="main.mp3" type="audio/mpeg">
+	Your browser does not support the audio element.
+	</audio>
 	<script src="codigo/index.js"></script>
 </body>
 </html>

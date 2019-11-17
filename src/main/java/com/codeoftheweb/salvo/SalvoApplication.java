@@ -50,14 +50,14 @@ public class SalvoApplication {
         return (args) -> {
 
             //variables pruebas
-            Player jack = new Player("Jack", "Bauer","j.bauer@ctu.gov","j.bauer@ctu.gov",passwordEncoder().encode("24"));
-            Player Chloe = new Player("Chloe", "O'Brian","c.obrian@ctu.gov","c.obrian@ctu.gov",passwordEncoder().encode("42"));
-            Player Kim = new Player("Kim", "Bauer","kim_bauer@gmail.com","kim_bauer@gmail.com",passwordEncoder().encode("kb"));
-            Player Tony = new Player("Tony", "Almeida","t.almeida@ctu.gov","t.almeida@ctu.gov",passwordEncoder().encode("mole"));
+            Player jack = new Player("Jack", "Bauer","j.bauer@ctu.gov","j.bauer@ctu.gov",passwordEncoder().encode("24"),"tierra");
+            Player Chloe = new Player("Chloe", "O'Brian","c.obrian@ctu.gov","c.obrian@ctu.gov",passwordEncoder().encode("42"),"agua");
+            Player Kim = new Player("Kim", "Bauer","kim_bauer@gmail.com","kim_bauer@gmail.com",passwordEncoder().encode("kb"),"fuego");
+            Player Tony = new Player("Tony", "Almeida","t.almeida@ctu.gov","t.almeida@ctu.gov",passwordEncoder().encode("mole"),"viento");
 
-            Game one = new Game(0);
-            Game two = new Game(1);
-            Game three = new Game(2);
+            Game one = new Game(0,"tierra","00");
+            Game two = new Game(1,"agua","00");
+            Game three = new Game(2,"fuego","00");
 
             //ships position
             List<String> position01 = Arrays.asList("A1","A2","A3","A4","A5");
@@ -70,18 +70,6 @@ public class SalvoApplication {
             List<String> position08 = Arrays.asList("C4","D4","E4");
             List<String> position09 = Arrays.asList("F1", "F2", "F3");
             List<String> position10 = Arrays.asList("C5", "C6");
-
-
-//            Ship carrier = new Ship("carrier",position01);
-//            Ship battleship = new Ship("battleship",position02);
-//            Ship submarine = new Ship("submarine",position03);
-//            Ship destroyer = new Ship("destroyer",position04);
-//            Ship patrolBoat = new Ship("patrol_boat",position05);
-//            Ship carrier2 = new Ship("carrier",position06);
-//            Ship battleship2 = new Ship("battleship",position07);
-//            Ship submarine2 = new Ship("submarine",position08);
-//            Ship destroyer2 = new Ship("destroyer",position09);
-//            Ship patrolBoat2 = new Ship("patrol_boat",position10);
 
             Ship carrier = new Ship(TypeShips.CARRIER,position01);
             Ship battleship = new Ship(TypeShips.BATTLESHIP,position02);

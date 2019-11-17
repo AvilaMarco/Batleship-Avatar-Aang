@@ -16,6 +16,7 @@ public class GamePlayer {
     private long id;
 
     private LocalDateTime joinDate;
+    private String tipo;
 
     //relaciones
     @ManyToOne(fetch = FetchType.EAGER)
@@ -40,11 +41,16 @@ public class GamePlayer {
         this.player = jugador;
         this.game = juego;
         this.joinDate = LocalDateTime.now();
+        this.tipo = jugador.getNacion();
     }
 
     //setters and getters
     public long getId() {
         return id;
+    }
+
+    public String getTipo() {
+        return this.tipo;
     }
 
     public Player getPlayer() {
@@ -148,6 +154,8 @@ public class GamePlayer {
     public Map<String, Object> gameVIewDTO(){
         Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("id", this.getGame().getId());
+        dto.put("ubicacion", this.getGame().getubicacion());
+        dto.put("tipo",this.tipo);
         dto.put("created",this.joinDate);
         dto.put("Game_Started",this.gamestard());
         dto.put("Game_Over",this.gameover());

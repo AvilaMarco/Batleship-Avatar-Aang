@@ -21,6 +21,7 @@ public class Player {
     private String correo;
     private String username;
     private String password;
+    private String nacion;
 
     //relaciones
     //mappedBy="player" la clase muchos tiene una variable con este nombre
@@ -40,6 +41,15 @@ public class Player {
         this.password = password;
     }
 
+    public Player(String first, String last, String email, String username, String password,String nacion) {
+        this.firstName = first;
+        this.lastName = last;
+        this.correo = email;
+        this.username = username;
+        this.password = password;
+        this.nacion = nacion;
+    }
+
     public Player(String first, String last, String email, String password) {
         this.firstName = first;
         this.lastName = last;
@@ -53,6 +63,7 @@ public class Player {
         this.password = password;
     }
 
+
     //getter and setters
 
     public String getUsername() {
@@ -62,6 +73,15 @@ public class Player {
     public String getPassword() {
         return password;
     }
+
+    public String getNacion() {
+        return this.nacion;
+    }
+
+    public void setNacion(String nacion) {
+       this.nacion = nacion;
+    }
+
 
     public String getFirstName() {
         return firstName;
@@ -110,6 +130,7 @@ public class Player {
         dto.put("complete_name", this.firstName);
         dto.put("nick",this.username);
         dto.put("email", this.correo);
+        dto.put("nacion", this.nacion);
         return dto;
     }
 

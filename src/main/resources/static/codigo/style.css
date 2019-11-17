@@ -21,6 +21,9 @@ input:focus{
 	vertical-align: text-top;
 	font-size: 40px;
 }
+.shadow{
+	box-shadow: 0 0 40px #2dcae9;
+}
 
 .fondo
 {

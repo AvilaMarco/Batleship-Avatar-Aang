@@ -331,15 +331,35 @@ public class SalvoController {
                 return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
             }
         }
-
-        //crear juegos
-        @RequestMapping(path ="/games", method = RequestMethod.POST)
-        public ResponseEntity<Map<String, Object>> createGame(Authentication authentication){
+        //setear nacion player
+        @RequestMapping(path ="/setNacionPlayer/{nacion}", method = RequestMethod.POST)
+        public ResponseEntity<Map<String, Object>> setnacion(Authentication authentication,@PathVariable String nacion){
             Map<String, Object> respuesta = new HashMap<>();
             if(!isGuest(authentication)) {
                 Player player = PlayerRepository.findByCorreo(authentication.getName());
                 if (player != null) {
-                    Game game = new Game(0);
+                    player.setNacion(nacion);
+                    PlayerRepository.save(player);
+                    respuesta.put("good", "nice");
+                    return new ResponseEntity<>(respuesta, HttpStatus.ACCEPTED);
+                } else {
+                    respuesta.put("error", "you need to login");
+                    return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
+                }
+            }else{
+                respuesta.put("error", "you need to login");
+                return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
+            }
+        }
+
+        //crear juegos
+        @RequestMapping(path ="/games/{ubicacion}/{direccion}", method = RequestMethod.POST)
+        public ResponseEntity<Map<String, Object>> createGame(Authentication authentication,@PathVariable String ubicacion,@PathVariable String direccion){
+            Map<String, Object> respuesta = new HashMap<>();
+            if(!isGuest(authentication)) {
+                Player player = PlayerRepository.findByCorreo(authentication.getName());
+                if (player != null) {
+                    Game game = new Game(0,ubicacion,direccion);
                     GamePlayer gamePlayer = new GamePlayer(player, game);
                     gameRepository.save(game);
                     gamePlayerRepository.save(gamePlayer);

@@ -6,23 +6,32 @@
     <link rel="stylesheet" type="text/css" href="css/Utilitis.css">
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" type="text/css" href="css/css.css">
+    <link href="https://fonts.googleapis.com/css?family=Permanent+Marker&display=swap" rel="stylesheet">
 </head>
 <title>Avatar Aang</title>
 </head>
 <body>
-    <img id="mapabg" src="assets/fondo-mapa.png">
-    <div id="mapa-div">
-        <map name="mapeo">
-            <!-- <area alt="Ir a Google" data-game="1" id="one" shape="circle" coords="640,82,20"> -->
-        </map>
-        <div id="pivotMap" style="position: relative;"></div>
-        <img id="mapa" src="mapa-game-mobile.png" class="" usemap="#mapeo">
-        <img id="mapa" src="mapa-game.png" class="d-none" usemap="#mapeo">
+    <div id="inicoNacion" class="elegirNacion">
+        <button data-tipo="tierra" onclick="setNacionPlayer()">tierra</button>
+        <button data-tipo="fuego" onclick="setNacionPlayer()">fuego</button>
+        <button data-tipo="agua" onclick="setNacionPlayer()">agua</button>
+        <button data-tipo="viento" onclick="setNacionPlayer()">viento</button>
     </div>
-    <button id="logout" class="btn-absolute">Logout</button>
-    <button id="verMapa" class="btn-absolute">Mapa</button>
-    <button id="play" class="btn-absolute">Jugar</button>
-    <button id="info" class="btn-absolute">?</button>
+    <div id="webGames" class="d-none">
+        <img id="mapabg" src="assets/fondo-mapa.png">
+        <div id="mapa-div">
+            <map name="mapeo">
+                <!-- <area alt="Ir a Google" data-game="1" id="one" shape="circle" coords="640,82,20"> -->
+            </map>
+            <div id="pivotMap" style="position: relative;"></div>
+            <img id="mapa" src="mapa-game-mobile.png" class="" usemap="#mapeo">
+            <img id="mapa2" src="mapa-game.png" class="d-none" usemap="#mapeo">
+        </div>
+        <button id="logout" class="btn-absolute">Logout</button>
+        <button id="verMapa" class="btn-absolute">Mapa</button>
+        <button id="play" class="btn-absolute">Jugar</button>
+        <button id="info" class="btn-absolute">?</button>
+    </div>
 <div class="container d-none">
     <main class="">
         <div class="d-flex d-none">

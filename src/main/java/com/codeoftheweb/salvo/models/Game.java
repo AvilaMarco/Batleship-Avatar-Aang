@@ -19,7 +19,8 @@ public class Game {
     @GenericGenerator(name = "native", strategy = "native")
     private long id;
     private LocalDateTime creationDate;
-    private String winner;
+    private String ubicacion;
+    private String direccion;
 
     //relaciones
     @OneToMany(mappedBy="game", fetch=FetchType.EAGER, cascade= CascadeType.ALL)
@@ -34,13 +35,27 @@ public class Game {
     this.creationDate = LocalDateTime.now().plusHours(horaCreation);
     }
 
-    //getters and setters
-    public String getWinner() {
-        return winner;
+    public Game(int horaCreation,String ubicacion,String direccion){
+    this.creationDate = LocalDateTime.now().plusHours(horaCreation);
+    this.ubicacion = ubicacion;
+    this.direccion = direccion;
     }
 
-    public void setWinner(String winner) {
-        this.winner = winner;
+    //getters and setters
+    public String getubicacion() {
+        return ubicacion;
+    }
+
+    public void setubicacion(String ubicacion) {
+        this.ubicacion = ubicacion;
+    }
+
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
     }
 
     public LocalDateTime getCreationDate() {
@@ -70,6 +85,8 @@ public class Game {
         Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("id", this.id);
         dto.put("created",this.creationDate);
+        dto.put("ubicacion", this.ubicacion);
+        dto.put("direccion", this.direccion);
         dto.put("gameplayers",this.getGamePlayers().stream().map(GamePlayer::gamePlayerDTO));
         return dto;
     }
