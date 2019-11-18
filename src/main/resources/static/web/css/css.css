@@ -175,7 +175,16 @@
     overflow: auto;
     font-size: 28px;
 }
-
+.textomapa
+{
+    margin-top: 88px;
+    color: white;
+    text-align: center;
+}
+.selectGame
+{
+   box-shadow: 0 10px 8px 20px #ffffff;
+}
 .form-input{
 	width: 100%;
 	margin: 5px;

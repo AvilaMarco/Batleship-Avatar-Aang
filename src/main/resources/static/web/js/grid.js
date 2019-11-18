@@ -47,6 +47,7 @@ const createGrid = function(size, element, id){
 
     //Event to allow the drop event.
     function allowDrop(ev) {
+      // dockIsEmpty()
       ev.preventDefault();
     }
 
@@ -103,9 +104,9 @@ const createGrid = function(size, element, id){
       ship.dataset.x = x
       //the ship is added to the cell
       ev.target.appendChild(ship);
+      dockIsEmpty()
 
       checkBusyCells(ship, ev.target)
-      dockIsEmpty()
     }
 
 

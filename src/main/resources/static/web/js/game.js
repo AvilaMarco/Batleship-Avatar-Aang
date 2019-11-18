@@ -113,9 +113,15 @@ function isGameStart(JSON){
   document.querySelectorAll("#grid_salvoes div[data-y]").forEach(e=>e.addEventListener('click',addsalvo))
   createSalvoes(JSON)
   displayText.firstElementChild.innerText = "game started"
+  [1,2,3,4,5].forEach(e=>{
+    let div = document.createElement("div")
+    div.classList.add(JSON.tipo)
+    div.classList.add("salvo")
+    document.querySelector(".municion").appendChild(div)
+  })
   intervalGamestard != null ? window.clearInterval(intervalGamestard):null
-  document.querySelector("H1").innerText = "player 1 vs player 2"
-  document.querySelector("H2").innerText = "turno player 1 vs turn player 2"
+  // document.querySelector("H1").innerText = "player 1 vs player 2"
+  // document.querySelector("H2").innerText = "turno player 1 vs turn player 2"
   // updateSalvoes = window.setInterval(updateSalvoesgrid, 3000);
 }
 

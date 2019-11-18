@@ -1,3 +1,6 @@
+*{
+    font-family: 'Permanent Marker', cursive !important;
+}
 .flex-container{
     display: flex;
     flex-flow: column nowrap;
@@ -75,12 +78,14 @@
 }
 
 .grid-row:first-child .grid-cell{
-    background-image: url('../assets/dock-texture.jpg');
+    background-image: url('../assets/texturas/leter.png');
+    background-size: cover;
     /*background-color: rgba(170,169,173,0.7);*/
 }
 
 .grid-cell:first-child{
-    background-image: url('../assets/dock-texture.jpg');
+    background-image: url('../assets/texturas/leter.png');
+    background-size: cover;
     
     /*background-color: rgba(170,169,173,0.7);*/
 }

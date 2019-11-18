@@ -139,6 +139,7 @@ const createShips = function(shipType, length, orientation, parent, isStatic){
             document.querySelector("#display p").innerText = 'movement not allowed'
             return
         }
+        dockIsEmpty()
     }
 
     //event to allow the ship rotation

@@ -1,3 +1,21 @@
+.bg-color-agua
+{
+	background-color: #0f236b !important;
+}
+.bg-color-tierra
+{
+	background-color: #1d6412 !important;
+}
+.bg-color-fuego
+{
+	background-color: #8f0605 !important;
+}
+.bg-color-viento
+{
+	background-color: #308496 !important;
+}
+
+
 .bg-azul{
 	background-color: #033949 !important;
 }

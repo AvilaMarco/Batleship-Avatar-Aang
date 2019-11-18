@@ -16,9 +16,45 @@ function reloadInfo() {
         }else{
             chooseNation()
         }
+        let games = json.games.filter(e=>e.direccion!="00")
+        if (games.length!=0){
+            console.log(games)
+            crearJuegosMap(games)
+        }
         players = json.playerScore;
         playerData = json.player;
     });
+}
+
+function crearJuegosMap(games) {
+    games.forEach(e=>{
+        if (e.gameplayers[0].Score == null) {
+            let areahtml = document.querySelector("#"+e.direccion)
+            let div = document.createElement("div")
+                div.dataset.name = "game"
+                div.dataset.gameid = e.id
+                div.dataset.gpid = e.gameplayers[0].id
+                div.style.top = parseInt(areahtml.coords.split(",")[1])-30+"px"
+                div.style.left = parseInt(areahtml.coords.split(",")[0])-35+"px"
+                div.style.width = "90px"
+                div.style.height = "90px"
+                div.classList.add("icono"+areahtml.dataset.location)
+                div.style.position ="absolute"
+                div.style.zIndex = 99
+                div.dataset.location = areahtml.dataset.location
+                div.id = areahtml.id
+                div.addEventListener('click',isJoinGame)
+            document.querySelector("#pivotMap").appendChild(div)
+            let textoPlayer1 = document.createElement("p")
+                textoPlayer1.name = "texto"
+                textoPlayer1.classList.add("bg-color-"+e.ubicacion)
+                textoPlayer1.classList.add("textomapa")
+                textoPlayer1.innerText = e.gameplayers[0].player.email
+            div.appendChild(textoPlayer1)  
+        }
+    // let textoPlayer2 = document.createElement("p")
+    // textoPlayer2.innerText = e.gameplayers
+    })
 }
 
 function setNacionPlayer(nacion) {
@@ -44,6 +80,7 @@ function chooseNation() {
     document.querySelector("#inicoNacion").classList.remove("d-none")
 }
 function inMenu(json) {
+    document.querySelector("#inicoNacion").classList.add("d-none")
     document.querySelector("#Player").classList.add("iconTransparent"+json.player.nacion) 
     document.querySelector("#webGames").classList.remove("d-none")
     document.querySelector("#botonera").classList.remove("d-none")
@@ -63,7 +100,6 @@ function verdatos(elementhtml) {
 function nomodal(){
     document.querySelector("#modal").classList.add("modalAnimationout")
     document.querySelector("#modal").classList.remove("modalAnimation")
-    // document.querySelector("#modal").classList.add("d-none")
     document.querySelector("#container").style.opacity = 1;
 }
 
@@ -86,12 +122,6 @@ function verTutorial(argument) {
    let modalDiv = document.querySelector(".div-modal")
     modalDiv.innerHTML = ""
 }
-        // runweb(json);  
-    // games = json.games;
-    // players = json.playerScore;
-    // if(json.player != "guest"){
-    //     botoneslogin()
-    // }
 //referencias al DOM
 let tablegame = document.querySelector("#game-body");
 let tableranking = document.querySelector("#ranked-body");
@@ -103,32 +133,10 @@ let verMapa = document.querySelector("#verMapa")
 let play = document.querySelector("#play")
 let info = document.querySelector("#info")
 //botones eventlistener
-// modal.addEventListener('click',addmodal);
 logout.addEventListener('click',logoutFunction)
 verMapa.addEventListener('click',viewMapa)
 play.addEventListener('click',entergame)
 /*CONFIGURACION MAPA PARA ELEGIR EL LUGAR DE JUEGO*/
-// let img = document.createElement("img");
-//     img.src = "mapa-game-mobile.png"
-//     img.usemap = "#mapeo"
-//     img.id = "mapa"
-// let areasmap = document.createElement("map");
-//     areasmap.name = "mapeo"
-// ubicacionesMap.forEach(area=>{
-//     let areahtml = document.createElement("area");
-//     areahtml.dataset.location = area.location
-//     areahtml.id = area.id
-//     areahtml.shape = "circle"
-//     areahtml.alt = "aremap"
-//     areahtml.addEventListener("click",selectGame)
-//     areahtml.coords = area.x+","+area.y+","+area.r
-//     areasmap.appendChild(areahtml)
-// })
-// document.querySelector("#mapa-div").appendChild(areasmap)
-// document.querySelector("#mapa-div").appendChild(img)
-
-//ANDANDO 
-// let divPadre = document.createElement("div")
 ubicacionesMap.forEach(area=>{
     let areahtml = document.createElement("area");
     areahtml.dataset.location = area.location
@@ -137,62 +145,134 @@ ubicacionesMap.forEach(area=>{
     areahtml.alt = "aremap"
     areahtml.title = "hola"
     areahtml.addEventListener("click",selectGame)
-    // areahtml.addEventListener("mouseup",positionmouse)
     areahtml.coords = area.x+","+area.y+","+area.r
     document.querySelector("map[name*=mapeo]").appendChild(areahtml)
-    // let div = document.createElement("div")
-    // div.style.top = parseInt(area.y)-30+"px"
-    // div.style.left = parseInt(area.x)-35+"px"
-    // div.style.width = "70px"
-    // div.style.height = "70px"
-    // div.classList.add(area.location)
-    // div.classList.add("position")
-    // div.style.zIndex = 99
-    // document.querySelector("#pivotMap").appendChild(div)
 })
-// document.querySelector("#mapa-div").appendChild(divPadre)
-// let div = document.createElement("div")
-// div.style.position = "absolute"
-// div.style.top = "64px"
-// div.style.left = "640px"
-// div.style.width = "50px"
-// div.style.height = "50px"
-// div.style.zIndex = 99
-// div.classList.add("agua")
-// crear divs vacios con las coordenadas de las "area" para luego agregar logos de nacion
+
 function entergame() {
-    if (document.querySelector("#pivotMap div")!=null) {
-        let datos = document.querySelector("#pivotMap div")
-        console.log(document.querySelector("#pivotMap div"))
-        fetch('/api/games/'+datos.dataset.location+'/'+datos.id,{
-            method:'POST'
-        })
-        .then(function(response){
-            if(response.ok){
-                return response.json()
-            }else{
-                throw new Error(response.json());
-            }
-        })
-        .then(function(JSON){
-            console.log("entrar al juego")
-            console.log(JSON.gpid)
-            location.assign("/web/game.html?gp="+JSON.gpid);
-        })
-        .catch(error => error)
-        .then(json => console.log(json))
+    let datos = document.querySelector("div[data-name*='selectGame']")
+    let datosjoingame = document.querySelector("div.selectGame")
+    let isPlayerCreator
+    if (null != document.querySelector("div.selectGame")) {
+        isPlayerCreator = document.querySelector("div.selectGame").firstElementChild.innerText == playerData.email
     }else{
+        isPlayerCreator = false
+    }
+    if (datos!=null && datosjoingame==null && !isPlayerCreator) {
+        // crear juegos
+        crearjuego(datos.dataset.location,datos.id)
+        console.log(datos)
+        // fetch('/api/games/'+datos.dataset.location+'/'+datos.id,{
+        //     method:'POST'
+        // })
+        // .then(function(response){
+        //     if(response.ok){
+        //         return response.json()
+        //     }else{
+        //         throw new Error(response.json());
+        //     }
+        // })
+        // .then(function(JSON){
+        //     console.log("entrar al juego")
+        //     console.log(JSON.gpid)
+        //     console.log(JSON.gameid)
+        //     location.assign("/web/game.html?gp="+JSON.gpid);
+        // })
+        // .catch(error => error)
+        // .then(json => console.log(json))
+    }else if(datos==null && datosjoingame!=null && !isPlayerCreator){
+        // unirse a juego
+        // datosjoingame.dataset.gameid
+        console.log(parseInt(datosjoingame.dataset.gameid))
+        joinGame(parseInt(datosjoingame.dataset.gameid))
+    }else if(isPlayerCreator && datos==null && datosjoingame!=null){
+        // volver al juego
+        location.assign("/web/game.html?gp="+datosjoingame.dataset.gpid);
+        console.log(parseInt(datosjoingame.dataset.gameid))
+    }
+    else{
         console.log("elegir una ubicacion en el mapa")
     }
 }
 
+function joinGame(gameid){
+    fetch('/api/game/'+gameid+'/players',{
+    method: 'POST',
+    }).then(function(response){if(response.ok){return response.json()}
+    }).then(function(json){
+        location.assign("/web/game.html?gp="+json.gpid);
+        console.log(json.gpid)
+    }).catch(function(error) {
+  console.log('Hubo un problema con la petición Fetch:' + error.message);
+});
+}
+
+// function enterGame(event){
+//     fetch('/api/games',{
+//     method: 'GET',
+//     }).then(function(response){if(response.ok){return response.json()}
+//     }).then(function(JSON){
+//         if (JSON.player != "guest") {
+//             let game = JSON.games.filter(e=>e.id == event.target.dataset.gameid); 
+//             if (event.target.dataset.players.includes((""+JSON.player.id))) {
+//                 let gp = game[0].gameplayers.filter(e=>e.player.id == JSON.player.id)
+//                 location.assign("/web/game.html?gp="+gp[0].id);
+//                 console.log(gp[0].id)
+//             }else if (game[0].gameplayers.length == 1) {
+//                 joinGame(game[0].id)
+//             }else{
+//                 alert("you can't join the game")
+//             }
+//         }else{
+//             alert("Login to join or create a game")
+//         }
+//     });
+// }
+
+function crearjuego(location,ubicacion) {
+    fetch('/api/games/'+location+'/'+ubicacion,{
+        method:'POST'
+    })
+    .then(function(response){
+        if(response.ok){
+            return response.json()
+        }else{
+            throw new Error(response.json());
+        }
+    })
+    .then(function(JSON){
+        console.log("entrar al juego")
+        console.log(JSON.gpid)
+        location.assign("/web/game.html?gp="+JSON.gpid);
+    })
+    .catch(error => error)
+    .then(json => console.log(json))
+}
+
+//cuando existe algun juego
+function isJoinGame(event) {
+    if (document.querySelector("div[data-name*='selectGame']")!=null) {
+        document.querySelector("#pivotMap").removeChild(document.querySelector("div[data-name*='selectGame']"))
+    }
+    let click = event.target
+    document.querySelectorAll("div[data-name*='game']").forEach(e=>e.classList.remove("selectGame"))
+    if (click.name == "texto"){
+        click.parentNode.classList.add("selectGame")
+    }else{
+        click.classList.add("selectGame")
+    }
+    console.log(event.target)
+}
+
+//crear juego
 function selectGame(event) {
+    document.querySelectorAll("div[data-name*='game']").forEach(e=>e.classList.remove("selectGame"))
     let area = event.target
-    if (document.querySelector("#pivotMap div")!=null) {
-        document.querySelector("#pivotMap").removeChild(document.querySelector("#pivotMap div"))
+    if (document.querySelector("div[data-name*='selectGame']")!=null) {
+        document.querySelector("#pivotMap").removeChild(document.querySelector("div[data-name*='selectGame']"))
     }
     let div = document.createElement("div")
-    div.name = "selectGame"
+    div.dataset.name = "selectGame"
     div.style.top = parseInt(area.coords.split(",")[1])-30+"px"
     div.style.left = parseInt(area.coords.split(",")[0])-35+"px"
     div.style.width = "90px"
@@ -208,7 +288,7 @@ function selectGame(event) {
 
 function viewMapa(event)
 {
-    let divselect = document.querySelector("#pivotMap div")
+    let divselect = document.querySelector("div[data-name*='selectGame']")
     let y,x = null
     if (divselect!=null){
         y = parseInt(divselect.style.top.split("px")[0])
@@ -393,57 +473,24 @@ tablegame.innerHTML = tabla
     });
 }
 
-function createGame(){
-    fetch('/api/games',{
-        method:'POST'
-    })
-    .then(function(response){
-        if(response.ok){
-            createTableGames()
-            return response.json()
-        }else{
-            throw new Error(response.json());
-        }
-    })
-    .then(function(JSON){
-        console.log("entrar al juego")
-        console.log(JSON.gpid)
-        location.assign("/web/game.html?gp="+JSON.gpid);
-    })
-    .catch(error => error)
-    .then(json => console.log(json))
-}
+// function createGame(){
+//     fetch('/api/games',{
+//         method:'POST'
+//     })
+//     .then(function(response){
+//         if(response.ok){
+//             createTableGames()
+//             return response.json()
+//         }else{
+//             throw new Error(response.json());
+//         }
+//     })
+//     .then(function(JSON){
+//         console.log("entrar al juego")
+//         console.log(JSON.gpid)
+//         location.assign("/web/game.html?gp="+JSON.gpid);
+//     })
+//     .catch(error => error)
+//     .then(json => console.log(json))
+// }
 
-function joinGame(event){
-    fetch('/api/game/'+event.target.dataset.gameid+'/players',{
-    method: 'POST',
-    }).then(function(response){if(response.ok){return response.json()}
-    }).then(function(json){
-        location.assign("/web/game.html?gp="+json.gpid);
-        console.log(json.gpid)
-    }).catch(function(error) {
-  console.log('Hubo un problema con la petición Fetch:' + error.message);
-});
-}
-
-function enterGame(event){
-    fetch('/api/games',{
-    method: 'GET',
-    }).then(function(response){if(response.ok){return response.json()}
-    }).then(function(JSON){
-        if (JSON.player != "guest") {
-            let game = JSON.games.filter(e=>e.id == event.target.dataset.gameid); 
-            if (event.target.dataset.players.includes((""+JSON.player.id))) {
-                let gp = game[0].gameplayers.filter(e=>e.player.id == JSON.player.id)
-                location.assign("/web/game.html?gp="+gp[0].id);
-                console.log(gp[0].id)
-            }else if (game[0].gameplayers.length == 1) {
-                joinGame(game[0].id)
-            }else{
-                alert("you can't join the game")
-            }
-        }else{
-            alert("Login to join or create a game")
-        }
-    });
-}
