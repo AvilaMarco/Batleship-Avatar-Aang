@@ -1,4 +1,5 @@
-document.querySelector(".btn").addEventListener('click',registre)
+document.querySelector("#registre").addEventListener('click',registre)
+document.querySelector("#login").addEventListener('click',login)
 document.querySelector(".eye").addEventListener('click',toglePassword)
 let contador = 2
 let interruptor = false
@@ -20,6 +21,26 @@ function carrusel() {
 	}
 	contador++
 	contador == 5 ? contador = 1 : null
+}
+
+function switchAudio(event) {
+	let audio = document.querySelector("#audioMain")
+	if (event.alt == 'true'){
+		audio.pause()
+		event.src = "../no-audio.png"
+		event.alt = 'false'
+	}else{
+		audio.play()
+		event.src = "../audio.png"
+		event.alt = 'true'
+	}
+}
+
+function nextStep(clase) {
+	document.querySelector(".registre").classList.remove("registreaux")
+	document.querySelectorAll(".menu").forEach(e=>e.classList.add("d-none"))
+	document.querySelectorAll(".access").forEach(e=>e.classList.remove("d-none"))
+	document.querySelectorAll("."+clase).forEach(e=>e.classList.remove("d-none"))
 }
 
 function reset() {
@@ -74,7 +95,6 @@ function registre()
 function login() {
 	let username = document.querySelector("input[name*=Username]").value
 	let password = document.querySelector("input[name*=password]").value
-	console.log(username +" "+password )
 	let formlogin = new FormData();
 	formlogin.append("user-name",username)
 	formlogin.append("user-password",password)

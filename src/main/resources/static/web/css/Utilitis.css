@@ -63,6 +63,29 @@ input[name*=registre], select {
 	background-color: black;
 	color: white;
 }
+.position{
+	position: absolute;
+}
+.agua{
+	/*position: relative;*/
+	background: url("../assets/img/agua2.png");
+    background-size: cover;
+}
+.tierra{
+	/*position: relative;*/
+	background-image: url("../assets/img/tierra2.png");
+    background-size: cover;
+}
+.fuego{
+	/*position: relative;*/
+	background-image: url("../assets/img/fuego2.png");
+	background-size: cover;
+}
+.viento{
+	/*position: relative;*/
+	background-image: url("../assets/img/viento2.png");
+	background-size: cover;
+}
 
 .modal{
 	position: relative;

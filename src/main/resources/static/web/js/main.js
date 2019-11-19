@@ -27,6 +27,77 @@ let info = document.querySelector("#info")
 logout.addEventListener('click',logoutFunction)
 verMapa.addEventListener('click',viewMapa)
 
+/*CONFIGURACION MAPA PARA ELEGIR EL LUGAR DE JUEGO*/
+// let img = document.createElement("img");
+//     img.src = "mapa-game-mobile.png"
+//     img.usemap = "#mapeo"
+//     img.id = "mapa"
+// let areasmap = document.createElement("map");
+//     areasmap.name = "mapeo"
+// ubicacionesMap.forEach(area=>{
+//     let areahtml = document.createElement("area");
+//     areahtml.dataset.location = area.location
+//     areahtml.id = area.id
+//     areahtml.shape = "circle"
+//     areahtml.alt = "aremap"
+//     areahtml.addEventListener("click",selectGame)
+//     areahtml.coords = area.x+","+area.y+","+area.r
+//     areasmap.appendChild(areahtml)
+// })
+// document.querySelector("#mapa-div").appendChild(areasmap)
+// document.querySelector("#mapa-div").appendChild(img)
+
+//ANDANDO 
+// let divPadre = document.createElement("div")
+ubicacionesMap.forEach(area=>{
+    let areahtml = document.createElement("area");
+    areahtml.dataset.location = area.location
+    areahtml.id = area.id
+    areahtml.shape = "circle"
+    areahtml.alt = "aremap"
+    areahtml.title = "hola"
+    areahtml.addEventListener("click",selectGame)
+    areahtml.addEventListener("mouseup",positionmouse)
+    areahtml.coords = area.x+","+area.y+","+area.r
+    document.querySelector("map[name*=mapeo]").appendChild(areahtml)
+    let div = document.createElement("div")
+    div.style.top = parseInt(area.y)-30+"px"
+    div.style.left = parseInt(area.x)-35+"px"
+    div.style.width = "70px"
+    div.style.height = "70px"
+    div.classList.add(area.location)
+    div.classList.add("position")
+    div.style.zIndex = 99
+    document.querySelector("#pivotMap").appendChild(div)
+})
+// document.querySelector("#mapa-div").appendChild(divPadre)
+// let div = document.createElement("div")
+// div.style.position = "absolute"
+// div.style.top = "64px"
+// div.style.left = "640px"
+// div.style.width = "50px"
+// div.style.height = "50px"
+// div.style.zIndex = 99
+// div.classList.add("agua")
+// crear divs vacios con las coordenadas de las "area" para luego agregar logos de nacion
+function positionmouse(event) {
+    console.log(event)
+    // body...
+}
+
+function selectGame(event) {
+    let area = event.target
+    console.log(area)
+    // let div = document.createElement("div")
+    // div.style.position = "sticky"
+    // div.style.top = area.coords.split(",")[0]+"px"
+    // div.style.left = area.coords.split(",")[1]+"px"
+    // div.style.width = "70px"
+    // div.style.height = "70px"
+    // div.classList.add(area.dataset.location)
+    // div.style.zIndex = 99
+    // document.querySelector("#mapa-div").appendChild(div)
+}
 function nomodal(){
     modalRegistre.classList.remove("modal")
     modalRegistre.style.display = "none";
@@ -73,61 +144,6 @@ function logoutFunction()
         location.assign("/");
     })
 }
-
-
-// function botoneslogin()
-// {
-//     let creategame = document.querySelector("button[name*=CreateGame]")
-//     //variar botenes dependiendo si hay un usuario
-//     document.querySelector("button[name*=logout]").classList.remove("d-none")
-//     document.querySelector("button[name*=login]").classList.add("d-none")
-//     creategame.classList.remove("d-none")
-//     creategame.addEventListener('click',createGame)
-//     document.querySelector("button[name*=registre]").classList.add("d-none")
-//     document.querySelector("input[name*=user-name]").classList.add("d-none")
-//     document.querySelector("input[name*=user-password]").classList.add("d-none")
-// }
-
-// function accessWeb(event,usernameparam,passwordparam){
-//     let username = document.querySelector("input[name*=user-name]").value
-//     let password = document.querySelector("input[name*=user-password]").value
-//     if (usernameparam != null && passwordparam != null) {
-//         username = usernameparam
-//         password =passwordparam
-//     }
-//     let formData = new FormData();
-//         formData.append("user-name",username)
-//         formData.append("user-password",password)
-//     if (usernameparam != null || event.target.name == "login") {
-//         fetch('/api/login',{
-//             method:'POST',
-//             body:formData
-//         })
-//         .then(function(response){
-//             if(response.ok){
-//                 console.log("nicelog")
-//                 createTableGames()
-//                 botoneslogin()
-//                 nomodal()
-//             }
-//         })
-//     }else if(event.target.name == "logout"){
-//         fetch('/api/logout',{
-//         method:'POST',
-//         })
-//         .then(function(response){
-//             if(response.ok){
-//                 console.log("nice")
-//                 document.querySelector("input[name*=user-name]").classList.remove("d-none")
-//                 document.querySelector("input[name*=user-password]").classList.remove("d-none")
-//                 document.querySelector("button[name*=logout]").classList.add("d-none")
-//                 document.querySelector("button[name*=login]").classList.remove("d-none")
-//                 document.querySelector("button[name*=CreateGame]").classList.add("d-none")
-//                 document.querySelector("button[name*=registre]").classList.remove("d-none")
-//             }
-//         })
-//     }
-// }
 
 //TABLE RANKED
 function createTableRanking(){
@@ -294,15 +310,3 @@ function enterGame(event){
         }
     });
 }
-
-// function querysUrl(search) {
-//   var obj = {};
-//   var reg = /(?:[?&]([^?&#=]+)(?:=([^&#]*))?)(?:#.*)?/g;
-
-//   search.replace(reg, function(match, param, val) {
-//     obj[decodeURIComponent(param)] = val === undefined ? "" : decodeURIComponent(val);
-//   });
-
-//   return obj;
-// }
-

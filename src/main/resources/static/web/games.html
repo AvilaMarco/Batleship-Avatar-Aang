@@ -12,7 +12,12 @@
 <body>
     <img id="mapabg" src="assets/fondo-mapa.png">
     <div id="mapa-div">
-        <img id="mapa" src="assets/mapa-game.png">
+        <map name="mapeo">
+            <!-- <area alt="Ir a Google" data-game="1" id="one" shape="circle" coords="640,82,20"> -->
+        </map>
+        <div id="pivotMap" style="position: relative;"></div>
+        <img id="mapa" src="mapa-game-mobile.png" class="" usemap="#mapeo">
+        <img id="mapa" src="mapa-game.png" class="d-none" usemap="#mapeo">
     </div>
     <button id="logout" class="btn-absolute">Logout</button>
     <button id="verMapa" class="btn-absolute">Mapa</button>
@@ -67,6 +72,7 @@
         </div>
     </main>
 </div>
+<script src="js/datosmap.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>

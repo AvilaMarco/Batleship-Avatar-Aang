@@ -164,7 +164,7 @@ public class SalvoController {
             if(isGuest(authentication))
                 mapa.put("player","guest");
             else
-                mapa.put("player",PlayerRepository.findByUsername(authentication.getName()).playerDTO());
+                mapa.put("player",PlayerRepository.findByCorreo(authentication.getName()).playerDTO());
             List<Map<String, Object>> games = gameRepository.findAll().stream().map(Game::gamesDTO).collect(Collectors.toList());
             List<Map<String, Object>> scores = PlayerRepository.findAll().stream().map(Player::playerScoreDTO).collect(Collectors.toList());
             mapa.put("games",games);
@@ -175,7 +175,7 @@ public class SalvoController {
         @RequestMapping("/gp/{id}")
         public ResponseEntity<Map<String, Object>> getGame_view(@PathVariable Long id, Authentication authentication){
             GamePlayer gp = gamePlayerRepository.findById(id).orElse(null);
-            Player player = PlayerRepository.findByUsername(authentication.getName());
+            Player player = PlayerRepository.findByCorreo(authentication.getName());
             Map<String, Object> error = new HashMap<>();
             if(gp!= null && player != null){
                 if (player.getGamePlayers().stream().anyMatch(e->e.getId()==id)){
@@ -195,7 +195,7 @@ public class SalvoController {
         public ResponseEntity<Map<String, Object>> createSalvos(Authentication authentication, @PathVariable Long gamePlayerId,@RequestBody List<String> salvostring){
             Map<String, Object> respuesta = new HashMap<>();
             if(!isGuest(authentication)) {
-                Player player = PlayerRepository.findByUsername(authentication.getName());
+                Player player = PlayerRepository.findByCorreo(authentication.getName());
                 if (player != null) {
                     GamePlayer gp = gamePlayerRepository.findById(gamePlayerId).orElse(null);
                     if (!insideTheRange(salvostring)){
@@ -280,7 +280,7 @@ public class SalvoController {
         public ResponseEntity<Map<String, Object>> createShips(Authentication authentication, @PathVariable Long gamePlayerId, @RequestBody Set<Ship> ships){
             Map<String, Object> respuesta = new HashMap<>();
             if(!isGuest(authentication)) {
-                Player player = PlayerRepository.findByUsername(authentication.getName());
+                Player player = PlayerRepository.findByCorreo(authentication.getName());
                 if (player != null) {
                     GamePlayer gp = gamePlayerRepository.findById(gamePlayerId).orElse(null);
                     if (gp != null && gp.getPlayer().getId() == player.getId()){
@@ -337,7 +337,7 @@ public class SalvoController {
         public ResponseEntity<Map<String, Object>> createGame(Authentication authentication){
             Map<String, Object> respuesta = new HashMap<>();
             if(!isGuest(authentication)) {
-                Player player = PlayerRepository.findByUsername(authentication.getName());
+                Player player = PlayerRepository.findByCorreo(authentication.getName());
                 if (player != null) {
                     Game game = new Game(0);
                     GamePlayer gamePlayer = new GamePlayer(player, game);
@@ -360,7 +360,7 @@ public class SalvoController {
         public ResponseEntity<Map<String, Object>> joingame(@PathVariable Long id,Authentication authentication){
             Map<String, Object> respuesta = new HashMap<>();
             if(!isGuest(authentication)) {
-                Player player = PlayerRepository.findByUsername(authentication.getName());
+                Player player = PlayerRepository.findByCorreo(authentication.getName());
                 Game game = gameRepository.findById(id).orElse(null);
                 if (game == null){
                     respuesta.put("error","No such game");

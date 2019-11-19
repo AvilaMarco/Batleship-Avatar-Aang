@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Avatar Aang</title>
+	<title>Login</title>
 	<meta charset="utf-8">
 	<link rel="stylesheet" type="text/css" href="codigo/style.css">
-	<!-- <meta name="viewport" content="width=device-width"> -->
 	<meta name="mobile-web-app-capable" content="yes">
 </head>
 <body>
@@ -12,13 +11,27 @@
 	<img id="mobile" class="fondo" src="img/mobile1.png">
 	<img id="mobile2" class="fondo left" src="img/mobile2.png">
 	<img id="desktop" class="fondo" src="img/index.jpg">
-	<div class="registre">
-		<input class="input-form" type="text" name="fullname" placeholder="Name">
-		<input class="input-form" type="text" name="Username" placeholder="Username/Email">
-		<input class="input-form" type="password" name="password" placeholder="Password">
-		<button class="eye">Ver</button>
-		<button class="btn">Registre</button>
+	<div class="registre registreaux">
+		<button onclick="nextStep('login')" class="btn btnaux menu">Login</button>
+		<button onclick="nextStep('registro')" class="btn btnaux menu">Sign in</button>
+		<!-- login -->
+		<input class="input-form d-none registro" type="text" name="fullname" placeholder="Name">
+		<input class="input-form d-none access" type="text" name="Username" placeholder="Username/Email">
+		<div>
+			<input class="input-form d-none access" type="password" name="password" placeholder="Password">
+			<button class="eye d-none access">Ver</button>
+		</div>
+		<button id="login" class="btn d-none login">Login</button>
+		<button id="registre" class="btn d-none registro">Registre</button>
+		<!-- registre -->
+<!-- 		<input class="input-form d-none registro" type="text" name="fullname" placeholder="Name">
+		<input class="input-form d-none registro" type="text" name="Username" placeholder="Username/Email">
+		<input class="input-form d-none registro" type="password" name="password" placeholder="Password">
+		<button class="eye d-none registro">Ver</button>
+		<button id="registre" class="btn d-none registro">Registre</button> -->
 	</div>
+	<img src="audio.png" class="btn-audio" alt="true" onclick="switchAudio(this)">
+	<audio id="audioMain" src="main.mp3" autoplay="true" loop="true"></audio>
 	<script src="codigo/index.js"></script>
 </body>
 </html>

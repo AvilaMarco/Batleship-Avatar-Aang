@@ -4,7 +4,10 @@
 	margin: 0;
 	box-sizing: border-box;
 }
-
+.d-none
+{
+	display: none !important;
+}
 body
 {
 	width: 100%;
@@ -46,6 +49,7 @@ input:focus{
     height: 95vh;
     margin: auto;
 }
+
 .input-form
 {
 	width: 100%;
@@ -69,14 +73,13 @@ input:focus{
     border: solid 5px #2dcae9;
     color: white;
     margin-top: 35vh;
+    cursor: pointer;
 }
 .eye
 {
 	position: relative;
-    width: 200px;
-    height: 60px;
-    bottom: 6vh;
-    left: 75%;
+    left: 78%;
+    bottom: 50%;
     padding: 15px;
     font-size: 50px;
     color: #2fd1eb;
@@ -89,6 +92,19 @@ input:focus{
 	outline: 0 !important;
 }
 
+.btn-audio
+{
+	position: fixed;
+	top: 3%;
+	right: 3%;
+}
+/*registre or login*/
+.btnaux{
+	margin-top:5% !important;
+}
+.registreaux{
+	height: 99vh !important;
+}
 /*animation*/
 .left
 {
@@ -144,13 +160,16 @@ input:focus{
 		width: 30vw;
 		justify-content: flex-end;
 	}
+	.registreaux{
+		height: 60vh !important;
+	}
 	.btn
 	{
 		margin-top:30vh;
 	}
 	.input-form, .btn
 	{
-		font-size: 30px;
+		font-size: 27px;
 		padding:10px;
 		background-color: white;
 		color: black;
@@ -164,9 +183,9 @@ input:focus{
 	.eye
 	{
 		bottom: 8vh;
-	    left: 70%;
+	    left: 75%;
 	    padding: 20px;
-	    font-size: 30px;
+	    font-size: 20px;
 	    color: black;
 	}
 	input:focus
