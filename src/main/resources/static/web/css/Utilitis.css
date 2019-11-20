@@ -34,21 +34,6 @@ input[name*=registre], select {
 	margin: 5px;
 }
 
-.modal-btn{
-    float: right;
-    padding: 8px 20px;
-}
-
-.modal-style{
-	z-index: 1000;
-	display: none;
-	padding: 15px;
-	/*display: block;*/
-	margin: auto;
-	width: 50%;
-	background-color: white;
-}
-
 .table td,.table th{
 	text-align: center;
 	padding: .75rem;
@@ -66,33 +51,106 @@ input[name*=registre], select {
 .position{
 	position: absolute;
 }
+/*fondos*/
+.texturaMapa
+{
+	background-image: url("../assets/texturas/mapaTextura.png");
+	background-size: cover;
+}
 .agua{
-	/*position: relative;*/
-	background: url("../assets/img/agua2.png");
+	background: url("../assets/icons/selectagua.png");
     background-size: cover;
 }
 .tierra{
-	/*position: relative;*/
-	background-image: url("../assets/img/tierra2.png");
+	background-image: url("../assets/icons/selectierra.png");
     background-size: cover;
 }
 .fuego{
-	/*position: relative;*/
-	background-image: url("../assets/img/fuego2.png");
+	background-image: url("../assets/icons/selectfuego.png");
 	background-size: cover;
 }
 .viento{
-	/*position: relative;*/
-	background-image: url("../assets/img/viento2.png");
+	background-image: url("../assets/icons/selecviento.png");
 	background-size: cover;
 }
 
-.modal{
+.iconTierra{
+	background-image: url("../assets/icons/nacionTierra.png");	
+}
+.iconFuego{
+	background-image: url("../assets/icons/nacionFuego.png");
+}
+.iconAgua{
+	background-image: url("../assets/icons/nacionAgua.png");
+}
+.iconViento{
+	background-image: url("../assets/icons/nacionViento.png");	
+}
+
+.iconotierra{
+	background-image: url("../assets/icons/icontierra.png");
+	background-size: cover;	
+}
+.iconofuego{
+	background-image: url("../assets/icons/iconfuego.png");
+	background-size: cover;
+}
+.iconoagua{
+	background-image: url("../assets/icons/iconagua.png");
+	background-size: cover;
+}
+.iconoviento{
+	background-image: url("../assets/icons/iconviento.png");
+	background-size: cover;	
+}
+
+.iconTransparenttierra{
+	background-image: url("../assets/icons/transparenttierra.png");
+    background-size: cover;			
+}
+.iconTransparentfuego{
+	background-image: url("../assets/icons/transparentfuego.png") !important;
+    background-size: cover;		
+}
+.iconTransparentagua{
+	background-image: url("../assets/icons/transparenagua.png");
+    background-size: cover;		
+}
+.iconTransparentviento{
+	background-image: url("../assets/icons/transparentviento.png");
+    background-size: cover;			
+}
+.bgtierra{
+	background-image: url("../assets/img/bgtierra.png");
+	background-size: contain;
+}
+.bgagua{
+	background-image: url("../assets/img/bgagua.png");
+	background-size: contain;
+}
+.bgfuego{
+	background-image: url("../assets/img/bgfuego.png");
+	background-size: contain;
+}
+.bgaire{
+	background-image: url("../assets/img/bgaire.png");
+	background-size: contain;
+}
+.modalAnimation{
 	position: relative;
 	animation: modal 1s linear;
 	animation-fill-mode: forwards;
 }
+.modalAnimationout{
+	position: relative;
+	animation: modalout 1s linear;
+	animation-fill-mode: forwards;
+}
 @keyframes modal {
-  from {top: 0;}
-  to {top: 100px;}
+  from {top: -90vh;}
+  to {top: 10vh;}
+}
+@keyframes modalout {
+  from {top: 10vh;}
+  to {top: -90vh;}
 }

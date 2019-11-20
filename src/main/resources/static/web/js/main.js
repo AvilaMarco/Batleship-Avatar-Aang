@@ -2,27 +2,96 @@
 let games = [];
 let players = [];
 let masx,masy = false
+let playerData = {}
+reloadInfo()
+function reloadInfo() {
+    fetch('/api/games',{
+        method: 'GET',
+    })
+    .then(function(response){if(response.ok){return response.json()}
+    })
+    .then(function(json){
+        if(json.player.nacion != null){
+            inMenu(json)
+        }else{
+            chooseNation()
+        }
+        players = json.playerScore;
+        playerData = json.player;
+    });
+}
+
 function setNacionPlayer(nacion) {
     fetch('/api/setNacionPlayer/'+nacion,{
         method: 'POST',
     }).then(function(response){
         if(response.ok){
-            document.querySelector("#webGames").classList.remove("d-none")
-            document.querySelector("#inicoNacion").classList.add("d-none")
+            fetch('/api/games',{
+                method: 'GET',
+            })
+            .then(function(response){if(response.ok){return response.json()}
+            })
+            .then(function(json){
+                console.log(json.player.nacion)
+                inMenu(json)
+            });
         }
     })
 }
-// fetch('/api/games',{
-//     method: 'GET',
-//     }).then(function(response){if(response.ok){return response.json()}
-//     }).then(function(json){
-//     games = json.games;
-//     players = json.playerScore;
-//     if(json.player != "guest"){
-//         botoneslogin()
-//     }
-//     runweb();
-// });
+    
+
+function chooseNation() {
+    document.querySelector("#inicoNacion").classList.remove("d-none")
+}
+function inMenu(json) {
+    document.querySelector("#Player").classList.add("iconTransparent"+json.player.nacion) 
+    document.querySelector("#webGames").classList.remove("d-none")
+    document.querySelector("#botonera").classList.remove("d-none")
+}
+
+function verdatos(elementhtml) {
+   console.log(elementhtml)
+   addmodal()
+   if (elementhtml.id=="Player"){
+    verDatosUser()
+   }else if(elementhtml.id=="info"){
+    verTutorial()
+   }else if(elementhtml.id=="ladder"){
+    createTableRanking()
+   }
+}
+function nomodal(){
+    document.querySelector("#modal").classList.add("modalAnimationout")
+    document.querySelector("#modal").classList.remove("modalAnimation")
+    // document.querySelector("#modal").classList.add("d-none")
+    document.querySelector("#container").style.opacity = 1;
+}
+
+function addmodal(){
+    document.querySelector("#modal").classList.remove("modalAnimationout")
+    document.querySelector("#container").style.opacity = 0.2
+    document.querySelector("#modal").classList.remove("d-none")
+    document.querySelector("#modal").classList.add("modalAnimation")
+}
+
+function verDatosUser() {
+   let modalDiv = document.querySelector(".div-modal")
+    modalDiv.innerHTML = "" 
+    modalDiv.classList.add("bg"+playerData.nacion)
+    modalDiv.style.height = "80vh"
+    let div = document.createElement("div")
+}
+
+function verTutorial(argument) {
+   let modalDiv = document.querySelector(".div-modal")
+    modalDiv.innerHTML = ""
+}
+        // runweb(json);  
+    // games = json.games;
+    // players = json.playerScore;
+    // if(json.player != "guest"){
+    //     botoneslogin()
+    // }
 //referencias al DOM
 let tablegame = document.querySelector("#game-body");
 let tableranking = document.querySelector("#ranked-body");
@@ -95,7 +164,7 @@ function entergame() {
     if (document.querySelector("#pivotMap div")!=null) {
         let datos = document.querySelector("#pivotMap div")
         console.log(document.querySelector("#pivotMap div"))
-        fetch('/api/games/'+datos.location+'/'+datos.id,{
+        fetch('/api/games/'+datos.dataset.location+'/'+datos.id,{
             method:'POST'
         })
         .then(function(response){
@@ -126,28 +195,17 @@ function selectGame(event) {
     div.name = "selectGame"
     div.style.top = parseInt(area.coords.split(",")[1])-30+"px"
     div.style.left = parseInt(area.coords.split(",")[0])-35+"px"
-    div.style.width = "80px"
-    div.style.height = "80px"
-    div.classList.add(area.dataset.location)
-    div.classList.add("shadow"+area.dataset.location)
+    div.style.width = "90px"
+    div.style.height = "90px"
+    div.classList.add("icono"+area.dataset.location)
     div.style.position ="absolute"
     div.style.zIndex = 99
+    div.dataset.location = area.dataset.location
+    div.id = area.id
     document.querySelector("#pivotMap").appendChild(div)
     console.log(div)
 }
-function nomodal(){
-    modalRegistre.classList.remove("modal")
-    modalRegistre.style.display = "none";
-    container.style.opacity = 1;
-}
 
-function addmodal(){
-    container.style.opacity = 0.01
-    modalRegistre.style.display = "block";
-    modalRegistre.classList.add("modal")
-    document.querySelector("#btn-close").addEventListener('click',nomodal)
-    document.querySelector("#btn-registre").addEventListener('click',registre)
-}
 function viewMapa(event)
 {
     let divselect = document.querySelector("#pivotMap div")
@@ -157,10 +215,10 @@ function viewMapa(event)
         x = parseInt(divselect.style.left.split("px")[0])
     }
     let marginMap = document.querySelector("#mapa").style
-    if (event.target.innerText == "Mapa") {
+    if (event.target.innerText == "Map") {
         event.target.innerText = "Menu"
+        document.querySelectorAll("button[name*='botonesMenu']").forEach(e=>e.classList.add("d-none"))
         document.querySelector("#mapabg").classList.add("d-none")
-        toggleBTN()
         if (divselect!=null) {
             document.querySelector("#mapa").style.marginLeft = "0"
             document.querySelector("#mapa").style.marginTop = "0"
@@ -171,9 +229,9 @@ function viewMapa(event)
             }
         }
     }else{
-       event.target.innerText = "Mapa"
+       event.target.innerText = "Map"
         document.querySelector("#mapabg").classList.remove("d-none")
-        toggleBTN()
+        document.querySelectorAll("button[name*='botonesMenu']").forEach(e=>e.classList.remove("d-none"))
         if (divselect!=null) {
             if (y < 100) {
                 divselect.style.top = y + 150 + "px"
@@ -187,16 +245,13 @@ function viewMapa(event)
         }     
     }
 }
-function toggleBTN()
-{
-   logout.classList.toggle("d-none")
-   play.classList.toggle("d-none")
-   info.classList.toggle("d-none")
-}
 //runweb
-function runweb(){
-    createTableRanking()
-    createTableGames();
+function runweb(json){
+    document.querySelector("#Player").classList.add("iconTransparent"+json.player.nacion)
+    // crear si existen juegos en el mapa
+    // mapaGames()
+    // createTableRanking()
+    // createTableGames();
 }
 //LOGOUT
 function logoutFunction()
@@ -229,10 +284,26 @@ function createTableRanking(){
         }
     }
     players.sort(function(a, b) {return b.total - a.total;});
-    tableranking.innerHTML = ""
+    let modalDiv = document.querySelector(".div-modal")
+    modalDiv.innerHTML = ""
+    modalDiv.classList.remove("bg"+playerData.nacion)
+    let body = ``
+    body += `
+    <table class="table theadBlack">
+        <thead class="">
+            <tr>
+                <th>Player</th>
+                <th>Score</th>
+                <th>Win</th>
+                <th>Lose</th>
+                <th>Tied</th>
+            </tr>
+        </thead>
+        <tbody id="ranked-body">
+    `
     for (var i = 0; i < players.length; i++) {
         if (players[i].scores.length != 0) {
-            tableranking.innerHTML+=`<tr>
+            body +=`<tr>
             <td>
                 <p>${players[i].email}</p>
             </td>
@@ -251,6 +322,8 @@ function createTableRanking(){
         </tr>`
         }
     }
+    body +=`</tbody></table>`
+    modalDiv.innerHTML += body
 }
 //TABLE GAMES
 function createTableGames(){

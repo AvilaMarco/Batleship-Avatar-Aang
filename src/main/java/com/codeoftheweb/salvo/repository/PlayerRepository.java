@@ -8,6 +8,5 @@ import java.util.List;
 
 @RepositoryRestResource
 public interface PlayerRepository extends JpaRepository<Player, Long> {
-    Player findByUsername(@Param("name") String name);
     Player findByCorreo(@Param("name") String name);
 }

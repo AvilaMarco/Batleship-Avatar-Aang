@@ -9,7 +9,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-@Entity //le dice a spring que cree una tabla de la clase
+//le dice a spring que cree una tabla de la clase
+@Entity 
 public class Player {
 
     @Id
@@ -17,9 +18,7 @@ public class Player {
     @GenericGenerator(name = "native", strategy = "native")
     private long id;
     private String firstName;
-    private String lastName;
     private String correo;
-    private String username;
     private String password;
     private String nacion;
 
@@ -28,33 +27,18 @@ public class Player {
     //nombre del atributo que guarda la relacion en gameplayers
     @OneToMany(mappedBy="player", fetch=FetchType.EAGER, cascade= CascadeType.ALL)
     private Set<GamePlayer> gamePlayers = new HashSet<>();
+
     @OneToMany(mappedBy="player", fetch=FetchType.EAGER, cascade= CascadeType.ALL)
     private Set<Score> scores = new HashSet<>();
 
     //constructores
     public Player() { }
-    public Player(String first, String last, String email, String username, String password) {
-        this.firstName = first;
-        this.lastName = last;
-        this.correo = email;
-        this.username = username;
-        this.password = password;
-    }
 
-    public Player(String first, String last, String email, String username, String password,String nacion) {
+    public Player(String first, String email, String password,String nacion) {
         this.firstName = first;
-        this.lastName = last;
         this.correo = email;
-        this.username = username;
         this.password = password;
         this.nacion = nacion;
-    }
-
-    public Player(String first, String last, String email, String password) {
-        this.firstName = first;
-        this.lastName = last;
-        this.correo = email;
-        this.password = password;
     }
 
     public Player(String first, String email, String password) {
@@ -65,11 +49,6 @@ public class Player {
 
 
     //getter and setters
-
-    public String getUsername() {
-        return username;
-    }
-
     public String getPassword() {
         return password;
     }
@@ -97,19 +76,12 @@ public class Player {
 
     public void setCorreo(String email) { this.correo = email;}
 
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
     //otros metodos
     @JsonIgnore
     public Score getScore(Game game) {
         return this.scores.stream().filter(e->e.getGame().getId() == game.getId()).findFirst().orElse(null);
     }
+
     @JsonIgnore
     public Set<Score> getScores() {
 
@@ -127,8 +99,7 @@ public class Player {
     public Map<String, Object> playerDTO(){
         Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("id",this.id);
-        dto.put("complete_name", this.firstName);
-        dto.put("nick",this.username);
+        dto.put("name", this.firstName);
         dto.put("email", this.correo);
         dto.put("nacion", this.nacion);
         return dto;
@@ -137,7 +108,7 @@ public class Player {
     public Map<String, Object> playerScoreDTO(){
         Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("id",this.id);
-        dto.put("complete_name", this.firstName);
+        dto.put("name", this.firstName);
         dto.put("email", this.correo);
         dto.put("scores",this.scores.stream().map(Score::getScore));
         return dto;

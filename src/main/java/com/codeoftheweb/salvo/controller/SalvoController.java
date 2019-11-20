@@ -181,7 +181,7 @@ public class SalvoController {
                 if (player.getGamePlayers().stream().anyMatch(e->e.getId()==id)){
                     return new ResponseEntity<Map<String, Object>>(gp.gameVIewDTO(), HttpStatus.ACCEPTED);
                 }else{
-                    error.put("error","UNAUTHORIZED");
+                    error.put("error","no es tu juego");
                     return new ResponseEntity<Map<String, Object>>(error, HttpStatus.UNAUTHORIZED);
                 }
             }else{
@@ -361,6 +361,7 @@ public class SalvoController {
                 if (player != null) {
                     Game game = new Game(0,ubicacion,direccion);
                     GamePlayer gamePlayer = new GamePlayer(player, game);
+                    PlayerRepository.save(player);
                     gameRepository.save(game);
                     gamePlayerRepository.save(gamePlayer);
                     respuesta.put("gpid", gamePlayer.getId());

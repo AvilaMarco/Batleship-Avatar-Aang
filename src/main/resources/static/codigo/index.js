@@ -27,11 +27,11 @@ function switchAudio(event) {
 	let audio = document.querySelector("#audioMain")
 	if (event.alt == 'true'){
 		audio.pause()
-		event.src = "../no-audio.png"
+		event.src = "../img/no-audio.png"
 		event.alt = 'false'
 	}else{
 		audio.play()
-		event.src = "../audio.png"
+		event.src = "../img/audio.png"
 		event.alt = 'true'
 	}
 }
@@ -41,6 +41,16 @@ function nextStep(clase) {
 	document.querySelectorAll(".menu").forEach(e=>e.classList.add("d-none"))
 	document.querySelectorAll(".access").forEach(e=>e.classList.remove("d-none"))
 	document.querySelectorAll("."+clase).forEach(e=>e.classList.remove("d-none"))
+	document.querySelector("#back").classList.remove("d-none")
+}
+
+function toMenu() {
+	document.querySelector(".registre").classList.add("registreaux")
+	document.querySelectorAll(".menu").forEach(e=>e.classList.remove("d-none"))
+	document.querySelectorAll(".access").forEach(e=>e.classList.add("d-none"))
+	document.querySelectorAll(".registro").forEach(e=>e.classList.add("d-none"))
+	document.querySelectorAll(".login").forEach(e=>e.classList.add("d-none"))
+	document.querySelector("#back").classList.add("d-none")
 }
 
 function reset() {
@@ -105,6 +115,9 @@ function login() {
     .then(function(response){
         if(response.ok){
             console.log("nicelog")
+            document.querySelector("input[name*=fullname]").value = ""
+            document.querySelector("input[name*=Username]").value = ""
+			document.querySelector("input[name*=password]").value = ""
             location.assign("/web/games.html");
         }else{
         	throw new Error(response.json());

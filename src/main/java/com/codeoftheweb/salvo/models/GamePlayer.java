@@ -146,6 +146,7 @@ public class GamePlayer {
     public Map<String, Object> gamePlayerDTO(){
         Map<String, Object> dto = new HashMap<>();
         dto.put("id",this.id);
+        dto.put("tipo",this.tipo);
         dto.put("player",this.player.playerDTO());
         dto.put("Score",this.getScore());
         return dto;

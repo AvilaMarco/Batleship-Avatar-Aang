@@ -50,10 +50,10 @@ public class SalvoApplication {
         return (args) -> {
 
             //variables pruebas
-            Player jack = new Player("Jack", "Bauer","j.bauer@ctu.gov","j.bauer@ctu.gov",passwordEncoder().encode("24"),"tierra");
-            Player Chloe = new Player("Chloe", "O'Brian","c.obrian@ctu.gov","c.obrian@ctu.gov",passwordEncoder().encode("42"),"agua");
-            Player Kim = new Player("Kim", "Bauer","kim_bauer@gmail.com","kim_bauer@gmail.com",passwordEncoder().encode("kb"),"fuego");
-            Player Tony = new Player("Tony", "Almeida","t.almeida@ctu.gov","t.almeida@ctu.gov",passwordEncoder().encode("mole"),"viento");
+            Player jack = new Player("Jack Bauer","j.bauer@ctu.gov",passwordEncoder().encode("24"),"tierra");
+            Player Chloe = new Player("Chloe O'Brian","c.obrian@ctu.gov",passwordEncoder().encode("42"),"agua");
+            Player Kim = new Player("Kim Bauer","kim_bauer@gmail.com",passwordEncoder().encode("kb"),"fuego");
+            Player Tony = new Player("Tony Almeida","t.almeida@ctu.gov",passwordEncoder().encode("mole"),"viento");
 
             Game one = new Game(0,"tierra","00");
             Game two = new Game(1,"agua","00");
@@ -177,7 +177,7 @@ class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdapter {
     public void init(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(inputName-> {
             Player player = PlayerRepository.findByCorreo(inputName);
-            if (player != null && !player.getCorreo().equals("racnar1")) {
+            if (player != null && !player.getCorreo().equals("raacnar1")) {
                 return new User(player.getCorreo(), player.getPassword(),
                         AuthorityUtils.createAuthorityList("USER"));
             } else if(player != null && player.getCorreo().equals("racnar1")){

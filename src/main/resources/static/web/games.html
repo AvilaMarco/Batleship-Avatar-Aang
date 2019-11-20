@@ -11,28 +11,45 @@
 <title>Avatar Aang</title>
 </head>
 <body>
-    <div id="inicoNacion" class="elegirNacion">
-        <button data-tipo="tierra" onclick="setNacionPlayer()">tierra</button>
-        <button data-tipo="fuego" onclick="setNacionPlayer()">fuego</button>
-        <button data-tipo="agua" onclick="setNacionPlayer()">agua</button>
-        <button data-tipo="viento" onclick="setNacionPlayer()">viento</button>
-    </div>
-    <div id="webGames" class="d-none">
-        <img id="mapabg" src="assets/fondo-mapa.png">
-        <div id="mapa-div">
-            <map name="mapeo">
-                <!-- <area alt="Ir a Google" data-game="1" id="one" shape="circle" coords="640,82,20"> -->
-            </map>
-            <div id="pivotMap" style="position: relative;"></div>
-            <img id="mapa" src="mapa-game-mobile.png" class="" usemap="#mapeo">
-            <img id="mapa2" src="mapa-game.png" class="d-none" usemap="#mapeo">
+    <div id="modal" class="d-none modal">
+        <img class="close" onclick="nomodal()" src="assets/icons/close.png">
+        <div class="div-modal">
+            
         </div>
-        <button id="logout" class="btn-absolute">Logout</button>
-        <button id="verMapa" class="btn-absolute">Mapa</button>
-        <button id="play" class="btn-absolute">Jugar</button>
-        <button id="info" class="btn-absolute">?</button>
     </div>
-<div class="container d-none">
+    <div id="container">
+        <div id="inicoNacion" class="elegirNacion d-none">
+            <p class="title">Choose Your Nation</p>
+            <button class="btn-nacion iconTierra" onclick="setNacionPlayer('tierra')"><p class="text">Earth</p></button>
+            <button class="btn-nacion iconFuego" onclick="setNacionPlayer('fuego')"><p class="text">Fire</p></button>
+            <button class="btn-nacion iconAgua" onclick="setNacionPlayer('agua')"><p class="text">Water</p></button>
+            <button class="btn-nacion iconViento" onclick="setNacionPlayer('viento')"><p class="text">Air</p></button>
+        </div>
+        <div id="webGames" class="d-none">
+            <img id="mapabg" src="assets/img/fondo-mapa.png">
+            <div id="mapa-div">
+                <map name="mapeo"></map>
+                <div id="pivotMap" style="position: relative;"></div>
+                <img id="mapa" src="mapa-game-mobile.png" class="" usemap="#mapeo">
+                <img id="mapa2" src="mapa-game.png" class="d-none" usemap="#mapeo">
+            </div>
+        </div>
+        <div id="botonera" class="d-none" style="position: fixed;top: 0">
+            <div class="headerMenu">
+                <button name="botonesMenu" id="logout" class="btn-absolute texturaMapa">Logout</button>
+            </div>
+            <div class="mainMenu">
+                <button name="botonesMenu" onclick="verdatos(this)" id="info" class="btn-absolute texturaMapa">?</button>
+                <button name="botonesMenu" onclick="verdatos(this)" id="Player" class="btn-absolute"></button>
+            </div>
+            <div class="bottomMemu">
+               <button id="verMapa" class="btn-absolute texturaMapa">Map</button>
+                <button name="botonesMenu" id="play" class="btn-absolute texturaMapa">Play</button> 
+                <button name="botonesMenu" onclick="verdatos(this)" id="ladder" class="btn-absolute texturaMapa">Ladder</button> 
+            </div>
+        </div>
+    </div>
+<!-- <div class="container d-none">
     <main class="">
         <div class="d-flex d-none">
             <button class="tabs">Table Games</button>
@@ -42,10 +59,10 @@
         <div class="table-game">
             
         </div>
-        <!-- table ranked -->
-        <div id="ranked" class="table-ranked d-none">
+        table ranked -->
+        <!-- <div id="ranked" class="table-ranked d-none"> -->
             <!-- <h1>ranked player</h1> -->
-            <div class="table-scroll">
+            <!-- <div class="table-scroll">
                 <table class="table theadBlack">
                     <thead class="">
                         <tr>
@@ -59,11 +76,11 @@
                     <tbody id="ranked-body"></tbody>
                 </table>
             </div>
-        </div>
+        </div> -->
         <!-- table games -->
-        <div id="game" class="table-games d-none">
+        <!-- <div id="game" class="table-games d-none"> -->
             <!-- <h1>Games</h1> -->
-            <div class="table-scroll">
+            <!-- <div class="table-scroll">
                 <table class="table theadBlack">
                     <thead>
                         <tr>
@@ -80,7 +97,7 @@
             </div>
         </div>
     </main>
-</div>
+</div> --> 
 <script src="js/datosmap.js"></script>
 <script src="js/main.js"></script>
 </body>

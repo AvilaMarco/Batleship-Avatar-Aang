@@ -101,6 +101,12 @@ input:focus{
 	top: 3%;
 	right: 3%;
 }
+.btn-back
+{
+	position: fixed;
+	top: 3%;
+	left: 3%;
+}
 /*registre or login*/
 .btnaux{
 	margin-top:5% !important;
