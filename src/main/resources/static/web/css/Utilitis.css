@@ -121,19 +121,19 @@ input[name*=registre], select {
     background-size: cover;			
 }
 .bgtierra{
-	background-image: url("../assets/img/bgtierra.png");
+	background-image: url("../assets/img/bgtierra.png") !important;
 	background-size: contain;
 }
 .bgagua{
-	background-image: url("../assets/img/bgagua.png");
+	background-image: url("../assets/img/bgagua.png") !important;
 	background-size: contain;
 }
 .bgfuego{
-	background-image: url("../assets/img/bgfuego.png");
+	background-image: url("../assets/img/bgfuego.png") !important;
 	background-size: contain;
 }
-.bgaire{
-	background-image: url("../assets/img/bgaire.png");
+.bgviento{
+	background-image: url("../assets/img/bgaire.png") !important;
 	background-size: contain;
 }
 .modalAnimation{
