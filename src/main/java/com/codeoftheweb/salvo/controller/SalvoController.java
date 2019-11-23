@@ -224,7 +224,7 @@ public class SalvoController {
                     long myid = gp.getId();
                     GamePlayer gpoppoent = gp.getGame().getGamePlayers().stream().filter(gap->gap.getId()!=myid).findFirst().orElse(null);
                     if (gpoppoent!=null && gp.getTurnOpponent()!=1){
-                        Salvo salvoess = gpoppoent.getSalvos().stream().filter(salvo->salvo.getTurn()==gp.getTurnOpponent()-1).findFirst().orElse(null);
+                        Salvo salvoess = gpoppoent.getSalvos().stream().filter(salvo->salvo.getTurn()==gp.getTurnOpponent()).findFirst().orElse(null);
                         if (salvoess!=null){
                             if (!(salvostring.size() == (5 - salvoess.shipsDead().size()) )) {
                                 respuesta.put("error", "no se envio la cantidad correcta de salvoes");
@@ -408,16 +408,19 @@ public class SalvoController {
 
         //registrar players
         @RequestMapping(path = "/players", method = RequestMethod.POST)
-        public ResponseEntity<Object> register(
+        public ResponseEntity<Map<String, Object>> register(
                 @RequestParam String firstName,
                 @RequestParam String email, @RequestParam String password) {
 
+            Map<String, Object> respuesta = new HashMap<>();
             if (firstName.isEmpty() || email.isEmpty() || password.isEmpty()) {
-                return new ResponseEntity<>("Missing data", HttpStatus.FORBIDDEN);
+                respuesta.put("error","Missing data")
+                return new ResponseEntity<>(respuesta, HttpStatus.FORBIDDEN);
             }
 
             if (PlayerRepository.findByCorreo(email) !=  null) {
-                return new ResponseEntity<>("Name already in use", HttpStatus.FORBIDDEN);
+                respuesta.put("error","Name already in use")
+                return new ResponseEntity<>(respuesta, HttpStatus.FORBIDDEN);
             }
             PlayerRepository.save(new Player(firstName, email, passwordEncoder.encode(password)));
             return new ResponseEntity<>(HttpStatus.CREATED);

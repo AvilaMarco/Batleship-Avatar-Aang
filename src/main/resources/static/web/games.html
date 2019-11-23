@@ -36,15 +36,17 @@
         <div id="botonera" class="d-none" style="position: fixed;top: 0">
             <div class="headerMenu">
                 <button name="botonesMenu" id="logout" class="btn-absolute texturaMapa">Logout</button>
+                <button id="back" class="btn-absolute texturaMapa d-none">Menu</button>
             </div>
             <div class="mainMenu">
                 <button name="botonesMenu" onclick="verdatos(this)" id="info" class="btn-absolute texturaMapa">?</button>
                 <button name="botonesMenu" onclick="verdatos(this)" id="Player" class="btn-absolute"></button>
             </div>
             <div class="bottomMemu">
-               <button id="verMapa" class="btn-absolute texturaMapa">Map</button>
-                <button name="botonesMenu" id="play" class="btn-absolute texturaMapa">Play</button> 
-                <button name="botonesMenu" onclick="verdatos(this)" id="ladder" class="btn-absolute texturaMapa">Ladder</button> 
+                <button id="verMapa" name="botonesMenu" class="btn-absolute texturaMapa">Map</button> 
+                <button name="botonesMenu" onclick="verdatos(this)" id="ladder" class="btn-absolute texturaMapa">Ladder</button>
+                <button name="dataGame" onclick="infoGame()" id="infoGame" class="btn-absolute texturaMapa d-none">Info</button>
+                <button name="dataGame" onclick="enterGame(this)" id="noInfoGame" class="btn-absolute texturaMapa d-none"></button>
             </div>
         </div>
     </div>

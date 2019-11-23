@@ -90,11 +90,12 @@ function registre()
 	        	console.log("nice registre")
 	        	login()
 	        }else{
-	        	throw new Error(response.json());
+	        	return Promise.reject(response.json())
+	        	// throw new Error(response.json());
 	        }
 	    })
-	    .catch(error => error)
-    	.then(json => console.log(json))
+	    .catch(error => error.then(json => console.log(json)))
+    	
     }else if(username != "" && password != ""){
     	login()
     }else{

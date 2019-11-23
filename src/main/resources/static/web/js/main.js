@@ -11,12 +11,12 @@ let container = document.querySelector(".container");
 let modalRegistre = document.querySelector("#modal-registre");
 let logout = document.querySelector("#logout")
 let verMapa = document.querySelector("#verMapa")
-let play = document.querySelector("#play")
+// let play = document.querySelector("#play")
 let info = document.querySelector("#info")
 //eventlistener
 logout.addEventListener('click',logoutFunction)
 verMapa.addEventListener('click',viewMapa)
-play.addEventListener('click',entergame)
+// play.addEventListener('click',entergame)
 /*crear area clickable para la imagen*/
 ubicacionesMap.forEach(area=>{
     let areahtml = document.createElement("area");
@@ -36,6 +36,9 @@ function reloadInfo() {
     .then(function(response){if(response.ok){return response.json()}
     })
     .then(function(json){
+        gamesData = json.games
+        players = json.playerScore;
+        playerData = json.player;
         if(json.player.nacion != null){
             inMenu(json)
         }else{
@@ -46,9 +49,6 @@ function reloadInfo() {
             console.log(games)
             crearJuegosMap(games)
         }
-        gamesData = json.games
-        players = json.playerScore;
-        playerData = json.player;
     });
 }
 
@@ -109,18 +109,18 @@ function addmodal(){
 }
 
 function verDatosUser() {
-   let modalDiv = document.querySelector(".div-modal")
-    modalDiv.innerHTML = "" 
-    modalDiv.classList.remove("bg"+playerData.nacion)
-    modalDiv.classList.add("bg"+playerData.nacion)
-    modalDiv.style.height = "80vh"
+    let modalDiv = document.querySelector(".div-modal")
+        modalDiv.innerHTML = "" 
+        modalDiv.classList.remove("bg"+playerData.nacion)
+        modalDiv.classList.add("bg"+playerData.nacion)
+        modalDiv.style.height = "80vh"
     let div = document.createElement("div")
 }
 
 function verTutorial(argument) {
-   let modalDiv = document.querySelector(".div-modal")
-    modalDiv.innerHTML = ""
-    modalDiv.classList.remove("bg"+playerData.nacion)
+    let modalDiv = document.querySelector(".div-modal")
+        modalDiv.innerHTML = ""
+        modalDiv.classList.remove("bg"+playerData.nacion)
 }
 
 //TABLE RANKED
@@ -191,71 +191,160 @@ function crearJuegosMap(games) {
         if (e.gameplayers[0].Score == null) {
             let areahtml = document.querySelector("#"+e.direccion)
             let div = document.createElement("div")
-                div.dataset.name = "game"
+                div.classList.add("selectMap")
+                div.dataset.game = "true"
+                if(e.gameplayers.length == 2){
+                    div.dataset.gpid1 = e.gameplayers[0].id
+                    div.dataset.playerid1 = e.gameplayers[0].player.id
+                    div.dataset.gpid2 = e.gameplayers[1].id
+                    div.dataset.playerid2 = e.gameplayers[1].player.id
+                    if (e.gameplayers.some(f=>f.player.id==playerData.id)) {
+                        div.dataset.name = "Enter"
+                        div.classList.add("SelectEnter")
+                    }else{
+                        div.classList.add("SelectInGame")
+                        div.dataset.name = "InGame"
+                    }
+                }else{
+                    div.classList.add("selectJoin")
+                    div.dataset.gpid1 = e.gameplayers[0].id
+                    div.dataset.playerid1 = e.gameplayers[0].player.id
+                    div.dataset.name = "Join"
+                }
+                div.addEventListener('click',selectGame)
                 div.dataset.gameid = e.id
-                div.dataset.gpid = e.gameplayers[0].id
-                div.style.top = parseInt(areahtml.coords.split(",")[1])-30+"px"
-                div.style.left = parseInt(areahtml.coords.split(",")[0])-35+"px"
-                div.style.width = "90px"
-                div.style.height = "90px"
-                div.classList.add("icono"+areahtml.dataset.location)
-                div.style.position ="absolute"
-                div.style.zIndex = 99
+                div.style.top = parseInt(areahtml.coords.split(",")[1])-42+"px"
+                div.style.left = parseInt(areahtml.coords.split(",")[0])-37+"px"
                 div.dataset.location = areahtml.dataset.location
                 div.id = areahtml.id
-                div.addEventListener('click',isJoinGame)
-            document.querySelector("#pivotMap").appendChild(div)
-            let textoPlayer1 = document.createElement("p")
-                textoPlayer1.name = "texto"
-                textoPlayer1.classList.add("bg-color-"+e.ubicacion)
-                textoPlayer1.classList.add("textomapa")
-                textoPlayer1.innerText = e.gameplayers[0].player.email
-            div.appendChild(textoPlayer1)
-            if(e.gameplayers.length == 2){
-                let textoPlayer2 = document.createElement("p")
-                    textoPlayer2.name = "texto2"
-                    textoPlayer2.classList.add("bg-color-"+e.ubicacion)
-                    textoPlayer2.classList.add("textomapa2")
-                    textoPlayer2.innerText = e.gameplayers[1].player.email
-                div.appendChild(textoPlayer2) 
-            }   
+            document.querySelector("#pivotMap").appendChild(div) 
         }
     })
 }
 
-function entergame() {
-    let datos = document.querySelector("div[data-name*='selectGame']")
-    let datosjoingame = document.querySelector("div.selectGame")
-    let isPlayerCreator = false
-    let game;
-    if (null != datosjoingame) {
-        game = gamesData.filter(e=>e.id==datosjoingame.dataset.gameid)[0]
-       isPlayerCreator = gamesData.filter(e=>e.id==datosjoingame.dataset.gameid)[0].gameplayers.some(e=>e.player.id==playerData.id)
-    }else{
-        isPlayerCreator = false
+function selectGame(event) {
+    if (document.querySelector("div[data-name*='selectGame']")!=null) {
+        document.querySelector("#pivotMap").removeChild(document.querySelector("div[data-name*='selectGame']"))
     }
-    if (datos!=null && datosjoingame==null && !isPlayerCreator) {
-        // crear juegos
-        crearjuego(datos.dataset.location,datos.id)
-    }else if(datos==null && datosjoingame!=null && !isPlayerCreator){
-        // unirse a juego
-        joinGame(parseInt(datosjoingame.dataset.gameid))
-    }else if(isPlayerCreator && datos==null && datosjoingame!=null){
-        // volver al juego
-        console.log(parseInt(datosjoingame.dataset.gameid))
-        let gp = game.gameplayers.filter(e=>e.player.id == playerData.id?e.id:null)
-        if (gp!=null){
-            console.log(gp)
-            location.href = "/web/game.html?gp="+gp[0].id
-            // location.assign("/web/game.html?gp="+gp[0].id);
-        }else{
-            // modo espectador proximamente
-            alert("no perteneces al juego")
+    let click = event.target;
+    let div = document.createElement("div")
+        div.dataset.name = "selectGame"
+        div.classList.add("selectMap")
+        div.addEventListener('click',removeSelect)
+    if (click.dataset.game == "true") {
+        div.classList.add("selectGameCreate")
+        div.style.top = click.style.top
+        div.style.left = click.style.left 
+        div.dataset.location = click.dataset.location
+        div.dataset.id = click.id
+        document.querySelectorAll("div [name*='dataGame']").forEach(e=>{
+            e.classList.remove("d-none")
+            if (!(e.innerText=="Info") && !(click.dataset.playerid1 == playerData.id)){
+                e.innerText = click.dataset.name
+            }else if(!(e.innerText=="Info") && click.dataset.playerid1 == playerData.id){
+                e.innerText = "Enter"
+            }
+        })
+    }else{
+        div.classList.add("selectCreate")
+        div.style.top = parseInt(click.coords.split(",")[1])+110+"px"
+        div.style.left = parseInt(click.coords.split(",")[0])+103+"px"
+        div.dataset.location = click.dataset.location
+        div.dataset.id = click.id
+        document.querySelectorAll("div [name*='dataGame']").forEach(e=>{
+            e.classList.remove("d-none")
+            if (!(e.innerText=="Info")){
+                e.innerText = 'Create'
+            }
+        })
+    }
+    document.querySelector("#pivotMap").appendChild(div)
+    console.log(div)
+}
+
+function removeSelect(event) {
+   document.querySelector("#pivotMap").removeChild(event.target)
+   document.querySelectorAll("div [name*='dataGame']").forEach(e=>e.classList.add("d-none"))
+}
+// function selectGameCreate(event) {
+//     if (document.querySelector("div[data-name*='selectGame']")!=null) {
+//         document.querySelector("#pivotMap").removeChild(document.querySelector("div[data-name*='selectGame']"))
+//     }
+//     let click = event.target
+//     document.querySelectorAll("div[data-name*='game']").forEach(e=>e.classList.remove("selectGame"))
+//     if (click.name == "texto" || click.name == "texto2"){
+//         click.parentNode.classList.add("selectGame")
+//     }else{
+//         click.classList.add("selectGame")
+//     }
+//     console.log(event.target)
+// }
+
+function infoGame() {
+    addmodal()
+    let modalDiv = document.querySelector(".div-modal")
+        modalDiv.innerHTML = ""
+        modalDiv.classList.remove("bg"+playerData.nacion)
+}
+
+function enterGame(event) {
+    let datosDelJuego = document.querySelector("div#"+document.querySelector("div[data-name*='selectGame']").dataset.id)
+    if (event.innerText == "Create"){
+        let data = document.querySelector("div.selectGame")
+        crearjuego(data.dataset.location,data.dataset.id)
+    }else if(event.innerText == "Enter"){
+        if (datosDelJuego.dataset.playerid1 == playerData.id){
+            window.location.href = "/web/game.html?gp="+datosDelJuego.dataset.gpid1
+        }else if(datosDelJuego.dataset.playerid2 == playerData.id){
+            window.location.href = "/web/game.html?gp="+datosDelJuego.dataset.gpid2
         }
     }
-    else{
-        console.log("elegir una ubicacion en el mapa")
+    else if (event.innerText == "Join"){
+        
+        // playerData.id
+        // unirse al juego
+        joinGame(datosDelJuego.dataset.gameid)
+        // console.log(datosDelJuego.dataset.gameid)
+    }else if(event.innerText == "InGame"){
+        console.log("proximamente modo espectador")
     }
+
+    // let datosDelJuego = document.querySelector("div#"+document.querySelector("div[data-name*='selectGame']").dataset.id)
+    // console.log(datosDelJuego)
+    // console.log(event.innerText)
+
+    // let datos = document.querySelector("div[data-name*='selectGame']")
+    // let datosjoingame = document.querySelector("div.selectGame")
+    // let isPlayerCreator = false
+    // let game;
+    // if (null != datosjoingame) {
+    //     game = gamesData.filter(e=>e.id==datosjoingame.dataset.gameid)[0]
+    //    isPlayerCreator = gamesData.filter(e=>e.id==datosjoingame.dataset.gameid)[0].gameplayers.some(e=>e.player.id==playerData.id)
+    // }else{
+    //     isPlayerCreator = false
+    // }
+    // if (datos!=null && datosjoingame==null && !isPlayerCreator) {
+    //     // crear juegos
+    //     crearjuego(datos.dataset.location,datos.id)
+    // }else if(datos==null && datosjoingame!=null && !isPlayerCreator){
+    //     // unirse a juego
+    //     joinGame(parseInt(datosjoingame.dataset.gameid))
+    // }else if(isPlayerCreator && datos==null && datosjoingame!=null){
+    //     // volver al juego
+    //     console.log(parseInt(datosjoingame.dataset.gameid))
+    //     let gp = game.gameplayers.filter(e=>e.player.id == playerData.id?e.id:null)
+    //     if (gp!=null){
+    //         console.log(gp)
+    //         location.href = "/web/game.html?gp="+gp[0].id
+    //         // location.assign("/web/game.html?gp="+gp[0].id);
+    //     }else{
+    //         // modo espectador proximamente
+    //         alert("no perteneces al juego")
+    //     }
+    // }
+    // else{
+    //     console.log("elegir una ubicacion en el mapa")
+    // }
 }
 
 function joinGame(gameid){
@@ -282,10 +371,7 @@ function crearjuego(location,ubicacion) {
         }
     })
     .then(function(JSON){
-        console.log("entrar al juego")
-        console.log(JSON.gpid)
         window.location.href = "/web/game.html?gp="+JSON.gpid
-        // location.assign("/web/game.html?gp="+JSON.gpid);
     })
     .catch(error => error)
     .then(json => console.log(json))
@@ -293,80 +379,69 @@ function crearjuego(location,ubicacion) {
 
 // elegir un juego para entrar
 //cuando existe algun juego
-function isJoinGame(event) {
-    if (document.querySelector("div[data-name*='selectGame']")!=null) {
-        document.querySelector("#pivotMap").removeChild(document.querySelector("div[data-name*='selectGame']"))
-    }
-    let click = event.target
-    document.querySelectorAll("div[data-name*='game']").forEach(e=>e.classList.remove("selectGame"))
-    if (click.name == "texto" || click.name == "texto2"){
-        click.parentNode.classList.add("selectGame")
-    }else{
-        click.classList.add("selectGame")
-    }
-    console.log(event.target)
-}
+
 
 //cuando no existe
-function selectGame(event) {
-    document.querySelectorAll("div[data-name*='game']").forEach(e=>e.classList.remove("selectGame"))
-    let area = event.target
-    if (document.querySelector("div[data-name*='selectGame']")!=null) {
-        document.querySelector("#pivotMap").removeChild(document.querySelector("div[data-name*='selectGame']"))
-    }
-    let div = document.createElement("div")
-        div.dataset.name = "selectGame"
-        div.style.top = parseInt(area.coords.split(",")[1])-30+"px"
-        div.style.left = parseInt(area.coords.split(",")[0])-35+"px"
-        div.style.width = "90px"
-        div.style.height = "90px"
-        div.classList.add("icono"+area.dataset.location)
-        div.style.position ="absolute"
-        div.style.zIndex = 99
-        div.dataset.location = area.dataset.location
-        div.id = area.id
-    document.querySelector("#pivotMap").appendChild(div)
-    console.log(div)
+
+function viewMenu() {
+    document.querySelector("#mapabg").classList.remove("d-none")
+    document.querySelector("#back").classList.add("d-none")
+    document.querySelectorAll("button[name*='botonesMenu']").forEach(e=>e.classList.remove("d-none"))
+    document.querySelectorAll("div [name*='dataGame']").forEach(e=>e.classList.add("d-none"))
 }
 
 function viewMapa(event)
 {
-    let divselect = document.querySelector("div[data-name*='selectGame']")
-    let y,x = null
-    if (divselect!=null){
-        y = parseInt(divselect.style.top.split("px")[0])
-        x = parseInt(divselect.style.left.split("px")[0])
+    let back = document.querySelector("#back")
+        back.classList.remove("d-none")
+        back.addEventListener('click',viewMenu)
+    let mapa = document.querySelector("#mapa").classList.add("marginMap")
+    document.querySelector("#mapabg").classList.add("d-none")
+    document.querySelectorAll("button[name*='botonesMenu']").forEach(e=>e.classList.add("d-none"))
+    if (document.querySelector("div[data-game*='true']") != null && !document.querySelector("div[data-game*='true']").dataset.move) {
+        document.querySelectorAll("div[data-game*='true']").forEach(e=>{
+        e.style.top = parseInt(e.style.top.split("px")[0])+150+"px"
+        e.style.left = parseInt(e.style.left.split("px")[0])+150+"px"
+        e.dataset.move = true
+        })
     }
-    let marginMap = document.querySelector("#mapa").style
-    if (event.target.innerText == "Map") {
-        event.target.innerText = "Menu"
-        document.querySelectorAll("button[name*='botonesMenu']").forEach(e=>e.classList.add("d-none"))
-        document.querySelector("#mapabg").classList.add("d-none")
-        if (divselect!=null) {
-            document.querySelector("#mapa").style.marginLeft = "0"
-            document.querySelector("#mapa").style.marginTop = "0"
-            if (masx) {
-                divselect.style.left = x - 150 + "px"
-            }else if(masy){
-                divselect.style.top = y - 150 + "px"
-            }
-        }
-    }else{
-       event.target.innerText = "Map"
-        document.querySelector("#mapabg").classList.remove("d-none")
-        document.querySelectorAll("button[name*='botonesMenu']").forEach(e=>e.classList.remove("d-none"))
-        if (divselect!=null) {
-            if (y < 100) {
-                divselect.style.top = y + 150 + "px"
-                marginMap.marginTop = "150px"
-                masy = true
-            }else if (x < 100) {
-                divselect.style.left = x + 150 + "px"
-                marginMap.marginLeft = "150px"
-                masx = true
-            }
-        }     
-    }
+    
+    // let divselect = document.querySelector("div[data-name*='selectGame']")
+    // let y,x = null
+    // if (divselect!=null){
+    //     y = parseInt(divselect.style.top.split("px")[0])
+    //     x = parseInt(divselect.style.left.split("px")[0])
+    // }
+    // let marginMap = document.querySelector("#mapa").style
+    // if (event.target.innerText == "Map") {
+    //     event.target.innerText = "Menu"
+    //     document.querySelectorAll("button[name*='botonesMenu']").forEach(e=>e.classList.add("d-none"))
+    //     document.querySelector("#mapabg").classList.add("d-none")
+    //     if (divselect!=null) {
+    //         document.querySelector("#mapa").style.marginLeft = "0"
+    //         document.querySelector("#mapa").style.marginTop = "0"
+    //         if (masx) {
+    //             divselect.style.left = x - 150 + "px"
+    //         }else if(masy){
+    //             divselect.style.top = y - 150 + "px"
+    //         }
+    //     }
+    // }else{
+    //    event.target.innerText = "Map"
+    //     document.querySelector("#mapabg").classList.remove("d-none")
+    //     document.querySelectorAll("button[name*='botonesMenu']").forEach(e=>e.classList.remove("d-none"))
+    //     if (divselect!=null) {
+    //         if (y < 100) {
+    //             divselect.style.top = y + 150 + "px"
+    //             marginMap.marginTop = "150px"
+    //             masy = true
+    //         }else if (x < 100) {
+    //             divselect.style.left = x + 150 + "px"
+    //             marginMap.marginLeft = "150px"
+    //             masx = true
+    //         }
+    //     }     
+    // }
 }
 
 //LOGOUT
