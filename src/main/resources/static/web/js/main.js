@@ -290,7 +290,9 @@ function infoGame() {
 function enterGame(event) {
     let datosDelJuego = document.querySelector("div#"+document.querySelector("div[data-name*='selectGame']").dataset.id)
     if (event.innerText == "Create"){
-        let data = document.querySelector("div.selectGame")
+        let data = document.querySelector("div[data-name*=selectGame]")
+        // console.log(data.dataset.location)
+        // console.log(data.dataset.id)
         crearjuego(data.dataset.location,data.dataset.id)
     }else if(event.innerText == "Enter"){
         if (datosDelJuego.dataset.playerid1 == playerData.id){

@@ -414,12 +414,12 @@ public class SalvoController {
 
             Map<String, Object> respuesta = new HashMap<>();
             if (firstName.isEmpty() || email.isEmpty() || password.isEmpty()) {
-                respuesta.put("error","Missing data")
+                respuesta.put("error","Missing data");
                 return new ResponseEntity<>(respuesta, HttpStatus.FORBIDDEN);
             }
 
             if (PlayerRepository.findByCorreo(email) !=  null) {
-                respuesta.put("error","Name already in use")
+                respuesta.put("error","Name already in use");
                 return new ResponseEntity<>(respuesta, HttpStatus.FORBIDDEN);
             }
             PlayerRepository.save(new Player(firstName, email, passwordEncoder.encode(password)));
