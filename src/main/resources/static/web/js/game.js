@@ -30,7 +30,7 @@ if (screen.width < 1024){
 }
 viewPlayer(gp,true,false)
 
-function rematch(argument) {
+function reMatchGame(argument) {
  alert("Coming Soon")
 }
 
