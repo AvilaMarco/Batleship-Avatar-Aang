@@ -19,7 +19,7 @@ let grid_salvoes = document.querySelector("#grid_salvoes")
 let displayText = document.querySelector("#display")
 let rematch = document.querySelector("#rematch")
 //eventlistener
-rematch.addEventListener('click',rematch)
+rematch.addEventListener('click',reMatchGame)
 backMenu.addEventListener('click',backmenu)
 backMenu2.addEventListener('click',backmenu)
 send_Ships.addEventListener('click',sendShips)
@@ -35,11 +35,12 @@ function reMatchGame(argument) {
 }
 
 function endGame(score) {
-    document.querySelector(".flex-container").style.opacity = 0.1
+    document.querySelector(".flex-container").style.display = "none"
     document.querySelector("#modal").classList.remove("d-none")
     document.querySelector("#modal").classList.add("modalAnimation")
     let texto = document.querySelector(".text-endgame")
     let img = document.querySelector(".img-endGame")
+    a(score)
     if (score == 1){
       a("empate")
       texto.innerText = "Score +1"
@@ -129,7 +130,7 @@ function viewPlayer(gpid,isInit,isUpdateSalvo){
       if (JSON.Game_Over){
         window.clearInterval(updateSalvoes)
         console.log("fin del juego")
-        endGame(JSON.gamePlayers.filter(e=>e.id == gp)[0].score)
+        endGame(JSON.gamePlayers.filter(e=>e.id == gp)[0].Score)
       }
     }else if(JSON.Game_Started){
       isGameStart(JSON)
@@ -255,7 +256,7 @@ function sendShips(){
             throw new Error(response.text())
         }
     })
-    .catch(error => console.log(error.message))
+    // .catch(error => console.log(error.message))
   }else{
       console.log("faltan colocar ships")
   }  
@@ -355,9 +356,9 @@ function sendSalvo(){
               return Promise.reject(response.json())
             }
         }).then()
-        .catch(error => error).then(x => {
-          document.querySelector("#display").firstElementChild.innerText = x.error
-        })
+        // .catch(error => error).then(x => {
+        //   document.querySelector("#display").firstElementChild.innerText = x.error
+        // })
     }else{
         console.log("todavia te quedan disparos")
     }

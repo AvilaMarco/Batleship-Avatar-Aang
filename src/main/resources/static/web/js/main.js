@@ -43,6 +43,7 @@ function reloadInfo() {
         gamesData = json.games
         players = json.playerScore;
         playerData = json.player;
+        playerScore = json.playerScore
         if(json.player.nacion != null){
             inMenu(json)
         }else{
@@ -99,11 +100,13 @@ function verdatos(elementhtml) {
 }
 function nomodal(){
     document.querySelector("#modal").classList.add("modalAnimationout")
+    document.querySelector("#modal").classList.add("d-none")
     document.querySelector("#modal").classList.remove("modalAnimation")
     document.querySelector("#container").style.opacity = 1;
 }
 
 function addmodal(){
+    document.querySelector("#modal").classList.remove("d-none")
     document.querySelector("#modal").classList.remove("modalAnimationout")
     document.querySelector("#container").style.opacity = 0.2
     document.querySelector("#modal").classList.remove("d-none")
@@ -117,14 +120,101 @@ function verDatosUser() {
         modalDiv.classList.add("bg"+playerData.nacion)
         modalDiv.style.height = "80vh"
     let div = document.createElement("div")
+        div.classList.add("datosUser")
+        if (playerData.nacion == "agua" || playerData.nacion == "tierra") {
+            div.classList.add("datosUser-left")
+        }else{
+            div.classList.add("datosUser-right")
+        }
+        div.classList.add("bg-color-"+playerData.nacion)
+        div.style.color = "white"
+        let userName = document.createElement("P")
+            userName.innerText = playerData.email
+            userName.classList.add("text-userName")
+        let divText = document.createElement("div")
+            divText.classList.add("divText")
+            let nacion = document.createElement("P")
+                nacion.innerText = playerData.nacion
+            let name = document.createElement("P")
+                name.innerText = playerData.name
+            divText.appendChild(name)
+            divText.appendChild(nacion)
+        let table = document.createElement("TABLE")
+            console.log(playerData.id)
+            console.log(tableUser(playerData.id))
+            table.classList.add("table-user")
+            table.innerHTML +=tableUser(playerData.id)
+    div.appendChild(userName)
+    div.appendChild(divText)
+    div.appendChild(table)
+    modalDiv.appendChild(div) 
 }
 
+function tableUser(user) {
+    console.log(playerScore)
+    let datos = playerScore.filter(e=>e.id==user)[0].scores
+    console.log(datos)
+    let table = `
+        <thead>
+            <tr>
+                <th>Score</th>
+                <th>Wins</th>
+                <th>Loses</th>
+                <th>Tied</th>
+                <th>win Rate</th>
+            </tr>
+        </thead>
+        <tbody>
+    `
+    let win = 0,tied = 0,lose = 0,total = 0
+    let winRate = "-"
+    datos.forEach(e=>{
+        total +=e
+        switch(e){
+                case 3:
+                    win += 1;
+                    break;
+                case 1:
+                    tied += 1;
+                    break;
+                case 0:
+                    lose += 1;
+                    break;
+            }
+    })
+    if (datos.length != 0){
+        winRate = parseInt(win*100/datos.length)
+    }
+    table +=`
+    <tr>
+        <td>${total}</td>
+        <td>${win}</td>
+        <td>${lose}</td>
+        <td>${tied}</td>
+        <td>${winRate}</td>
+    </tr>
+    </tbody>
+    `
+    return table
+}
 function verTutorial(argument) {
     let modalDiv = document.querySelector(".div-modal")
         modalDiv.innerHTML = ""
         modalDiv.classList.remove("bg"+playerData.nacion)
+    let img = document.createElement("IMG")
+        img.classList.add("verTutorial")
+        img.src = "assets/img/bg1.jpg"
+    let text = document.createElement("P")
+        text.innerText = "Tutorial Coming Soon"
+        text.style.color = "black"
+        text.style.position = "fixed"
+        text.style.top = "19%"
+        text.style.left = "35%"
+        text.style.background = "white"
+        text.style.borderRadius = "10px"
+    modalDiv.appendChild(img)
+    modalDiv.appendChild(text)
 }
-
 /* funciones relacionadas con los juegos, unirse, crear, volver*/
 function crearJuegosMap(games) {
     Array.from(document.querySelector("#pivotMap").children).forEach(e=>e.remove())
