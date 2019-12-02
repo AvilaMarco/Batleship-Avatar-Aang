@@ -129,7 +129,7 @@ function viewPlayer(gpid,isInit,isUpdateSalvo){
       if (JSON.Game_Over){
         window.clearInterval(updateSalvoes)
         console.log("fin del juego")
-        // endGame(JSON.gamePlayers.filter(e=>e.id == gp)[0].score)
+        endGame(JSON.gamePlayers.filter(e=>e.id == gp)[0].score)
       }
     }else if(JSON.Game_Started){
       isGameStart(JSON)
@@ -144,6 +144,8 @@ function isGameStart(JSON){
   if (screen.width < 1024){
     createGrid(11, document.getElementById('grid'), 'salvoes','gridSalvos')
     document.querySelectorAll("#gridSalvos div[data-y]").forEach(e=>e.addEventListener('click',addsalvo))
+    document.querySelector("#gridShips").style.position = "fixed"
+    document.querySelector("#gridSalvos").style.position = "fixed"
   }else{
     createGrid(11, document.getElementById('grid_salvoes'), 'salvoes','gridSalvos')
     document.querySelectorAll("#grid_salvoes div[data-y]").forEach(e=>e.addEventListener('click',addsalvo))
@@ -155,8 +157,6 @@ function isGameStart(JSON){
   intervalGamestard != null ? window.clearInterval(intervalGamestard):null
 
   updateSalvoes = window.setInterval(viewPlayer, 5000,gp,false,true);
-  document.querySelector("#gridShips").style.position = "fixed"
-  document.querySelector("#gridSalvos").style.position = "fixed"
 }
 
 /*FUNCIONES DE ANIMACION DE LA GRILLA*/
@@ -246,8 +246,10 @@ function sendShips(){
           viewPlayer(gp,true,false)
           send_Ships.classList.add("d-none")
           displayText.firstElementChild.innerText = "Wait Opponent..."
-          document.querySelector("#gridShips").style.position = "fixed"
-          document.querySelector("#gridSalvos").style.position = "fixed"
+          if (screen.width < 1024){
+            document.querySelector("#gridShips").style.position = "fixed"
+            // document.querySelector("#gridSalvos").style.position = "fixed"
+          }
           intervalGamestard = window.setInterval(viewPlayer, 3000,gp,false,false);
         }else{
             throw new Error(response.text())
