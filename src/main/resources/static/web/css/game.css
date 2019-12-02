@@ -1,15 +1,105 @@
+body
+{
+    background: black;
+}
+.modal
+{
+    position: relative;
+    z-index: 999;
+    width: 100vw;
+    display: flex;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+}
+#endGame
+{
+    width: 80vw;
+    height: 80vh;
+    display: flex;
+    flex-flow: column;
+}
+.img-endGame
+{
+    width: 70%;
+    display: block;
+    margin: auto;
+}
+.text-endgame
+{
+    width: 70%;
+    display: block;
+    margin: auto;
+    color: white;
+    font-size: 35px;
+    text-align: center;
+}
+.btns-endgame
+{
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+}
+.btn-endgame
+{
+    font-size: 30px;
+    padding: 10px;
+    border-radius: 20px;
+}
 .info{
-	width: 100%;
-	height: 20%;
-	order: 3;
+    display: flex;
+    width: 100%;
+    height: 20%;
+    order: 3;
+    flex-direction: column-reverse;
+    justify-content: flex-end;
 }
 
+.niceShoot
+{
+    background: url("../assets/img/explosion2.png");
+    background-size: contain;
+}
+.failShoot
+{
+    background: url("../assets/texturas/water-texture.png");
+}
 .ships{
 	width: 100%;
 	height: 60%;
 	order: 2;
 }
-
+.box-emotes
+{
+    width: 10vw;
+    height: 10vw;
+    background-image: url(../assets/texturas/leter.png);
+    background-size: cover;
+    position: fixed;
+    top: 35vh;
+    margin-left: 1.5%;
+    border-radius: 20px;
+    border: solid;
+}
+.texto-emote
+{
+    top: 35vh;
+    width: 10vw;
+    font-size: 27px;
+}
+.img-emote
+{
+    position: fixed;
+    top: 35vh;
+    width: 98px;
+}
+.btn-emotes
+{
+    width: 75px;
+    height: 75px;
+    margin: 10px 50px;
+    border-radius: 50px;
+}
 .municion{
 	width: 100%;
 	height: 20%;
@@ -17,6 +107,93 @@
 }
 .salvo
 {
-	width: 90px;
-	height: 90px;
+	width: 47px;
+    height: 47px;
+    display: inline-block;
+}
+.btn-game
+{
+    padding: 5px;
+    margin: 5px;
+    border-radius: 10px;
+    border: solid;
+}
+.bg-dock
+{
+	position: fixed;
+    width: 18vw;
+    height: 99vh;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    z-index: -9;
+}
+#player1
+{
+	position: fixed;
+    top: 0;
+    left: 0;
+    width: 13vw;
+}
+#player2
+{
+	position: fixed;
+    top: 0;
+    right: 0;
+    width: 13vw;
+}
+.bg-img
+{
+	width: 100%;
+}
+.bg-text
+{
+    font-size: 22px;
+	position: fixed;
+    top: 22vh;
+    width: 13vw;
+    text-align: center;
+}
+.cero
+{
+    top: 0px;
+}
+.Animation-toCeroFromDown{
+    animation: toCeroFromDown 1s linear;
+    animation-fill-mode: forwards;
+    /*top: 0px !important;*/
+}
+.Animation-toCeroFromUp{
+    animation: toCeroFromUp 1s linear;
+    animation-fill-mode: forwards;
+    /*top: 0px !important;*/
+}
+.Animation-toDown{
+    animation: toDown 1s linear;
+    animation-fill-mode: forwards;
+    /*top: 100vh !important;*/
+}
+.Animation-toUp{
+    animation: toUp 1s linear;
+    animation-fill-mode: forwards;
+    /*top: -100vh !important;*/
+}
+/*inicio*/
+@keyframes toCeroFromDown {
+  from {top: 100vh;}
+  to {top: 0vh;}
+}
+
+@keyframes toCeroFromUp {
+  from {top: -100vh;}
+  to {top: 0vh;}
+}
+
+@keyframes toDown {
+  from {top: 0;}
+  to {top: 100vh;}
+}
+
+@keyframes toUp {
+  from {top: 0vh;}
+  to {top: -100vh;}
 }

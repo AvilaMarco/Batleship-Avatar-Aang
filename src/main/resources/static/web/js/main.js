@@ -3,6 +3,7 @@ let gamesData = [];
 let players = [];
 let masx,masy = false
 let playerData = {}
+let recargarMapa = false;
 //referencias al DOM
 let tablegame = document.querySelector("#game-body");
 let tableranking = document.querySelector("#ranked-body");
@@ -11,12 +12,10 @@ let container = document.querySelector(".container");
 let modalRegistre = document.querySelector("#modal-registre");
 let logout = document.querySelector("#logout")
 let verMapa = document.querySelector("#verMapa")
-// let play = document.querySelector("#play")
 let info = document.querySelector("#info")
 //eventlistener
 logout.addEventListener('click',logoutFunction)
 verMapa.addEventListener('click',viewMapa)
-// play.addEventListener('click',entergame)
 /*crear area clickable para la imagen*/
 ubicacionesMap.forEach(area=>{
     let areahtml = document.createElement("area");
@@ -25,9 +24,14 @@ ubicacionesMap.forEach(area=>{
     areahtml.shape = "circle"
     areahtml.alt = "aremap"
     areahtml.addEventListener("click",selectGame)
-    areahtml.coords = area.x+","+area.y+","+area.r
+    if (screen.width > 1024){
+        areahtml.coords = parseInt(area.x)*0.69+","+parseInt(area.y)*0.725+","+area.r
+    }else{
+        areahtml.coords = area.x+","+area.y+","+area.r
+    }
     document.querySelector("map[name*=mapeo]").appendChild(areahtml)
 })
+
 reloadInfo()
 function reloadInfo() {
     fetch('/api/games',{
@@ -63,8 +67,6 @@ function setNacionPlayer(nacion) {
             .then(function(response){if(response.ok){return response.json()}
             })
             .then(function(json){
-                console.log(json.player.nacion)
-                // inMenu(json)
                 reloadInfo()
             });
         }
@@ -123,6 +125,206 @@ function verTutorial(argument) {
         modalDiv.classList.remove("bg"+playerData.nacion)
 }
 
+/* funciones relacionadas con los juegos, unirse, crear, volver*/
+function crearJuegosMap(games) {
+    Array.from(document.querySelector("#pivotMap").children).forEach(e=>e.remove())
+    games.forEach(e=>{
+        if (e.gameplayers[0].Score == null) {
+            let areahtml = document.querySelector("#"+e.direccion)
+            let div = document.createElement("div")
+                div.classList.add("selectMap")
+                div.dataset.game = "true"
+                if(e.gameplayers.length == 2){
+                    div.dataset.gpid1 = e.gameplayers[0].id
+                    div.dataset.playerid1 = e.gameplayers[0].player.id
+                    div.dataset.gpid2 = e.gameplayers[1].id
+                    div.dataset.playerid2 = e.gameplayers[1].player.id
+                    if (e.gameplayers.some(f=>f.player.id==playerData.id)) {
+                        div.dataset.name = "Enter"
+                        div.classList.add("SelectEnter")
+                    }else{
+                        div.classList.add("SelectInGame")
+                        div.dataset.name = "InGame"
+                    }
+                }else{
+                    div.classList.add("selectJoin")
+                    div.dataset.gpid1 = e.gameplayers[0].id
+                    div.dataset.playerid1 = e.gameplayers[0].player.id
+                    div.dataset.name = "Join"
+                }
+                div.addEventListener('click',selectGame)
+                div.dataset.gameid = e.id
+                if (recargarMapa && screen.width < 1024){
+                    div.style.top = parseInt(areahtml.coords.split(",")[1])+113+"px"
+                    div.style.left = parseInt(areahtml.coords.split(",")[0])+109+"px"
+                }else if(screen.width < 1024){
+                    div.style.top = parseInt(areahtml.coords.split(",")[1])-37+"px"
+                    div.style.left = parseInt(areahtml.coords.split(",")[0])-41+"px"
+                }else{
+                    div.style.top = parseInt(areahtml.coords.split(",")[1])+47+"px"
+                    div.style.left = parseInt(areahtml.coords.split(",")[0])+166+"px"
+                }
+                div.dataset.location = areahtml.dataset.location
+                div.id = areahtml.id
+            document.querySelector("#pivotMap").appendChild(div) 
+        }
+    })
+}
+
+function selectGame(event) {
+    if (document.querySelector("div[data-name*='selectGame']")!=null) {
+        document.querySelector("#pivotMap").removeChild(document.querySelector("div[data-name*='selectGame']"))
+    }
+    let click = event.target;
+    let div = document.createElement("div")
+        div.dataset.name = "selectGame"
+        div.classList.add("selectMap")
+        div.addEventListener('click',removeSelect)
+    if (click.dataset.game == "true") {
+        div.classList.add("selectGameCreate")
+        div.style.top = click.style.top
+        div.style.left = click.style.left 
+        div.dataset.location = click.dataset.location
+        div.dataset.id = click.id
+        document.querySelectorAll("div [name*='dataGame']").forEach(e=>{
+            e.classList.remove("d-none")
+            if (!(e.innerText=="Info") && !(click.dataset.playerid1 == playerData.id)){
+                e.innerText = click.dataset.name
+            }else if(!(e.innerText=="Info") && click.dataset.playerid1 == playerData.id){
+                e.innerText = "Enter"
+            }
+        })
+    }else{
+        div.classList.add("selectCreate")
+        if (screen.width > 1024) {
+            div.style.top = parseInt(click.coords.split(",")[1])+51+"px"
+            div.style.left = parseInt(click.coords.split(",")[0])+164+"px"
+        }else{
+            div.style.top = parseInt(click.coords.split(",")[1])+110+"px"
+            div.style.left = parseInt(click.coords.split(",")[0])+109+"px"
+        }
+        div.dataset.location = click.dataset.location
+        div.dataset.id = click.id
+        document.querySelectorAll("div [name*='dataGame']").forEach(e=>{
+            e.classList.remove("d-none")
+            if (!(e.innerText=="Info")){
+                e.innerText = 'Create'
+            }
+        })
+    }
+    document.querySelector("#pivotMap").appendChild(div)
+    console.log(div)
+}
+
+function removeSelect(event) {
+   document.querySelector("#pivotMap").removeChild(event.target)
+   document.querySelectorAll("div [name*='dataGame']").forEach(e=>e.classList.add("d-none"))
+}
+
+function infoGame() {
+    addmodal()
+    let modalDiv = document.querySelector(".div-modal")
+        modalDiv.innerHTML = ""
+        modalDiv.classList.remove("bg"+playerData.nacion)
+}
+
+function enterGame(event) {
+    let datosDelJuego = document.querySelector("div#"+document.querySelector("div[data-name*='selectGame']").dataset.id)
+    if (event.innerText == "Create"){
+        let data = document.querySelector("div[data-name*=selectGame]")
+        crearjuego(data.dataset.location,data.dataset.id)
+    }else if(event.innerText == "Enter"){
+        if (datosDelJuego.dataset.playerid1 == playerData.id){
+            window.location.href = "/web/game.html?gp="+datosDelJuego.dataset.gpid1
+        }else if(datosDelJuego.dataset.playerid2 == playerData.id){
+            window.location.href = "/web/game.html?gp="+datosDelJuego.dataset.gpid2
+        }
+    }
+    else if (event.innerText == "Join"){
+        joinGame(datosDelJuego.dataset.gameid)
+    }else if(event.innerText == "InGame"){
+        alert("Coming soon spectator mode")
+    }
+}
+
+function joinGame(gameid){
+    fetch('/api/game/'+gameid+'/players',{
+    method: 'POST',
+    }).then(function(response){if(response.ok){return response.json()}
+    }).then(function(json){
+        location.assign("/web/game.html?gp="+json.gpid);
+        console.log(json.gpid)
+    }).catch(function(error) {
+  console.log('Hubo un problema con la petición Fetch:' + error.message);
+});
+}
+
+function crearjuego(location,ubicacion) {
+    fetch('/api/games/'+location+'/'+ubicacion,{
+        method:'POST'
+    })
+    .then(function(response){
+        if(response.ok){
+            return response.json()
+        }else{
+            throw new Error(response.json());
+        }
+    })
+    .then(function(JSON){
+        window.location.href = "/web/game.html?gp="+JSON.gpid
+    })
+    .catch(error => error)
+    .then(json => console.log(json))
+}
+
+function viewMenu() {
+    document.querySelector("#mapabg").classList.remove("d-none")
+    document.querySelector("#back").classList.add("d-none")
+    document.querySelector("#reload").classList.add("d-none")
+    document.querySelectorAll("button[name*='botonesMenu']").forEach(e=>e.classList.remove("d-none"))
+    document.querySelectorAll("div [name*='dataGame']").forEach(e=>e.classList.add("d-none"))
+}
+
+function viewMapa(event)
+{
+    let back = document.querySelector("#back")
+        back.classList.remove("d-none")
+        back.addEventListener('click',viewMenu)
+    let reload = document.querySelector("#reload")
+        reload.classList.remove("d-none")
+        reload.addEventListener('click',function(){
+            recargarMapa = true
+            reloadInfo();
+            reload.classList.add("Animation-reload")
+            setTimeout(function() {document.querySelector("#reload").classList.remove("Animation-reload")},1100)
+        })
+    let mapa = document.querySelector("#mapa").classList.add("marginMap")
+    document.querySelector("#mapabg").classList.add("d-none")
+    document.querySelectorAll("button[name*='botonesMenu']").forEach(e=>e.classList.add("d-none"))
+    if (document.querySelector("div[data-game*='true']") != null && !document.querySelector("div[data-game*='true']").dataset.move) {
+        document.querySelectorAll("div[data-game*='true']").forEach(e=>{
+        if (screen.width < 1024){
+            e.style.top = parseInt(e.style.top.split("px")[0])+150+"px"
+            e.style.left = parseInt(e.style.left.split("px")[0])+150+"px"
+        }else{
+            e.style.top = parseInt(e.style.top.split("px")[0])+"px"
+            e.style.left = parseInt(e.style.left.split("px")[0])+"px"
+        }
+        e.dataset.move = true
+        })
+    }
+}
+
+//LOGOUT
+function logoutFunction()
+{
+    fetch('/api/logout',{
+    method:'POST',
+    })
+    .then(function(response){
+        location.assign("/");
+    })
+}
 //TABLE RANKED
 function createTableRanking(){
     players.forEach(e=>{e.total=0;e.Won=0;e.Lost=0;e.Tied=0})
@@ -184,88 +386,6 @@ function createTableRanking(){
     body +=`</tbody></table>`
     modalDiv.innerHTML += body
 }
-
-/* funciones relacionadas con los juegos, unirse, crear, volver*/
-function crearJuegosMap(games) {
-    games.forEach(e=>{
-        if (e.gameplayers[0].Score == null) {
-            let areahtml = document.querySelector("#"+e.direccion)
-            let div = document.createElement("div")
-                div.classList.add("selectMap")
-                div.dataset.game = "true"
-                if(e.gameplayers.length == 2){
-                    div.dataset.gpid1 = e.gameplayers[0].id
-                    div.dataset.playerid1 = e.gameplayers[0].player.id
-                    div.dataset.gpid2 = e.gameplayers[1].id
-                    div.dataset.playerid2 = e.gameplayers[1].player.id
-                    if (e.gameplayers.some(f=>f.player.id==playerData.id)) {
-                        div.dataset.name = "Enter"
-                        div.classList.add("SelectEnter")
-                    }else{
-                        div.classList.add("SelectInGame")
-                        div.dataset.name = "InGame"
-                    }
-                }else{
-                    div.classList.add("selectJoin")
-                    div.dataset.gpid1 = e.gameplayers[0].id
-                    div.dataset.playerid1 = e.gameplayers[0].player.id
-                    div.dataset.name = "Join"
-                }
-                div.addEventListener('click',selectGame)
-                div.dataset.gameid = e.id
-                div.style.top = parseInt(areahtml.coords.split(",")[1])-42+"px"
-                div.style.left = parseInt(areahtml.coords.split(",")[0])-37+"px"
-                div.dataset.location = areahtml.dataset.location
-                div.id = areahtml.id
-            document.querySelector("#pivotMap").appendChild(div) 
-        }
-    })
-}
-
-function selectGame(event) {
-    if (document.querySelector("div[data-name*='selectGame']")!=null) {
-        document.querySelector("#pivotMap").removeChild(document.querySelector("div[data-name*='selectGame']"))
-    }
-    let click = event.target;
-    let div = document.createElement("div")
-        div.dataset.name = "selectGame"
-        div.classList.add("selectMap")
-        div.addEventListener('click',removeSelect)
-    if (click.dataset.game == "true") {
-        div.classList.add("selectGameCreate")
-        div.style.top = click.style.top
-        div.style.left = click.style.left 
-        div.dataset.location = click.dataset.location
-        div.dataset.id = click.id
-        document.querySelectorAll("div [name*='dataGame']").forEach(e=>{
-            e.classList.remove("d-none")
-            if (!(e.innerText=="Info") && !(click.dataset.playerid1 == playerData.id)){
-                e.innerText = click.dataset.name
-            }else if(!(e.innerText=="Info") && click.dataset.playerid1 == playerData.id){
-                e.innerText = "Enter"
-            }
-        })
-    }else{
-        div.classList.add("selectCreate")
-        div.style.top = parseInt(click.coords.split(",")[1])+110+"px"
-        div.style.left = parseInt(click.coords.split(",")[0])+103+"px"
-        div.dataset.location = click.dataset.location
-        div.dataset.id = click.id
-        document.querySelectorAll("div [name*='dataGame']").forEach(e=>{
-            e.classList.remove("d-none")
-            if (!(e.innerText=="Info")){
-                e.innerText = 'Create'
-            }
-        })
-    }
-    document.querySelector("#pivotMap").appendChild(div)
-    console.log(div)
-}
-
-function removeSelect(event) {
-   document.querySelector("#pivotMap").removeChild(event.target)
-   document.querySelectorAll("div [name*='dataGame']").forEach(e=>e.classList.add("d-none"))
-}
 // function selectGameCreate(event) {
 //     if (document.querySelector("div[data-name*='selectGame']")!=null) {
 //         document.querySelector("#pivotMap").removeChild(document.querySelector("div[data-name*='selectGame']"))
@@ -279,38 +399,6 @@ function removeSelect(event) {
 //     }
 //     console.log(event.target)
 // }
-
-function infoGame() {
-    addmodal()
-    let modalDiv = document.querySelector(".div-modal")
-        modalDiv.innerHTML = ""
-        modalDiv.classList.remove("bg"+playerData.nacion)
-}
-
-function enterGame(event) {
-    let datosDelJuego = document.querySelector("div#"+document.querySelector("div[data-name*='selectGame']").dataset.id)
-    if (event.innerText == "Create"){
-        let data = document.querySelector("div[data-name*=selectGame]")
-        // console.log(data.dataset.location)
-        // console.log(data.dataset.id)
-        crearjuego(data.dataset.location,data.dataset.id)
-    }else if(event.innerText == "Enter"){
-        if (datosDelJuego.dataset.playerid1 == playerData.id){
-            window.location.href = "/web/game.html?gp="+datosDelJuego.dataset.gpid1
-        }else if(datosDelJuego.dataset.playerid2 == playerData.id){
-            window.location.href = "/web/game.html?gp="+datosDelJuego.dataset.gpid2
-        }
-    }
-    else if (event.innerText == "Join"){
-        
-        // playerData.id
-        // unirse al juego
-        joinGame(datosDelJuego.dataset.gameid)
-        // console.log(datosDelJuego.dataset.gameid)
-    }else if(event.innerText == "InGame"){
-        console.log("proximamente modo espectador")
-    }
-
     // let datosDelJuego = document.querySelector("div#"+document.querySelector("div[data-name*='selectGame']").dataset.id)
     // console.log(datosDelJuego)
     // console.log(event.innerText)
@@ -347,67 +435,6 @@ function enterGame(event) {
     // else{
     //     console.log("elegir una ubicacion en el mapa")
     // }
-}
-
-function joinGame(gameid){
-    fetch('/api/game/'+gameid+'/players',{
-    method: 'POST',
-    }).then(function(response){if(response.ok){return response.json()}
-    }).then(function(json){
-        location.assign("/web/game.html?gp="+json.gpid);
-        console.log(json.gpid)
-    }).catch(function(error) {
-  console.log('Hubo un problema con la petición Fetch:' + error.message);
-});
-}
-
-function crearjuego(location,ubicacion) {
-    fetch('/api/games/'+location+'/'+ubicacion,{
-        method:'POST'
-    })
-    .then(function(response){
-        if(response.ok){
-            return response.json()
-        }else{
-            throw new Error(response.json());
-        }
-    })
-    .then(function(JSON){
-        window.location.href = "/web/game.html?gp="+JSON.gpid
-    })
-    .catch(error => error)
-    .then(json => console.log(json))
-}
-
-// elegir un juego para entrar
-//cuando existe algun juego
-
-
-//cuando no existe
-
-function viewMenu() {
-    document.querySelector("#mapabg").classList.remove("d-none")
-    document.querySelector("#back").classList.add("d-none")
-    document.querySelectorAll("button[name*='botonesMenu']").forEach(e=>e.classList.remove("d-none"))
-    document.querySelectorAll("div [name*='dataGame']").forEach(e=>e.classList.add("d-none"))
-}
-
-function viewMapa(event)
-{
-    let back = document.querySelector("#back")
-        back.classList.remove("d-none")
-        back.addEventListener('click',viewMenu)
-    let mapa = document.querySelector("#mapa").classList.add("marginMap")
-    document.querySelector("#mapabg").classList.add("d-none")
-    document.querySelectorAll("button[name*='botonesMenu']").forEach(e=>e.classList.add("d-none"))
-    if (document.querySelector("div[data-game*='true']") != null && !document.querySelector("div[data-game*='true']").dataset.move) {
-        document.querySelectorAll("div[data-game*='true']").forEach(e=>{
-        e.style.top = parseInt(e.style.top.split("px")[0])+150+"px"
-        e.style.left = parseInt(e.style.left.split("px")[0])+150+"px"
-        e.dataset.move = true
-        })
-    }
-    
     // let divselect = document.querySelector("div[data-name*='selectGame']")
     // let y,x = null
     // if (divselect!=null){
@@ -444,18 +471,6 @@ function viewMapa(event)
     //         }
     //     }     
     // }
-}
-
-//LOGOUT
-function logoutFunction()
-{
-    fetch('/api/logout',{
-    method:'POST',
-    })
-    .then(function(response){
-        location.assign("/");
-    })
-}
 //runweb
 // function runweb(json){
     // document.querySelector("#Player").classList.add("iconTransparent"+json.player.nacion)

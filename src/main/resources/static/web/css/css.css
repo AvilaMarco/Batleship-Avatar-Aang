@@ -33,13 +33,18 @@
     color: white;
     margin: 0;
 }
+.marginMapDesk
+{
+    border: solid;
+}
 .text
 {
     font-size: 40px;
     color: white;
     position: absolute;
-    margin-left: 5%;
+    margin-left: 0%;
     bottom: 5vh;
+    width: 19%;
 }
 /*inicio*/
 .headerMenu
@@ -89,22 +94,23 @@
     top: 10px;
     left: 10px;
 }
+#reload
+{
+    top: 10px;
+    left: 90vw;
+    border: 0;
+}
 #noInfoGame
 {
-    bottom: 0;
-    left: 55vw;
+    bottom: 45px;
+    left: 75vw;
 }
 #infoGame
 {
-    bottom: 0;
-    left: 40vw;
+    bottom: 45px;
+    left: 17vw;
     width: 96px;
 }
-/*#mapa{
-    margin:150px;
-	margin-right: 150px;
-	margin-bottom: 100px;
-}*/
 .btn-absolute
 {
     z-index: 100;
@@ -129,15 +135,6 @@
     font-size: 40px;
     border: 0;
 }
-/*#play
-{
-	bottom: -27px;
-    left: 45vw;
-    outline: none;
-    background: initial;
-    font-size: 40px;
-    border: 0;
-}*/
 #info
 {
     left: 6vw;

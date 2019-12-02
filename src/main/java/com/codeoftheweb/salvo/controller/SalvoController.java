@@ -134,15 +134,15 @@ public class SalvoController {
             if (gpOpponent!=null){
                 //empate cuando mis disparos destruyen todos los barcos en el mismo turno que mi oponente hace lo mismo
                 //de mi gp obtengo los barcos que destrui
-                if (mygp.getSalvos().stream().anyMatch(salvo->salvo.shipsDead().size()==5) && gpOpponent.getSalvos().stream().anyMatch(salvo->salvo.shipsDead().size()==5)){
+                if (mygp.getSalvos().stream().anyMatch(s->s.shipsDead()!=null?s.shipsDead().size()==5:false) && gpOpponent.getSalvos().stream().anyMatch(s->s.shipsDead()!=null?s.shipsDead().size()==5:false)){
                     //empate
                     mypuntaje = new Score(mygp.getPlayer(), mygp.getGame(),1, LocalDateTime.now());
                     opponentpuntaje = new Score(gpOpponent.getPlayer(), gpOpponent.getGame(),1, LocalDateTime.now());
-                }else if (mygp.getSalvos().stream().anyMatch(salvo->salvo.shipsDead().size()==5)){
+                }else if (mygp.getSalvos().stream().anyMatch(s->s.shipsDead()!=null?s.shipsDead().size()==5:false)){
                     //destrui todos los barcos de mi oponente y gane
                     mypuntaje = new Score(mygp.getPlayer(), mygp.getGame(),3, LocalDateTime.now());
                     opponentpuntaje = new Score(gpOpponent.getPlayer(), gpOpponent.getGame(),0, LocalDateTime.now());
-                }else if(gpOpponent.getSalvos().stream().anyMatch(salvo->salvo.shipsDead().size()==5)){
+                }else if(gpOpponent.getSalvos().stream().anyMatch(s->s.shipsDead()!=null?s.shipsDead().size()==5:false)){
                     //mi oponente destruyo todos mis barcos y perdi
                     mypuntaje = new Score(mygp.getPlayer(), mygp.getGame(),0, LocalDateTime.now());
                     opponentpuntaje = new Score(gpOpponent.getPlayer(), gpOpponent.getGame(),3, LocalDateTime.now());

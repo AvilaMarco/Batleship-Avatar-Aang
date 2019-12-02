@@ -74,6 +74,7 @@ input[name*=registre], select {
 	background-size: cover;
 }
 
+/*card mobile*/
 .iconTierra{
 	background-image: url("../assets/icons/nacionTierra.png");	
 }
@@ -116,25 +117,6 @@ input[name*=registre], select {
 	box-shadow: inset 0 0 20px 20px #3965bd;
 }
 
-
-.iconotierra{
-	/*background-image: url("../assets/icons/icontierra.png");
-	background-size: cover;	*/
-}
-.iconofuego{
-	/*background-image: url("../assets/icons/iconfuego.png");
-	background-size: cover;*/
-}
-.iconoagua{
-
-	/*background-image: url("../assets/icons/iconagua.png");
-	background-size: cover;*/
-}
-.iconoviento{
-	/*background-image: url("../assets/icons/iconviento.png");
-	background-size: cover;	*/
-}
-
 .iconTransparenttierra{
 	background-image: url("../assets/icons/transparenttierra.png");
     background-size: cover;			
@@ -153,19 +135,29 @@ input[name*=registre], select {
 }
 .bgtierra{
 	background-image: url("../assets/img/bgtierra.png") !important;
-	background-size: contain;
+	background-size: cover;
+	background-position-y: -26px;
 }
 .bgagua{
 	background-image: url("../assets/img/bgagua.png") !important;
-	background-size: contain;
+	background-size: cover;
+	background-position-y: -26px;
 }
 .bgfuego{
 	background-image: url("../assets/img/bgfuego.png") !important;
-	background-size: contain;
+	background-size: cover;
+	background-position-y: -26px;
 }
 .bgviento{
 	background-image: url("../assets/img/bgaire.png") !important;
-	background-size: contain;
+	background-size: cover;
+	background-position-y: -26px;
+}
+/*ANIMACIONES*/
+.Animation-reload
+{
+	animation: giroCompleto 1s linear;
+	animation-fill-mode: forwards;
 }
 .modalAnimation{
 	position: relative;
@@ -176,6 +168,11 @@ input[name*=registre], select {
 	position: relative;
 	animation: modalout 1s linear;
 	animation-fill-mode: forwards;
+}
+
+@keyframes giroCompleto {
+  from {transform: rotate(0deg);}
+  to {transform: rotate(360deg);}
 }
 @keyframes modal {
   from {top: -90vh;}

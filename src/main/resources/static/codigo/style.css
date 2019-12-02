@@ -175,7 +175,7 @@ input:focus{
 	}
 	.btn
 	{
-		margin-top:30vh;
+		margin-top:38%;
 	}
 	.input-form, .btn
 	{
@@ -192,7 +192,7 @@ input:focus{
 	}
 	.eye
 	{
-		bottom: 8vh;
+		bottom: 50%;
 	    left: 75%;
 	    padding: 20px;
 	    font-size: 20px;

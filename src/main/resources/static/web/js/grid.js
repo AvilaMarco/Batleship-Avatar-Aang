@@ -1,10 +1,14 @@
 /*creates the grid structure. It requires a size, an element 
 where the grid will be attached to and an id to recognized it. 
 */
-const createGrid = function(size, element, id){
+const createGrid = function(size, element, id,idGrid){
 
     let wrapper = document.createElement('DIV')//container of the grid
     wrapper.classList.add('grid-wrapper')
+    wrapper.id = idGrid
+    if (id=="ships"){
+      wrapper.classList.add('cero')
+    }
     
     //the first loop creates the rows of the grid 
     for(let i = 0; i < size; i++){
@@ -113,7 +117,7 @@ const createGrid = function(size, element, id){
 
 }
 
-createGrid(11, document.getElementById('grid'), 'ships')
+createGrid(11, document.getElementById('grid'), 'ships','gridShips')
 
 function checkBusyCells(ship, cell){
 

@@ -7,19 +7,47 @@
 	<link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/game.css">
     <link rel="stylesheet" href="css/Utilitis.css">
+    <link rel="stylesheet" media="screen and (min-width: 1024px)" href="css/desktop.css">
     <link href="https://fonts.googleapis.com/css?family=Permanent+Marker&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div id="modal" class="d-none modal">
+        <div id="endGame">
+            <img src="assets/victory.png" class="img-endGame">
+            <p class="text-endgame">Score: 0 + 3</p>
+            <div class="btns-endgame">
+                <button id="backmenu-endGame" class="btn-endgame">back menu</button>
+                <button id="rematch" class="btn-endgame">rematch</button>
+            </div>
+        </div>
+    </div>
 <div class="player flex-container">
+    <div id="player1">
+        <img src="assets/icons/border-agua.png" class="bg-img">
+        <p class="bg-text">yo</p>
+        <div class="box-emotes">
+            <p class="texto-emote"></p>
+            <img src="assets/emotes/aire1.png" class="img-emote">
+        </div>
+    </div>
+    <div id="player2">
+        <img src="assets/icons/border-agua.png" class="bg-img">
+        <p class="bg-text">player 2</p>
+        <div class="box-emotes">
+            <p class="texto-emote"></p>
+            <img src="" class="img-emote">
+        </div>
+    </div>
     <div id="dock">
+        <img src="assets/icons/borde-agua.png" class="bg-dock">
         <div class="info">
-            <button id="backmenu" class="topDock">back to menu</button>
+            <button id="backmenu" class="topDock btn-game">back to menu</button>
             <div id="display">
                 <p>Welcome...</p>
             </div>
         </div>
         <div class="ships">
-            
+            <button class="btn-emotes">a</button>
         </div>
         <!--The new ships will show up here, waiting for been placed in the grid -->
         <div class="municion">
@@ -35,8 +63,8 @@
         <!--The grid will appear here -->
     </div>
 
-	<button id="sendShips" class="d-none">enviar barcos</button>
-	<button id="sendSalvo" class="d-none" style="margin-right: 30px;">enviar salvo</button>
+	<button id="sendShips" class="d-none btn-game">enviar barcos</button>
+	<button id="sendSalvo" class="d-none btn-game" style="margin-right: 30px;">enviar salvo</button>
 </div>
 <script src="js/ships.js"></script>
 <script src="js/grid.js"></script>

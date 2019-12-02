@@ -8,6 +8,7 @@
     <link rel="stylesheet" type="text/css" href="css/css.css">
     <link rel="stylesheet" type="text/css" href="css/colores.css">
     <link href="https://fonts.googleapis.com/css?family=Permanent+Marker&display=swap" rel="stylesheet">
+    <link rel="stylesheet" media="screen and (min-width: 1024px)" href="css/desktop.css">
 </head>
 <title>Avatar Aang</title>
 </head>
@@ -19,24 +20,25 @@
     <div id="container">
         <div id="inicoNacion" class="elegirNacion d-none">
             <p class="title">Choose Your Nation</p>
-            <button class="btn-nacion iconTierra" onclick="setNacionPlayer('tierra')"><p class="text">Earth</p></button>
-            <button class="btn-nacion iconFuego" onclick="setNacionPlayer('fuego')"><p class="text">Fire</p></button>
-            <button class="btn-nacion iconAgua" onclick="setNacionPlayer('agua')"><p class="text">Water</p></button>
-            <button class="btn-nacion iconViento" onclick="setNacionPlayer('viento')"><p class="text">Air</p></button>
+            <button class="btn-nacion iconTierra" onclick="setNacionPlayer('tierra')"><p class="text bg-color-tierra2">Earth</p></button>
+            <button class="btn-nacion iconFuego" onclick="setNacionPlayer('fuego')"><p class="text bg-color-fuego2">Fire</p></button>
+            <button class="btn-nacion iconAgua" onclick="setNacionPlayer('agua')"><p class="text bg-color-agua2">Water</p></button>
+            <button class="btn-nacion iconViento" onclick="setNacionPlayer('viento')"><p class="text bg-color-viento2">Air</p></button>
         </div>
         <div id="webGames" class="d-none">
             <img id="mapabg" src="assets/img/fondo-mapa.png">
             <div id="mapa-div">
                 <map name="mapeo"></map>
                 <div id="pivotMap" style="position: relative;"></div>
-                <img id="mapa" src="mapa-game-mobile.png" class="" usemap="#mapeo">
-                <img id="mapa2" src="mapa-game.png" class="d-none" usemap="#mapeo">
+                <img id="mapa" src="mapa-game-mobile.png" class="marginMapDesk" usemap="#mapeo">
+                <!-- <img id="mapa2" src="mapa-game.png" class="d-none" usemap="#mapeo"> -->
             </div>
         </div>
         <div id="botonera" class="d-none" style="position: fixed;top: 0">
             <div class="headerMenu">
                 <button name="botonesMenu" id="logout" class="btn-absolute texturaMapa">Logout</button>
                 <button id="back" class="btn-absolute texturaMapa d-none">Menu</button>
+                <img id="reload" src="assets/icons/reload.png" class="btn-absolute d-none">
             </div>
             <div class="mainMenu">
                 <button name="botonesMenu" onclick="verdatos(this)" id="info" class="btn-absolute texturaMapa">?</button>
