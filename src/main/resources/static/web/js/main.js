@@ -229,6 +229,8 @@ function crearJuegosMap(games) {
                     div.dataset.playerid1 = e.gameplayers[0].player.id
                     div.dataset.gpid2 = e.gameplayers[1].id
                     div.dataset.playerid2 = e.gameplayers[1].player.id
+                    div.dataset.playername1 = e.gameplayers[0].player.email
+                    div.dataset.playername2 = e.gameplayers[1].player.email
                     if (e.gameplayers.some(f=>f.player.id==playerData.id)) {
                         div.dataset.name = "Enter"
                         div.classList.add("SelectEnter")
@@ -239,6 +241,7 @@ function crearJuegosMap(games) {
                 }else{
                     div.classList.add("selectJoin")
                     div.dataset.gpid1 = e.gameplayers[0].id
+                    div.dataset.playername1 = e.gameplayers[0].player.email
                     div.dataset.playerid1 = e.gameplayers[0].player.id
                     div.dataset.name = "Join"
                 }
@@ -303,6 +306,9 @@ function selectGame(event) {
         })
     }
     document.querySelector("#pivotMap").appendChild(div)
+    if (document.querySelector("div#"+document.querySelector("div[data-name*=selectGame]").dataset.id) == undefined){
+        document.querySelector("#infoGame").classList.add("d-none")
+    }
     console.log(div)
 }
 
@@ -316,6 +322,36 @@ function infoGame() {
     let modalDiv = document.querySelector(".div-modal")
         modalDiv.innerHTML = ""
         modalDiv.classList.remove("bg"+playerData.nacion)
+    let select = document.querySelector("div#"+document.querySelector("div[data-name*=selectGame]").dataset.id)
+    let div = document.createElement("div")
+        div.classList.add("div-infoGame")
+        let title = document.createElement("H1")
+            title.style.margin = "0"
+        let textoPlayer1 = document.createElement("P")
+        let textoPlayer2 = document.createElement("P")
+        let divStatus = document.createElement("div")
+            divStatus.classList.add("divStatus")
+        let textoId = document.createElement("P")
+        let textoStatus = document.createElement("P")
+
+        title.innerText = "Nacion de "+select.dataset.location
+        textoId.innerText = "Game Id: "+select.dataset.gameid
+        textoPlayer1.innerText = "Player 1: "+select.dataset.playername1
+        if (select.dataset.playername2 != undefined){
+            textoPlayer2.innerText = "Player 2: "+select.dataset.playername2
+            textoStatus.innerText = "Status: In Game"
+        }else{
+            textoPlayer2.innerText = "Player 2: -"
+            textoStatus.innerText = "Status: Create"
+        }
+
+        divStatus.appendChild(textoId)
+        divStatus.appendChild(textoStatus)
+        div.appendChild(title)
+        div.appendChild(divStatus)
+        div.appendChild(textoPlayer1)
+        div.appendChild(textoPlayer2)
+    modalDiv.appendChild(div)
 }
 
 function enterGame(event) {

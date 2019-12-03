@@ -27,17 +27,34 @@
         <p class="bg-text">yo</p>
         <div class="box-emotes">
             <p class="texto-emote"></p>
-            <img src="assets/emotes/aire1.png" class="img-emote">
+            <img src="" class="img-emote">
         </div>
     </div>
     <div id="player2">
-        <img src="assets/icons/border-agua.png" class="bg-img">
+        <img src="assets/icons/misterx.png" class="bg-img">
         <p class="bg-text">player 2</p>
         <div class="box-emotes">
             <p class="texto-emote"></p>
             <img src="" class="img-emote">
         </div>
     </div>
+    <button id="hideE" class="btn-emotes d-none" onclick="ocultarEmotes()">X</button>
+    <div class="box-emotes-dock d-none">
+            <div class="img">
+                <img onclick="sendEmote('emote-1')" src="assets/emotes/emote-1.png">
+                <img onclick="sendEmote('emote-2')" src="assets/emotes/emote-2.png">
+                <img onclick="sendEmote('emote-3')" src="assets/emotes/emote-3.png">
+                <img onclick="sendEmote('emote-4')" src="assets/emotes/emote-4.png">
+            </div>
+            <div class="text">
+                <p onclick="sendEmote(this)" >Good luck!</p>
+                <p onclick="sendEmote(this)" >Oops</p>
+                <p onclick="sendEmote(this)" >Good game!</p>
+                <p onclick="sendEmote(this)" >Wow!</p>
+                <p onclick="sendEmote(this)" >Well played!</p>
+                <p onclick="sendEmote(this)" >Thanks</p>
+            </div>
+        </div>
     <div id="dock">
         <img src="assets/icons/borde-agua.png" class="bg-dock">
         <div class="info">
@@ -47,7 +64,7 @@
             </div>
         </div>
         <div class="ships">
-            <button class="btn-emotes d-none">a</button>
+            <button id="seeE" class="btn-emotes " onclick="verEmotes()"></button>
         </div>
         <!--The new ships will show up here, waiting for been placed in the grid -->
         <div class="municion">
@@ -64,7 +81,7 @@
     </div>
 
 	<button id="sendShips" class="d-none btn-game">enviar barcos</button>
-	<button id="sendSalvo" class="d-none btn-game" style="margin-right: 30px;">enviar salvo</button>
+	<button id="sendSalvo" class="d-none btn-game" style="width: 96%;">enviar salvo</button>
 </div>
 <script src="js/ships.js"></script>
 <script src="js/grid.js"></script>

@@ -68,6 +68,7 @@ body
 	width: 100%;
 	height: 60%;
 	order: 2;
+    z-index: 9;
 }
 .box-emotes
 {
@@ -83,9 +84,10 @@ body
 }
 .texto-emote
 {
-    top: 35vh;
-    width: 10vw;
-    font-size: 27px;
+    position: relative;
+    top: -4vh;
+    font-size: 28px;
+    left: 11px;
 }
 .img-emote
 {
@@ -95,10 +97,24 @@ body
 }
 .btn-emotes
 {
-    width: 75px;
-    height: 75px;
-    margin: 10px 50px;
+    width: 120px;
+    height: 120px;
+    margin: 10px 25px;
     border-radius: 50px;
+    background: url(../assets/icons/emote.png);
+    background-size: cover;
+}
+#hideE
+{
+    background: white;
+    font-size: 60px;
+    width: 90px;
+    height: 90px;
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 73%;
+    z-index: 99;
 }
 .municion{
 	width: 100%;
@@ -152,6 +168,60 @@ body
     top: 22vh;
     width: 13vw;
     text-align: center;
+}
+.bgGrid-agua
+{
+    background: url("../assets/icons/fondoGrid-agua.png");
+}
+.bgGrid-fuego
+{
+    background: url("../assets/icons/fondoGrid-fuego.png");
+}
+.bgGrid-viento
+{
+    background: url("../assets/icons/fondoGrid-viento.png");
+}
+.bgGrid-tierra
+{
+    background: url("../assets/icons/fondoGrid-tierra.png");
+}
+.box-emotes-dock
+{
+    width: 39vw;
+    height: 99vh;
+    background: #63492a;
+    position: fixed;
+    z-index: 9;
+    border-radius: 40px;
+    display: flex;
+    flex-flow: column;
+    justify-content: space-between;
+    right: 6px;
+}
+.box-emotes-dock .img img
+{
+    width: 130px;
+}
+.box-emotes-dock .img
+{
+    display: flex;
+    flex-flow: wrap;
+    justify-content: center;
+}
+.box-emotes-dock p{
+    background: white;
+    border-radius: 20px;
+    font-size: 23px;
+    margin: 4px;
+    text-align: center;
+    width: 170px;
+    height: 40px;
+}
+.box-emotes-dock .text
+{
+    padding: 10px;
+    display: flex;
+    flex-flow: wrap;
 }
 .cero
 {

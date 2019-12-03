@@ -54,12 +54,12 @@ function endGame(score) {
       a("perdida")
     }
 }
-
+// 
 function cargarDatosScreen(json) {
   // variables
   let player1 = document.querySelector("#player1")
   let player2 = document.querySelector("#player2")
-  let dock = document.querySelector("#dock")
+  let dockImg = document.querySelector("#dock > img")
   let grid_salvoes = document.querySelector("#grid_salvoes")
   let grid = document.querySelector("#grid")
 
@@ -79,6 +79,9 @@ function cargarDatosScreen(json) {
       }
     })
   }
+  dockImg.src = "assets/icons/borde-"+json.ubicacion+".png"
+  grid_salvoes.classList.add("bgGrid-"+json.ubicacion)
+  grid.classList.add("bgGrid-"+json.ubicacion)
   a(json)
   // playerDataGame1
   // playerDataGame2
@@ -159,7 +162,46 @@ function isGameStart(JSON){
 
   updateSalvoes = window.setInterval(viewPlayer, 5000,gp,false,true);
 }
+/*FUNCIONES EMOTES*/
+function sendEmote(texto) {
+  let texotFetch;
+  if (texto.tagName){
+    texotFetch = texto.innerText
+  }else{
+    texotFetch = texto
+  }
+  fetch("/api/emote/"+gp+"/"+texotFetch,{
+        method:'POST',
+    })
+    .then(function(response){
+        if(response.ok){
+          if (texotFetch[0] == "e") {
+            document.querySelector("#player1 .box-emotes p").classList.add("d-none")
+            document.querySelector("#player1 .box-emotes img").classList.remove("d-none")
+            document.querySelector("#player1 .box-emotes img").src = "assets/emotes/"+texotFetch+".png"
+          }else{
+            document.querySelector("#player1 .box-emotes p").classList.remove("d-none")
+            document.querySelector("#player1 .box-emotes img").classList.add("d-none")
+            document.querySelector("#player1 .box-emotes p").innerText = texotFetch
+          }
+        }else{
+            console.log(response.text())
+        }
+    })
+}
+function verEmotes() {
+  document.querySelector("#seeE").classList.add("d-none")
+  document.querySelector("#hideE").classList.remove("d-none")
+  let diplayEmotes = document.querySelector(".box-emotes-dock")
+  diplayEmotes.classList.remove("d-none")
+}
 
+function ocultarEmotes() {
+  document.querySelector("#seeE").classList.remove("d-none")
+  document.querySelector("#hideE").classList.add("d-none")
+  let diplayEmotes = document.querySelector(".box-emotes-dock")
+      diplayEmotes.classList.add("d-none")
+}
 /*FUNCIONES DE ANIMACION DE LA GRILLA*/
 let posInit = null;
 let posFin = null
@@ -406,4 +448,27 @@ function createSalvoes(json){
     }
   }
   
+  // creo y actualizo los emotes
+  if (json.my_emote != null) {
+    if (json.my_emote[0] == "e") {
+      document.querySelector("#player1 .box-emotes p").classList.add("d-none")
+      document.querySelector("#player1 .box-emotes img").classList.remove("d-none")
+      document.querySelector("#player1 .box-emotes img").src = "assets/emotes/"+json.my_emote+".png"
+    }else{
+      document.querySelector("#player1 .box-emotes p").classList.remove("d-none")
+      document.querySelector("#player1 .box-emotes img").classList.add("d-none")
+      document.querySelector("#player1 .box-emotes p").innerText = json.my_emote
+    }
+  } 
+  if(json.Opponent_emote != null){
+    if (json.Opponent_emote[0] == "e") {
+      document.querySelector("#player2 .box-emotes p").classList.add("d-none")
+      document.querySelector("#player2 .box-emotes img").classList.remove("d-none")
+      document.querySelector("#player2 .box-emotes img").src = "assets/emotes/"+json.Opponent_emote+".png"
+    }else{
+      document.querySelector("#player2 .box-emotes p").classList.remove("d-none")
+      document.querySelector("#player2 .box-emotes img").classList.add("d-none")
+      document.querySelector("#player2 .box-emotes p").innerText = json.Opponent_emote
+    }
+  }
 }

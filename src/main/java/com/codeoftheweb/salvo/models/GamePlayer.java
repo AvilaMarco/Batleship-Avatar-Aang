@@ -17,7 +17,7 @@ public class GamePlayer {
 
     private LocalDateTime joinDate;
     private String tipo;
-
+    private String emote;
     //relaciones
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "game_id")
@@ -45,6 +45,12 @@ public class GamePlayer {
     }
 
     //setters and getters
+    public String getEmote(){
+        return this.emote;
+    }
+    public void setEmote(String emote){
+        this.emote = emote;
+    }
     public long getId() {
         return id;
     }
@@ -139,7 +145,17 @@ public class GamePlayer {
         }else{
             return false;
         }
-//        return false;
+    }
+
+    @JsonIgnore
+    public String getEmoteOpponent(){
+        long migpid = this.getId();
+        GamePlayer gpOpponent =  this.getGame().getGamePlayers().stream().filter(gamep-> gamep.getId()!=migpid).findFirst().orElse(null);
+        if (gpOpponent!=null){
+            return gpOpponent.getEmote();
+        }else {
+            return null;
+        }
     }
 
     //dto
@@ -162,6 +178,8 @@ public class GamePlayer {
         dto.put("Game_Over",this.gameover());
         dto.put("my_turn",this.getMyTurn());
         dto.put("Opponent_turn",this.getTurnOpponent());
+        dto.put("my_emote",this.getEmote());
+        dto.put("Opponent_emote",this.getEmoteOpponent());
         dto.put("gamePlayers", this.game.getGamePlayers().stream().map(GamePlayer::gamePlayerDTO));
         dto.put("ships",this.getShips().stream().map(Ship::shipsDTO));
         dto.put("salvoes",this.getGame().getGamePlayers().stream().flatMap(gp -> gp.getSalvos().stream().map(Salvo::salvoDTO)));

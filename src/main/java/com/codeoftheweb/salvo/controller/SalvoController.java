@@ -352,6 +352,27 @@ public class SalvoController {
             }
         }
 
+        //setear emote player
+        @RequestMapping(path ="/emote/{id}/{emote}", method = RequestMethod.POST)
+        public ResponseEntity<Map<String, Object>> setemote(Authentication authentication, @PathVariable Long id, @PathVariable String emote){
+            Map<String, Object> respuesta = new HashMap<>();
+            if(!isGuest(authentication)) {
+                GamePlayer gp = gamePlayerRepository.findById(id).orElse(null);
+                if (gp != null) {
+                    gp.setEmote(emote);
+                    gamePlayerRepository.save(gp);
+                    respuesta.put("good", "nice");
+                    return new ResponseEntity<>(respuesta, HttpStatus.ACCEPTED);
+                }else{
+                    respuesta.put("error", "you need to login");
+                    return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
+                }
+            }else{
+                respuesta.put("error", "you need to login");
+                return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
+            }
+        }
+
         //crear juegos
         @RequestMapping(path ="/games/{ubicacion}/{direccion}", method = RequestMethod.POST)
         public ResponseEntity<Map<String, Object>> createGame(Authentication authentication,@PathVariable String ubicacion,@PathVariable String direccion){
