@@ -40,18 +40,14 @@ function endGame(score) {
     document.querySelector("#modal").classList.add("modalAnimation")
     let texto = document.querySelector(".text-endgame")
     let img = document.querySelector(".img-endGame")
-    a(score)
     if (score == 1){
-      a("empate")
       texto.innerText = "Score +1"
     }else if(score == 3){
       img.src = "assets/img/victory.png"
       texto.innerText = "Score +3"
-      a("victorya")
     }else if(score == 0){
       img.src = "assets/img/defeat.png"
       texto.innerText = "Good Game"
-      a("perdida")
     }
 }
 // 
@@ -82,13 +78,6 @@ function cargarDatosScreen(json) {
   dockImg.src = "assets/icons/borde-"+json.ubicacion+".png"
   grid_salvoes.classList.add("bgGrid-"+json.ubicacion)
   grid.classList.add("bgGrid-"+json.ubicacion)
-  a(json)
-  // playerDataGame1
-  // playerDataGame2
-}
-
-function a(argument) {
-  console.log(argument)
 }
 
 function backmenu(){
@@ -129,7 +118,6 @@ function viewPlayer(gpid,isInit,isUpdateSalvo){
       }
     }else if(isUpdateSalvo){
       createSalvoes(JSON)
-      a(JSON.Game_Over)
       if (JSON.Game_Over){
         window.clearInterval(updateSalvoes)
         console.log("fin del juego")
@@ -157,6 +145,7 @@ function isGameStart(JSON){
   }
   createSalvoes(JSON)
   document.querySelector("#display").firstElementChild.innerText = "game started";
+  document.querySelector("#seeE").classList.remove("d-none")
   setTimeout(function() {activarAnimation("toBot")},2000)
   intervalGamestard != null ? window.clearInterval(intervalGamestard):null
 
@@ -184,8 +173,6 @@ function sendEmote(texto) {
             document.querySelector("#player1 .box-emotes img").classList.add("d-none")
             document.querySelector("#player1 .box-emotes p").innerText = texotFetch
           }
-        }else{
-            console.log(response.text())
         }
     })
 }
@@ -275,7 +262,6 @@ function sendShips(){
       }
       shipsObjects.push({"typeShip":e.toUpperCase(),"shipLocations":position})
     })
-    console.log(JSON.stringify(shipsObjects))
     fetch('/api/games/players/'+gp+'/ships',{
         method:'POST',
         body:JSON.stringify(shipsObjects),
@@ -285,7 +271,6 @@ function sendShips(){
     })
     .then(function(response){
         if(response.ok){
-          console.log("good fetch")
           viewPlayer(gp,true,false)
           send_Ships.classList.add("d-none")
           displayText.firstElementChild.innerText = "Wait Opponent..."
@@ -300,7 +285,7 @@ function sendShips(){
     })
     // .catch(error => console.log(error.message))
   }else{
-      console.log("faltan colocar ships")
+      alert("faltan colocar ships")
   }  
 }
 
@@ -340,7 +325,6 @@ function addsalvo(event){
         celda.classList.add(playerDataGame1.nacion)
         celda.dataset.salvo = true
         salvoInDock.firstElementChild.remove()
-        console.log(playerDataGame1)
       }else if(celda.dataset.salvo){
         celda.classList.remove(playerDataGame1.nacion)
         let shoot = document.createElement("div")
@@ -350,7 +334,6 @@ function addsalvo(event){
         celda.removeAttribute("data-salvo")
         displayText.firstElementChild.innerText = "you can shoot"
       }else{
-        console.log("mal")
         displayText.firstElementChild.innerText = "you have no shots left"
       }
     }
@@ -380,7 +363,6 @@ function sendSalvo(){
         })
         .then(function(response){
             if(response.ok){
-                console.log("good fetch")
                 if (screen.width < 1024) {
                   document.querySelectorAll("#grid div[data-salvo]").forEach(e=>{
                     e.classList.remove(playerDataGame1.nacion)
@@ -401,12 +383,34 @@ function sendSalvo(){
         // .catch(error => error).then(x => {
         //   document.querySelector("#display").firstElementChild.innerText = x.error
         // })
-    }else{
-        console.log("todavia te quedan disparos")
     }
 }
 
 function createSalvoes(json){
+  // creo y actualizo los emotes
+  if (json.my_emote != null) {
+    if (json.my_emote[0] == "e") {
+      document.querySelector("#player1 .box-emotes p").classList.add("d-none")
+      document.querySelector("#player1 .box-emotes img").classList.remove("d-none")
+      document.querySelector("#player1 .box-emotes img").src = "assets/emotes/"+json.my_emote+".png"
+    }else{
+      document.querySelector("#player1 .box-emotes p").classList.remove("d-none")
+      document.querySelector("#player1 .box-emotes img").classList.add("d-none")
+      document.querySelector("#player1 .box-emotes p").innerText = json.my_emote
+    }
+  } 
+  if(json.Opponent_emote != null){
+    if (json.Opponent_emote[0] == "e") {
+      document.querySelector("#player2 .box-emotes p").classList.add("d-none")
+      document.querySelector("#player2 .box-emotes img").classList.remove("d-none")
+      document.querySelector("#player2 .box-emotes img").src = "assets/emotes/"+json.Opponent_emote+".png"
+    }else{
+      document.querySelector("#player2 .box-emotes p").classList.remove("d-none")
+      document.querySelector("#player2 .box-emotes img").classList.add("d-none")
+      document.querySelector("#player2 .box-emotes p").innerText = json.Opponent_emote
+    }
+  }
+  
   let idPlayer = json.gamePlayers.filter(e=>e.id == gp)[0].player.id
   let ultimoTiro = null
   let ultimoTurno = null
@@ -445,30 +449,6 @@ function createSalvoes(json){
       send_Salvo.classList.add("d-none")
       canShoot = false
       createSalvoDock((5-ultimoTiro.ships_dead.length))
-    }
-  }
-  
-  // creo y actualizo los emotes
-  if (json.my_emote != null) {
-    if (json.my_emote[0] == "e") {
-      document.querySelector("#player1 .box-emotes p").classList.add("d-none")
-      document.querySelector("#player1 .box-emotes img").classList.remove("d-none")
-      document.querySelector("#player1 .box-emotes img").src = "assets/emotes/"+json.my_emote+".png"
-    }else{
-      document.querySelector("#player1 .box-emotes p").classList.remove("d-none")
-      document.querySelector("#player1 .box-emotes img").classList.add("d-none")
-      document.querySelector("#player1 .box-emotes p").innerText = json.my_emote
-    }
-  } 
-  if(json.Opponent_emote != null){
-    if (json.Opponent_emote[0] == "e") {
-      document.querySelector("#player2 .box-emotes p").classList.add("d-none")
-      document.querySelector("#player2 .box-emotes img").classList.remove("d-none")
-      document.querySelector("#player2 .box-emotes img").src = "assets/emotes/"+json.Opponent_emote+".png"
-    }else{
-      document.querySelector("#player2 .box-emotes p").classList.remove("d-none")
-      document.querySelector("#player2 .box-emotes img").classList.add("d-none")
-      document.querySelector("#player2 .box-emotes p").innerText = json.Opponent_emote
     }
   }
 }

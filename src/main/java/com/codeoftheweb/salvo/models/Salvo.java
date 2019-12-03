@@ -57,10 +57,8 @@ public class Salvo {
     public List<String> goodShoot(List<String> shoots){
         long migp = this.gamePlayer.getId();
         GamePlayer gp =  this.gamePlayer.getGame().getGamePlayers().stream().filter(gamep-> gamep.getId()!=migp).findFirst().orElse(null);
-        System.out.println(gp);
-        if (gp != null && shoots.size()==5){
+        if (gp != null){
             List<String> positionShips = gp.getShips().stream().flatMap(e -> e.getShipLocations().stream().map(l->l)).collect(Collectors.toList());
-            System.out.println(positionShips);
             return shoots.stream().filter(s-> positionShips.stream().anyMatch(p->p.equals(s))).collect(Collectors.toList());
         }else {
             return null;

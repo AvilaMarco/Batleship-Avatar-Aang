@@ -9,11 +9,13 @@
     <link rel="stylesheet" href="css/Utilitis.css">
     <link rel="stylesheet" media="screen and (min-width: 1024px)" href="css/desktop.css">
     <link href="https://fonts.googleapis.com/css?family=Permanent+Marker&display=swap" rel="stylesheet">
+    <meta name="viewport" content="user-scalable=no" />
+    <meta name="HandheldFriendly" content="true" />
 </head>
 <body>
     <div id="modal" class="d-none modal">
         <div id="endGame">
-            <img src="assets/victory.png" class="img-endGame">
+            <img src="assets/img/victory.png" class="img-endGame">
             <p class="text-endgame">Score: 0 + 3</p>
             <div class="btns-endgame">
                 <button id="backmenu-endGame" class="btn-endgame">back menu</button>
@@ -64,7 +66,7 @@
             </div>
         </div>
         <div class="ships">
-            <button id="seeE" class="btn-emotes " onclick="verEmotes()"></button>
+            <button id="seeE" class="btn-emotes d-none" onclick="verEmotes()"></button>
         </div>
         <!--The new ships will show up here, waiting for been placed in the grid -->
         <div class="municion">
