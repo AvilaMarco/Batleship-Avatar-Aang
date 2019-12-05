@@ -18,6 +18,7 @@ public class GamePlayer {
     private LocalDateTime joinDate;
     private String tipo;
     private String emote;
+    private Boolean rematch;
     //relaciones
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "game_id")
@@ -45,6 +46,12 @@ public class GamePlayer {
     }
 
     //setters and getters
+    public Boolean getRematch(){
+        return this.rematch;
+    }
+    public void setRematch(Boolean isRematch){
+        this.rematch = isRematch;
+    }
     public String getEmote(){
         return this.emote;
     }
@@ -157,7 +164,16 @@ public class GamePlayer {
             return null;
         }
     }
-
+    @JsonIgnore
+    public Boolean getRematchOpponent(){
+        long migpid = this.getId();
+        GamePlayer gpOpponent =  this.getGame().getGamePlayers().stream().filter(gamep-> gamep.getId()!=migpid).findFirst().orElse(null);
+        if (gpOpponent!=null){
+            return gpOpponent.getRematch();
+        }else {
+            return null;
+        }
+    }
     //dto
     public Map<String, Object> gamePlayerDTO(){
         Map<String, Object> dto = new HashMap<>();
@@ -172,6 +188,7 @@ public class GamePlayer {
         Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("id", this.getGame().getId());
         dto.put("ubicacion", this.getGame().getubicacion());
+        dto.put("direccion", this.getGame().getDireccion());
         dto.put("tipo",this.tipo);
         dto.put("created",this.joinDate);
         dto.put("Game_Started",this.gamestard());
@@ -180,6 +197,8 @@ public class GamePlayer {
         dto.put("Opponent_turn",this.getTurnOpponent());
         dto.put("my_emote",this.getEmote());
         dto.put("Opponent_emote",this.getEmoteOpponent());
+        dto.put("my_rematch",this.getRematch());
+        dto.put("Opponent_rematch",this.getRematchOpponent());
         dto.put("gamePlayers", this.game.getGamePlayers().stream().map(GamePlayer::gamePlayerDTO));
         dto.put("ships",this.getShips().stream().map(Ship::shipsDTO));
         dto.put("salvoes",this.getGame().getGamePlayers().stream().flatMap(gp -> gp.getSalvos().stream().map(Salvo::salvoDTO)));

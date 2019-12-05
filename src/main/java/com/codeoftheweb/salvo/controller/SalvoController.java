@@ -237,6 +237,12 @@ public class SalvoController {
                         respuesta.put("error","el juego ya termino");
                         return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
                     }
+
+                    if (gp.gameover() && gp.getMyTurn() == gp.getTurnOpponent()){
+                        respuesta.put("error","el juego ya termino");
+                        return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
+                    }
+
                     //logica del juego
                     if (gp.getMyTurn() <= gp.getTurnOpponent()) {
                         if (gp.gameover()){
@@ -373,6 +379,27 @@ public class SalvoController {
             }
         }
 
+        //setear rematch player
+        @RequestMapping(path ="/rematch/{id}/{rematch}", method = RequestMethod.POST)
+        public ResponseEntity<Map<String, Object>> setRematch(Authentication authentication, @PathVariable Long id, @PathVariable Boolean rematch){
+            Map<String, Object> respuesta = new HashMap<>();
+            if(!isGuest(authentication)) {
+                GamePlayer gp = gamePlayerRepository.findById(id).orElse(null);
+                if (gp != null) {
+                    gp.setRematch(rematch);
+                    gamePlayerRepository.save(gp);
+                    respuesta.put("good", "nice");
+                    return new ResponseEntity<>(respuesta, HttpStatus.ACCEPTED);
+                }else{
+                    respuesta.put("error", "you need to login");
+                    return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
+                }
+            }else{
+                respuesta.put("error", "you need to login");
+                return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
+            }
+        }
+
         //crear juegos
         @RequestMapping(path ="/games/{ubicacion}/{direccion}", method = RequestMethod.POST)
         public ResponseEntity<Map<String, Object>> createGame(Authentication authentication,@PathVariable String ubicacion,@PathVariable String direccion){
@@ -386,6 +413,7 @@ public class SalvoController {
                     gameRepository.save(game);
                     gamePlayerRepository.save(gamePlayer);
                     respuesta.put("gpid", gamePlayer.getId());
+                    respuesta.put("gameid", game.getId());
                     return new ResponseEntity<>(respuesta, HttpStatus.ACCEPTED);
                 } else {
                     respuesta.put("error", "you need to login");

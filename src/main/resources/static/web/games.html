@@ -19,6 +19,9 @@
         <img class="close" onclick="nomodal()" src="assets/icons/close.png">
         <div class="div-modal"></div>
     </div>
+    <img src="assets/portrait.png" class="img_portrait" id="img_portrait">
+    <img src="assets/full_screen.png" class="img_portrait full_screen d-none">
+    <button onclick="full_screen()" class="btn-absolute full_screen-btn d-none" style="z-index: 999999;bottom: 8vh;left: 45vw;">Enter</button>
     <div id="container">
         <div id="inicoNacion" class="elegirNacion d-none">
             <p class="title">Choose Your Nation</p>
@@ -33,7 +36,6 @@
                 <map name="mapeo"></map>
                 <div id="pivotMap" style="position: relative;"></div>
                 <img id="mapa" src="mapa-game-mobile.png" class="marginMapDesk" usemap="#mapeo">
-                <!-- <img id="mapa2" src="mapa-game.png" class="d-none" usemap="#mapeo"> -->
             </div>
         </div>
         <div id="botonera" class="d-none" style="position: fixed;top: 0;z-index: 999;">

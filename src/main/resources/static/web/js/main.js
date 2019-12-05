@@ -31,7 +31,14 @@ ubicacionesMap.forEach(area=>{
     }
     document.querySelector("map[name*=mapeo]").appendChild(areahtml)
 })
-
+if (screen.width > 1024) {
+    document.querySelector(".full_screen").classList.remove("d-none")
+    document.querySelector(".full_screen-btn").classList.remove("d-none")
+}
+function full_screen(){
+    document.querySelector(".full_screen").classList.add("d-none")
+    document.querySelector(".full_screen-btn").classList.add("d-none")
+}
 reloadInfo()
 function reloadInfo() {
     fetch('/api/games',{
@@ -191,7 +198,7 @@ function tableUser(user) {
         <td>${win}</td>
         <td>${lose}</td>
         <td>${tied}</td>
-        <td>${winRate}</td>
+        <td>${winRate}%</td>
     </tr>
     </tbody>
     `

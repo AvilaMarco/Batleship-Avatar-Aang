@@ -10,6 +10,8 @@ let canShoot = true
 //setinterval
 var intervalGamestard = null
 var updateSalvoes = null
+var updateRematch = null
+var contador = 0;
 //botones dom
 let backMenu = document.querySelector("#backmenu")
 let backMenu2 = document.querySelector("#backmenu-endGame")
@@ -30,7 +32,17 @@ if (screen.width < 1024){
 }
 viewPlayer(gp,true,false)
 
-function reMatchGame(argument) {
+function reMatchGame() {
+  // fetch('/api/rematch/'+gp+'/'+true,{
+  //   method: 'POST',
+  // })
+  // .then(function(response){
+  //   if(response.ok){
+  //     updateRematch = window.setInterval(viewPlayer, 2000,gp,false,false,true);
+  //   }else{
+  //    throw new Error(response.text())
+  //   }
+  // })
  alert("Coming Soon")
 }
 
@@ -84,7 +96,7 @@ function backmenu(){
   location.assign("/web/games.html");
 }
 
-function viewPlayer(gpid,isInit,isUpdateSalvo){
+function viewPlayer(gpid,isInit,isUpdateSalvo,isRematch){
   fetch('/api/gp/'+gpid,{
     method: 'GET',
   })
@@ -106,6 +118,29 @@ function viewPlayer(gpid,isInit,isUpdateSalvo){
     }
     salvoes = JSON.salvoes
     cargarDatosScreen(JSON)
+    // if (isRematch && JSON.Opponent_rematch){
+    //   contador++
+    //   if (contador == 12){
+    //     return
+    //   }
+    //   if (playerDataGame1.id < playerDataGame2.id){
+    //     fetch('/api/games/'+JSON.direccion+'/'+JSON.ubicacion,{
+    //       method:'POST'
+    //     })
+    //     .then(function(response){
+    //       if(response.ok){
+    //           return response.json()
+    //       }else{
+    //           throw new Error(response.json());
+    //       }
+    //     })
+    //     .then(function(JSON_nice){
+    //         window.location.href = "/web/game.html?gp="+JSON_nice.gpid
+    //     })
+    //   }else{
+    //     setTimeout(function() {unirse_a_game(gameid)},4000)
+    //   }
+    // }
     if (isInit) {
       if(JSON.ships.length == 0){
         defaultships()
@@ -117,18 +152,29 @@ function viewPlayer(gpid,isInit,isUpdateSalvo){
         isGameStart(JSON)
       }
     }else if(isUpdateSalvo){
-      createSalvoes(JSON)
       if (JSON.Game_Over){
         window.clearInterval(updateSalvoes)
         console.log("fin del juego")
         endGame(JSON.gamePlayers.filter(e=>e.id == gp)[0].Score)
+      }else{
+        
+        createSalvoes(JSON)
       }
     }else if(JSON.Game_Started){
       isGameStart(JSON)
     }
   })
-  // .catch(error => console.log(error.message))
 }
+
+// function unirse_a_game(gameid) {
+//   fetch('/api/game/'+gameid+'/players',{
+//     method: 'POST',
+//   }).then(function(response){if(response.ok){return response.json()}
+//   }).then(function(json){
+//       location.assign("/web/game.html?gp="+json.gpid);
+//       console.log(json.gpid)
+//   })
+// }
 
 function isGameStart(JSON){
   document.querySelector("#dock .ships").appendChild(send_Salvo)
@@ -149,7 +195,7 @@ function isGameStart(JSON){
   setTimeout(function() {activarAnimation("toBot")},2000)
   intervalGamestard != null ? window.clearInterval(intervalGamestard):null
 
-  updateSalvoes = window.setInterval(viewPlayer, 5000,gp,false,true);
+  updateSalvoes = window.setInterval(viewPlayer, 3000,gp,false,true);
 }
 /*FUNCIONES EMOTES*/
 function sendEmote(texto) {
@@ -276,14 +322,12 @@ function sendShips(){
           displayText.firstElementChild.innerText = "Wait Opponent..."
           if (screen.width < 1024){
             document.querySelector("#gridShips").style.position = "fixed"
-            // document.querySelector("#gridSalvos").style.position = "fixed"
           }
           intervalGamestard = window.setInterval(viewPlayer, 3000,gp,false,false);
         }else{
             throw new Error(response.text())
         }
     })
-    // .catch(error => console.log(error.message))
   }else{
       alert("faltan colocar ships")
   }  
@@ -379,10 +423,7 @@ function sendSalvo(){
             }else{
               return Promise.reject(response.json())
             }
-        }).then()
-        // .catch(error => error).then(x => {
-        //   document.querySelector("#display").firstElementChild.innerText = x.error
-        // })
+        })
     }
 }
 

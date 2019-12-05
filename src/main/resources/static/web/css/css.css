@@ -11,8 +11,6 @@
 .datosUser
 {
     width: 55%;
-    /*background: url("../assets/texturas/textura-mapa.jpg");*/
-    /*background: red;*/
     height: 70%;
     position: absolute;
     top: 15%;
@@ -355,4 +353,19 @@ table tr th{
 	flex-direction: row;
 	height: 50px;
 	width: 150px;
+}
+
+.img_portrait
+{
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    z-index: 999999;
+}
+@media (orientation: landscape)
+{
+    #img_portrait
+    {
+       display: none;
+    }
 }
