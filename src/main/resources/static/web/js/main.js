@@ -246,11 +246,16 @@ function crearJuegosMap(games) {
                         div.dataset.name = "InGame"
                     }
                 }else{
-                    div.classList.add("selectJoin")
                     div.dataset.gpid1 = e.gameplayers[0].id
                     div.dataset.playername1 = e.gameplayers[0].player.email
                     div.dataset.playerid1 = e.gameplayers[0].player.id
-                    div.dataset.name = "Join"
+                    if(e.gameplayers.some(f=>f.player.id==playerData.id)){
+                        div.dataset.name = "Enter"
+                        div.classList.add("SelectEnter")
+                    }else{
+                        div.classList.add("selectJoin")
+                        div.dataset.name = "Join" 
+                    }
                 }
                 div.addEventListener('click',selectGame)
                 div.dataset.gameid = e.id
@@ -393,7 +398,7 @@ function joinGame(gameid){
 }
 
 function crearjuego(location,ubicacion) {
-    fetch('/api/games/'+location+'/'+ubicacion,{
+    fetch('/api/games/'+location+'/'+ubicacion+'/'+false,{
         method:'POST'
     })
     .then(function(response){

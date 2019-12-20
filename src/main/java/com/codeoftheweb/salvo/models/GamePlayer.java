@@ -19,6 +19,7 @@ public class GamePlayer {
     private String tipo;
     private String emote;
     private Boolean rematch;
+    private long newGameId;
     //relaciones
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "game_id")
@@ -46,6 +47,12 @@ public class GamePlayer {
     }
 
     //setters and getters
+    public long getnewGameId(){
+        return this.newGameId;
+    }
+    public void setnewGameId(long newGameId){
+        this.newGameId = newGameId;
+    }
     public Boolean getRematch(){
         return this.rematch;
     }
@@ -174,6 +181,17 @@ public class GamePlayer {
             return null;
         }
     }
+
+    @JsonIgnore
+    public Long getnewGameIdOpponent(){
+        long migpid = this.getId();
+        GamePlayer gpOpponent =  this.getGame().getGamePlayers().stream().filter(gamep-> gamep.getId()!=migpid).findFirst().orElse(null);
+        if (gpOpponent!=null){
+            return gpOpponent.getnewGameId();
+        }else {
+            return null;
+        }
+    }
     //dto
     public Map<String, Object> gamePlayerDTO(){
         Map<String, Object> dto = new HashMap<>();
@@ -199,6 +217,9 @@ public class GamePlayer {
         dto.put("Opponent_emote",this.getEmoteOpponent());
         dto.put("my_rematch",this.getRematch());
         dto.put("Opponent_rematch",this.getRematchOpponent());
+        if (this.getnewGameIdOpponent() != null) {
+            dto.put("new_game",this.getnewGameIdOpponent());
+        }
         dto.put("gamePlayers", this.game.getGamePlayers().stream().map(GamePlayer::gamePlayerDTO));
         dto.put("ships",this.getShips().stream().map(Ship::shipsDTO));
         dto.put("salvoes",this.getGame().getGamePlayers().stream().flatMap(gp -> gp.getSalvos().stream().map(Salvo::salvoDTO)));

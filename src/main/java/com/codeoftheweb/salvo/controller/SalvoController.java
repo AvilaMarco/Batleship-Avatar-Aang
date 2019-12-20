@@ -400,12 +400,33 @@ public class SalvoController {
             }
         }
 
+        //setear setNewGameId
+        @RequestMapping(path ="/newGameId/{newgameid}/{gpid}", method = RequestMethod.POST)
+        public ResponseEntity<Map<String, Object>> setNewGameId(@PathVariable Long newgameid,@PathVariable Long gpid){
+            Map<String, Object> respuesta = new HashMap<>();
+                GamePlayer gp = gamePlayerRepository.findById(gpid).orElse(null);
+                if (gp != null) {
+                    gp.setnewGameId(newgameid);
+                    gamePlayerRepository.save(gp);
+                    respuesta.put("good", "nice");
+                    return new ResponseEntity<>(respuesta, HttpStatus.ACCEPTED);
+                }else{
+                    respuesta.put("error", "you need to login");
+                    return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
+                }
+        }
+
         //crear juegos
-        @RequestMapping(path ="/games/{ubicacion}/{direccion}", method = RequestMethod.POST)
-        public ResponseEntity<Map<String, Object>> createGame(Authentication authentication,@PathVariable String ubicacion,@PathVariable String direccion){
+        @RequestMapping(path ="/games/{ubicacion}/{direccion}/{isrematch}", method = RequestMethod.POST)
+        public ResponseEntity<Map<String, Object>> createGame(Authentication authentication,@PathVariable String ubicacion,@PathVariable String direccion,@PathVariable Boolean isrematch){
             Map<String, Object> respuesta = new HashMap<>();
             if(!isGuest(authentication)) {
                 Player player = PlayerRepository.findByCorreo(authentication.getName());
+                Game gameAux = gameRepository.findByDireccion(direccion);
+                if (gameAux != null && !isrematch) {
+                    respuesta.put("error", "game already");
+                    return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
+                }
                 if (player != null) {
                     Game game = new Game(0,ubicacion,direccion);
                     GamePlayer gamePlayer = new GamePlayer(player, game);

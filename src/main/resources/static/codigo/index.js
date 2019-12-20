@@ -5,7 +5,9 @@ let contador = 2
 let interruptor = false
 let img1 = document.querySelector("#mobile")
 let img2 = document.querySelector("#mobile2")
-setInterval(carrusel, 5000);
+if (screen.width < 1024){
+	setInterval(carrusel, 5000);
+}
 
 function carrusel() {
 	interruptor = !interruptor

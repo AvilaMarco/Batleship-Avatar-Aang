@@ -21,9 +21,9 @@ let grid_salvoes = document.querySelector("#grid_salvoes")
 let displayText = document.querySelector("#display")
 let rematch = document.querySelector("#rematch")
 //eventlistener
-rematch.addEventListener('click',reMatchGame)
+rematch.addEventListener('click',playAgain)
 backMenu.addEventListener('click',backmenu)
-backMenu2.addEventListener('click',backmenu)
+backMenu2.addEventListener('click',noRematch)
 send_Ships.addEventListener('click',sendShips)
 send_Salvo.addEventListener('click',sendSalvo)
 if (screen.width < 1024){
@@ -32,24 +32,34 @@ if (screen.width < 1024){
 }
 viewPlayer(gp,true,false)
 
-function reMatchGame() {
-  // fetch('/api/rematch/'+gp+'/'+true,{
-  //   method: 'POST',
-  // })
-  // .then(function(response){
-  //   if(response.ok){
-  //     updateRematch = window.setInterval(viewPlayer, 2000,gp,false,false,true);
-  //   }else{
-  //    throw new Error(response.text())
-  //   }
-  // })
- alert("Coming Soon")
+function playAgain() {
+  reMatchGame(true)
+}
+
+function reMatchGame(valor) {
+  fetch('/api/rematch/'+gp+'/'+valor,{
+    method: 'POST',
+  })
+  .then(function(response){
+    if(response.ok){
+      if (valor){
+        updateRematch = window.setInterval(viewPlayer, 3000,gp,false,false,true);
+      }else{
+        location.assign("/web/games.html");
+      }
+    }else{
+     throw new Error(response.text())
+    }
+  })
 }
 
 function endGame(score) {
     document.querySelector(".flex-container").style.display = "none"
     document.querySelector("#modal").classList.remove("d-none")
     document.querySelector("#modal").classList.add("modalAnimation")
+    document.querySelector("#modal").addEventListener("animationend", function() {
+      document.querySelector("#modal").classList.remove("modalAnimation")
+    });
     let texto = document.querySelector(".text-endgame")
     let img = document.querySelector(".img-endGame")
     if (score == 1){
@@ -92,6 +102,10 @@ function cargarDatosScreen(json) {
   grid.classList.add("bgGrid-"+json.ubicacion)
 }
 
+function noRematch(){
+  reMatchGame(false)
+}
+
 function backmenu(){
   location.assign("/web/games.html");
 }
@@ -118,29 +132,39 @@ function viewPlayer(gpid,isInit,isUpdateSalvo,isRematch){
     }
     salvoes = JSON.salvoes
     cargarDatosScreen(JSON)
-    // if (isRematch && JSON.Opponent_rematch){
-    //   contador++
-    //   if (contador == 12){
-    //     return
-    //   }
-    //   if (playerDataGame1.id < playerDataGame2.id){
-    //     fetch('/api/games/'+JSON.direccion+'/'+JSON.ubicacion,{
-    //       method:'POST'
-    //     })
-    //     .then(function(response){
-    //       if(response.ok){
-    //           return response.json()
-    //       }else{
-    //           throw new Error(response.json());
-    //       }
-    //     })
-    //     .then(function(JSON_nice){
-    //         window.location.href = "/web/game.html?gp="+JSON_nice.gpid
-    //     })
-    //   }else{
-    //     setTimeout(function() {unirse_a_game(gameid)},4000)
-    //   }
-    // }
+
+    // configuracion de revancha
+    if (contador != 10 && isRematch){
+      if (JSON.Opponent_rematch != null && JSON.my_rematch != null) {
+        if (JSON.Opponent_rematch && JSON.my_rematch){
+          if (playerDataGame1.id < playerDataGame2.id){
+            fetch('/api/games/'+JSON.ubicacion+'/'+JSON.direccion+'/'+true,{
+              method:'POST'
+            })
+            .then(function(response){
+              if(response.ok){
+                  return response.json()
+              }
+            })
+            .then(function(JSON_nice){
+                setNewGame(JSON_nice.gameid,JSON_nice.gpid)
+            })
+          }else if (JSON.new_game != null){
+              unirse_a_game(JSON.new_game)
+          }
+        }else{
+          alert("the opponent did not accept, you will return to the menu")
+          setTimeout(function() {location.assign("/web/games.html");},4000)
+        }
+      }else{
+        contador++
+        return;
+      }
+    }else if (contador == 10){
+      alert("there is no response from the opponent, you will return to the menu")
+      setTimeout(function() {location.assign("/web/games.html");},4000)
+    }
+
     if (isInit) {
       if(JSON.ships.length == 0){
         defaultships()
@@ -152,7 +176,7 @@ function viewPlayer(gpid,isInit,isUpdateSalvo,isRematch){
         isGameStart(JSON)
       }
     }else if(isUpdateSalvo){
-      if (JSON.Game_Over){
+      if (JSON.Game_Over && JSON.gamePlayers.some(e=>e.Score != null)){
         window.clearInterval(updateSalvoes)
         console.log("fin del juego")
         endGame(JSON.gamePlayers.filter(e=>e.id == gp)[0].Score)
@@ -166,15 +190,24 @@ function viewPlayer(gpid,isInit,isUpdateSalvo,isRematch){
   })
 }
 
-// function unirse_a_game(gameid) {
-//   fetch('/api/game/'+gameid+'/players',{
-//     method: 'POST',
-//   }).then(function(response){if(response.ok){return response.json()}
-//   }).then(function(json){
-//       location.assign("/web/game.html?gp="+json.gpid);
-//       console.log(json.gpid)
-//   })
-// }
+function setNewGame(gameid,gpid) {
+  fetch('/api/newGameId/'+gameid+"/"+gp,{
+    method: 'POST',
+  }).then(function(response){if(response.ok){return response.json()}
+  }).then(function(json){
+      window.location.href = "/web/game.html?gp="+gpid
+  })
+}
+
+function unirse_a_game(gameid) {
+  fetch('/api/game/'+gameid+'/players',{
+    method: 'POST',
+  }).then(function(response){if(response.ok){return response.json()}
+  }).then(function(json){
+      location.assign("/web/game.html?gp="+json.gpid);
+      console.log(json.gpid)
+  })
+}
 
 function isGameStart(JSON){
   document.querySelector("#dock .ships").appendChild(send_Salvo)
