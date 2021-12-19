@@ -1,17 +1,12 @@
 package com.codeoftheweb.salvo.modelsDTO;
 
 import com.codeoftheweb.salvo.enums.TypeShips;
-import com.codeoftheweb.salvo.models.GamePlayer;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import com.codeoftheweb.salvo.enums.TypeShips;
-import org.hibernate.annotations.GenericGenerator;
-import javax.persistence.*;
-import java.util.*;
 
 @Entity
 public class ShipsDTO {
@@ -27,9 +22,10 @@ public class ShipsDTO {
     private List<String> shipLocations;
 
     //constructores
-    public ShipsDTO(){}
+    public ShipsDTO() {
+    }
 
-    public ShipsDTO(TypeShips typeShip, List<String> shipLocations){
+    public ShipsDTO(TypeShips typeShip, List<String> shipLocations) {
         this.typeShip = typeShip;
         this.shipLocations = shipLocations;
     }
@@ -49,10 +45,10 @@ public class ShipsDTO {
     }
 
     //data transfer object
-    public Map<String,Object> shipsDTO(){
-        Map<String,Object> dto = new HashMap<>();
-        dto.put("type_Ship",this.typeShip);
-        dto.put("locations",this.shipLocations);
+    public Map<String, Object> shipsDTO() {
+        Map<String, Object> dto = new HashMap<>();
+        dto.put("type_Ship", this.typeShip);
+        dto.put("locations", this.shipLocations);
         return dto;
     }
 }

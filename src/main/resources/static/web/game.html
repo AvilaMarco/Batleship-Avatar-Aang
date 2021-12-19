@@ -1,80 +1,80 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>game!</title>
-	<meta charset="utf-8">
-	<link rel="stylesheet" href="css/normalize.css" />
-	<link rel="stylesheet" href="css/style.css" />
-    <link rel="stylesheet" href="css/game.css">
-    <link rel="stylesheet" href="css/Utilitis.css">
-    <link rel="stylesheet" media="screen and (min-width: 1024px)" href="css/desktop.css">
+    <title>game!</title>
+    <meta charset="utf-8">
+    <link href="css/normalize.css" rel="stylesheet"/>
+    <link href="css/style.css" rel="stylesheet"/>
+    <link href="css/game.css" rel="stylesheet">
+    <link href="css/Utilitis.css" rel="stylesheet">
+    <link href="css/desktop.css" media="screen and (min-width: 1024px)" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Permanent+Marker&display=swap" rel="stylesheet">
-    <meta name="viewport" content="user-scalable=no" />
-    <meta name="HandheldFriendly" content="true" />
+    <meta content="user-scalable=no" name="viewport"/>
+    <meta content="true" name="HandheldFriendly"/>
 </head>
 <body>
-    <div id="modal" class="d-none modal">
-        <div id="endGame">
-            <img src="assets/img/victory.png" class="img-endGame">
-            <p class="text-endgame">Score: 0 + 3</p>
-            <div class="btns-endgame">
-                <button id="backmenu-endGame" class="btn-endgame">back menu</button>
-                <button id="rematch" class="btn-endgame">rematch</button>
-            </div>
+<div class="d-none modal" id="modal">
+    <div id="endGame">
+        <img class="img-endGame" src="assets/img/victory.png">
+        <p class="text-endgame">Score: 0 + 3</p>
+        <div class="btns-endgame">
+            <button class="btn-endgame" id="backmenu-endGame">back menu</button>
+            <button class="btn-endgame" id="rematch">rematch</button>
         </div>
     </div>
+</div>
 <div class="player flex-container">
     <div id="player1">
-        <img src="assets/icons/border-agua.png" class="bg-img">
+        <img class="bg-img" src="assets/icons/border-agua.png">
         <p class="bg-text">yo</p>
         <div class="box-emotes">
             <p class="texto-emote"></p>
-            <img src="" class="img-emote">
+            <img class="img-emote" src="">
         </div>
     </div>
     <div id="player2">
-        <img src="assets/icons/misterx.png" class="bg-img">
+        <img class="bg-img" src="assets/icons/misterx.png">
         <p class="bg-text">player 2</p>
         <div class="box-emotes">
             <p class="texto-emote"></p>
-            <img src="" class="img-emote">
+            <img class="img-emote" src="">
         </div>
     </div>
-    <button id="hideE" class="btn-emotes d-none" onclick="ocultarEmotes()">X</button>
+    <button class="btn-emotes d-none" id="hideE" onclick="ocultarEmotes()">X</button>
     <div class="box-emotes-dock d-none">
-            <div class="img">
-                <img onclick="sendEmote('emote-1')" src="assets/emotes/emote-1.png">
-                <img onclick="sendEmote('emote-2')" src="assets/emotes/emote-2.png">
-                <img onclick="sendEmote('emote-3')" src="assets/emotes/emote-3.png">
-                <img onclick="sendEmote('emote-4')" src="assets/emotes/emote-4.png">
-            </div>
-            <div class="text">
-                <p onclick="sendEmote(this)" >Good luck!</p>
-                <p onclick="sendEmote(this)" >Oops</p>
-                <p onclick="sendEmote(this)" >Good game!</p>
-                <p onclick="sendEmote(this)" >Wow!</p>
-                <p onclick="sendEmote(this)" >Well played!</p>
-                <p onclick="sendEmote(this)" >Thanks</p>
-            </div>
+        <div class="img">
+            <img onclick="sendEmote('emote-1')" src="assets/emotes/emote-1.png">
+            <img onclick="sendEmote('emote-2')" src="assets/emotes/emote-2.png">
+            <img onclick="sendEmote('emote-3')" src="assets/emotes/emote-3.png">
+            <img onclick="sendEmote('emote-4')" src="assets/emotes/emote-4.png">
         </div>
+        <div class="text">
+            <p onclick="sendEmote(this)">Good luck!</p>
+            <p onclick="sendEmote(this)">Oops</p>
+            <p onclick="sendEmote(this)">Good game!</p>
+            <p onclick="sendEmote(this)">Wow!</p>
+            <p onclick="sendEmote(this)">Well played!</p>
+            <p onclick="sendEmote(this)">Thanks</p>
+        </div>
+    </div>
     <div id="dock">
-        <img src="assets/icons/borde-agua.png" class="bg-dock">
+        <img class="bg-dock" src="assets/icons/borde-agua.png">
         <div class="info">
-            <button id="backmenu" class="topDock btn-game">back to menu</button>
+            <button class="topDock btn-game" id="backmenu">back to menu</button>
             <div id="display">
                 <p>Welcome...</p>
             </div>
         </div>
         <div class="ships">
-            <button id="seeE" class="btn-emotes d-none" onclick="verEmotes()"></button>
+            <button class="btn-emotes d-none" id="seeE" onclick="verEmotes()"></button>
         </div>
         <!--The new ships will show up here, waiting for been placed in the grid -->
         <div class="municion">
-            
+
         </div>
     </div>
 
-    <div id="grid_salvoes" class="d-none">
+    <div class="d-none" id="grid_salvoes">
         <!--The grid will appear here -->
     </div>
 
@@ -82,8 +82,8 @@
         <!--The grid will appear here -->
     </div>
 
-	<button id="sendShips" class="d-none btn-game">enviar barcos</button>
-	<button id="sendSalvo" class="d-none btn-game" style="width: 15vw;">enviar salvo</button>
+    <button class="d-none btn-game" id="sendShips">enviar barcos</button>
+    <button class="d-none btn-game" id="sendSalvo" style="width: 15vw;">enviar salvo</button>
 </div>
 <script src="js/ships.js"></script>
 <script src="js/grid.js"></script>

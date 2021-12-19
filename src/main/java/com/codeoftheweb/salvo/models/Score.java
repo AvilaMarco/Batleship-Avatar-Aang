@@ -17,17 +17,17 @@ public class Score {
 
     //relaciones
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="game_id")
+    @JoinColumn(name = "game_id")
     private Game game;
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="player_id")
+    @JoinColumn(name = "player_id")
     private Player player;
 
     //constructores
     public Score() {
     }
 
-    public Score(Player jugador, Game juego,int puntaje,LocalDateTime finishDate) {
+    public Score(Player jugador, Game juego, int puntaje, LocalDateTime finishDate) {
         this.player = jugador;
         this.game = juego;
         this.score = puntaje;
@@ -39,6 +39,7 @@ public class Score {
     public Game getGame() {
         return game;
     }
+
     @JsonIgnore
     public Player getPlayer() {
         return player;
@@ -47,6 +48,7 @@ public class Score {
     public int getScore() {
         return score;
     }
+
     @JsonIgnore
     public LocalDateTime getFinishDate() {
         return finishDate;

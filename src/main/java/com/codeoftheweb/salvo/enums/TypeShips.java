@@ -1,6 +1,6 @@
 package com.codeoftheweb.salvo.enums;
 
-public enum  TypeShips {
+public enum TypeShips {
     CARRIER,
     BATTLESHIP,
     SUBMARINE,

@@ -43,28 +43,34 @@ public class GamePlayer {
         this.player = jugador;
         this.game = juego;
         this.joinDate = LocalDateTime.now();
-        this.tipo = jugador.getNacion();
+        this.tipo = jugador.getNation();
     }
 
     //setters and getters
-    public long getnewGameId(){
+    public long getnewGameId() {
         return this.newGameId;
     }
-    public void setnewGameId(long newGameId){
+
+    public void setnewGameId(long newGameId) {
         this.newGameId = newGameId;
     }
-    public Boolean getRematch(){
+
+    public Boolean getRematch() {
         return this.rematch;
     }
-    public void setRematch(Boolean isRematch){
+
+    public void setRematch(Boolean isRematch) {
         this.rematch = isRematch;
     }
-    public String getEmote(){
+
+    public String getEmote() {
         return this.emote;
     }
-    public void setEmote(String emote){
+
+    public void setEmote(String emote) {
         this.emote = emote;
     }
+
     public long getId() {
         return id;
     }
@@ -106,123 +112,124 @@ public class GamePlayer {
     }
 
     @JsonIgnore
-    public Object getScore(){
+    public Object getScore() {
         Score score = this.player.getScore(this.game);
-        if(score != null){
+        if (score != null) {
             return score.getScore();
-        }else{
+        } else {
             return null;
         }
     }
 
     @JsonIgnore
-    public boolean gamestard(){
+    public boolean gamestard() {
         long migpid = this.getId();
-        GamePlayer gpOpponent =  this.getGame().getGamePlayers().stream().filter(gamep-> gamep.getId()!=migpid).findFirst().orElse(null);
-        if (gpOpponent!=null){
-            return this.getGame().getGamePlayers().stream().allMatch(gp->gp.getShips().size()==5);
-        }else{
+        GamePlayer gpOpponent = this.getGame().getGamePlayers().stream().filter(gamep -> gamep.getId() != migpid).findFirst().orElse(null);
+        if (gpOpponent != null) {
+            return this.getGame().getGamePlayers().stream().allMatch(gp -> gp.getShips().size() == 5);
+        } else {
             return false;
         }
 
     }
 
     @JsonIgnore
-    public int getMyTurn(){
-        return (this.getSalvos().size()+1);
+    public int getMyTurn() {
+        return (this.getSalvos().size() + 1);
     }
+
     @JsonIgnore
-    public int getTurnOpponent(){
+    public int getTurnOpponent() {
         long migpid = this.getId();
-        GamePlayer gpOpponent =  this.getGame().getGamePlayers().stream().filter(gamep-> gamep.getId()!=migpid).findFirst().orElse(null);
-        if (gpOpponent!=null){
-            return (gpOpponent.getSalvos().size()+1);
-        }else {
+        GamePlayer gpOpponent = this.getGame().getGamePlayers().stream().filter(gamep -> gamep.getId() != migpid).findFirst().orElse(null);
+        if (gpOpponent != null) {
+            return (gpOpponent.getSalvos().size() + 1);
+        } else {
             return -1;
         }
     }
+
     @JsonIgnore
-    public boolean gameover(){
+    public boolean gameover() {
         long migpid = this.getId();
-        GamePlayer mygp =  this;
-        GamePlayer gpOpponent =  this.getGame().getGamePlayers().stream().filter(gamep-> gamep.getId()!=migpid).findFirst().orElse(null);
-        if (gpOpponent!=null){
+        GamePlayer mygp = this;
+        GamePlayer gpOpponent = this.getGame().getGamePlayers().stream().filter(gamep -> gamep.getId() != migpid).findFirst().orElse(null);
+        if (gpOpponent != null) {
             //empate cuando mis disparos destruyen todos los barcos en el mismo turno que mi oponente hace lo mismo
             //de mi gp obtengo los barcos que destrui
-           if (mygp.getSalvos().stream().anyMatch(s->s.shipsDead()!=null?s.shipsDead().size()==5:false) && gpOpponent.getSalvos().stream().anyMatch(s->s.shipsDead()!=null?s.shipsDead().size()==5:false)){
+            if (mygp.getSalvos().stream().anyMatch(s -> s.shipsDead() != null && s.shipsDead().size() == 5) && gpOpponent.getSalvos().stream().anyMatch(s -> s.shipsDead() != null && s.shipsDead().size() == 5)) {
                 return true;
-            }else if (mygp.getSalvos().stream().anyMatch(s->s.shipsDead()!=null?s.shipsDead().size()==5:false) || gpOpponent.getSalvos().stream().anyMatch(s->s.shipsDead()!=null?s.shipsDead().size()==5:false)){
-                return true;
-            }else{
-                return false;
-            }
-        }else{
+            } else
+                return mygp.getSalvos().stream().anyMatch(s -> s.shipsDead() != null && s.shipsDead().size() == 5) || gpOpponent.getSalvos().stream().anyMatch(s -> s.shipsDead() != null && s.shipsDead().size() == 5);
+        } else {
             return false;
         }
     }
 
     @JsonIgnore
-    public String getEmoteOpponent(){
+    public String getEmoteOpponent() {
         long migpid = this.getId();
-        GamePlayer gpOpponent =  this.getGame().getGamePlayers().stream().filter(gamep-> gamep.getId()!=migpid).findFirst().orElse(null);
-        if (gpOpponent!=null){
+        GamePlayer gpOpponent = this.getGame().getGamePlayers().stream().filter(gamep -> gamep.getId() != migpid).findFirst().orElse(null);
+        if (gpOpponent != null) {
             return gpOpponent.getEmote();
-        }else {
-            return null;
-        }
-    }
-    @JsonIgnore
-    public Boolean getRematchOpponent(){
-        long migpid = this.getId();
-        GamePlayer gpOpponent =  this.getGame().getGamePlayers().stream().filter(gamep-> gamep.getId()!=migpid).findFirst().orElse(null);
-        if (gpOpponent!=null){
-            return gpOpponent.getRematch();
-        }else {
+        } else {
             return null;
         }
     }
 
     @JsonIgnore
-    public Long getnewGameIdOpponent(){
+    public Boolean getRematchOpponent() {
         long migpid = this.getId();
-        GamePlayer gpOpponent =  this.getGame().getGamePlayers().stream().filter(gamep-> gamep.getId()!=migpid).findFirst().orElse(null);
-        if (gpOpponent!=null){
-            return gpOpponent.getnewGameId();
-        }else {
+        GamePlayer gpOpponent = this.getGame().getGamePlayers().stream().filter(gamep -> gamep.getId() != migpid).findFirst().orElse(null);
+        if (gpOpponent != null) {
+            return gpOpponent.getRematch();
+        } else {
             return null;
         }
     }
+
+    @JsonIgnore
+    public Long getnewGameIdOpponent() {
+        long migpid = this.getId();
+        GamePlayer gpOpponent = this.getGame().getGamePlayers().stream().filter(gamep -> gamep.getId() != migpid).findFirst().orElse(null);
+        if (gpOpponent != null) {
+            return gpOpponent.getnewGameId();
+        } else {
+            return null;
+        }
+    }
+
     //dto
-    public Map<String, Object> gamePlayerDTO(){
+    public Map<String, Object> gamePlayerDTO() {
         Map<String, Object> dto = new HashMap<>();
-        dto.put("id",this.id);
-        dto.put("tipo",this.tipo);
-        dto.put("player",this.player.playerDTO());
-        dto.put("Score",this.getScore());
+        dto.put("id", this.id);
+        dto.put("tipo", this.tipo);
+        dto.put("player", this.player.playerDTO());
+        dto.put("Score", this.getScore());
         return dto;
     }
 
-    public Map<String, Object> gameVIewDTO(){
+    public Map<String, Object> gameVIewDTO() {
         Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("id", this.getGame().getId());
         dto.put("ubicacion", this.getGame().getubicacion());
-        dto.put("direccion", this.getGame().getDireccion());
-        dto.put("tipo",this.tipo);
-        dto.put("created",this.joinDate);
-        dto.put("Game_Started",this.gamestard());
-        dto.put("Game_Over",this.gameover());
-        dto.put("my_turn",this.getMyTurn());
-        dto.put("Opponent_turn",this.getTurnOpponent());
-        dto.put("my_emote",this.getEmote());
-        dto.put("Opponent_emote",this.getEmoteOpponent());
-        dto.put("my_rematch",this.getRematch());
-        dto.put("Opponent_rematch",this.getRematchOpponent());
+        dto.put("direccion", this.getGame().getDirection());
+        dto.put("tipo", this.tipo);
+        dto.put("created", this.joinDate);
+        dto.put("Game_Started", this.gamestard());
+        dto.put("Game_Over", this.gameover());
+        dto.put("my_turn", this.getMyTurn());
+        dto.put("Opponent_turn", this.getTurnOpponent());
+        dto.put("my_emote", this.getEmote());
+        dto.put("Opponent_emote", this.getEmoteOpponent());
+        dto.put("my_rematch", this.getRematch());
+        dto.put("Opponent_rematch", this.getRematchOpponent());
         if (this.getnewGameIdOpponent() != null) {
-            dto.put("new_game",this.getnewGameIdOpponent());
+            dto.put("new_game", this.getnewGameIdOpponent());
         }
         dto.put("gamePlayers", this.game.getGamePlayers().stream().map(GamePlayer::gamePlayerDTO));
-        dto.put("ships",this.getShips().stream().map(Ship::shipsDTO));
-        dto.put("salvoes",this.getGame().getGamePlayers().stream().flatMap(gp -> gp.getSalvos().stream().map(Salvo::salvoDTO)));
+        dto.put("ships", this.getShips().stream().map(Ship::shipsDTO));
+        dto.put("salvoes", this.getGame().getGamePlayers().stream().flatMap(gp -> gp.getSalvos().stream().map(Salvo::salvoDTO)));
         return dto;
     }
 }

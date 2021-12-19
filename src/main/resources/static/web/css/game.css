@@ -1,9 +1,8 @@
-body
-{
+body {
     background: black;
 }
-.modal
-{
+
+.modal {
     position: relative;
     z-index: 999;
     width: 100vw;
@@ -12,21 +11,21 @@ body
     justify-content: center;
     align-items: center;
 }
-#endGame
-{
+
+#endGame {
     width: 80vw;
     height: 80vh;
     display: flex;
     flex-flow: column;
 }
-.img-endGame
-{
+
+.img-endGame {
     width: 70%;
     display: block;
     margin: auto;
 }
-.text-endgame
-{
+
+.text-endgame {
     width: 70%;
     display: block;
     margin: auto;
@@ -34,19 +33,20 @@ body
     font-size: 35px;
     text-align: center;
 }
-.btns-endgame
-{
+
+.btns-endgame {
     width: 100%;
     display: flex;
     justify-content: space-around;
 }
-.btn-endgame
-{
+
+.btn-endgame {
     font-size: 30px;
     padding: 10px;
     border-radius: 20px;
 }
-.info{
+
+.info {
     display: flex;
     width: 100%;
     height: 20%;
@@ -55,23 +55,23 @@ body
     justify-content: flex-end;
 }
 
-.niceShoot
-{
+.niceShoot {
     background: url("../assets/img/explosion2.png");
     background-size: contain;
 }
-.failShoot
-{
+
+.failShoot {
     background: url("../assets/texturas/water-texture.png");
 }
-.ships{
-	width: 100%;
-	height: 60%;
-	order: 2;
+
+.ships {
+    width: 100%;
+    height: 60%;
+    order: 2;
     z-index: 9;
 }
-.box-emotes
-{
+
+.box-emotes {
     width: 10vw;
     height: 10vw;
     background-image: url(../assets/texturas/leter.png);
@@ -82,21 +82,21 @@ body
     border-radius: 20px;
     border: solid;
 }
-.texto-emote
-{
+
+.texto-emote {
     position: relative;
     top: -4vh;
     font-size: 28px;
     left: 11px;
 }
-.img-emote
-{
+
+.img-emote {
     position: fixed;
     top: 35vh;
     width: 98px;
 }
-.btn-emotes
-{
+
+.btn-emotes {
     width: 120px;
     height: 120px;
     margin: 10px 25px;
@@ -104,8 +104,8 @@ body
     background: url(../assets/icons/emote.png);
     background-size: cover;
 }
-#hideE
-{
+
+#hideE {
     background: white;
     font-size: 60px;
     width: 90px;
@@ -116,77 +116,78 @@ body
     left: 73%;
     z-index: 99;
 }
-.municion{
-	width: 100%;
-	height: 20%;
-	order: 1;
+
+.municion {
+    width: 100%;
+    height: 20%;
+    order: 1;
 }
-.salvo
-{
-	width: 47px;
+
+.salvo {
+    width: 47px;
     height: 47px;
     display: inline-block;
 }
-.btn-game
-{
+
+.btn-game {
     padding: 5px;
     margin: 5px;
     border-radius: 10px;
     border: solid;
 }
-.bg-dock
-{
-	position: fixed;
+
+.bg-dock {
+    position: fixed;
     width: 18vw;
     height: 99vh;
     border-top-right-radius: 20px;
     border-bottom-right-radius: 20px;
     z-index: -9;
 }
-#player1
-{
-	position: fixed;
+
+#player1 {
+    position: fixed;
     top: 0;
     left: 0;
     width: 13vw;
 }
-#player2
-{
-	position: fixed;
+
+#player2 {
+    position: fixed;
     top: 0;
     right: 0;
     width: 13vw;
 }
-.bg-img
-{
-	width: 100%;
+
+.bg-img {
+    width: 100%;
 }
-.bg-text
-{
+
+.bg-text {
     font-size: 22px;
-	position: fixed;
+    position: fixed;
     top: 22vh;
     width: 13vw;
     text-align: center;
 }
-.bgGrid-agua
-{
+
+.bgGrid-agua {
     background: url("../assets/icons/fondoGrid-agua.png");
 }
-.bgGrid-fuego
-{
+
+.bgGrid-fuego {
     background: url("../assets/icons/fondoGrid-fuego.png");
 }
-.bgGrid-viento
-{
+
+.bgGrid-viento {
     background: url("../assets/icons/fondoGrid-viento.png");
 }
-.bgGrid-tierra
-{
+
+.bgGrid-tierra {
     background: url("../assets/icons/fondoGrid-tierra.png");
 }
-.box-emotes-dock
-{
+
+.box-emotes-dock {
     width: 39vw;
     height: 99vh;
     background: #63492a;
@@ -198,17 +199,18 @@ body
     justify-content: space-between;
     right: 6px;
 }
-.box-emotes-dock .img img
-{
+
+.box-emotes-dock .img img {
     width: 130px;
 }
-.box-emotes-dock .img
-{
+
+.box-emotes-dock .img {
     display: flex;
     flex-flow: wrap;
     justify-content: center;
 }
-.box-emotes-dock p{
+
+.box-emotes-dock p {
     background: white;
     border-radius: 20px;
     font-size: 23px;
@@ -217,53 +219,74 @@ body
     width: 170px;
     height: 40px;
 }
-.box-emotes-dock .text
-{
+
+.box-emotes-dock .text {
     padding: 10px;
     display: flex;
     flex-flow: wrap;
 }
-.cero
-{
+
+.cero {
     top: 0px;
 }
-.Animation-toCeroFromDown{
+
+.Animation-toCeroFromDown {
     animation: toCeroFromDown 1s linear;
     animation-fill-mode: forwards;
     /*top: 0px !important;*/
 }
-.Animation-toCeroFromUp{
+
+.Animation-toCeroFromUp {
     animation: toCeroFromUp 1s linear;
     animation-fill-mode: forwards;
     /*top: 0px !important;*/
 }
-.Animation-toDown{
+
+.Animation-toDown {
     animation: toDown 1s linear;
     animation-fill-mode: forwards;
     /*top: 100vh !important;*/
 }
-.Animation-toUp{
+
+.Animation-toUp {
     animation: toUp 1s linear;
     animation-fill-mode: forwards;
     /*top: -100vh !important;*/
 }
+
 /*inicio*/
 @keyframes toCeroFromDown {
-  from {top: 100vh;}
-  to {top: 0vh;}
+    from {
+        top: 100vh;
+    }
+    to {
+        top: 0vh;
+    }
 }
 
 @keyframes toCeroFromUp {
-  from {top: -100vh;}
-  to {top: 0vh;}
+    from {
+        top: -100vh;
+    }
+    to {
+        top: 0vh;
+    }
 }
 
 @keyframes toDown {
-  from {top: 0;}
-  to {top: 100vh;}
+    from {
+        top: 0;
+    }
+    to {
+        top: 100vh;
+    }
 }
 
 @keyframes toUp {
-  from {top: 0vh;}
-  to {top: -100vh;}
+    from {
+        top: 0vh;
+    }
+    to {
+        top: -100vh;
+    }
 }

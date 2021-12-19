@@ -1,81 +1,79 @@
-.bg-color-agua
-{
-	background-color: #0f236b !important;
-}
-.bg-color-tierra
-{
-	background-color: #1d6412 !important;
-}
-.bg-color-fuego
-{
-	background-color: #8f0605 !important;
-}
-.bg-color-viento
-{
-	background-color: #308496 !important;
+.bg-color-agua {
+    background-color: #0f236b !important;
 }
 
-.bg-color-agua2
-{
-	background-color: #82d0e6 !important;
+.bg-color-tierra {
+    background-color: #1d6412 !important;
+}
+
+.bg-color-fuego {
+    background-color: #8f0605 !important;
+}
+
+.bg-color-viento {
+    background-color: #308496 !important;
+}
+
+.bg-color-agua2 {
+    background-color: #82d0e6 !important;
     border: solid #1e3360;
 }
-.bg-color-tierra2
-{
-	background-color: #6c6b2b !important;
+
+.bg-color-tierra2 {
+    background-color: #6c6b2b !important;
     border: solid #2c2b1d;
 }
-.bg-color-fuego2
-{
-	background-color: #d56728 !important;
+
+.bg-color-fuego2 {
+    background-color: #d56728 !important;
     border: solid #7f2e13;
 }
-.bg-color-viento2
-{
+
+.bg-color-viento2 {
     background-color: #f9d672 !important;
     border: solid #f3994b;
 }
 
-.bg-azul{
-	background-color: #033949 !important;
+.bg-azul {
+    background-color: #033949 !important;
 }
 
-.bg-verde{
-	background-color: #4ec025 !important;
+.bg-verde {
+    background-color: #4ec025 !important;
 }
 
-.bg-blanco{
-	background-color: white !important;
+.bg-blanco {
+    background-color: white !important;
 }
 
-.bg-celeste{
-	background-color: #0063f6 !important;
+.bg-celeste {
+    background-color: #0063f6 !important;
 }
 
-.bg-black{
-	background-color: black !important;
+.bg-black {
+    background-color: black !important;
 }
 
-.blanco{
-	color: white !important;
+.blanco {
+    color: white !important;
 }
 
-.celeste{
-	color: #17a2b8 !important;
+.celeste {
+    color: #17a2b8 !important;
 }
 
-.bg-gris{
-	background-color: #343a40 !important;
+.bg-gris {
+    background-color: #343a40 !important;
 }
 
-.bg-google{
-	background-color: #e84c3d !important;
+.bg-google {
+    background-color: #e84c3d !important;
 }
 
-.bg-facebook{
-	background-color: #3458a2 !important;
+.bg-facebook {
+    background-color: #3458a2 !important;
 }
 
-.bg-twitter{
-	background-color: #3598dc !important;
+.bg-twitter {
+    background-color: #3598dc !important;
 }

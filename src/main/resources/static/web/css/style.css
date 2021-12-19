@@ -1,7 +1,8 @@
-*{
+* {
     font-family: 'Permanent Marker', cursive !important;
 }
-.flex-container{
+
+.flex-container {
     display: flex;
     flex-flow: column nowrap;
     justify-content: center;
@@ -10,22 +11,22 @@
     background: url("../assets/img/bg-game.jpg");
 }
 
-#dock{
+#dock {
     height: 100px;
     width: 330px;
     display: flex;
     flex-flow: row wrap;
     justify-content: space-around;
     align-items: center;
-    border: 2px solid rgb(128,128,128);
+    border: 2px solid rgb(128, 128, 128);
     border-bottom: 0;
     border-radius: 10px 10px 0 0;
 }
 
 
-#grid{
+#grid {
     background-size: cover;
-    border: 2px solid rgb(128,128,128);
+    border: 2px solid rgb(128, 128, 128);
     border-radius: 0 0 10px 10px;
     height: 330px;
     width: 330px;
@@ -33,17 +34,17 @@
     background-position-y: 20px;
 }
 
-.grid-wrapper{
+.grid-wrapper {
     display: flex;
     flex-direction: column;
 }
 
-.grid-row{
+.grid-row {
     display: flex;
     flex-direction: row;
 }
 
-.grid-cell{
+.grid-cell {
     display: flex;
     box-sizing: border-box;
     width: 30px;
@@ -57,21 +58,21 @@
 }
 
 
-.grid-cell span{
+.grid-cell span {
     margin: auto
 }
 
-.carrier-busy-cell, .battleship-busy-cell, .submarine-busy-cell, .destroyer-busy-cell, .patrol_boat-busy-cell{
-    background-color: rgba(0,119,190,0.5);
-    
+.carrier-busy-cell, .battleship-busy-cell, .submarine-busy-cell, .destroyer-busy-cell, .patrol_boat-busy-cell {
+    background-color: rgba(0, 119, 190, 0.5);
+
 }
 
-.grid-row:first-child .grid-cell{
+.grid-row:first-child .grid-cell {
     background-image: url('../assets/texturas/leter.png');
     background-size: cover;
 }
 
-.grid-cell:first-child{
+.grid-cell:first-child {
     background-image: url('../assets/texturas/leter.png');
     background-size: cover;
 }
@@ -90,7 +91,7 @@
     border: solid 2px;
 }
 
-#display p{
+#display p {
     font-size: 0.7em;
     display: inline-block;
     overflow: hidden; /* Ensures the content is not revealed until the animation */
@@ -98,23 +99,31 @@
     white-space: nowrap; /* Keeps the content on a single line */
     margin: 0 auto; /* Gives that scrolling effect as the typing happens */
     letter-spacing: .15em; /* Adjust as needed */
-    animation: 
-        typing 3.5s steps(40, end),
-        blink-caret .75s step-end infinite;
+    animation: typing 3.5s steps(40, end),
+    blink-caret .75s step-end infinite;
 }
+
 /* The typing effect */
 @keyframes typing {
-  from { width: 0 }
-  to { width: 100% }
+    from {
+        width: 0
+    }
+    to {
+        width: 100%
+    }
 }
 
 /* The typewriter cursor effect */
 @keyframes blink-caret {
-  from, to { border-color: transparent }
-  50% { border-color: black; }
+    from, to {
+        border-color: transparent
+    }
+    50% {
+        border-color: black;
+    }
 }
 
-.grip{
+.grip {
     position: absolute;
     z-index: 99;
     left: 5px;
@@ -129,12 +138,12 @@
     cursor: grab;
 }
 
-.grid-item{
+.grid-item {
     transform-origin: 25px center;
     position: relative;
 }
 
-.grid-item .grid-item-content{
+.grid-item .grid-item-content {
     width: inherit;
     height: inherit;
     background-position: center;
@@ -142,110 +151,110 @@
 }
 
 
-#carrier .grid-item-content{
+#carrier .grid-item-content {
     background-image: url('../assets/ships/carrier.png');
     background-size: 85% 100%;
 }
 
-#battleship .grid-item-content{
+#battleship .grid-item-content {
     background-image: url('../assets/ships/battleship.png');
     background-size: 85% 100%;
 }
 
-#submarine .grid-item-content{
+#submarine .grid-item-content {
     background-image: url('../assets/ships/submarine.png');
     background-size: 90% 100%;
 }
 
-#destroyer .grid-item-content{
+#destroyer .grid-item-content {
     background-image: url('../assets/ships/destroyer.png');
     background-size: 100% 150%;
 }
 
-#patrol_boat .grid-item-content{
+#patrol_boat .grid-item-content {
     background-image: url('../assets/ships/patrol_boat.png');
     background-size: 100% 150%;
 }
 
-.absolute{
+.absolute {
     position: absolute;
 }
 
-.hide{
+.hide {
     top: -1000px;
     left: -1000px;
 }
 
-@media only screen and (min-width: 576px){
+@media only screen and (min-width: 576px) {
 
-    .flex-container{
+    .flex-container {
         flex-flow: row-reverse wrap;
     }
 
-    #dock{
+    #dock {
         width: 175px;
         height: 385px;
         flex-flow: column-reverse wrap;
-        border: 2px solid rgb(128,128,128);
+        border: 2px solid rgb(128, 128, 128);
         border-left: 0;
         border-radius: 0 10px 10px 0;
     }
 
-    #display{
+    #display {
         height: 50px;
     }
 
-    #grid{
+    #grid {
         height: 385px;
         width: 385px;
         border-radius: 10px 0 0 10px;
     }
 
-    .grid-cell{
+    .grid-cell {
         width: 35px;
         height: 35px;
     }
 
-    .grip{
+    .grip {
         width: 25px;
         height: 25px;
     }
 }
 
-@media only screen and (min-width: 768px){
+@media only screen and (min-width: 768px) {
 
-    .flex-container{
+    .flex-container {
         flex-flow: row-reverse wrap;
     }
 
-    #dock{
+    #dock {
         flex-flow: column-reverse wrap;
         width: 18vw;
         height: 99vh;
-        border: 2px solid rgb(128,128,128);
+        border: 2px solid rgb(128, 128, 128);
         border-left: 0;
         border-top-right-radius: 20px;
         border-bottom-right-radius: 20px;
         z-index: 0;
     }
 
-    #display{
+    #display {
         height: 50px;
-        margin:2%;
+        margin: 2%;
     }
 
-    #grid{
+    #grid {
         height: 99.5vh;
         width: 56vw;
         border-radius: 10px 0 0 10px;
     }
 
-    .grid-cell{
+    .grid-cell {
         width: 50px;
         height: 50px;
     }
 
-    .grip{
+    .grip {
         width: 35px;
         height: 35px;
     }

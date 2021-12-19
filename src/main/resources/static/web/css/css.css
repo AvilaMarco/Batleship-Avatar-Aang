@@ -1,15 +1,15 @@
-*{
-	margin: 0;
-	padding: 0;
-	box-sizing: border-box;
-	font-family: 'Permanent Marker', cursive !important;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Permanent Marker', cursive !important;
 }
 
 ::-webkit-scrollbar {
     display: none;
 }
-.datosUser
-{
+
+.datosUser {
     width: 55%;
     height: 70%;
     position: absolute;
@@ -17,67 +17,69 @@
     color: black;
     border-radius: 25px;
 }
-.datosUser-right
-{
+
+.datosUser-right {
     right: 39%;
 }
-.datosUser-left
-{
+
+.datosUser-left {
     left: 39%;
 }
-.table-user
-{
+
+.table-user {
     margin: 5%;
     position: absolute;
     right: -26px;
     transform: scale(0.9);
 }
-.table-user tbody
-{
+
+.table-user tbody {
     background: white;
     color: black;
 }
-.table-user thead
-{
+
+.table-user thead {
     background: black;
     color: white;
 }
+
 .table-user th,
-.table-user td
-{
+.table-user td {
     padding: 10px
 }
-.text-userName
-{
+
+.text-userName {
     text-align: center;
     font-size: 45px;
     margin: 0;
 }
-.divText
-{
+
+.divText {
     width: 100%;
     display: flex;
     justify-content: space-around;
 }
-.divText p{
+
+.divText p {
     margin: 0;
 }
-.verTutorial
-{
+
+.verTutorial {
     width: 100%;
     height: 100%;
     position: absolute;
 }
-.elegirNacion{
-	display: flex;
-	justify-content: space-around;
+
+.elegirNacion {
+    display: flex;
+    justify-content: space-around;
     align-items: center;
-	width: 100vw;
-	height: 100vh;
-	z-index: 9999;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
 }
-.btn-nacion
-{
+
+.btn-nacion {
     width: 20vw;
     height: 48vh;
     background-repeat: no-repeat;
@@ -85,20 +87,20 @@
     margin: 10px;
     padding: 5px;
 }
-.title
-{
+
+.title {
     position: absolute;
     top: 5vh;
     font-size: 48px;
     color: white;
     margin: 0;
 }
-.marginMapDesk
-{
+
+.marginMapDesk {
     border: solid;
 }
-.text
-{
+
+.text {
     font-size: 40px;
     color: white;
     position: absolute;
@@ -106,92 +108,89 @@
     bottom: 5vh;
     width: 19%;
 }
+
 /*inicio*/
-.headerMenu
-{
-	width: 0%;
+.headerMenu {
+    width: 0%;
     height: 0;
     position: relative;
     top: 0px;
 }
-.mainMenu
-{
-	width: 0%;
+
+.mainMenu {
+    width: 0%;
     height: 0;
     position: relative;
     top: 40vh;
 }
-.bottomMemu
-{
-	width: 0%;
+
+.bottomMemu {
+    width: 0%;
     height: 0;
     position: relative;
     top: 94vh;
 }
 
-#mapabg{
-	position: absolute;
-	width: 100%;
-	height: 100vh;
+#mapabg {
+    position: absolute;
+    width: 100%;
+    height: 100vh;
     z-index: 999;
 }
 
-#mapa-div
-{
+#mapa-div {
     width: 100vw;
     height: 100vh;
-	overflow: auto;
+    overflow: auto;
     background-image: url("../assets/texturas/textura-mapa.jpg");
 }
 
-.marginMap
-{
-    margin:150px;
+.marginMap {
+    margin: 150px;
     border-radius: 350px;
 }
 
-#back
-{
+#back {
     top: 10px;
     left: 10px;
 }
-#reload
-{
+
+#reload {
     top: 10px;
     left: 90vw;
     border: 0;
 }
-#noInfoGame
-{
+
+#noInfoGame {
     bottom: 45px;
     left: 75vw;
 }
-#infoGame
-{
+
+#infoGame {
     bottom: 45px;
     left: 17vw;
     width: 96px;
 }
-.divStatus
-{
+
+.divStatus {
     display: flex;
     justify-content: space-around;
 }
-.div-infoGame
-{
+
+.div-infoGame {
     width: 60vw;
     height: 60vh;
     margin: 3% 7% 7% 17%;
 }
-.div-infoGame > p
-{
+
+.div-infoGame > p {
     margin-left: 60px;
     font-size: 40px;
     margin-top: 0;
     margin-bottom: 20px;
 }
-.btn-absolute
-{
+
+.btn-absolute {
     z-index: 100;
     padding: 10px;
     border: solid 4px;
@@ -199,173 +198,177 @@
     border-radius: 25px;
     font-size: 25px;
 }
-#logout
-{
+
+#logout {
     top: 2%;
     left: 85vw;
     margin: 15px;
 }
-#verMapa
-{
-	bottom: -27px;
+
+#verMapa {
+    bottom: -27px;
     left: 45vw;
     outline: none;
     background: initial;
     font-size: 40px;
     border: 0;
 }
-#info
-{
+
+#info {
     left: 6vw;
     font-size: 50px;
     border-radius: 50px;
     padding: 0px 25px;
     top: 11px;
 }
-#Player
-{
+
+#Player {
     height: 100px;
     width: 103px;
     left: 87vw;
     border-radius: 50px;
     top: 11px;
 }
-#ladder
-{
-	bottom: 0;
+
+#ladder {
+    bottom: 0;
     left: 4vw;
 }
-#login-bg{
-	position: absolute;
-	width: 100%;
-	height:100vh;
-	z-index: -99;
+
+#login-bg {
+    position: absolute;
+    width: 100%;
+    height: 100vh;
+    z-index: -99;
 }
-.modal
-{
-	width: 90vw;
-	height: 80vh;
-	background-image: url("../assets/texturas/textura-mapa.jpg");
+
+.modal {
+    width: 90vw;
+    height: 80vh;
+    background-image: url("../assets/texturas/textura-mapa.jpg");
     background-size: cover;
     position: fixed;
     left: 6vw;
     top: 10vh;
     z-index: 9999;
 }
-.close
-{
-	width: 96px;
+
+.close {
+    width: 96px;
     position: absolute;
     left: 94%;
     top: -17%;
 }
-.div-modal
-{
+
+.div-modal {
     max-width: 90vw;
     max-height: 80vh;
     overflow: auto;
     font-size: 28px;
 }
-.textomapa
-{
+
+.textomapa {
     margin-top: 88px;
     color: white;
     text-align: center;
 }
-.textomapa2
-{
+
+.textomapa2 {
     margin-top: -173px;
     color: white;
     text-align: center;
 }
-.selectGame
-{
-   box-shadow: 0 10px 8px 20px #ffffff;
-}
-.form-input{
-	width: 100%;
-	margin: 5px;
-	padding:10px;
-	border-radius: 10px;
+
+.selectGame {
+    box-shadow: 0 10px 8px 20px #ffffff;
 }
 
-body{
-	width: 98vw;
-	height: 100vh;
-	background-color: black;
-	color: #121e35;
-	font-size: 22px;
+.form-input {
+    width: 100%;
+    margin: 5px;
+    padding: 10px;
+    border-radius: 10px;
 }
 
-h1{
-	text-align: center;
+body {
+    width: 98vw;
+    height: 100vh;
+    background-color: black;
+    color: #121e35;
+    font-size: 22px;
 }
+
+h1 {
+    text-align: center;
+}
+
 /*header*/
-header{
-	width: 100%;
-	height: 20vh;
-	text-align: center;
-}
-.d-flex{
-	display: flex;
-	align-content: space-between;
-}
-.w-50{
-	width: 50%;
+header {
+    width: 100%;
+    height: 20vh;
+    text-align: center;
 }
 
-.table-scroll{
-	margin: 10px;
-	height: 65vh;
-	overflow: auto;
+.d-flex {
+    display: flex;
+    align-content: space-between;
 }
 
-.table-game{
-	margin: 10px;
-	height: 65vh;
-	overflow: auto;
+.w-50 {
+    width: 50%;
+}
+
+.table-scroll {
+    margin: 10px;
+    height: 65vh;
+    overflow: auto;
+}
+
+.table-game {
+    margin: 10px;
+    height: 65vh;
+    overflow: auto;
 }
 
 /*login*/
-.login-input{
+.login-input {
     display: inline-block;
     width: 40%;
     padding: 5px;
     margin: 5px;
 }
+
 /*main*/
-main{
-	width: 100%;
-	height: 70vh;
+main {
+    width: 100%;
+    height: 70vh;
 }
 
-table{
-	width: 100%;
+table {
+    width: 100%;
 }
 
-table tr th{
-	padding: 25px;
+table tr th {
+    padding: 25px;
 }
 
-.tabs{
-	position: absolute;
-	display: flex;
-	flex-direction: row;
-	height: 50px;
-	width: 150px;
+.tabs {
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    height: 50px;
+    width: 150px;
 }
 
-.img_portrait
-{
+.img_portrait {
     width: 100vw;
     height: 100vh;
     position: absolute;
     z-index: 999999;
 }
-@media (orientation: landscape)
-{
-    #img_portrait
-    {
-       display: none;
+
+@media (orientation: landscape) {
+    #img_portrait {
+        display: none;
     }
 }
