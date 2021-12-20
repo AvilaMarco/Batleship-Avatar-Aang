@@ -12,8 +12,8 @@ public class PlayerScoreDTO extends PlayerDTO {
 
     List<Integer> scores;
 
-    public PlayerScoreDTO(Long id, String name, String email, NationType nation, List<Integer> scores) {
-        super(id, name, email, nation);
+    public PlayerScoreDTO(PlayerDTO playerDTO, List<Integer> scores) {
+        super(playerDTO.getId(), playerDTO.getName(), playerDTO.getEmail(), playerDTO.getNation());
         this.scores = scores;
     }
 }

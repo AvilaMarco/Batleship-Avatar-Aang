@@ -1,6 +1,9 @@
 package com.codeoftheweb.salvo.models;
 
 import com.codeoftheweb.salvo.enums.TypeShips;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -9,6 +12,9 @@ import java.util.List;
 import java.util.Map;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
 public class Ship {
 
     @Id
@@ -21,15 +27,12 @@ public class Ship {
     @ElementCollection
     private List<String> shipLocations;
 
-    //relaciones
+    // Relations
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "gamePlayer_id")
     private GamePlayer gamePlayer;
 
-    //constructores
-    public Ship() {
-    }
-
+    // Constructors
     public Ship(TypeShips typeShip, List<String> shipLocations) {
         this.typeShip = typeShip;
         this.shipLocations = shipLocations;
@@ -37,7 +40,7 @@ public class Ship {
 
     //gets and sets
 
-    public List<String> getShipLocations() {
+/*    public List<String> getShipLocations() {
         return shipLocations;
     }
 
@@ -55,7 +58,7 @@ public class Ship {
 
     public TypeShips getTypeShip() {
         return this.typeShip;
-    }
+    }*/
 
     //data transfer object
     public Map<String, Object> shipsDTO() {

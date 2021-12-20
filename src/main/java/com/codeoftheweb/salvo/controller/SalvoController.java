@@ -1,5 +1,6 @@
 package com.codeoftheweb.salvo.controller;
 
+import com.codeoftheweb.salvo.dto.InfoGamesDTO;
 import com.codeoftheweb.salvo.models.*;
 import com.codeoftheweb.salvo.service.main.SalvoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +17,7 @@ import java.util.stream.Collectors;
 
 import static java.lang.Integer.parseInt;
 
-/*Anotación que le dice a Spring que vamos a hacer un controller que cumple con los requisitos REST.
-Es decir, que vamos a utilizar entre otras cosas los métodos GET, POST, PUT, etc.
-*/
 @RestController
-//Anotación que declara como va a ser la estructura de nuestros end-point. Todos van a comenzar con '/api'
 @RequestMapping("/api")
 public class SalvoController {
     @Autowired
@@ -29,6 +26,10 @@ public class SalvoController {
     @Autowired
     SalvoService salvoService;
 
+    @GetMapping("/games")
+    public InfoGamesDTO getGamesAndPlayers(Authentication authentication) {
+        return salvoService.getInfoGames(authentication);
+    }
 
     //Anotación que le dice a Spring que traiga toda la información y métodos del repositorio o clase a la que
     //hacemos referencia, podemos instanciar un repositorio
@@ -139,26 +140,6 @@ public class SalvoController {
             ScoreRepository.save(mypuntaje);
             ScoreRepository.save(opponentpuntaje);
         }
-    }
-
-    //Creamos nuestro primer end-point con la dirección '/api/drivers'
-    @RequestMapping("/games")
-    //Definimos un método para administrar la información que brinda nuestro end-point
-    //Como todos los métodos, definimos método de acceso, tipo de dato que retorna, nombre y parámetros.
-    //El método ingresa al repositorio de los jugadores y trae toda la información
-    //Recorremos esa colección de Drivers y llamamos por cada una a su DTO para almacenar su información
-    //en una lista para enviarla a la front.
-    public Map<String, Object> getGamesAndPlayers(Authentication authentication) {
-        Map<String, Object> mapa = new LinkedHashMap<>();
-
-        if (isGuest(authentication)) mapa.put("player", "guest");
-        else mapa.put("player", PlayerRepository.findByEmail(authentication.getName()).get().playerDTO());
-
-        List<Map<String, Object>> games = gameRepository.findAll().stream().map(Game::gamesDTO).collect(Collectors.toList());
-        List<Map<String, Object>> scores = PlayerRepository.findAll().stream().map(Player::playerScoreDTO).collect(Collectors.toList());
-        mapa.put("games", games);
-        mapa.put("playerScore", scores);
-        return mapa;
     }
 
     @RequestMapping("/gp/{id}")

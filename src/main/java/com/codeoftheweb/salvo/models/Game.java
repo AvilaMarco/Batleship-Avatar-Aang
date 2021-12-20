@@ -1,6 +1,8 @@
 package com.codeoftheweb.salvo.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -12,6 +14,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Entity
+@Getter
+@Setter
 public class Game {
 
     @Id
@@ -25,6 +29,7 @@ public class Game {
     //relaciones
     @OneToMany(mappedBy = "game", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<GamePlayer> gamePlayers = new HashSet<>();
+
     @OneToMany(mappedBy = "game", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Score> scores = new HashSet<>();
 

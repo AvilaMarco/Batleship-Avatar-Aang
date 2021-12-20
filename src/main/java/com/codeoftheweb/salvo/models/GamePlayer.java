@@ -1,6 +1,8 @@
 package com.codeoftheweb.salvo.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -8,6 +10,8 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @Entity
+@Getter
+@Setter
 public class GamePlayer {
     //propiedades
     @Id
@@ -16,7 +20,7 @@ public class GamePlayer {
     private long id;
 
     private LocalDateTime joinDate;
-    private String tipo;
+    private String type;
     private String emote;
     private Boolean rematch;
     private long newGameId;
@@ -43,7 +47,7 @@ public class GamePlayer {
         this.player = jugador;
         this.game = juego;
         this.joinDate = LocalDateTime.now();
-        this.tipo = jugador.getNation();
+        this.type = jugador.getNation();
     }
 
     //setters and getters
@@ -75,8 +79,8 @@ public class GamePlayer {
         return id;
     }
 
-    public String getTipo() {
-        return this.tipo;
+    public String getType() {
+        return this.type;
     }
 
     public Player getPlayer() {
@@ -203,7 +207,7 @@ public class GamePlayer {
     public Map<String, Object> gamePlayerDTO() {
         Map<String, Object> dto = new HashMap<>();
         dto.put("id", this.id);
-        dto.put("tipo", this.tipo);
+        dto.put("tipo", this.type);
         dto.put("player", this.player.playerDTO());
         dto.put("Score", this.getScore());
         return dto;
@@ -214,7 +218,7 @@ public class GamePlayer {
         dto.put("id", this.getGame().getId());
         dto.put("ubicacion", this.getGame().getubicacion());
         dto.put("direccion", this.getGame().getDirection());
-        dto.put("tipo", this.tipo);
+        dto.put("tipo", this.type);
         dto.put("created", this.joinDate);
         dto.put("Game_Started", this.gamestard());
         dto.put("Game_Over", this.gameover());
