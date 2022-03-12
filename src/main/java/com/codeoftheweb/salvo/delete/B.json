@@ -1,0 +1,34 @@
+{
+  "inbound_order": {
+    "order_number": 1,
+    "order_date": "20-09-2021",
+    "section": {
+      "section_code": "1",
+      "warehouse_code": "4"
+    },
+    "batch_stock": [
+      {
+        "batch_number": 1,
+        "product_id": "2",
+        "current_temperature": 1,
+        "minimum_temperature": 0.3,
+        "initial_quantity": 16,
+        "current_quantity": 15,
+        "manufacturing_date": "10-08-2021",
+        "manufacturing_time": "10-08-2021 10:20:38",
+        "due_date": "20-10-2021"
+      },
+      {
+        "batch_number": 2,
+        "product_id": "5",
+        "current_temperature": 3.2,
+        "minimum_temperature": 1.1,
+        "initial_quantity": 5,
+        "current_quantity": 4,
+        "manufacturing_date": "20-09-2021",
+        "manufacturing_time": "20-09-2021 10:20:38",
+        "due_date": "20-10-2021"
+      }
+    ]
+  }
+}

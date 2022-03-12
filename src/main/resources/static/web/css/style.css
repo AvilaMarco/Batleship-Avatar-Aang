@@ -1,263 +1,253 @@
 * {
-    font-family: 'Permanent Marker', cursive !important;
+  font-family: "Permanent Marker", cursive !important;
+}
+:root {
+  --cell-size-s: 30px;
+  --cell-size-m: 35px;
+  --cell-size-l: 50px;
+
+  --letter-space-cell: 4px;
+  --letter-margin-cell: 7px;
 }
 
 .flex-container {
-    display: flex;
-    flex-flow: column nowrap;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background: url("../assets/img/bg-game.jpg");
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: url("../assets/img/bg-game.jpg");
 }
 
 #dock {
-    height: 100px;
-    width: 330px;
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: space-around;
-    align-items: center;
-    border: 2px solid rgb(128, 128, 128);
-    border-bottom: 0;
-    border-radius: 10px 10px 0 0;
+  height: 100px;
+  width: 330px;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
+  align-items: center;
+  border: 2px solid rgb(128, 128, 128);
+  border-bottom: 0;
+  border-radius: 10px 10px 0 0;
 }
 
-
 #grid {
-    background-size: cover;
-    border: 2px solid rgb(128, 128, 128);
-    border-radius: 0 0 10px 10px;
-    height: 330px;
-    width: 330px;
-    background-position-x: 30px;
-    background-position-y: 20px;
+  background-size: cover;
+  border: 2px solid rgb(128, 128, 128);
+  border-radius: 0 0 10px 10px;
+  height: 330px;
+  width: 330px;
+  background-position-x: 30px;
+  background-position-y: 20px;
 }
 
 .grid-wrapper {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .grid-row {
-    display: flex;
-    flex-direction: row;
+  display: flex;
+  flex-direction: row;
 }
 
 .grid-cell {
-    display: flex;
-    box-sizing: border-box;
-    width: 30px;
-    height: 30px;
-    border: 1.3px solid rgba(0, 0, 0, 0.71);
-    border-radius: 10px;
-    vertical-align: middle;
-    font-weight: bold;
-    text-align: center;
-    align-items: center;
+  display: flex;
+  box-sizing: border-box;
+  width: var(--cell-size-s);
+  height: var(--cell-size-s);
+  border: 1.3px solid rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  vertical-align: middle;
+  font-weight: bold;
+  text-align: center;
+  align-items: center;
 }
 
-
-.grid-cell span {
-    margin: auto
-}
-
-.carrier-busy-cell, .battleship-busy-cell, .submarine-busy-cell, .destroyer-busy-cell, .patrol_boat-busy-cell {
-    background-color: rgba(0, 119, 190, 0.5);
-
-}
-
-.grid-row:first-child .grid-cell {
-    background-image: url('../assets/texturas/leter.png');
-    background-size: cover;
-}
-
-.grid-cell:first-child {
-    background-image: url('../assets/texturas/leter.png');
-    background-size: cover;
+.carrier-busy-cell,
+.battleship-busy-cell,
+.submarine-busy-cell,
+.destroyer-busy-cell,
+.patrol_boat-busy-cell {
+  background-color: rgba(0, 119, 190, 0.5);
 }
 
 #display {
-    color: black;
-    background-image: url("../assets/texturas/mapaTextura.png");
-    background-size: cover;
-    height: 25px;
-    width: 92%;
-    padding: 0.2rem;
-    order: 1;
-    display: block;
-    font-weight: bold;
-    border-radius: 10px;
-    border: solid 2px;
+  color: black;
+  background-image: url("../assets/texturas/mapaTextura.png");
+  background-size: cover;
+  height: 25px;
+  width: 92%;
+  padding: 0.2rem;
+  order: 1;
+  display: block;
+  font-weight: bold;
+  border-radius: 10px;
+  border: solid 2px;
 }
 
 #display p {
-    font-size: 0.7em;
-    display: inline-block;
-    overflow: hidden; /* Ensures the content is not revealed until the animation */
-    border-right: .15em solid black; /* The typwriter cursor */
-    white-space: nowrap; /* Keeps the content on a single line */
-    margin: 0 auto; /* Gives that scrolling effect as the typing happens */
-    letter-spacing: .15em; /* Adjust as needed */
-    animation: typing 3.5s steps(40, end),
-    blink-caret .75s step-end infinite;
+  font-size: 0.7em;
+  display: inline-block;
+  overflow: hidden; /* Ensures the content is not revealed until the animation */
+  border-right: 0.15em solid black; /* The typwriter cursor */
+  white-space: nowrap; /* Keeps the content on a single line */
+  margin: 0 auto; /* Gives that scrolling effect as the typing happens */
+  letter-spacing: 0.15em; /* Adjust as needed */
+  animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
 }
 
 /* The typing effect */
 @keyframes typing {
-    from {
-        width: 0
-    }
-    to {
-        width: 100%
-    }
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
 }
 
 /* The typewriter cursor effect */
 @keyframes blink-caret {
-    from, to {
-        border-color: transparent
-    }
-    50% {
-        border-color: black;
-    }
+  from,
+  to {
+    border-color: transparent;
+  }
+  50% {
+    border-color: black;
+  }
 }
 
 .grip {
-    position: absolute;
-    z-index: 99;
-    left: 5px;
-    top: 5px;
-    width: 25px;
-    height: 25px;
-    background: gray;
-    background-image: url('../assets/icons/hand-grab-icon.jpg');
-    background-size: contain;
-    border-radius: 50%;
-    opacity: .7;
-    cursor: grab;
+  position: absolute;
+  z-index: 99;
+  left: 5px;
+  top: 5px;
+  width: 25px;
+  height: 25px;
+  background: gray;
+  background-image: url("../assets/icons/hand-grab-icon.jpg");
+  background-size: contain;
+  border-radius: 50%;
+  opacity: 0.7;
+  cursor: grab;
 }
 
 .grid-item {
-    transform-origin: 25px center;
-    position: relative;
+  transform-origin: 25px center;
+  position: relative;
 }
 
 .grid-item .grid-item-content {
-    width: inherit;
-    height: inherit;
-    background-position: center;
-    background-repeat: no-repeat;
+  width: inherit;
+  height: inherit;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
-
 #carrier .grid-item-content {
-    background-image: url('../assets/ships/carrier.png');
-    background-size: 85% 100%;
+  background-image: url("../assets/ships/carrier.png");
+  background-size: 85% 100%;
 }
 
 #battleship .grid-item-content {
-    background-image: url('../assets/ships/battleship.png');
-    background-size: 85% 100%;
+  background-image: url("../assets/ships/battleship.png");
+  background-size: 85% 100%;
 }
 
 #submarine .grid-item-content {
-    background-image: url('../assets/ships/submarine.png');
-    background-size: 90% 100%;
+  background-image: url("../assets/ships/submarine.png");
+  background-size: 90% 100%;
 }
 
 #destroyer .grid-item-content {
-    background-image: url('../assets/ships/destroyer.png');
-    background-size: 100% 150%;
+  background-image: url("../assets/ships/destroyer.png");
+  background-size: 100% 150%;
 }
 
 #patrol_boat .grid-item-content {
-    background-image: url('../assets/ships/patrol_boat.png');
-    background-size: 100% 150%;
+  background-image: url("../assets/ships/patrol_boat.png");
+  background-size: 100% 150%;
 }
 
 .absolute {
-    position: absolute;
+  position: absolute;
 }
 
 .hide {
-    top: -1000px;
-    left: -1000px;
+  top: -1000px;
+  left: -1000px;
 }
 
 @media only screen and (min-width: 576px) {
+  .flex-container {
+    flex-flow: row-reverse wrap;
+  }
 
-    .flex-container {
-        flex-flow: row-reverse wrap;
-    }
+  #dock {
+    width: 175px;
+    height: 385px;
+    flex-flow: column-reverse wrap;
+    border: 2px solid rgb(128, 128, 128);
+    border-left: 0;
+    border-radius: 0 10px 10px 0;
+  }
 
-    #dock {
-        width: 175px;
-        height: 385px;
-        flex-flow: column-reverse wrap;
-        border: 2px solid rgb(128, 128, 128);
-        border-left: 0;
-        border-radius: 0 10px 10px 0;
-    }
+  #display {
+    height: 50px;
+  }
 
-    #display {
-        height: 50px;
-    }
+  #grid {
+    height: 385px;
+    width: 385px;
+    border-radius: 10px 0 0 10px;
+  }
 
-    #grid {
-        height: 385px;
-        width: 385px;
-        border-radius: 10px 0 0 10px;
-    }
+  .grid-cell {
+    width: var(--cell-size-m);
+    height: var(--cell-size-m);
+  }
 
-    .grid-cell {
-        width: 35px;
-        height: 35px;
-    }
-
-    .grip {
-        width: 25px;
-        height: 25px;
-    }
+  .grip {
+    width: 25px;
+    height: 25px;
+  }
 }
 
 @media only screen and (min-width: 768px) {
+  .flex-container {
+    flex-flow: row-reverse wrap;
+  }
 
-    .flex-container {
-        flex-flow: row-reverse wrap;
-    }
+  #dock {
+    flex-flow: column-reverse wrap;
+    width: 18vw;
+    height: 99vh;
+    border: 2px solid rgb(128, 128, 128);
+    border-left: 0;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    z-index: 0;
+  }
 
-    #dock {
-        flex-flow: column-reverse wrap;
-        width: 18vw;
-        height: 99vh;
-        border: 2px solid rgb(128, 128, 128);
-        border-left: 0;
-        border-top-right-radius: 20px;
-        border-bottom-right-radius: 20px;
-        z-index: 0;
-    }
+  #display {
+    height: 50px;
+    margin: 2%;
+  }
 
-    #display {
-        height: 50px;
-        margin: 2%;
-    }
+  #grid {
+    height: 99.5vh;
+    width: 56vw;
+    border-radius: 10px 0 0 10px;
+  }
 
-    #grid {
-        height: 99.5vh;
-        width: 56vw;
-        border-radius: 10px 0 0 10px;
-    }
+  .grid-cell {
+    width: var(--cell-size-l);
+    height: var(--cell-size-l);
+  }
 
-    .grid-cell {
-        width: 50px;
-        height: 50px;
-    }
-
-    .grip {
-        width: 35px;
-        height: 35px;
-    }
+  .grip {
+    width: 35px;
+    height: 35px;
+  }
 }
-
-

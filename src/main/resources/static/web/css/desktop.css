@@ -1,190 +1,190 @@
 /*card desktop*/
 .iconAgua {
-    background: url("../assets/icons/card-agua.png");
+  background: url("../assets/icons/card-agua.png");
 }
 
 .iconFuego {
-    background: url("../assets/icons/card-fuego.png");
+  background: url("../assets/icons/card-fuego.png");
 }
 
 .iconTierra {
-    background: url("../assets/icons/card-tierra.png");
+  background: url("../assets/icons/card-tierra.png");
 }
 
 .iconViento {
-    background: url("../assets/icons/card-viento.png");
+  background: url("../assets/icons/card-viento.png");
 }
 
 #img_portrait {
-    display: none;
+  display: none;
 }
 
 .btn-nacion {
-    background-repeat: no-repeat;
-    background-size: contain;
-    width: 30vw;
-    height: 60vh;
-    margin: 0;
-    padding: 0;
+  background-repeat: no-repeat;
+  background-size: contain;
+  width: 30vw;
+  height: 60vh;
+  margin: 0;
+  padding: 0;
 }
 
 .text {
-    margin-left: 1%;
-    bottom: 5vh;
-    width: 23%;
+  margin-left: 1%;
+  bottom: 5vh;
+  width: 23%;
 }
 
 .bg-color-agua2 {
-    background-color: #69b0ce !important;
+  background-color: #69b0ce !important;
 }
 
 .bg-color-tierra2 {
-    background-color: #34a646 !important;
+  background-color: #34a646 !important;
 }
 
 .bg-color-fuego2 {
-    background-color: #af1b2b !important;
+  background-color: #af1b2b !important;
 }
 
 .bg-color-viento2 {
-    background-color: #e7da00 !important;
+  background-color: #e7da00 !important;
 }
 
 .marginMapDesk {
-    margin: 90px 210px;
-    height: 580px;
-    width: 965px;
-    border-radius: 350px;
+  margin: 12.5vh 12.5vw;
+  height: 75vh;
+  width: 75vw;
+  border-radius: 40%;
 }
 
 #info {
-    left: 7vw;
-    font-size: 50px;
-    border-radius: 50px;
-    padding: 5px 30px;
-    top: 4vh;
+  left: 7vw;
+  font-size: 50px;
+  border-radius: 50px;
+  padding: 5px 30px;
+  top: 4vh;
 }
 
 #grid {
-    width: 44vw;
-    height: 79vh;
+  width: 44vw;
+  height: 79vh;
 }
 
 #grid-salvoes {
-    width: 35vw;
-    height: 70vh;
+  width: 35vw;
+  height: 70vh;
 }
 
 #dock {
-    width: 20vw;
-    height: 79vh;
+  width: 20vw;
+  height: 79vh;
 }
 
 .flex-container {
-    display: flex;
-    flex-flow: row-reverse;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+  display: flex;
+  flex-flow: row-reverse;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 
 #verMapa {
-    bottom: -30px;
-    left: 46vw;
-    font-size: 52px;
+  bottom: -30px;
+  left: 46vw;
+  font-size: 52px;
 }
 
 .btn-absolute {
-    font-size: 32px;
+  font-size: 32px;
 }
 
 .bgtierra,
 .bgagua,
 .bgfuego,
 .bgviento {
-    background-position-y: -60px;
+  background-position-y: -60px;
 }
 
 /*IN GAME*/
 #player2,
 #player1 {
-    width: 12vw;
+  width: 12vw;
 }
 
 #dock {
-    flex-flow: row-reverse;
-    position: fixed;
-    width: 75vw;
-    height: 20vh;
-    top: 0;
-    border: 0;
-    background: #12b9b19c;
-    margin: 0px;
-    border-radius: 15px;
-    margin-top: 10px;
+  flex-flow: row-reverse;
+  position: fixed;
+  width: 75vw;
+  height: 20vh;
+  top: 0;
+  border: 0;
+  background: #12b9b19c;
+  margin: 0px;
+  border-radius: 15px;
+  margin-top: 10px;
 }
 
 .info {
-    display: flex;
-    width: 30vw;
-    height: 100%;
-    order: 3;
-    flex-direction: column-reverse;
-    justify-content: flex-end;
+  display: flex;
+  width: 30vw;
+  height: 100%;
+  order: 3;
+  flex-direction: column-reverse;
+  justify-content: flex-end;
 }
 
 .municion {
-    width: 40%;
-    height: 50%;
-    order: 1;
+  width: 40%;
+  height: 50%;
+  order: 1;
 }
 
 #grid,
 #grid_salvoes {
-    width: 38vw;
-    height: 72vh;
-    border-radius: 20px;
-    margin-bottom: 30px;
-    position: initial !important;
+  width: 38vw;
+  height: 72vh;
+  border-radius: 20px;
+  margin-bottom: 30px;
+  position: initial !important;
 }
 
 .box-emotes {
-    margin-left: 0.7%;
+  margin-left: 0.7%;
 }
 
 .flex-container {
-    flex-flow: row-reverse;
-    align-items: flex-end;
+  flex-flow: row-reverse;
+  align-items: flex-end;
 }
 
 .bg-dock {
-    display: none;
+  display: none;
 }
 
 .btn-game {
-    margin-top: 20px;
+  margin-top: 20px;
 }
 
 .img-emote {
-    width: 130px;
+  width: 130px;
 }
 
 .btn-emotes {
-    width: 90px;
-    height: 90px;
-    margin: 0px 50px;
+  width: 90px;
+  height: 90px;
+  margin: 0px 50px;
 }
 
 .ships {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
 }
 
 .datosUser-right {
-    right: 44%;
+  right: 44%;
 }
 
 .datosUser {
-    top: 19%;
+  top: 19%;
 }

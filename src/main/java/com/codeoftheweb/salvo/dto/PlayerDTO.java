@@ -12,7 +12,7 @@ import javax.persistence.Enumerated;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+//@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class PlayerDTO {
 
     Long id;

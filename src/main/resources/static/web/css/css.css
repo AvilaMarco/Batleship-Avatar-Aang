@@ -1,374 +1,375 @@
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Permanent Marker', cursive !important;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Permanent Marker", cursive !important;
 }
 
 ::-webkit-scrollbar {
-    display: none;
+  display: none;
 }
 
 .datosUser {
-    width: 55%;
-    height: 70%;
-    position: absolute;
-    top: 15%;
-    color: black;
-    border-radius: 25px;
+  width: 55%;
+  height: 70%;
+  position: absolute;
+  top: 15%;
+  color: black;
+  border-radius: 25px;
 }
 
 .datosUser-right {
-    right: 39%;
+  right: 39%;
 }
 
 .datosUser-left {
-    left: 39%;
+  left: 39%;
 }
 
 .table-user {
-    margin: 5%;
-    position: absolute;
-    right: -26px;
-    transform: scale(0.9);
+  margin: 5%;
+  position: absolute;
+  right: -26px;
+  transform: scale(0.9);
 }
 
 .table-user tbody {
-    background: white;
-    color: black;
+  background: white;
+  color: black;
 }
 
 .table-user thead {
-    background: black;
-    color: white;
+  background: black;
+  color: white;
 }
 
 .table-user th,
 .table-user td {
-    padding: 10px
+  padding: 10px;
 }
 
 .text-userName {
-    text-align: center;
-    font-size: 45px;
-    margin: 0;
+  text-align: center;
+  font-size: 45px;
+  margin: 0;
 }
 
 .divText {
-    width: 100%;
-    display: flex;
-    justify-content: space-around;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
 }
 
 .divText p {
-    margin: 0;
+  margin: 0;
 }
 
 .verTutorial {
-    width: 100%;
-    height: 100%;
-    position: absolute;
+  width: 100%;
+  height: 100%;
+  position: absolute;
 }
 
 .elegirNacion {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    width: 100vw;
-    height: 100vh;
-    z-index: 9999;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999;
 }
 
 .btn-nacion {
-    width: 20vw;
-    height: 48vh;
-    background-repeat: no-repeat;
-    background-size: cover;
-    margin: 10px;
-    padding: 5px;
+  width: 20vw;
+  height: 48vh;
+  background-repeat: no-repeat;
+  background-size: cover;
+  margin: 10px;
+  padding: 5px;
 }
 
 .title {
-    position: absolute;
-    top: 5vh;
-    font-size: 48px;
-    color: white;
-    margin: 0;
+  position: absolute;
+  top: 5vh;
+  font-size: 48px;
+  color: white;
+  margin: 0;
 }
 
 .marginMapDesk {
-    border: solid;
+  border: solid;
 }
 
 .text {
-    font-size: 40px;
-    color: white;
-    position: absolute;
-    margin-left: 0%;
-    bottom: 5vh;
-    width: 19%;
+  font-size: 40px;
+  color: white;
+  position: absolute;
+  margin-left: 0%;
+  bottom: 5vh;
+  width: 19%;
 }
 
 /*inicio*/
 .headerMenu {
-    width: 0%;
-    height: 0;
-    position: relative;
-    top: 0px;
+  width: 0%;
+  height: 0;
+  position: relative;
+  top: 0px;
 }
 
 .mainMenu {
-    width: 0%;
-    height: 0;
-    position: relative;
-    top: 40vh;
+  width: 0%;
+  height: 0;
+  position: relative;
+  top: 40vh;
 }
 
 .bottomMemu {
-    width: 0%;
-    height: 0;
-    position: relative;
-    top: 94vh;
+  width: 0%;
+  height: 0;
+  position: relative;
+  top: 94vh;
 }
 
 #mapabg {
-    position: absolute;
-    width: 100%;
-    height: 100vh;
-    z-index: 999;
+  position: absolute;
+  width: 100%;
+  height: 100vh;
+  z-index: 999;
 }
 
 #mapa-div {
-    width: 100vw;
-    height: 100vh;
-    overflow: auto;
-    background-image: url("../assets/texturas/textura-mapa.jpg");
+  width: 100vw;
+  height: 100vh;
+  overflow: auto;
+  background: url("../assets/texturas/textura-mapa.jpg") no-repeat center;
+  background-size: cover;
 }
 
 .marginMap {
-    margin: 150px;
-    border-radius: 350px;
+  margin: 12.5vh 12.5vw;
+  border-radius: 40%;
 }
 
 #back {
-    top: 10px;
-    left: 10px;
+  top: 10px;
+  left: 10px;
 }
 
 #reload {
-    top: 10px;
-    left: 90vw;
-    border: 0;
+  top: 10px;
+  left: 90vw;
+  border: 0;
 }
 
 #noInfoGame {
-    bottom: 45px;
-    left: 75vw;
+  bottom: 45px;
+  left: 75vw;
 }
 
 #infoGame {
-    bottom: 45px;
-    left: 17vw;
-    width: 96px;
+  bottom: 45px;
+  left: 17vw;
+  width: 96px;
 }
 
 .divStatus {
-    display: flex;
-    justify-content: space-around;
+  display: flex;
+  justify-content: space-around;
 }
 
 .div-infoGame {
-    width: 60vw;
-    height: 60vh;
-    margin: 3% 7% 7% 17%;
+  width: 60vw;
+  height: 60vh;
+  margin: 3% 7% 7% 17%;
 }
 
 .div-infoGame > p {
-    margin-left: 60px;
-    font-size: 40px;
-    margin-top: 0;
-    margin-bottom: 20px;
+  margin-left: 60px;
+  font-size: 40px;
+  margin-top: 0;
+  margin-bottom: 20px;
 }
 
 .btn-absolute {
-    z-index: 100;
-    padding: 10px;
-    border: solid 4px;
-    position: absolute;
-    border-radius: 25px;
-    font-size: 25px;
+  z-index: 100;
+  padding: 10px;
+  border: solid 4px;
+  position: absolute;
+  border-radius: 25px;
+  font-size: 25px;
 }
 
 #logout {
-    top: 2%;
-    left: 85vw;
-    margin: 15px;
+  top: 2%;
+  left: 85vw;
+  margin: 15px;
 }
 
 #verMapa {
-    bottom: -27px;
-    left: 45vw;
-    outline: none;
-    background: initial;
-    font-size: 40px;
-    border: 0;
+  bottom: -27px;
+  left: 45vw;
+  outline: none;
+  background: initial;
+  font-size: 40px;
+  border: 0;
 }
 
 #info {
-    left: 6vw;
-    font-size: 50px;
-    border-radius: 50px;
-    padding: 0px 25px;
-    top: 11px;
+  left: 6vw;
+  font-size: 50px;
+  border-radius: 50px;
+  padding: 0px 25px;
+  top: 11px;
 }
 
 #Player {
-    height: 100px;
-    width: 103px;
-    left: 87vw;
-    border-radius: 50px;
-    top: 11px;
+  height: 100px;
+  width: 103px;
+  left: 87vw;
+  border-radius: 50px;
+  top: 11px;
 }
 
 #ladder {
-    bottom: 0;
-    left: 4vw;
+  bottom: 0;
+  left: 4vw;
 }
 
 #login-bg {
-    position: absolute;
-    width: 100%;
-    height: 100vh;
-    z-index: -99;
+  position: absolute;
+  width: 100%;
+  height: 100vh;
+  z-index: -99;
 }
 
 .modal {
-    width: 90vw;
-    height: 80vh;
-    background-image: url("../assets/texturas/textura-mapa.jpg");
-    background-size: cover;
-    position: fixed;
-    left: 6vw;
-    top: 10vh;
-    z-index: 9999;
+  width: 90vw;
+  height: 80vh;
+  background-image: url("../assets/texturas/textura-mapa.jpg");
+  background-size: cover;
+  position: fixed;
+  left: 6vw;
+  top: 10vh;
+  z-index: 9999;
 }
 
 .close {
-    width: 96px;
-    position: absolute;
-    left: 94%;
-    top: -17%;
+  width: 96px;
+  position: absolute;
+  left: 94%;
+  top: -17%;
 }
 
 .div-modal {
-    max-width: 90vw;
-    max-height: 80vh;
-    overflow: auto;
-    font-size: 28px;
+  max-width: 90vw;
+  max-height: 80vh;
+  overflow: auto;
+  font-size: 28px;
 }
 
 .textomapa {
-    margin-top: 88px;
-    color: white;
-    text-align: center;
+  margin-top: 88px;
+  color: white;
+  text-align: center;
 }
 
 .textomapa2 {
-    margin-top: -173px;
-    color: white;
-    text-align: center;
+  margin-top: -173px;
+  color: white;
+  text-align: center;
 }
 
 .selectGame {
-    box-shadow: 0 10px 8px 20px #ffffff;
+  box-shadow: 0 10px 8px 20px #ffffff;
 }
 
 .form-input {
-    width: 100%;
-    margin: 5px;
-    padding: 10px;
-    border-radius: 10px;
+  width: 100%;
+  margin: 5px;
+  padding: 10px;
+  border-radius: 10px;
 }
 
 body {
-    width: 98vw;
-    height: 100vh;
-    background-color: black;
-    color: #121e35;
-    font-size: 22px;
+  width: 98vw;
+  height: 100vh;
+  background-color: black;
+  color: #121e35;
+  font-size: 22px;
 }
 
 h1 {
-    text-align: center;
+  text-align: center;
 }
 
 /*header*/
 header {
-    width: 100%;
-    height: 20vh;
-    text-align: center;
+  width: 100%;
+  height: 20vh;
+  text-align: center;
 }
 
 .d-flex {
-    display: flex;
-    align-content: space-between;
+  display: flex;
+  align-content: space-between;
 }
 
 .w-50 {
-    width: 50%;
+  width: 50%;
 }
 
 .table-scroll {
-    margin: 10px;
-    height: 65vh;
-    overflow: auto;
+  margin: 10px;
+  height: 65vh;
+  overflow: auto;
 }
 
 .table-game {
-    margin: 10px;
-    height: 65vh;
-    overflow: auto;
+  margin: 10px;
+  height: 65vh;
+  overflow: auto;
 }
 
 /*login*/
 .login-input {
-    display: inline-block;
-    width: 40%;
-    padding: 5px;
-    margin: 5px;
+  display: inline-block;
+  width: 40%;
+  padding: 5px;
+  margin: 5px;
 }
 
 /*main*/
 main {
-    width: 100%;
-    height: 70vh;
+  width: 100%;
+  height: 70vh;
 }
 
 table {
-    width: 100%;
+  width: 100%;
 }
 
 table tr th {
-    padding: 25px;
+  padding: 25px;
 }
 
 .tabs {
-    position: absolute;
-    display: flex;
-    flex-direction: row;
-    height: 50px;
-    width: 150px;
+  position: absolute;
+  display: flex;
+  flex-direction: row;
+  height: 50px;
+  width: 150px;
 }
 
 .img_portrait {
-    width: 100vw;
-    height: 100vh;
-    position: absolute;
-    z-index: 999999;
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  z-index: 999999;
 }
 
 @media (orientation: landscape) {
-    #img_portrait {
-        display: none;
-    }
+  #img_portrait {
+    display: none;
+  }
 }

@@ -1,139 +1,200 @@
-document.querySelector("#registre").addEventListener('click', registre)
-document.querySelector("#login").addEventListener('click', login)
-document.querySelector(".eye").addEventListener('click', toglePassword)
-let contador = 2
-let interruptor = false
-let img1 = document.querySelector("#mobile")
-let img2 = document.querySelector("#mobile2")
+document.querySelector("#registre").addEventListener("click", registre);
+document.querySelector("#login").addEventListener("click", login);
+document.querySelector(".eye").addEventListener("click", toglePassword);
+let contador = 2;
+let interruptor = false;
+let img1 = document.querySelector("#mobile");
+let img2 = document.querySelector("#mobile2");
 if (screen.width < 1024) {
-    setInterval(carrusel, 5000);
+  setInterval(carrusel, 5000);
 }
 
 function carrusel() {
-    interruptor = !interruptor
-    if (interruptor) {
-        img1.addEventListener("animationend", reset);
-        img1.classList.add("carruselOut")
-        img2.classList.add("carruselentry")
-    } else {
-        img2.addEventListener("animationend", reset);
-        img2.classList.add("carruselOut")
-        img1.classList.add("carruselentry")
-    }
-    contador++
-    contador == 5 ? contador = 1 : null
+  interruptor = !interruptor;
+  if (interruptor) {
+    img1.addEventListener("animationend", reset);
+    img1.classList.add("carruselOut");
+    img2.classList.add("carruselentry");
+  } else {
+    img2.addEventListener("animationend", reset);
+    img2.classList.add("carruselOut");
+    img1.classList.add("carruselentry");
+  }
+  contador++;
+  contador == 5 ? (contador = 1) : null;
 }
 
 function switchAudio(event) {
-    let audio = document.querySelector("#audioMain")
-    if (event.alt == 'true') {
-        audio.pause()
-        event.src = "../img/no-audio.png"
-        event.alt = 'false'
-    } else {
-        audio.play()
-        event.src = "../img/audio.png"
-        event.alt = 'true'
-    }
+  let audio = document.querySelector("#audioMain");
+  if (event.alt == "true") {
+    audio.pause();
+    event.src = "../img/no-audio.png";
+    event.alt = "false";
+  } else {
+    audio.play();
+    event.src = "../img/audio.png";
+    event.alt = "true";
+  }
 }
 
 function nextStep(clase) {
-    document.querySelector(".registre").classList.remove("registreaux")
-    document.querySelectorAll(".menu").forEach(e => e.classList.add("d-none"))
-    document.querySelectorAll(".access").forEach(e => e.classList.remove("d-none"))
-    document.querySelectorAll("." + clase).forEach(e => e.classList.remove("d-none"))
-    document.querySelector("#back").classList.remove("d-none")
+  document.querySelector(".registre").classList.remove("registreaux");
+  document.querySelectorAll(".menu").forEach((e) => e.classList.add("d-none"));
+  document
+    .querySelectorAll(".access")
+    .forEach((e) => e.classList.remove("d-none"));
+  document
+    .querySelectorAll("." + clase)
+    .forEach((e) => e.classList.remove("d-none"));
+  document.querySelector("#back").classList.remove("d-none");
 }
 
 function toMenu() {
-    document.querySelector(".registre").classList.add("registreaux")
-    document.querySelectorAll(".menu").forEach(e => e.classList.remove("d-none"))
-    document.querySelectorAll(".access").forEach(e => e.classList.add("d-none"))
-    document.querySelectorAll(".registro").forEach(e => e.classList.add("d-none"))
-    document.querySelectorAll(".login").forEach(e => e.classList.add("d-none"))
-    document.querySelector("#back").classList.add("d-none")
+  document.querySelector(".registre").classList.add("registreaux");
+  document
+    .querySelectorAll(".menu")
+    .forEach((e) => e.classList.remove("d-none"));
+  document
+    .querySelectorAll(".access")
+    .forEach((e) => e.classList.add("d-none"));
+  document
+    .querySelectorAll(".registro")
+    .forEach((e) => e.classList.add("d-none"));
+  document.querySelectorAll(".login").forEach((e) => e.classList.add("d-none"));
+  document.querySelector("#back").classList.add("d-none");
 }
 
 function reset() {
-    if (interruptor) {
-        img1.classList.remove("carruselOut")
-        img1.classList.add("left")
-        img1.setAttribute("src", "img/mobile" + contador + ".png");
-        img2.classList.remove("carruselentry")
-        img2.classList.remove("left")
-    } else {
-        img2.classList.remove("carruselOut")
-        img2.classList.add("left")
-        img2.setAttribute("src", "img/mobile" + contador + ".png");
-        img1.classList.remove("carruselentry")
-        img1.classList.remove("left")
-    }
-    contador == 5 ? contador = 1 : null
+  if (interruptor) {
+    img1.classList.remove("carruselOut");
+    img1.classList.add("left");
+    img1.setAttribute("src", "img/mobile" + contador + ".png");
+    img2.classList.remove("carruselentry");
+    img2.classList.remove("left");
+  } else {
+    img2.classList.remove("carruselOut");
+    img2.classList.add("left");
+    img2.setAttribute("src", "img/mobile" + contador + ".png");
+    img1.classList.remove("carruselentry");
+    img1.classList.remove("left");
+  }
+  contador == 5 ? (contador = 1) : null;
 }
 
 function registre() {
-    let fullname = document.querySelector("input[name*=fullname]").value
-    let username = document.querySelector("input[name*=Username]").value
-    let password = document.querySelector("input[name*=password]").value
-    if (fullname != "" && username != "" && password != "") {
-        let formregistre = new FormData();
-        formregistre.append("firstName", fullname)
-        formregistre.append("email", username)
-        formregistre.append("password", password)
-        fetch('/api/players', {
-            method: 'POST',
-            body: formregistre
-        })
-            .then(function (response) {
-                if (response.ok) {
-                    console.log("nice registre")
-                    login()
-                } else {
-                    return Promise.reject(response.json())
-                    // throw new Error(response.json());
-                }
-            })
-            .catch(error => error.then(json => console.log(json)))
+  let name = getHTML("#name").value;
+  let email = getHTML("#email").value;
+  let password = getHTML("#password").value;
 
-    } else if (username != "" && password != "") {
-        login()
-    } else {
-        alert("Faltan Completar Algunos Campos")
-    }
+  if (name == "" || email == "" || password == "") {
+    alert("Faltan Completar Algunos Campos");
+  }
+
+  const signInPlayer = { name, email, password };
+  const headers = {
+    "Content-Type": "application/json",
+  };
+
+  fetch("/api/players", {
+    method: "POST",
+    body: JSON.stringify(signInPlayer),
+    headers,
+  })
+    .then((res) => {
+      if (res.ok) {
+        return res.json();
+      } else {
+        return Promise.reject(res.json());
+      }
+    })
+    .then(() => login())
+    .catch((error) => error)
+    .then((json) => {
+      if (json != undefined) return displayError(json);
+    })
+    .then(() => cleanForm());
 }
 
 function login() {
-    let username = document.querySelector("input[name*=Username]").value
-    let password = document.querySelector("input[name*=password]").value
-    let formlogin = new FormData();
-    formlogin.append("user-name", username)
-    formlogin.append("user-password", password)
-    fetch('/api/login', {
-        method: 'POST',
-        body: formlogin
+  let email = getHTML("#email").value;
+  let password = getHTML("#password").value;
+  let formlogin = new FormData();
+  formlogin.append("email", email);
+  formlogin.append("password", password);
+
+  fetch("/api/login", {
+    method: "POST",
+    body: formlogin,
+  })
+    .then((res) => (res.ok ? redirect(res) : Promise.reject(res.json())))
+    .catch((error) => error)
+    .then((json) => {
+      console.log("login");
+      console.log(json);
+      return displayError(json);
     })
-        .then(function (response) {
-            if (response.ok) {
-                console.log("nicelog")
-                document.querySelector("input[name*=fullname]").value = ""
-                document.querySelector("input[name*=Username]").value = ""
-                document.querySelector("input[name*=password]").value = ""
-                location.assign("/web/games.html");
-            } else {
-                throw new Error(response.json());
-            }
-        })
-        .catch(error => error)
-        .then(json => console.log(json))
+    .then(() => cleanForm());
 }
 
 function toglePassword(event) {
-    let text = event.target.innerText
-    if (text == "Ver") {
-        document.querySelector("input[name*=password]").type = "text"
-        event.target.innerText = "Ocultar"
-    } else {
-        document.querySelector("input[name*=password]").type = "password"
-        event.target.innerText = "Ver"
-    }
+  let text = event.target.innerText;
+  if (text == "Ver") {
+    document.querySelector("input[name*=password]").type = "text";
+    event.target.innerText = "Ocultar";
+  } else {
+    document.querySelector("input[name*=password]").type = "password";
+    event.target.innerText = "Ver";
+  }
+}
+
+function getHTML(query) {
+  return document.querySelector(query);
+}
+
+function displayError({ error, message, error_fields = [] }) {
+  return Swal.fire({
+    title: error,
+    text: message,
+    icon: "error",
+    showDenyButton: true,
+    confirmButtonText: "See more...",
+    denyButtonText: `Cancel`,
+  }).then(({ isConfirmed }) =>
+    isConfirmed ? displayErrorHTML(error, error_fields) : Promise.resolve()
+  );
+}
+
+function displayErrorHTML(name, error_fields) {
+  return Swal.fire({
+    title: name,
+    html: errorFieldsHTML(error_fields),
+    confirmButtonText: "Ok",
+  });
+}
+
+function errorFieldsHTML(error_fields) {
+  console.log(error_fields);
+  const keys = Object.keys(error_fields);
+  const mapError = (e) => e.map((val) => `<p>${val}</p>`);
+  const errors = keys.map(
+    (title) => `
+    <div>
+      <h2> ${title} </h2>
+      ${mapError(error_fields[title])}
+    </div>
+  `
+  );
+
+  return `<div> ${errors} </div>`;
+}
+
+function cleanForm() {
+  const inputs = ["name", "email", "password"];
+  inputs.forEach((e) => (getHTML("#" + e).value = ""));
+}
+
+function redirect({ url }) {
+  console.log("redirect");
+  console.log();
+  location.assign(url.split("8080")[1]);
 }

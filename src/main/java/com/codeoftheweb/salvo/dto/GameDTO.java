@@ -1,6 +1,7 @@
 package com.codeoftheweb.salvo.dto;
 
 import com.codeoftheweb.salvo.enums.NationType;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -16,6 +17,7 @@ import java.util.List;
 public class GameDTO {
 
     Long id;
+    @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     LocalDateTime created;
 
     @Enumerated(EnumType.STRING)

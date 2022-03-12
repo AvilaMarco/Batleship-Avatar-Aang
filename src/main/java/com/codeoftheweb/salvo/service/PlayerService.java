@@ -2,6 +2,8 @@ package com.codeoftheweb.salvo.service;
 
 import com.codeoftheweb.salvo.dto.PlayerDTO;
 import com.codeoftheweb.salvo.dto.PlayerScoreDTO;
+import com.codeoftheweb.salvo.dto.request.SignInPlayerDTO;
+import com.codeoftheweb.salvo.exception.conflict.EmailAlreadyUseException;
 import com.codeoftheweb.salvo.exception.not_found.PlayerNotFoundException;
 import com.codeoftheweb.salvo.exception.unauthorized.PlayerNotLoginException;
 import com.codeoftheweb.salvo.models.Player;
@@ -27,14 +29,19 @@ public class PlayerService implements IPlayerService {
     ModelMapper mapper;
 
     @Override
-    public PlayerDTO getPlayer(String email) {
-        Player player = playerRepository.findByEmail(email).orElseThrow(() -> new PlayerNotFoundException(email));
-        return mapper.map(player, PlayerDTO.class);
+    public Player getPlayer(String email) {
+        return playerRepository.findByEmail(email).orElseThrow(() -> new PlayerNotFoundException(email));
     }
 
     @Override
-    public PlayerDTO getPlayer(Authentication authentication) {
+    public PlayerDTO getAnyPlayer(Authentication authentication) {
         if(isGuest(authentication)) return new PlayerDTO("Guess");
+        else return mapper.map(getPlayer(authentication.getName()), PlayerDTO.class);
+    }
+
+    @Override
+    public Player getPlayerAuthenticated(Authentication authentication) {
+        if(isGuest(authentication)) throw new PlayerNotLoginException();
         else return getPlayer(authentication.getName());
     }
 
@@ -67,12 +74,16 @@ public class PlayerService implements IPlayerService {
 
     }
 
+    @Override
+    public void isNotRegister(SignInPlayerDTO player) {
+        String email = player.getEmail();
+        if(playerRepository.existsPlayer(email).isPresent())
+            throw new EmailAlreadyUseException(email);
+    }
+
+
     // TODO: New service for save this methods
     private boolean isGuest(Authentication authentication) {
         return authentication == null || authentication instanceof AnonymousAuthenticationToken;
-    }
-
-    private void isAuthenticated(Authentication authentication){
-        if(isGuest(authentication)) throw new PlayerNotLoginException();
     }
 }

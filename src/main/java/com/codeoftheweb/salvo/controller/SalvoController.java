@@ -1,16 +1,31 @@
 package com.codeoftheweb.salvo.controller;
 
+import com.codeoftheweb.salvo.dto.GameDTO;
+import com.codeoftheweb.salvo.dto.GamePlayerDTO;
 import com.codeoftheweb.salvo.dto.InfoGamesDTO;
+import com.codeoftheweb.salvo.dto.PlayerDTO;
+import com.codeoftheweb.salvo.dto.error.ErrorDTO;
+import com.codeoftheweb.salvo.dto.request.SignInPlayerDTO;
+import com.codeoftheweb.salvo.dto.response.GameCreatedDTO;
 import com.codeoftheweb.salvo.models.*;
+import com.codeoftheweb.salvo.service.intereface.IMatchService;
+import com.codeoftheweb.salvo.service.intereface.ISalvoService;
 import com.codeoftheweb.salvo.service.main.SalvoService;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -20,15 +35,75 @@ import static java.lang.Integer.parseInt;
 @RestController
 @RequestMapping("/api")
 public class SalvoController {
+
     @Autowired
     PasswordEncoder passwordEncoder;
 
     @Autowired
-    SalvoService salvoService;
+    ISalvoService salvoService;
 
-    @GetMapping("/games")
+    @Autowired
+    IMatchService matchService;
+
+    // listar info juegos
+    @GetMapping(path = "/games")
     public InfoGamesDTO getGamesAndPlayers(Authentication authentication) {
         return salvoService.getInfoGames(authentication);
+    }
+
+    // registrar players
+    @PostMapping(path = "/players")
+    public PlayerDTO register(@Valid @RequestBody SignInPlayerDTO playerDTO) {
+        return salvoService.registerPlayer(playerDTO);
+    }
+
+    // crear juegos
+    @PostMapping(path = "/match/games/{location}/{direction}")
+    public GameCreatedDTO createGame(Authentication authentication, @PathVariable String location, @PathVariable String direction) {
+        return matchService.createGame(authentication, location, direction);
+    }
+
+    // unirse a juegos
+    @PostMapping(path = "/match/games/{id}")
+    public GameCreatedDTO joinGame(Authentication authentication, @PathVariable Long id) {
+        return matchService.joinGame(authentication, id);
+    }
+
+    /* WEB SOCKETS */
+
+    // unirse a la partida
+    @MessageMapping("/{gameId}")
+    @SendTo("/topic/match/{gameId}")
+    public GamePlayerDTO match(@DestinationVariable Long gameId, Authentication authentication){
+        return matchService.viewMatch(authentication, gameId);
+    }
+
+    // enviar barcos
+    @MessageMapping("/{gameId}")
+    @SendTo("/topic/match/{gameId}/ships")
+    public GamePlayerDTO matchShips(@DestinationVariable Long gameId, Authentication authentication){
+        return matchService.viewMatch(authentication, gameId);
+    }
+
+    // enviar emotes
+    @MessageMapping("/{gameId}")
+    @SendTo("/topic/match/{gameId}")
+    public GamePlayerDTO matchEmotes(@DestinationVariable Long gameId, Authentication authentication){
+        return matchService.viewMatch(authentication, gameId);
+    }
+
+    // enviar disparos
+    @MessageMapping("/{gameId}")
+    @SendTo("/topic/match/{gameId}")
+    public GamePlayerDTO matchSalvos(@DestinationVariable Long gameId, Authentication authentication){
+        return matchService.viewMatch(authentication, gameId);
+    }
+
+    // rematch
+    @MessageMapping("/{gameId}")
+    @SendTo("/topic/match/{gameId}")
+    public GamePlayerDTO reMatch(@DestinationVariable Long gameId, Authentication authentication){
+        return matchService.viewMatch(authentication, gameId);
     }
 
     //Anotación que le dice a Spring que traiga toda la información y métodos del repositorio o clase a la que
@@ -41,9 +116,6 @@ public class SalvoController {
     private com.codeoftheweb.salvo.repository.GamePlayerRepository gamePlayerRepository;
     @Autowired
     private com.codeoftheweb.salvo.repository.ScoreRepository ScoreRepository;
-
-//        codificar contraseña
-//        passwordEncoder.encode(password)
 
     private boolean isGuest(Authentication authentication) {
         return authentication == null || authentication instanceof AnonymousAuthenticationToken;
@@ -142,8 +214,8 @@ public class SalvoController {
         }
     }
 
-    @RequestMapping("/gp/{id}")
-    public ResponseEntity<Map<String, Object>> getGame_view(@PathVariable Long id, Authentication authentication) {
+    @GetMapping(path = "/gp/{id}")
+    public ResponseEntity<Map<String, Object>> getGame_view(Authentication authentication, @PathVariable Long id) {
         GamePlayer gp = gamePlayerRepository.findById(id).orElse(null);
         Player player = PlayerRepository.findByEmail(authentication.getName()).get();
         Map<String, Object> error = new HashMap<>();
@@ -387,83 +459,6 @@ public class SalvoController {
         }
     }
 
-    //crear juegos
-    @RequestMapping(path = "/games/{ubicacion}/{direccion}/{isrematch}", method = RequestMethod.POST)
-    public ResponseEntity<Map<String, Object>> createGame(Authentication authentication, @PathVariable String ubicacion, @PathVariable String direccion, @PathVariable Boolean isrematch) {
-        Map<String, Object> respuesta = new HashMap<>();
-        if (!isGuest(authentication)) {
-            Player player = PlayerRepository.findByEmail(authentication.getName()).get();
-            Game gameAux = gameRepository.findByDirection(direccion);
-            if (gameAux != null && !isrematch) {
-                respuesta.put("error", "game already");
-                return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
-            }
-            if (player != null) {
-                Game game = new Game(0, ubicacion, direccion);
-                GamePlayer gamePlayer = new GamePlayer(player, game);
-                PlayerRepository.save(player);
-                gameRepository.save(game);
-                gamePlayerRepository.save(gamePlayer);
-                respuesta.put("gpid", gamePlayer.getId());
-                respuesta.put("gameid", game.getId());
-                return new ResponseEntity<>(respuesta, HttpStatus.ACCEPTED);
-            } else {
-                respuesta.put("error", "you need to login");
-                return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
-            }
-        } else {
-            respuesta.put("error", "you need to login");
-            return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
-        }
-    }
 
-    //unirse a juegos
-    @RequestMapping(path = "/game/{id}/players", method = RequestMethod.POST)
-    public ResponseEntity<Map<String, Object>> joingame(@PathVariable Long id, Authentication authentication) {
-        Map<String, Object> respuesta = new HashMap<>();
-        if (!isGuest(authentication)) {
-            Player player = PlayerRepository.findByEmail(authentication.getName()).get();
-            Game game = gameRepository.findById(id).orElse(null);
-            if (game == null) {
-                respuesta.put("error", "No such game");
-                return new ResponseEntity<>(respuesta, HttpStatus.FORBIDDEN);
-            }
-            if (game.getPlayers().size() == 2) {
-                respuesta.put("error", "Game is full");
-                return new ResponseEntity<>(respuesta, HttpStatus.FORBIDDEN);
-            }
-            if (game.getPlayers().stream().anyMatch(e -> e.getId() == player.getId())) {
-                respuesta.put("error", "you are already in the game");
-                return new ResponseEntity<>(respuesta, HttpStatus.FORBIDDEN);
-            }
-            GamePlayer gamePlayer = new GamePlayer(player, game);
-            gameRepository.save(game);
-            gamePlayerRepository.save(gamePlayer);
-            respuesta.put("gpid", gamePlayer.getId());
-            return new ResponseEntity<>(respuesta, HttpStatus.ACCEPTED);
-        } else {
-            respuesta.put("error", "no hay usuario logeado");
-            return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
-        }
-    }
 
-    //registrar players
-    @RequestMapping(path = "/players", method = RequestMethod.POST)
-    public ResponseEntity<Map<String, Object>> register(
-            @RequestParam String firstName,
-            @RequestParam String email, @RequestParam String password) {
-
-        Map<String, Object> respuesta = new HashMap<>();
-        if (firstName.isEmpty() || email.isEmpty() || password.isEmpty()) {
-            respuesta.put("error", "Missing data");
-            return new ResponseEntity<>(respuesta, HttpStatus.FORBIDDEN);
-        }
-
-        if (PlayerRepository.findByEmail(email) != null) {
-            respuesta.put("error", "Name already in use");
-            return new ResponseEntity<>(respuesta, HttpStatus.FORBIDDEN);
-        }
-        PlayerRepository.save(new Player(firstName, email, passwordEncoder.encode(password)));
-        return new ResponseEntity<>(HttpStatus.CREATED);
-    }
 }

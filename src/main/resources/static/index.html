@@ -1,39 +1,79 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>Login</title>
-    <meta charset="utf-8">
-    <link href="codigo/style.css" rel="stylesheet" type="text/css">
-    <meta content="yes" name="mobile-web-app-capable">
-    <link href="img/icon.png" rel="shortcut icon" sizes="196x196">
-    <link href="https://fonts.googleapis.com/css?family=Permanent+Marker&display=swap" rel="stylesheet">
-    <meta content="user-scalable=no" name="viewport"/>
-    <meta content="true" name="HandheldFriendly"/>
-</head>
-<body>
-<img id="title" src="img/title.png">
-<img class="fondo" id="mobile" src="img/mobile1.png">
-<img class="fondo left" id="mobile2" src="img/mobile2.png">
-<img class="fondo" id="desktop" src="img/index.jpg">
-<div class="registre registreaux">
-    <button class="btn btnaux menu" onclick="nextStep('login')">Login</button>
-    <button class="btn btnaux menu" onclick="nextStep('registro')">Sign in</button>
-    <!-- login -->
-    <input class="input-form d-none registro" name="fullname" placeholder="Name" type="text">
-    <input class="input-form d-none access" name="Username" placeholder="Username/Email" type="text">
-    <div>
-        <input class="input-form d-none access" name="password" placeholder="Password" type="password">
+    <meta charset="utf-8" />
+    <link href="codigo/style.css" rel="stylesheet" type="text/css" />
+    <meta content="yes" name="mobile-web-app-capable" />
+    <link href="img/icon.png" rel="shortcut icon" sizes="196x196" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Permanent+Marker&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Include a required theme -->
+    <link rel="stylesheet" href="@sweetalert2/themes/dark/dark.css" />
+    <meta content="user-scalable=no" name="viewport" />
+    <meta content="true" name="HandheldFriendly" />
+  </head>
+
+  <body>
+    <img id="title" src="img/title.png" />
+    <img class="fondo" id="mobile" src="img/mobile1.png" />
+    <img class="fondo left" id="mobile2" src="img/mobile2.png" />
+    <img class="fondo" id="desktop" src="img/index.jpg" />
+    <div class="registre registreaux">
+      <button class="btn btnaux menu" onclick="nextStep('login')">Login</button>
+      <button class="btn btnaux menu" onclick="nextStep('registro')">
+        Sign in
+      </button>
+
+      <!-- login -->
+      <input
+        id="name"
+        class="input-form d-none registro"
+        name="name"
+        placeholder="Name"
+        type="text"
+      />
+      <input
+        id="email"
+        class="input-form d-none access"
+        name="email"
+        placeholder="Email"
+        type="text"
+      />
+      <div>
+        <input
+          id="password"
+          class="input-form d-none access"
+          name="password"
+          placeholder="Password"
+          type="password"
+        />
         <button class="eye d-none access">Ver</button>
+      </div>
+      <button class="btn d-none login" id="login">Login</button>
+      <button class="btn d-none registro" id="registre">Registre</button>
     </div>
-    <button class="btn d-none login" id="login">Login</button>
-    <button class="btn d-none registro" id="registre">Registre</button>
-</div>
-<img alt="false" class="btn-audio" onclick="switchAudio(this)" src="img/no-audio.png">
-<img class="btn-back d-none" id="back" onclick="toMenu()" src="img/backarrow.png">
-<audio id="audioMain" loop src="main.ogg">
-    <!--  <source src="main.ogg" type="audio/ogg">
-   Your browser does not support the audio element.-->
-   </audio>
+
+    <img
+      alt="false"
+      class="btn-audio"
+      onclick="switchAudio(this)"
+      src="img/no-audio.png"
+    />
+    <img
+      class="btn-back d-none"
+      id="back"
+      onclick="toMenu()"
+      src="img/backarrow.png"
+    />
+
+    <audio id="audioMain" loop src="main.ogg">
+      <!--  <source src="main.ogg" type="audio/ogg">
+         Your browser does not support the audio element.-->
+    </audio>
+    <script src="libraries/sweetalert2.min.js"></script>
     <script src="codigo/index.js"></script>
-</body>
+  </body>
 </html>

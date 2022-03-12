@@ -13,7 +13,7 @@ import java.util.*;
 @Getter
 @Setter
 public class GamePlayer {
-    //propiedades
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
@@ -22,9 +22,13 @@ public class GamePlayer {
     private LocalDateTime joinDate;
     private String type;
     private String emote;
+
+
+    // TODO: Delete
     private Boolean rematch;
     private long newGameId;
-    //relaciones
+
+    // Relations
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "game_id")
     private Game game;
@@ -220,6 +224,7 @@ public class GamePlayer {
         dto.put("direccion", this.getGame().getDirection());
         dto.put("tipo", this.type);
         dto.put("created", this.joinDate);
+
         dto.put("Game_Started", this.gamestard());
         dto.put("Game_Over", this.gameover());
         dto.put("my_turn", this.getMyTurn());

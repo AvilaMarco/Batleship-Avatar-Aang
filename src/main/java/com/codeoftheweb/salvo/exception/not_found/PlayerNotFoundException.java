@@ -1,6 +1,8 @@
 package com.codeoftheweb.salvo.exception.not_found;
 
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
+
 
 public class PlayerNotFoundException extends  NotFoundException {
 

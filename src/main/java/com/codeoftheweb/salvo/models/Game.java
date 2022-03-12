@@ -22,11 +22,13 @@ public class Game {
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
     private long id;
+
     private LocalDateTime created;
     private String location;
     private String direction;
+    private Boolean endGame;
 
-    //relaciones
+    // Relations
     @OneToMany(mappedBy = "game", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<GamePlayer> gamePlayers = new HashSet<>();
 

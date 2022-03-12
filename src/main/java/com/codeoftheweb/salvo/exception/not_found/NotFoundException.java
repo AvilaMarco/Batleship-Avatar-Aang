@@ -1,6 +1,7 @@
 package com.codeoftheweb.salvo.exception.not_found;
 
 import com.codeoftheweb.salvo.exception.AirbenderException;
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 public class NotFoundException extends AirbenderException {
