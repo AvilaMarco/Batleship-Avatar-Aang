@@ -1,79 +1,113 @@
-.bg-color-agua {
-  background-color: #0f236b;
+// SELECT YOUR NATION
+
+/*card mobile*/
+
+@mixin nation-card-btn($theme) {
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-image: url($theme);
+  padding: 5px;
 }
 
-.bg-color-tierra {
-  background-color: #1d6412;
+.nation-card {
+  & {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .nation-btn-earth {
+    @include nation-card-btn("../assets/icons/nacionTierra.png");
+  }
+
+  .nation-btn-fire {
+    @include nation-card-btn("../assets/icons/nacionFuego.png");
+  }
+
+  .nation-btn-water {
+    @include nation-card-btn("../assets/icons/nacionAgua.png");
+  }
+
+  .nation-btn-air {
+    @include nation-card-btn("../assets/icons/nacionViento.png");
+  }
 }
 
-.bg-color-fuego {
-  background-color: #8f0605;
-}
+// .bg-color-agua {
+//   background-color: #0f236b;
+// }
 
-.bg-color-viento {
-  background-color: #308496;
-}
+// .bg-color-tierra {
+//   background-color: #1d6412;
+// }
 
-.bg-color-agua2 {
-  background-color: #82d0e6;
-  border: solid #1e3360;
-}
+// .bg-color-fuego {
+//   background-color: #8f0605;
+// }
 
-.bg-color-tierra2 {
-  background-color: #6c6b2b;
-  border: solid #2c2b1d;
-}
+// .bg-color-viento {
+//   background-color: #308496;
+// }
 
-.bg-color-fuego2 {
-  background-color: #d56728;
-  border: solid #7f2e13;
-}
+// .bg-color-agua2 {
+//   background-color: #82d0e6;
+//   border: solid #1e3360;
+// }
 
-.bg-color-viento2 {
-  background-color: #f9d672;
-  border: solid #f3994b;
-}
+// .bg-color-tierra2 {
+//   background-color: #6c6b2b;
+//   border: solid #2c2b1d;
+// }
 
-.bg-azul {
-  background-color: #033949;
-}
+// .bg-color-fuego2 {
+//   background-color: #d56728;
+//   border: solid #7f2e13;
+// }
 
-.bg-verde {
-  background-color: #4ec025;
-}
+// .bg-color-viento2 {
+//   background-color: #f9d672;
+//   border: solid #f3994b;
+// }
 
-.bg-blanco {
-  background-color: white;
-}
+// .bg-azul {
+//   background-color: #033949;
+// }
 
-.bg-celeste {
-  background-color: #0063f6;
-}
+// .bg-verde {
+//   background-color: #4ec025;
+// }
 
-.bg-black {
-  background-color: black;
-}
+// .bg-blanco {
+//   background-color: white;
+// }
 
-.blanco {
-  color: white;
-}
+// .bg-celeste {
+//   background-color: #0063f6;
+// }
 
-.celeste {
-  color: #17a2b8;
-}
+// .bg-black {
+//   background-color: black;
+// }
 
-.bg-gris {
-  background-color: #343a40;
-}
+// .blanco {
+//   color: white;
+// }
 
-.bg-google {
-  background-color: #e84c3d;
-}
+// .celeste {
+//   color: #17a2b8;
+// }
 
-.bg-facebook {
-  background-color: #3458a2;
-}
+// .bg-gris {
+//   background-color: #343a40;
+// }
 
-.bg-twitter {
-  background-color: #3598dc;
-}
+// .bg-google {
+//   background-color: #e84c3d;
+// }
+
+// .bg-facebook {
+//   background-color: #3458a2;
+// }
+
+// .bg-twitter {
+//   background-color: #3598dc;
+// }
