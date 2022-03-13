@@ -7,8 +7,12 @@
     <link href="css/style.css" rel="stylesheet" />
     <link href="css/game.css" rel="stylesheet" />
     <link href="css/Utilitis.css" rel="stylesheet" />
+    <!-- MOBILE -->
+    <link rel="stylesheet" href="css/mobile/layout.css">
+    <!-- DESKTOP -->
+    <link rel="stylesheet" href="css/desktop/layout.css" media="screen and (min-width: 1024px)">
     <link
-      href="css/desktop.css"
+      href="css/desktop/desktop.css"
       media="screen and (min-width: 1024px)"
       rel="stylesheet"
     />
@@ -20,98 +24,52 @@
     <meta content="true" name="HandheldFriendly" />
   </head>
   <body>
-    <!-- Game Over Screen -->
-    <div class="d-none modal" id="modal">
-      <div id="endGame">
-        <img class="img-endGame" src="assets/img/victory.png" />
-        <p class="text-endgame">Score: 0 + 3</p>
-        <div class="btns-endgame">
-          <button class="btn-endgame" id="backmenu-endGame">back menu</button>
-          <button class="btn-endgame" id="rematch">rematch</button>
-        </div>
-      </div>
-    </div>
 
     <!-- Main Screen -->
-    <div class="player flex-container">
-      <!-- PLAYER -->
-      <div id="player1" class="card">
-        <!-- icon -->
-        <img class="bg-img" src="assets/icons/border-agua.png" />
-        <!-- Player card -->
-        <div class="box-emotes">
-          <p class="texto-emote">RacnarWan(200)</p>
-          <img class="img-emote" src="" />
+    <div class="container-grid">
+
+      <!-- Grids -->
+      <div id="grid" class="container-grids">
+        <div class="d-none" id="grid_salvoes">
+          <!--The grid will appear here -->
         </div>
+      </div>
+
+      <!-- PLAYER -->
+      <div id="player1" class="player-card-opponent">
+        <!-- icon -->
+        <!-- <img class="bg-img" src="assets/icons/border-agua.png" /> -->
+        <!-- Player card -->
+        <p class="texto-emote">RacnarWan(200)</p>
         <!-- Turn -->
         <p class="bg-text">turn 1</p>
       </div>
 
       <!-- Game's Turns -->
-      <div class="card">
+      <div class="game-info">
         <p>Nacion del fuego</p>
         <p>Turn 2</p>
         <p>My Ships</p>
       </div>
 
       <!-- PLAYER -->
-      <div id="player2" class="card">
+      <div id="player2" class="player-card-me">
         <!-- icon -->
-        <img class="bg-img" src="assets/icons/border-agua.png" />
+        <!-- <img class="bg-img" src="assets/icons/border-agua.png" /> -->
         <!-- Player card -->
-        <div class="box-emotes">
-          <p class="texto-emote">RacnarWan(200)</p>
-          <img class="img-emote" src="" />
-        </div>
+        <p class="texto-emote">RacnarWan(200)</p>
         <!-- Turn -->
         <p class="bg-text">turn 1</p>
       </div>
 
-      <div id="dock" class="card">
-        <!-- Ships, Salvoes, Fire -->
-        <div id="dock-game">
-          <!--The new ships will show up here, waiting for been placed in the grid -->
-          <div id="ammunition" class="municion"></div>
-
-          <div id="ships"></div>
-
-          <div id="shooting"></div>
-        </div>
-        <div id="dock-extra">
-          <div id="emotes"></div>
-
-          <div id="menu"></div>
-        </div>
+      <div id="dock" class="game-control">
+        <p>fireball</p>
       </div>
 
-      <div class="d-none" id="grid_salvoes">
-        <!--The grid will appear here -->
-      </div>
 
-      <div id="grid">
-        <!--The grid will appear here -->
-      </div>
 
       <!-- Emotes -->
-      <button class="btn-emotes d-none" id="hideE" onclick="ocultarEmotes()">
-        X
-      </button>
-      <div class="box-emotes-dock d-none">
-        <div class="img">
-          <img onclick="sendEmote('emote-1')" src="assets/emotes/emote-1.png" />
-          <img onclick="sendEmote('emote-2')" src="assets/emotes/emote-2.png" />
-          <img onclick="sendEmote('emote-3')" src="assets/emotes/emote-3.png" />
-          <img onclick="sendEmote('emote-4')" src="assets/emotes/emote-4.png" />
-        </div>
-        <div class="text">
-          <p onclick="sendEmote(this)">Good luck!</p>
-          <p onclick="sendEmote(this)">Oops</p>
-          <p onclick="sendEmote(this)">Good game!</p>
-          <p onclick="sendEmote(this)">Wow!</p>
-          <p onclick="sendEmote(this)">Well played!</p>
-          <p onclick="sendEmote(this)">Thanks</p>
-        </div>
-      </div>
+
     </div>
 
     <!-- Scripts -->

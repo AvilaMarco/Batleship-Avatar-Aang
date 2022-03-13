@@ -4,7 +4,7 @@
 :root {
   --cell-size-s: 30px;
   --cell-size-m: 35px;
-  --cell-size-l: 50px;
+  --cell-size-l: 60px;
 
   --letter-space-cell: 4px;
   --letter-margin-cell: 7px;
@@ -17,28 +17,6 @@
   align-items: center;
   height: 100vh;
   background: url("../assets/img/bg-game.jpg");
-}
-
-#dock {
-  height: 100px;
-  width: 330px;
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: space-around;
-  align-items: center;
-  border: 2px solid rgb(128, 128, 128);
-  border-bottom: 0;
-  border-radius: 10px 10px 0 0;
-}
-
-#grid {
-  background-size: cover;
-  border: 2px solid rgb(128, 128, 128);
-  border-radius: 0 0 10px 10px;
-  height: 330px;
-  width: 330px;
-  background-position-x: 30px;
-  background-position-y: 20px;
 }
 
 .grid-wrapper {
@@ -184,23 +162,8 @@
     flex-flow: row-reverse wrap;
   }
 
-  #dock {
-    width: 175px;
-    height: 385px;
-    flex-flow: column-reverse wrap;
-    border: 2px solid rgb(128, 128, 128);
-    border-left: 0;
-    border-radius: 0 10px 10px 0;
-  }
-
   #display {
     height: 50px;
-  }
-
-  #grid {
-    height: 385px;
-    width: 385px;
-    border-radius: 10px 0 0 10px;
   }
 
   .grid-cell {
@@ -219,26 +182,9 @@
     flex-flow: row-reverse wrap;
   }
 
-  #dock {
-    flex-flow: column-reverse wrap;
-    width: 18vw;
-    height: 99vh;
-    border: 2px solid rgb(128, 128, 128);
-    border-left: 0;
-    border-top-right-radius: 20px;
-    border-bottom-right-radius: 20px;
-    z-index: 0;
-  }
-
   #display {
     height: 50px;
     margin: 2%;
-  }
-
-  #grid {
-    height: 99.5vh;
-    width: 56vw;
-    border-radius: 10px 0 0 10px;
   }
 
   .grid-cell {

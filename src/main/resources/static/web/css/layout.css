@@ -1,0 +1,38 @@
+/* Layout for mobile landscape */
+
+.container-grid{
+    width: 100vw;
+    height: 100vh;
+    display: grid;
+    grid-template-areas:    "g po"
+                            "g ."
+                            "g ig"
+                            "g ig"
+                            "g ."
+                            "g gc"
+                            "g pm";
+}
+
+.player-card-me{
+grid-area: pm;
+}
+
+.player-card-opponent{
+grid-area: po;
+}
+
+.game-info{
+grid-area: ig;
+}
+
+.game-control{
+grid-area: gc;
+}
+
+.container-grids{
+grid-area: g;
+}
+
+/* Layout for mobile portrait */
+
+/* Layout for desktop */
