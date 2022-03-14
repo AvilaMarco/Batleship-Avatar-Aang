@@ -3,13 +3,17 @@
 
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="css/games.css">
+    <link href="../img/icon.png" rel="shortcut icon" sizes="196x196" />
+    <!-- DELETE -->
     <link href="css/normalize.css" rel="stylesheet" />
     <link href="css/Utilitis.css" rel="stylesheet" type="text/css">
     <link href="css/style.css" rel="stylesheet" />
     <link href="css/css.css" rel="stylesheet" type="text/css">
     <link href="css/colores.css" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/css?family=Permanent+Marker&display=swap" rel="stylesheet">
     <link href="css/desktop.css" media="screen and (min-width: 1024px)" rel="stylesheet">
+    <!-- DELETE -->
+    <link href="https://fonts.googleapis.com/css?family=Permanent+Marker&display=swap" rel="stylesheet">
     <meta content="user-scalable=no" name="viewport" />
     <meta content="true" name="HandheldFriendly" />
 </head>
@@ -22,26 +26,32 @@
         <div class="div-modal"></div>
     </div>
     <div id="container">
+        <!-- CHOOSE NATION -->
         <div class="elegirNacion" id="inicoNacion">
             <p class="title">Choose Your Nation</p>
             <div class="nation-card">
-                <button class="nation-btn-earth" onclick="setNacionPlayer('tierra')">
+                    <div class="nation-btn-earth" onclick="setNacionPlayer('tierra')">
                     
-                </button>
-                <p class="text bg-color-tierra2">
-                    Earth
-                </p>
+                    </div>
+                <div class="nation-text-earth">Earth</div>
             </div>
-            <button class="btn-nacion iconFuego" onclick="setNacionPlayer('fuego')">
-                <p class="text bg-color-fuego2">Fire</p>
-            </button>
-            <button class="btn-nacion iconAgua" onclick="setNacionPlayer('agua')">
-                <p class="text bg-color-agua2">Water</p>
-            </button>
-            <button class="btn-nacion iconViento" onclick="setNacionPlayer('viento')">
-                <p class="text bg-color-viento2">
-                    Air</p>
-            </button>
+            <div class="nation-card">
+                <div class="nation-btn-fire" onclick="setNacionPlayer('fuego')">
+                </div>
+                <div class="nation-text-fire">Fire</div>
+            </div>
+
+            <div class="nation-card">
+                <div class="nation-btn-water" onclick="setNacionPlayer('agua')">
+                    
+                </div>
+                <div class="nation-text-water">Water</div>
+            </div>
+            <div class="nation-card">
+                <div class="nation-btn-air" onclick="setNacionPlayer('viento')">
+                </div>
+                <div class="nation-text-air">Air</div>
+            </div>
         </div>
         <div class="d-none" id="webGames">
             <img id="mapabg" src="assets/img/fondo-mapa.png">

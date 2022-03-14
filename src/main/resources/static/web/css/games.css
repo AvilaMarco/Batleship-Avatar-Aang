@@ -1,0 +1,131 @@
+/*card mobile*/
+.container-choose-nation {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999;
+}
+.container-choose-nation .title {
+  position: absolute;
+  top: 0;
+  font-size: 3rem;
+  color: white;
+  margin: 0;
+}
+
+.nation-card {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-flex: 1;
+      -ms-flex: 1 1 0px;
+          flex: 1 1 0;
+  height: 85vh;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+  padding: 10px;
+}
+.nation-card .nation-btn-earth {
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-image: url("../assets/img/nacionTierra.png");
+  height: 100%;
+  width: 100%;
+}
+.nation-card .nation-text-earth {
+  background-color: #6c6b2b;
+  border: solid #2c2b1d;
+  text-align: center;
+}
+.nation-card .nation-btn-fire {
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-image: url("../assets/img/nacionFuego.png");
+  height: 100%;
+  width: 100%;
+}
+.nation-card .nation-text-fire {
+  background-color: #d56728;
+  border: solid #7f2e13;
+  text-align: center;
+}
+.nation-card .nation-btn-water {
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-image: url("../assets/img/nacionAgua.png");
+  height: 100%;
+  width: 100%;
+}
+.nation-card .nation-text-water {
+  background-color: #82d0e6;
+  border: solid #1e3360;
+  text-align: center;
+}
+.nation-card .nation-btn-air {
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-image: url("../assets/img/nacionViento.png");
+  height: 100%;
+  width: 100%;
+}
+.nation-card .nation-text-air {
+  background-color: #f9d672;
+  border: solid #f3994b;
+  text-align: center;
+}
+@media screen and (min-width: 1024px) {
+  .nation-card {
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+  }
+  .nation-card .nation-btn-earth {
+    background-image: url("../assets/img/card-tierra.png");
+  }
+  .nation-card .nation-text-earth {
+    background-color: #34a646;
+    border: none;
+    font-size: 2rem;
+    margin: 1rem;
+    padding: 10px 0;
+  }
+  .nation-card .nation-btn-fire {
+    background-image: url("../assets/img/card-fuego.png");
+  }
+  .nation-card .nation-text-fire {
+    background-color: #af1b2b;
+    border: none;
+    font-size: 2rem;
+    margin: 1rem;
+    padding: 10px 0;
+  }
+  .nation-card .nation-btn-water {
+    background-image: url("../assets/img/card-agua.png");
+  }
+  .nation-card .nation-text-water {
+    background-color: #69b0ce;
+    border: none;
+    font-size: 2rem;
+    margin: 1rem;
+    padding: 10px 0;
+  }
+  .nation-card .nation-btn-air {
+    background-image: url("../assets/img/card-viento.png");
+  }
+  .nation-card .nation-text-air {
+    background-color: #e7da00;
+    border: none;
+    font-size: 2rem;
+    margin: 1rem;
+    padding: 10px 0;
+  }
+}

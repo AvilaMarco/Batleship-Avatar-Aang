@@ -1,0 +1,123 @@
+@use "../utils/colors" as *;
+// MIXINS MOBILE
+@mixin nation-card-btn($url) {
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-image: url($url);
+  height: 100%;
+  width: 100%;
+}
+
+@mixin nation-card-text($primary, $secondary) {
+  background-color: $primary;
+  border: solid $secondary;
+  text-align: center;
+}
+
+// MIXINS DESKTOP
+@mixin nation-card-btn-desktop($url) {
+  background-image: url($url);
+}
+
+@mixin nation-card-text-desktop($primary, $secondary) {
+  background-color: $primary;
+  border: none;
+  font-size: 2rem;
+  margin: 1rem;
+  padding: 10px 0;
+}
+.container-choose-nation {
+  & {
+    display: flex;
+    justify-content: space-around;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+  }
+  .title {
+    position: absolute;
+    top: 0;
+    font-size: 3rem;
+    color: white;
+    margin: 0;
+  }
+}
+
+.nation-card {
+  & {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0;
+    height: 85vh;
+    justify-content: flex-end;
+    padding: 10px;
+  }
+
+  .nation-btn-earth {
+    @include nation-card-btn("../assets/img/nacionTierra.png");
+  }
+
+  .nation-text-earth {
+    @include nation-card-text($primary-mobile-earth, $secondary-earth);
+  }
+
+  .nation-btn-fire {
+    @include nation-card-btn("../assets/img/nacionFuego.png");
+  }
+
+  .nation-text-fire {
+    @include nation-card-text($primary-mobile-fire, $secondary-fire);
+  }
+
+  .nation-btn-water {
+    @include nation-card-btn("../assets/img/nacionAgua.png");
+  }
+
+  .nation-text-water {
+    @include nation-card-text($primary-mobile-water, $secondary-water);
+  }
+  .nation-btn-air {
+    @include nation-card-btn("../assets/img/nacionViento.png");
+  }
+
+  .nation-text-air {
+    @include nation-card-text($primary-mobile-air, $secondary-air);
+  }
+
+  @media screen and (min-width: 1024px) {
+    & {
+      justify-content: center;
+    }
+
+    .nation-btn-earth {
+      @include nation-card-btn-desktop("../assets/img/card-tierra.png");
+    }
+
+    .nation-text-earth {
+      @include nation-card-text-desktop($primary-desktop-earth, $black);
+    }
+
+    .nation-btn-fire {
+      @include nation-card-btn-desktop("../assets/img/card-fuego.png");
+    }
+
+    .nation-text-fire {
+      @include nation-card-text-desktop($primary-desktop-fire, $black);
+    }
+
+    .nation-btn-water {
+      @include nation-card-btn-desktop("../assets/img/card-agua.png");
+    }
+
+    .nation-text-water {
+      @include nation-card-text-desktop($primary-desktop-water, $black);
+    }
+    .nation-btn-air {
+      @include nation-card-btn-desktop("../assets/img/card-viento.png");
+    }
+
+    .nation-text-air {
+      @include nation-card-text-desktop($primary-desktop-air, $black);
+    }
+  }
+}

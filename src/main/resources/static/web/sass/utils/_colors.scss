@@ -1,36 +1,23 @@
 // SELECT YOUR NATION
-
+// EARTH
+$primary-mobile-earth: #6c6b2b;
+$primary-desktop-earth: #34a646;
+$secondary-earth: #2c2b1d;
+// FIRE
+$primary-mobile-fire: #d56728;
+$primary-desktop-fire: #af1b2b;
+$secondary-fire: #7f2e13;
+// WATER
+$primary-mobile-water: #82d0e6;
+$primary-desktop-water: #69b0ce;
+$secondary-water: #1e3360;
+//AIR
+$primary-mobile-air: #f9d672;
+$primary-desktop-air: #e7da00;
+$secondary-air: #f3994b;
+// GENERALS
+$black: black;
 /*card mobile*/
-
-@mixin nation-card-btn($theme) {
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-image: url($theme);
-  padding: 5px;
-}
-
-.nation-card {
-  & {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .nation-btn-earth {
-    @include nation-card-btn("../assets/icons/nacionTierra.png");
-  }
-
-  .nation-btn-fire {
-    @include nation-card-btn("../assets/icons/nacionFuego.png");
-  }
-
-  .nation-btn-water {
-    @include nation-card-btn("../assets/icons/nacionAgua.png");
-  }
-
-  .nation-btn-air {
-    @include nation-card-btn("../assets/icons/nacionViento.png");
-  }
-}
 
 // .bg-color-agua {
 //   background-color: #0f236b;
@@ -46,26 +33,6 @@
 
 // .bg-color-viento {
 //   background-color: #308496;
-// }
-
-// .bg-color-agua2 {
-//   background-color: #82d0e6;
-//   border: solid #1e3360;
-// }
-
-// .bg-color-tierra2 {
-//   background-color: #6c6b2b;
-//   border: solid #2c2b1d;
-// }
-
-// .bg-color-fuego2 {
-//   background-color: #d56728;
-//   border: solid #7f2e13;
-// }
-
-// .bg-color-viento2 {
-//   background-color: #f9d672;
-//   border: solid #f3994b;
 // }
 
 // .bg-azul {
