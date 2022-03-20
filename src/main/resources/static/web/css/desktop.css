@@ -57,13 +57,13 @@
   border-radius: 40%;
 }
 
-#info {
+/* #info {
   left: 7vw;
   font-size: 50px;
   border-radius: 50px;
   padding: 5px 30px;
   top: 4vh;
-}
+} */
 
 #grid {
   width: 44vw;
@@ -88,11 +88,11 @@
   height: 100vh;
 }
 
-#verMapa {
+/* #verMapa {
   bottom: -30px;
   left: 46vw;
   font-size: 52px;
-}
+} */
 
 .btn-absolute {
   font-size: 32px;

@@ -5,6 +5,9 @@
   display: flex;
   -ms-flex-pack: distribute;
       justify-content: space-around;
+  -webkit-box-align: end;
+      -ms-flex-align: end;
+          align-items: flex-end;
   width: 100vw;
   height: 100vh;
   z-index: 9999;
@@ -15,6 +18,16 @@
   font-size: 3rem;
   color: white;
   margin: 0;
+}
+@media screen and (min-width: 1024px) {
+  .container-choose-nation {
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+  }
+  .container-choose-nation .title {
+    top: 5vh;
+  }
 }
 
 .nation-card {
@@ -87,6 +100,7 @@
     -webkit-box-pack: center;
         -ms-flex-pack: center;
             justify-content: center;
+    height: 70vh;
   }
   .nation-card .nation-btn-earth {
     background-image: url("../assets/img/card-tierra.png");
@@ -128,4 +142,159 @@
     margin: 1rem;
     padding: 10px 0;
   }
+}
+
+.menu {
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  z-index: 100;
+}
+
+.full-screen {
+  width: 100vw;
+  height: 100vh;
+}
+
+.container-map {
+  width: 100vw;
+  height: 100vh;
+  overflow: auto;
+  background: url("../assets/texturas/textura-mapa.jpg") no-repeat center;
+  background-size: cover;
+}
+
+.center-map {
+  border: 2px solid;
+}
+@media screen and (min-width: 1024px) {
+  .center-map {
+    margin: 12.5vh 12.5vw;
+    height: 75vh;
+    width: 75vw;
+    border-radius: 30%;
+  }
+}
+
+.main-btn {
+  background-image: url("../../assets/texturas/btn-map.png");
+  background-size: cover;
+  border: solid 4px;
+  position: absolute;
+  font-size: 1.3rem;
+  border-radius: 1.5rem;
+  padding: 10px;
+}
+@media screen and (min-width: 1024px) {
+  .main-btn {
+    font-size: 2rem;
+  }
+}
+
+.main-btn-circle {
+  -webkit-transform: translateY(-48%);
+          transform: translateY(-48%);
+  border-radius: 50%;
+  width: 6.8vw;
+  height: 10vh;
+  border: solid 4px;
+  left: 5.4vw;
+  position: absolute;
+}
+
+#logout {
+  left: 98vw;
+  -webkit-transform: translate(-108%, 10%);
+          transform: translate(-108%, 10%);
+}
+
+#back {
+  left: 6.25vw;
+  -webkit-transform: translate(-50%, 10%);
+          transform: translate(-50%, 10%);
+}
+
+#reload {
+  position: relative;
+  border: 0;
+  left: 93.75vw;
+  -webkit-transform: translate(-50%, 10%);
+          transform: translate(-50%, 10%);
+}
+
+/* -----  */
+#info {
+  background-image: url("../../assets/icons/interrogante.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+#player {
+  left: 87.65vw;
+}
+
+/* -----  */
+#verMapa {
+  position: relative;
+  left: 50vw;
+  -webkit-transform: translate(-50%, -83%);
+          transform: translate(-50%, -83%);
+  font-size: 2rem;
+  outline: none;
+  border: 0;
+}
+@media screen and (min-width: 1024px) {
+  #verMapa {
+    font-size: 3.5rem;
+  }
+}
+
+#ladder {
+  -webkit-transform: translate(10%, -106%);
+          transform: translate(10%, -106%);
+  top: 0;
+  left: 2vw;
+}
+
+#noInfoGame {
+  left: 68.75vw;
+  top: -3.25vh;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+}
+
+#infoGame {
+  left: 31.25vw;
+  top: -3.25vh;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+}
+
+.container-buttons {
+  position: fixed;
+  top: 0;
+  z-index: 1000;
+}
+
+.top-buttons {
+  position: relative;
+  top: 3vh;
+  height: 0;
+}
+
+.middle-buttons {
+  position: relative;
+  top: 50vh;
+}
+
+.bottom-buttons {
+  position: relative;
+  top: 97vh;
+  width: 0;
+  height: 0;
+}
+
+.container {
+  width: 100vw;
 }

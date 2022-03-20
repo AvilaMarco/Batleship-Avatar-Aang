@@ -1,0 +1,36 @@
+@use "../utils/variables" as *;
+
+@mixin full_screan {
+  width: 100vw;
+  height: 100vh;
+}
+
+.menu {
+  @include full_screan();
+  position: absolute;
+  z-index: $layer-2;
+}
+
+.full-screen {
+  @include full_screan();
+}
+
+.container-map {
+  @include full_screan();
+  overflow: auto;
+  background: url("../assets/texturas/textura-mapa.jpg") no-repeat center;
+  background-size: cover;
+}
+
+.center-map {
+  border: 2px solid;
+
+  @media screen and (min-width: $width-desktop) {
+    & {
+      margin: 12.5vh 12.5vw;
+      height: 75vh;
+      width: 75vw;
+      border-radius: 30%;
+    }
+  }
+}

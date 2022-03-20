@@ -1,0 +1,113 @@
+@use "../utils/variables" as *;
+
+@mixin btn {
+  background-image: url("../../assets/texturas/btn-map.png");
+  background-size: cover;
+  border: solid 4px;
+  position: absolute;
+  font-size: 1.3rem;
+  border-radius: 1.5rem;
+  padding: 10px;
+
+  @media screen and (min-width: $width-desktop) {
+    & {
+      font-size: 2rem;
+    }
+  }
+}
+
+@mixin middle_btn {
+  transform: translateY(-48%);
+  border-radius: 50%;
+  width: 6.8vw;
+  height: 10vh;
+  border: solid 4px;
+  left: 5.4vw;
+  position: absolute;
+}
+
+.main-btn {
+  @include btn();
+}
+.main-btn-circle {
+  @include middle_btn();
+}
+// Buttons with ID
+#logout {
+  left: 98vw;
+  transform: translate(-108%, 10%);
+}
+#back {
+  left: 6.25vw;
+  transform: translate(-50%, 10%);
+}
+#reload {
+  position: relative;
+  border: 0;
+  left: 93.75vw;
+  transform: translate(-50%, 10%);
+}
+
+/* -----  */
+#info {
+  background-image: url("../../assets/icons/interrogante.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+#player {
+  left: 87.65vw;
+}
+/* -----  */
+#verMapa {
+  position: relative;
+  left: 50vw;
+  transform: translate(-50%, -83%);
+  font-size: 2rem;
+  outline: none;
+  border: 0;
+  @media screen and (min-width: $width-desktop) {
+    & {
+      font-size: 3.5rem;
+    }
+  }
+}
+#ladder {
+  transform: translate(10%, -106%);
+  top: 0;
+  left: 2vw;
+}
+#noInfoGame {
+  left: 68.75vw;
+  top: -3.25vh;
+  transform: translate(-50%, -50%);
+}
+
+#infoGame {
+  left: 31.25vw;
+  top: -3.25vh;
+  transform: translate(-50%, -50%);
+}
+
+// Layout
+.container-buttons {
+  position: fixed;
+  top: 0;
+  z-index: $layer-1;
+}
+.top-buttons {
+  position: relative;
+  top: 3vh;
+  height: 0;
+}
+.middle-buttons {
+  position: relative;
+  top: 50vh;
+}
+
+.bottom-buttons {
+  position: relative;
+  top: 97vh;
+  width: 0;
+  height: 0;
+}

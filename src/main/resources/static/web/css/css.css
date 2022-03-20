@@ -131,13 +131,6 @@
   top: 94vh;
 }
 
-#mapabg {
-  position: absolute;
-  width: 100%;
-  height: 100vh;
-  z-index: 999;
-}
-
 #mapa-div {
   width: 100vw;
   height: 100vh;
@@ -151,18 +144,7 @@
   border-radius: 40%;
 }
 
-#back {
-  top: 10px;
-  left: 10px;
-}
-
-#reload {
-  top: 10px;
-  left: 90vw;
-  border: 0;
-}
-
-#noInfoGame {
+/* #noInfoGame {
   bottom: 45px;
   left: 75vw;
 }
@@ -171,7 +153,7 @@
   bottom: 45px;
   left: 17vw;
   width: 96px;
-}
+} */
 
 .divStatus {
   display: flex;
@@ -200,22 +182,16 @@
   font-size: 25px;
 }
 
-#logout {
-  top: 2%;
-  left: 85vw;
-  margin: 15px;
-}
-
-#verMapa {
+/* #verMapa {
   bottom: -27px;
   left: 45vw;
   outline: none;
   background: initial;
   font-size: 40px;
   border: 0;
-}
+} */
 
-#info {
+/* #info {
   left: 6vw;
   font-size: 50px;
   border-radius: 50px;
@@ -229,12 +205,12 @@
   left: 87vw;
   border-radius: 50px;
   top: 11px;
-}
+} */
 
-#ladder {
+/* #ladder {
   bottom: 0;
   left: 4vw;
-}
+} */
 
 #login-bg {
   position: absolute;

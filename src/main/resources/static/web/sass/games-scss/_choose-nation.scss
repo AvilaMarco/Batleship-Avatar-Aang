@@ -1,4 +1,6 @@
 @use "../utils/colors" as *;
+@use "../utils/variables" as *;
+
 // MIXINS MOBILE
 @mixin nation-card-btn($url) {
   background-repeat: no-repeat;
@@ -30,6 +32,7 @@
   & {
     display: flex;
     justify-content: space-around;
+    align-items: flex-end;
     width: 100vw;
     height: 100vh;
     z-index: 9999;
@@ -40,6 +43,16 @@
     font-size: 3rem;
     color: white;
     margin: 0;
+  }
+
+  @media screen and (min-width: $width-desktop) {
+    & {
+      align-items: center;
+    }
+
+    .title {
+      top: 5vh;
+    }
   }
 }
 
@@ -84,9 +97,10 @@
     @include nation-card-text($primary-mobile-air, $secondary-air);
   }
 
-  @media screen and (min-width: 1024px) {
+  @media screen and (min-width: $width-desktop) {
     & {
       justify-content: center;
+      height: 70vh;
     }
 
     .nation-btn-earth {

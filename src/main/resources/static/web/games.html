@@ -1,90 +1,124 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <title>Menu | The Last Shipbender</title>
+    <meta charset="UTF-8" />
+    <meta content="true" name="HandheldFriendly" />
+    <meta content="user-scalable=no" name="viewport" />
+    <link href="assets/icons/icon.png" rel="shortcut icon" sizes="196x196" />
+    <link rel="stylesheet" href="css/games.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css?family=Permanent+Marker&display=swap"
+      rel="stylesheet"
+    />
 
-<head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="css/games.css">
-    <link href="../img/icon.png" rel="shortcut icon" sizes="196x196" />
     <!-- DELETE -->
     <link href="css/normalize.css" rel="stylesheet" />
-    <link href="css/Utilitis.css" rel="stylesheet" type="text/css">
+    <link href="css/Utilitis.css" rel="stylesheet" type="text/css" />
     <link href="css/style.css" rel="stylesheet" />
-    <link href="css/css.css" rel="stylesheet" type="text/css">
-    <link href="css/colores.css" rel="stylesheet" type="text/css">
-    <link href="css/desktop.css" media="screen and (min-width: 1024px)" rel="stylesheet">
+    <link href="css/css.css" rel="stylesheet" type="text/css" />
+    <link href="css/colores.css" rel="stylesheet" type="text/css" />
+    <link
+      href="css/desktop.css"
+      media="screen and (min-width: 1024px)"
+      rel="stylesheet"
+    />
     <!-- DELETE -->
-    <link href="https://fonts.googleapis.com/css?family=Permanent+Marker&display=swap" rel="stylesheet">
-    <meta content="user-scalable=no" name="viewport" />
-    <meta content="true" name="HandheldFriendly" />
-</head>
-<title>Avatar Aang</title>
-</head>
+  </head>
 
-<body>
-    <div class="d-none modal" id="modal">
-        <img class="close" onclick="nomodal()" src="assets/icons/close.png">
-        <div class="div-modal"></div>
+  <body>
+    <div id="modal" class="d-none modal">
+      <img class="close" onclick="nomodal()" src="assets/icons/close.png" />
+      <div class="div-modal"></div>
     </div>
-    <div id="container">
-        <!-- CHOOSE NATION -->
-        <div class="elegirNacion" id="inicoNacion">
-            <p class="title">Choose Your Nation</p>
-            <div class="nation-card">
-                    <div class="nation-btn-earth" onclick="setNacionPlayer('tierra')">
-                    
-                    </div>
-                <div class="nation-text-earth">Earth</div>
-            </div>
-            <div class="nation-card">
-                <div class="nation-btn-fire" onclick="setNacionPlayer('fuego')">
-                </div>
-                <div class="nation-text-fire">Fire</div>
-            </div>
+    <div id="container" class="full-screen">
+      <!-- CHOOSE NATION -->
+      <div id="inicoNacion" class="container-choose-nation">
+        <p class="title">Choose Your Nation</p>
+        <div class="nation-card">
+          <div
+            class="nation-btn-earth"
+            onclick="setNacionPlayer('tierra')"
+          ></div>
+          <div class="nation-text-earth">Earth</div>
+        </div>
+        <div class="nation-card">
+          <div class="nation-btn-fire" onclick="setNacionPlayer('fuego')"></div>
+          <div class="nation-text-fire">Fire</div>
+        </div>
 
-            <div class="nation-card">
-                <div class="nation-btn-water" onclick="setNacionPlayer('agua')">
-                    
-                </div>
-                <div class="nation-text-water">Water</div>
-            </div>
-            <div class="nation-card">
-                <div class="nation-btn-air" onclick="setNacionPlayer('viento')">
-                </div>
-                <div class="nation-text-air">Air</div>
-            </div>
+        <div class="nation-card">
+          <div class="nation-btn-water" onclick="setNacionPlayer('agua')"></div>
+          <div class="nation-text-water">Water</div>
         </div>
-        <div class="d-none" id="webGames">
-            <img id="mapabg" src="assets/img/fondo-mapa.png">
-            <div id="mapa-div">
-                <map name="mapeo"></map>
-                <div id="pivotMap" style="position: relative;"></div>
-                <img class="marginMapDesk" id="mapa" src="mapa-game-mobile.png" usemap="#mapeo">
-            </div>
+        <div class="nation-card">
+          <div class="nation-btn-air" onclick="setNacionPlayer('viento')"></div>
+          <div class="nation-text-air">Air</div>
         </div>
-        <div class="d-none" id="botonera" style="position: fixed;top: 0;z-index: 999;">
-            <div class="headerMenu">
-                <button class="btn-absolute texturaMapa" id="logout" name="botonesMenu">Logout</button>
-                <button class="btn-absolute texturaMapa d-none" id="back">Menu</button>
-                <img class="btn-absolute d-none" id="reload" src="assets/icons/reload.png">
-            </div>
-            <div class="mainMenu">
-                <button class="btn-absolute texturaMapa" id="info" name="botonesMenu"
-                    onclick="verdatos(this)">?</button>
-                <button class="btn-absolute" id="Player" name="botonesMenu" onclick="verdatos(this)"></button>
-            </div>
-            <div class="bottomMemu">
-                <button class="btn-absolute texturaMapa" id="verMapa" name="botonesMenu">Map</button>
-                <button class="btn-absolute texturaMapa" id="ladder" name="botonesMenu" onclick="verdatos(this)">Ladder
-                </button>
-                <button class="btn-absolute texturaMapa d-none" id="infoGame" name="dataGame" onclick="infoGame()">Info
-                </button>
-                <button class="btn-absolute texturaMapa d-none" id="noInfoGame" name="dataGame"
-                    onclick="enterGame(this)"></button>
-            </div>
+      </div>
+
+      <!-- Maps View -->
+      <div id="webGames" class="full-screen hidden">
+        <img id="mapabg" class="menu" src="assets/img/fondo-mapa.png" />
+        <div class="container-map">
+          <map name="mapeo"></map>
+          <div id="pivotMap" class="relative"></div>
+          <img class="center-map" src="mapa-game-mobile.png" usemap="#mapeo" />
         </div>
+      </div>
+
+      <!-- Buttons View -->
+      <div id="botonera" class="container-buttons hidden">
+        <div class="top-buttons">
+          <button id="logout" class="main-btn" name="botonesMenu">
+            Logout
+          </button>
+          <button id="back" class="main-btn d-none">Menu</button>
+          <img id="reload" class="d-none" src="assets/icons/reload.png" />
+        </div>
+        <div class="middle-buttons">
+          <button
+            id="info"
+            class="main-btn-circle"
+            name="botonesMenu"
+            onclick="verdatos(this)"
+          ></button>
+          <button
+            id="player"
+            class="main-btn-circle"
+            name="botonesMenu"
+            onclick="verdatos(this)"
+          ></button>
+        </div>
+        <div class="bottom-buttons">
+          <button id="verMapa" name="botonesMenu">Map</button>
+          <button
+            id="ladder"
+            class="main-btn"
+            name="botonesMenu"
+            onclick="verdatos(this)"
+          >
+            Ladder
+          </button>
+          <button
+            id="infoGame"
+            class="main-btn d-none"
+            name="dataGame"
+            onclick="infoGame()"
+          >
+            Info
+          </button>
+          <button
+            id="noInfoGame"
+            class="main-btn d-none"
+            name="dataGame"
+            onclick="enterGame(this)"
+          ></button>
+        </div>
+      </div>
     </div>
-    <script src="js/datosmap.js"></script>
-    <script src="js/main.js"></script>
-</body>
-
+    <!-- <script src="js/datosmap.js"></script> -->
+    <!-- <script src="js/main.js"></script> -->
+  </body>
 </html>

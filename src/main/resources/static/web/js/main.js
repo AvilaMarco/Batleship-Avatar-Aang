@@ -76,16 +76,16 @@ function setNacionPlayer(nacion) {
 }
 
 function chooseNation() {
-  document.querySelector("#inicoNacion").classList.remove("d-none");
+  document.querySelector("#inicoNacion").classList.remove("hidden");
 }
 
 function inMenu(json) {
-  document.querySelector("#inicoNacion").classList.add("d-none");
+  document.querySelector("#inicoNacion").classList.add("hidden");
   document
-    .querySelector("#Player")
+    .querySelector("#player")
     .classList.add("iconTransparent" + json.player.nation);
-  document.querySelector("#webGames").classList.remove("d-none");
-  document.querySelector("#botonera").classList.remove("d-none");
+  document.querySelector("#webGames").classList.remove("hidden");
+  document.querySelector("#botonera").classList.remove("hidden");
 }
 
 /*funciones para modal y cambiar los datos que muestra*/
@@ -103,16 +103,16 @@ function verdatos(elementhtml) {
 
 function nomodal() {
   document.querySelector("#modal").classList.add("modalAnimationout");
-  document.querySelector("#modal").classList.add("d-none");
+  document.querySelector("#modal").classList.add("hidden");
   document.querySelector("#modal").classList.remove("modalAnimation");
   document.querySelector("#container").style.opacity = 1;
 }
 
 function addmodal() {
-  document.querySelector("#modal").classList.remove("d-none");
+  document.querySelector("#modal").classList.remove("hidden");
   document.querySelector("#modal").classList.remove("modalAnimationout");
   document.querySelector("#container").style.opacity = 0.2;
-  document.querySelector("#modal").classList.remove("d-none");
+  document.querySelector("#modal").classList.remove("hidden");
   document.querySelector("#modal").classList.add("modalAnimation");
 }
 
@@ -295,7 +295,7 @@ function selectGame(event) {
     div.style.top = style.top;
     div.style.left = style.left;
     document.querySelectorAll("div [name*='dataGame']").forEach((e) => {
-      e.classList.remove("d-none");
+      e.classList.remove("hidden");
       if (!(e.innerText == "Info") && !(dataset.playerid1 == playerData.id)) {
         e.innerText = dataset.name;
       } else if (
@@ -313,7 +313,7 @@ function selectGame(event) {
     div.style.left = parseInt(coords.split(",")[0]) + width + "px";
 
     document.querySelectorAll("div [name*='dataGame']").forEach((e) => {
-      e.classList.remove("d-none");
+      e.classList.remove("hidden");
       if (!(e.innerText == "Info")) {
         e.innerText = "Create";
       }
@@ -328,7 +328,7 @@ function selectGame(event) {
       "div#" + document.querySelector("div[data-name*=selectGame]").dataset.id
     ) == undefined
   ) {
-    document.querySelector("#infoGame").classList.add("d-none");
+    document.querySelector("#infoGame").classList.add("hidden");
   }
   console.log(div);
 }
@@ -337,7 +337,7 @@ function removeSelect(event) {
   document.querySelector("#pivotMap").removeChild(event.target);
   document
     .querySelectorAll("div [name*='dataGame']")
-    .forEach((e) => e.classList.add("d-none"));
+    .forEach((e) => e.classList.add("hidden"));
 }
 
 function infoGame() {
@@ -427,23 +427,23 @@ function crearjuego(location, direction) {
 }
 
 function viewMenu() {
-  document.querySelector("#mapabg").classList.remove("d-none");
-  document.querySelector("#back").classList.add("d-none");
-  document.querySelector("#reload").classList.add("d-none");
+  document.querySelector("#mapabg").classList.remove("hidden");
+  document.querySelector("#back").classList.add("hidden");
+  document.querySelector("#reload").classList.add("hidden");
   document
     .querySelectorAll("button[name*='botonesMenu']")
-    .forEach((e) => e.classList.remove("d-none"));
+    .forEach((e) => e.classList.remove("hidden"));
   document
     .querySelectorAll("div [name*='dataGame']")
-    .forEach((e) => e.classList.add("d-none"));
+    .forEach((e) => e.classList.add("hidden"));
 }
 
 function viewMapa(event) {
   let back = document.querySelector("#back");
-  back.classList.remove("d-none");
+  back.classList.remove("hidden");
   back.addEventListener("click", viewMenu);
   let reload = document.querySelector("#reload");
-  reload.classList.remove("d-none");
+  reload.classList.remove("hidden");
   reload.addEventListener("click", function () {
     recargarMapa = true;
     reloadInfo();
@@ -452,11 +452,10 @@ function viewMapa(event) {
       document.querySelector("#reload").classList.remove("Animation-reload");
     }, 1100);
   });
-  let mapa = document.querySelector("#mapa").classList.add("marginMap");
-  document.querySelector("#mapabg").classList.add("d-none");
+  document.querySelector("#mapabg").classList.add("hidden");
   document
     .querySelectorAll("button[name*='botonesMenu']")
-    .forEach((e) => e.classList.add("d-none"));
+    .forEach((e) => e.classList.add("hidden"));
   if (
     document.querySelector("div[data-game*='true']") != null &&
     !document.querySelector("div[data-game*='true']").dataset.move
@@ -615,8 +614,8 @@ function goGame() {
 // let marginMap = document.querySelector("#mapa").style
 // if (event.target.innerText == "Map") {
 //     event.target.innerText = "Menu"
-//     document.querySelectorAll("button[name*='botonesMenu']").forEach(e=>e.classList.add("d-none"))
-//     document.querySelector("#mapabg").classList.add("d-none")
+//     document.querySelectorAll("button[name*='botonesMenu']").forEach(e=>e.classList.add("hidden"))
+//     document.querySelector("#mapabg").classList.add("hidden")
 //     if (divselect!=null) {
 //         document.querySelector("#mapa").style.marginLeft = "0"
 //         document.querySelector("#mapa").style.marginTop = "0"
@@ -628,8 +627,8 @@ function goGame() {
 //     }
 // }else{
 //    event.target.innerText = "Map"
-//     document.querySelector("#mapabg").classList.remove("d-none")
-//     document.querySelectorAll("button[name*='botonesMenu']").forEach(e=>e.classList.remove("d-none"))
+//     document.querySelector("#mapabg").classList.remove("hidden")
+//     document.querySelectorAll("button[name*='botonesMenu']").forEach(e=>e.classList.remove("hidden"))
 //     if (divselect!=null) {
 //         if (y < 100) {
 //             divselect.style.top = y + 150 + "px"
