@@ -131,7 +131,7 @@ const createGrid = function (size, element, id, idGrid) {
   }
 };
 
-createGrid(9, document.getElementById("grid"), "ships", "gridShips");
+createGrid(10, document.getElementById("grid"), "ships", "gridShips");
 
 function checkBusyCells(ship, cell) {
   let id = cell.id

@@ -470,7 +470,7 @@ function activarAnimation(moveTo) {
     }
   }
 }
-*/ /*
+*/ /* 5, 4, 3, 1, 1
 /*FUNCIONES SHIPS*/ /*
 function defaultships() {
   [5, 4, 3, 3, 2].forEach((lengthShip, index) =>

@@ -1,1 +1,28 @@
 @use "utils/colors";
+
+@mixin player {
+  display: flex;
+  justify-content: space-around;
+  background-image: url("../assets/icons/border-viento2.png");
+  background-position: CENTER;
+  background-size: cover;
+}
+
+@mixin other {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.player-card-opponent {
+  @include player();
+}
+.player-card-me {
+  @include player();
+}
+.game-info {
+  @include other();
+}
+.game-control {
+  @include other();
+}

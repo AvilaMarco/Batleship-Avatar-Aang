@@ -22,12 +22,12 @@
 
 .player-card-me {
   grid-area: pm;
-  background-color: red;
+  /* background-color: red; */
 }
 
 .player-card-opponent {
   grid-area: po;
-  background-color: blue;
+  /* background-color: blue; */
 }
 
 .game-info {
@@ -43,4 +43,7 @@
 .container-grids {
   grid-area: g;
   background-color: green;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
