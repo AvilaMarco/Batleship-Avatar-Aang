@@ -7,7 +7,7 @@
     <meta content="user-scalable=no" name="viewport" />
     <link href="assets/icons/icon.png" rel="shortcut icon" sizes="196x196" />
     <link rel="stylesheet" href="css/games.css" />
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
     <link
       href="https://fonts.googleapis.com/css?family=Permanent+Marker&display=swap"
       rel="stylesheet"
@@ -28,13 +28,13 @@
   </head>
 
   <body>
-    <div id="modal" class="d-none modal">
+    <div id="modal" class="hidden modal">
       <img class="close" onclick="nomodal()" src="assets/icons/close.png" />
       <div class="div-modal"></div>
     </div>
     <div id="container" class="full-screen">
       <!-- CHOOSE NATION -->
-      <div id="inicoNacion" class="container-choose-nation">
+      <div id="inicoNacion" class="container-choose-nation hidden">
         <p class="title">Choose Your Nation</p>
         <div class="nation-card">
           <div
@@ -59,7 +59,7 @@
       </div>
 
       <!-- Maps View -->
-      <div id="webGames" class="full-screen hidden">
+      <div id="webGames" class="full-screen ">
         <img id="mapabg" class="menu" src="assets/img/fondo-mapa.png" />
         <div class="container-map">
           <map name="mapeo"></map>
@@ -69,13 +69,13 @@
       </div>
 
       <!-- Buttons View -->
-      <div id="botonera" class="container-buttons hidden">
+      <div id="botonera" class="container-buttons">
         <div class="top-buttons">
           <button id="logout" class="main-btn" name="botonesMenu">
             Logout
           </button>
-          <button id="back" class="main-btn d-none">Menu</button>
-          <img id="reload" class="d-none" src="assets/icons/reload.png" />
+          <button id="back" class="main-btn hidden">Menu</button>
+          <img id="reload" class="hidden" src="assets/icons/reload.png" />
         </div>
         <div class="middle-buttons">
           <button
@@ -88,7 +88,7 @@
             id="player"
             class="main-btn-circle"
             name="botonesMenu"
-            onclick="verdatos(this)"
+            onclick="verDatosUser()"
           ></button>
         </div>
         <div class="bottom-buttons">
@@ -103,7 +103,7 @@
           </button>
           <button
             id="infoGame"
-            class="main-btn d-none"
+            class="main-btn hidden"
             name="dataGame"
             onclick="infoGame()"
           >
@@ -111,14 +111,14 @@
           </button>
           <button
             id="noInfoGame"
-            class="main-btn d-none"
+            class="main-btn hidden"
             name="dataGame"
             onclick="enterGame(this)"
           ></button>
         </div>
       </div>
     </div>
-    <!-- <script src="js/datosmap.js"></script> -->
-    <!-- <script src="js/main.js"></script> -->
+    <script src="js/datosmap.js"></script>
+    <script src="js/main.js"></script>
   </body>
 </html>

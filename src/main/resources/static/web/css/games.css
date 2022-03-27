@@ -295,6 +295,143 @@
   height: 0;
 }
 
+.table td,
+.table th {
+  text-align: center;
+  padding: 0.75rem;
+}
+
+.table th {
+  position: sticky;
+  top: 0;
+}
+
+.table th {
+  background-color: black;
+  color: white;
+}
+
+.table thead tr {
+  background-color: black;
+}
+
+.position {
+  position: absolute;
+}
+
+.modal {
+  width: 100vw;
+  height: 100vh;
+  z-index: 2000;
+  background: black;
+  opacity: 0.8;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.close {
+  width: 8%;
+  position: absolute;
+  left: 100%;
+  top: 0;
+  -webkit-transform: translateX(-100%);
+          transform: translateX(-100%);
+}
+
+.div-modal {
+  overflow: auto;
+  font-size: 28px;
+  width: 90vw;
+  height: 80vh;
+  background: red;
+  top: 5%;
+  position: relative;
+}
+
+/*ANIMACIONES*/
+.Animation-reload {
+  -webkit-animation: giroCompleto 1s linear;
+          animation: giroCompleto 1s linear;
+  -webkit-animation-fill-mode: forwards;
+          animation-fill-mode: forwards;
+}
+
+.modalAnimation {
+  position: fixed;
+  -webkit-animation: modal 1s linear;
+          animation: modal 1s linear;
+  -webkit-animation-fill-mode: forwards;
+          animation-fill-mode: forwards;
+}
+
+.modalAnimationout {
+  position: fixed;
+  -webkit-animation: modalout 1s linear;
+          animation: modalout 1s linear;
+  -webkit-animation-fill-mode: forwards;
+          animation-fill-mode: forwards;
+}
+
+@-webkit-keyframes giroCompleto {
+  from {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
+
+@keyframes giroCompleto {
+  from {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
+@-webkit-keyframes modal {
+  from {
+    top: -90vh;
+  }
+  to {
+    top: 0vh;
+  }
+}
+@keyframes modal {
+  from {
+    top: -90vh;
+  }
+  to {
+    top: 0vh;
+  }
+}
+@-webkit-keyframes modalout {
+  from {
+    top: 10vh;
+  }
+  to {
+    top: -90vh;
+  }
+}
+@keyframes modalout {
+  from {
+    top: 10vh;
+  }
+  to {
+    top: -90vh;
+  }
+}
 .container {
   width: 100vw;
 }

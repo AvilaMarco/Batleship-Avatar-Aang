@@ -2,6 +2,8 @@
 @use "games-scss/choose-nation.scss";
 @use "games-scss/menu";
 @use "games-scss/buttons";
+@use "games-scss/table-ladder";
+@use "utils/modal";
 
 .container {
   width: 100vw;

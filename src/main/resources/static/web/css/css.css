@@ -219,7 +219,7 @@
   z-index: -99;
 }
 
-.modal {
+/* .modal {
   width: 90vw;
   height: 80vh;
   background-image: url("../assets/texturas/textura-mapa.jpg");
@@ -228,8 +228,8 @@
   left: 6vw;
   top: 10vh;
   z-index: 9999;
-}
-
+} */
+/* 
 .close {
   width: 96px;
   position: absolute;
@@ -242,7 +242,7 @@
   max-height: 80vh;
   overflow: auto;
   font-size: 28px;
-}
+} */
 
 .textomapa {
   margin-top: 88px;

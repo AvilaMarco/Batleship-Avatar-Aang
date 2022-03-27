@@ -1,4 +1,4 @@
-.d-none {
+.hidden {
   display: none !important;
 }
 
@@ -33,26 +33,6 @@ select {
   border-radius: 5px;
   padding: 15px;
   margin: 5px;
-}
-
-.table td,
-.table th {
-  text-align: center;
-  padding: 0.75rem;
-}
-
-.table th {
-  position: sticky;
-  top: 0;
-}
-
-.theadBlack th {
-  background-color: black;
-  color: white;
-}
-
-.position {
-  position: absolute;
 }
 
 /*fondos*/
@@ -151,49 +131,4 @@ select {
   background-image: url("../assets/img/bgaire.png") !important;
   background-size: cover;
   background-position-y: -26px;
-}
-
-/*ANIMACIONES*/
-.Animation-reload {
-  animation: giroCompleto 1s linear;
-  animation-fill-mode: forwards;
-}
-
-.modalAnimation {
-  position: relative;
-  animation: modal 1s linear;
-  animation-fill-mode: forwards;
-}
-
-.modalAnimationout {
-  position: relative;
-  animation: modalout 1s linear;
-  animation-fill-mode: forwards;
-}
-
-@keyframes giroCompleto {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes modal {
-  from {
-    top: -90vh;
-  }
-  to {
-    top: 10vh;
-  }
-}
-
-@keyframes modalout {
-  from {
-    top: 10vh;
-  }
-  to {
-    top: -90vh;
-  }
 }

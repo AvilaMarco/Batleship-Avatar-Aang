@@ -1,0 +1,22 @@
+.table td,
+.table th {
+  text-align: center;
+  padding: 0.75rem;
+}
+
+.table th {
+  position: sticky;
+  top: 0;
+}
+
+.table th {
+  background-color: black;
+  color: white;
+}
+
+.table thead tr {
+  background-color: black;
+}
+.position {
+  position: absolute;
+}
