@@ -108,27 +108,3 @@ select {
   background-image: url("../assets/icons/transparentviento.png");
   background-size: cover;
 }
-
-.bgtierra {
-  background-image: url("../assets/img/bgtierra.png") !important;
-  background-size: cover;
-  background-position-y: -26px;
-}
-
-.bgagua {
-  background-image: url("../assets/img/bgagua.png") !important;
-  background-size: cover;
-  background-position-y: -26px;
-}
-
-.bgfuego {
-  background-image: url("../assets/img/bgfuego.png") !important;
-  background-size: cover;
-  background-position-y: -26px;
-}
-
-.bgviento {
-  background-image: url("../assets/img/bgaire.png") !important;
-  background-size: cover;
-  background-position-y: -26px;
-}

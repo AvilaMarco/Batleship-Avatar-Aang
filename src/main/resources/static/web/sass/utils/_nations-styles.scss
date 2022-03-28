@@ -1,0 +1,73 @@
+@use "sass:list";
+@use "sass:map";
+
+// $nations: "EARTH", "FIRE", "WATER", "AIR";
+// $nations-color: #1d6412, #8f0605, #0f236b, #2aa2be;
+$route-wpp: "../../assets/wallpapers";
+$route-icons: "../../assets/icons";
+$nations: (
+    "name": "EARTH",
+    "bg": #438a17,
+    "nth-bg": #3a7714,
+    "nth-border": #1e3b1c,
+  ),
+  (
+    "name": "FIRE",
+    "bg": #6f1e15,
+    "nth-bg": #291004,
+    "nth-border": #c4a449,
+  ),
+  (
+    "name": "WATER",
+    "bg": #5a7abd,
+    "nth-bg": #273c62,
+    "nth-border": #212732,
+  ),
+  (
+    "name": "AIR",
+    "bg": #72c3e5,
+    "nth-bg": #2aa2be,
+    "nth-border": #8dceea,
+  );
+
+@each $nation in $nations {
+  $name: map-get($nation, "name");
+
+  .bg-#{$name} {
+    background-image: url($route-wpp + "/bg-" + $name + ".png");
+    background-position-y: 50%;
+    background-size: 93%;
+    background-repeat: no-repeat;
+  }
+}
+
+@each $nation in $nations {
+  $color: map-get($nation, "nth-bg");
+  $border: map-get($nation, "nth-border");
+  $name: map-get($nation, "name");
+
+  .bg-color-#{$name} {
+    background-color: $color;
+    border: solid $border;
+  }
+}
+
+@each $nation in $nations {
+  $color: map-get($nation, "bg");
+  $name: map-get($nation, "name");
+
+  .bg-solid-#{$name} {
+    background-color: $color;
+  }
+}
+
+@each $nation in $nations {
+  $name: map-get($nation, "name");
+
+  .logo-#{$name} {
+    background-image: url($route-icons + "/transparent-" + $name + ".png");
+    background-size: 90%;
+    background-position: center;
+    background-color: #e1d2a7;
+  }
+}

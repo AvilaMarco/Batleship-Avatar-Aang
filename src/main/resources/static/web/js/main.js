@@ -1,9 +1,34 @@
 //cargar datos
 let gamesData = [];
-let players = [];
+let players = [
+  {
+    email:"AIR@correo.com",
+    scores:[1, 3, 3]
+  },
+  {
+    email:"FIRE@correo.com",
+    scores:[1, 0, 3]
+  },
+  {
+    email:"WATER@correo.com",
+    scores:[3, 3, 3]
+  },
+  {
+    email:"EARTH@correo.com",
+    scores:[1, 1, 1]
+  },
+  {
+    email:"AIR@correo.com",
+    scores:[1, 2, 3]
+  },
+];
 let masx,
   masy = false;
-let playerData = {};
+let playerData = {
+  nation: "FIRE",
+  email: "marco@digitalhouse.com",
+  name: "racnar1"
+}
 let recargarMapa = false;
 //referencias al DOM
 let tablegame = document.querySelector("#game-body");
@@ -29,6 +54,15 @@ ubicacionesMap.forEach((area) => {
   areahtml.addEventListener("click", selectGame);
   document.querySelector("map[name*=mapeo]").appendChild(areahtml);
 });
+
+function randomNation(){
+  const nations = ["FIRE", "EARTH", "AIR", "WATER"]
+  const n =Math.round(Math.random() * 3)
+  playerData.nation = nations[n]
+}
+
+// COSAS
+let playerScore = [];
 
 reloadInfo();
 
@@ -91,14 +125,14 @@ function inMenu(json) {
 /*funciones para modal y cambiar los datos que muestra*/
 function verdatos(elementhtml) {
   console.log(elementhtml);
-  addmodal();
-  if (elementhtml.id == "Player") {
+  if (elementhtml.id == "player") {
     verDatosUser();
   } else if (elementhtml.id == "info") {
     verTutorial();
   } else if (elementhtml.id == "ladder") {
     createTableRanking();
   }
+  addmodal();
 }
 
 function nomodal() {
@@ -116,46 +150,42 @@ function addmodal() {
   document.querySelector("#modal").classList.add("modalAnimation");
 }
 
-function verDatosUser() {
+function cleanModal(){
   let modalDiv = document.querySelector(".div-modal");
   modalDiv.innerHTML = "";
-  modalDiv.classList.remove("bg" + playerData.nation);
-  modalDiv.classList.add("bg" + playerData.nation);
-  modalDiv.style.height = "80vh";
-  let div = document.createElement("div");
-  div.classList.add("datosUser");
-  if (playerData.nation == "agua" || playerData.nation == "tierra") {
-    div.classList.add("datosUser-left");
-  } else {
-    div.classList.add("datosUser-right");
-  }
-  div.classList.add("bg-color-" + playerData.nation);
-  div.style.color = "white";
-  let userName = document.createElement("P");
-  userName.innerText = playerData.email;
-  userName.classList.add("text-userName");
-  let divText = document.createElement("div");
-  divText.classList.add("divText");
-  let nation = document.createElement("P");
-  nation.innerText = playerData.nation;
-  let name = document.createElement("P");
-  name.innerText = playerData.name;
-  divText.appendChild(name);
-  divText.appendChild(nation);
-  let table = document.createElement("TABLE");
-  console.log(playerData.id);
-  console.log(tableUser(playerData.id));
-  table.classList.add("table-user");
-  table.innerHTML += tableUser(playerData.id);
-  div.appendChild(userName);
-  div.appendChild(divText);
-  div.appendChild(table);
-  modalDiv.appendChild(div);
+  modalDiv.classList.remove("bg-" + playerData.nation);
+  modalDiv.classList.remove("bg-solid-" + playerData.nation);
+}
+
+function verDatosUser() {
+  
+
+  let modalDiv = document.querySelector(".div-modal");
+  cleanModal()
+  randomNation()
+  modalDiv.classList.add("bg-" + playerData.nation);
+  modalDiv.classList.add("bg-solid-" + playerData.nation);
+  
+  const side = playerData.nation == "WATER" || playerData.nation == "EARTH" ? "left" : "right"
+  const userDataHTML = `
+    <div class="datosUser datosUser-${side} bg-color-${playerData.nation}">
+      <p class="text-userName">${playerData.email}</p>
+      <div class="divText">
+        <p>${playerData.name}</p>
+        <p>${playerData.nation}</p>
+      </div>
+      <table class="table-user">
+        ${tableUser(playerData.id)}
+      </table>
+    </div>
+  `
+
+  modalDiv.innerHTML = userDataHTML;
 }
 
 function tableUser(user) {
   console.log(playerScore);
-  let datos = playerScore.filter((e) => e.id == user)[0].scores;
+  let datos = playerScore.filter((e) => e.id == user)[0]?.scores || [];
   console.log(datos);
   let table = `
         <thead>
@@ -208,18 +238,11 @@ function verTutorial(argument) {
   let modalDiv = document.querySelector(".div-modal");
   modalDiv.innerHTML = "";
   modalDiv.classList.remove("bg" + playerData.nation);
-  let img = document.createElement("IMG");
-  img.classList.add("verTutorial");
-  img.src = "assets/img/bg1.jpg";
+
   let text = document.createElement("P");
   text.innerText = "Tutorial Coming Soon";
-  text.style.color = "black";
-  text.style.position = "fixed";
-  text.style.top = "19%";
-  text.style.left = "35%";
-  text.style.background = "white";
-  text.style.borderRadius = "10px";
-  modalDiv.appendChild(img);
+  text.classList.add("tutorial-text")  
+  
   modalDiv.appendChild(text);
 }
 
@@ -506,8 +529,7 @@ function createTableRanking() {
     return b.total - a.total;
   });
   let modalDiv = document.querySelector(".div-modal");
-  modalDiv.innerHTML = "";
-  modalDiv.classList.remove("bg" + playerData.nation);
+  cleanModal()
   let body = ``;
   body += `
     <table class="table theadBlack">
@@ -555,6 +577,8 @@ function saveUserData() {
 function goGame() {
   location.assign("/web/game.html");
 }
+
+
 
 // function selectGameCreate(event) {
 //     if (document.querySelector("div[data-name*='selectGame']")!=null) {
@@ -757,4 +781,59 @@ function goGame() {
 //     })
 //     .catch(error => error)
 //     .then(json => console.log(json))
+// // }
+
+// function verDatosUser() {
+//   let modalDiv = document.querySelector(".div-modal");
+//   modalDiv.innerHTML = "";
+//   modalDiv.classList.remove("bg-" + playerData.nation);
+//   modalDiv.classList.add("bg-" + playerData.nation);
+
+//   randomNation()
+//   let div = document.createElement("div");
+//   div.classList.add("datosUser");
+//   div.classList.add("bg-color-" + playerData.nation);
+//   div.style.color = "white";
+//   const side = playerData.nation == "agua" || playerData.nation == "tierra" ? "left" : "right"
+//   div.classList.add("datosUser-"+side);
+
+//   let userName = document.createElement("P");
+//   userName.innerText = playerData.email;
+//   userName.classList.add("text-userName");
+
+//   let divText = document.createElement("div");
+//   divText.classList.add("divText");
+
+//   let nation = document.createElement("P");
+//   nation.innerText = playerData.nation + "natin";
+
+//   let name = document.createElement("P");
+//   name.innerText = playerData.name;
+//   divText.appendChild(name);
+//   divText.appendChild(nation);
+
+//   let table = document.createElement("TABLE");
+//   console.log(playerData.id);
+//   console.log(tableUser(playerData.id));
+//   table.classList.add("table-user");
+//   table.innerHTML += tableUser(playerData.id);
+//   div.appendChild(userName);
+//   div.appendChild(divText);
+//   div.appendChild(table);
+//   modalDiv.appendChild(div);
+
+//   const userDataHTML = `
+//     <div class="datosUser datosUser-${side} bg-color-${playerData.nation}">
+//       <p class="text-userName">${playerData.email}</p>
+//       <div class="divText">
+//         <p>${playerData.name}</p>
+//         <p>${playerData.nation}</p>
+//       </div>
+//       <table class="table-user">
+//         ${tableUser(playerData.id)}
+//       </table>
+//     </div>
+//   `
+
+//   modalDiv.innerHTML = userDataHTML;
 // }

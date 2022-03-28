@@ -6,7 +6,7 @@
 
 .table th {
   position: sticky;
-  top: 0;
+  top: -1px;
 }
 
 .table th {
@@ -19,4 +19,13 @@
 }
 .position {
   position: absolute;
+}
+table {
+  width: 100%;
+  background-image: url("../../assets/texturas/textura-mapa.jpg");
+  border-collapse: unset;
+}
+
+table tr th {
+  padding: 25px;
 }

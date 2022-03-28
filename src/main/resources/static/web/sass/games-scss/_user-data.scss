@@ -1,0 +1,55 @@
+.datosUser {
+  width: 55%;
+  height: 70%;
+  position: absolute;
+  top: 15%;
+  color: white;
+  border-radius: 25px;
+}
+
+.datosUser-right {
+  right: 39%;
+}
+
+.datosUser-left {
+  left: 39%;
+}
+
+.table-user {
+  margin: 7% 0;
+  font-size: 1.5rem;
+  text-align: center;
+  transform: scale(0.9);
+}
+
+.table-user tbody {
+  background: white;
+  color: black;
+}
+
+.table-user thead {
+  background: black;
+  color: white;
+}
+
+.table-user th,
+.table-user td {
+  padding: 10px;
+}
+
+.text-userName {
+  text-align: center;
+  font-size: 2rem;
+  margin: 0;
+}
+
+.divText {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  font-size: 1.5rem;
+}
+
+.divText p {
+  margin: 0;
+}
