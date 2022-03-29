@@ -1,3 +1,6 @@
+@use "utils/normalize";
+@use "utils/utils";
+
 @use "utils/colors" as *;
 @use "utils/modal";
 @use "utils/nations-styles";
@@ -5,6 +8,7 @@
 @use "games-scss/choose-nation.scss";
 @use "games-scss/menu";
 @use "games-scss/buttons";
+@use "games-scss/map";
 
 @use "games-scss/table-ladder";
 @use "games-scss/user-data";

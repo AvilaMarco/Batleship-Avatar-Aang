@@ -24,8 +24,20 @@ table {
   width: 100%;
   background-image: url("../../assets/texturas/textura-mapa.jpg");
   border-collapse: unset;
+  border-spacing: 0;
 }
 
 table tr th {
   padding: 25px;
+}
+.table-scroll {
+  margin: 10px;
+  height: 65vh;
+  overflow: auto;
+}
+
+.table-game {
+  margin: 10px;
+  height: 65vh;
+  overflow: auto;
 }

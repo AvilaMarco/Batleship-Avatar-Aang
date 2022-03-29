@@ -1,0 +1,35 @@
+.selectMap {
+  border-radius: 50%;
+  z-index: 99;
+  position: absolute;
+  height: 50px;
+  width: 50px;
+  transform: translate(-50%, -50%);
+}
+
+.selectCreate {
+  box-shadow: inset 0 0 14px 14px #30c530;
+}
+
+.selectGameCreate {
+  box-shadow: 0 0 14px 14px #30c530;
+}
+
+.selectJoin {
+  box-shadow: inset 0 0 14px 14px #ecef24;
+}
+
+.SelectInGame {
+  box-shadow: inset 0 0 14px 14px #ec2511;
+}
+
+.SelectEnter {
+  box-shadow: inset 0 0 14px 14px #3965bd;
+}
+
+#pivotMap {
+  position: relative;
+}
+.selectGame {
+  box-shadow: 0 10px 8px 20px #ffffff;
+}
