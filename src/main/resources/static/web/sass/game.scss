@@ -3,9 +3,11 @@
 @mixin player {
   display: flex;
   justify-content: space-around;
-  background-image: url("../assets/icons/border-viento2.png");
-  background-position: CENTER;
-  background-size: cover;
+  // background-color: skyblue;
+  // background-image: url("../assets/icons/border-viento2.png");
+  // background-position: CENTER;
+  // background-size: cover;
+  position: relative;
 }
 
 @mixin other {
@@ -25,4 +27,45 @@
 }
 .game-control {
   @include other();
+}
+body {
+  margin: 0;
+}
+
+.demo-img {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: -1;
+}
+
+.flex-box {
+  display: flex;
+}
+.a {
+  display: grid;
+  grid-template-areas: ". logo . card . turn .";
+  grid-template-columns: 2% 1fr 2% 3fr 1fr 1fr 2%;
+  padding: 5px 0;
+}
+.b {
+  grid-area: logo;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: gray;
+}
+
+.b img {
+  width: 90%;
+}
+.c {
+  grid-area: card;
+}
+.d {
+  grid-area: turn;
+  background-color: gray;
+}
+p {
+  margin: 0;
 }
