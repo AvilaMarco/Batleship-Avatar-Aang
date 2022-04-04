@@ -20,16 +20,19 @@
       href="css/desktop.css"
       media="screen and (min-width: 1024px)"
       rel="stylesheet"
-      type="text/css" 
+      type="text/css"
     />
     <!-- DELETE -->
   </head>
 
   <body>
+    <!-- MODAL -->
     <div id="modal" class="hidden modal">
-      <img class="close" onclick="nomodal()" src="assets/icons/close.png" />
+      <img id="hideModal" class="close" src="assets/icons/close.png" />
       <div class="div-modal"></div>
     </div>
+
+    <!-- MAIN VIEW -->
     <div id="container" class="full-screen">
       <!-- CHOOSE NATION -->
       <div id="inicoNacion" class="container-choose-nation hidden">
@@ -76,27 +79,16 @@
           <img id="reload" class="hidden" src="assets/icons/reload.png" />
         </div>
         <div class="middle-buttons">
-          <button
-            id="info"
-            class="main-btn-circle"
-            name="botonesMenu"
-            onclick="verdatos(this)"
-          ></button>
+          <button id="info" class="main-btn-circle" name="botonesMenu"></button>
           <button
             id="player"
             class="main-btn-circle"
             name="botonesMenu"
-            onclick="verdatos(this)"
           ></button>
         </div>
         <div class="bottom-buttons">
           <button id="verMapa" name="botonesMenu">Map</button>
-          <button
-            id="ladder"
-            class="main-btn"
-            name="botonesMenu"
-            onclick="verdatos(this)"
-          >
+          <button id="ladder" class="main-btn" name="botonesMenu">
             Ladder
           </button>
           <button
@@ -108,15 +100,13 @@
             Info
           </button>
           <button
-            id="noInfoGame"
+            id="manageJoin"
             class="main-btn hidden"
             name="dataGame"
-            onclick="enterGame(this)"
           ></button>
         </div>
       </div>
     </div>
-    <script src="js/datosmap.js"></script>
-    <script src="js/main.js"></script>
+    <script src="js/main.js" type="module"></script>
   </body>
 </html>

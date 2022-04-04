@@ -1,4 +1,4 @@
-let ubicacionesMap = [
+export const locations = [
   {
     location: "WATER",
     x: 649,

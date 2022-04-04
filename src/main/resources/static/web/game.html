@@ -25,28 +25,23 @@
       href="css/desktop/desktop.css"
       media="screen and (min-width: 1024px)"
       rel="stylesheet"
-      type="text/css" 
+      type="text/css"
     />
     <!-- DELETE -->
   </head>
   <body>
-    <!-- Main Screen -->
     <div class="container-grid">
       <!-- Grids -->
       <div id="grid" class="container-grids">
-        <div class="d-none" id="grid_salvoes">
-          <!--The grid will appear here -->
-        </div>
+        <div class="d-none" id="grid_salvoes"></div>
       </div>
 
       <!-- PLAYER -->
       <div id="player1" class="player-card-opponent">
-        
         <img class="bg-img demo-img" src="assets/icons/border-fuego3.png" />
         <div class="a">
-
           <div class="b">
-            <img  src="assets/icons/selectfuego.png" />
+            <img src="assets/icons/selectfuego.png" />
           </div>
 
           <div class="c">
@@ -58,9 +53,7 @@
             <p class="bg-text">turn</p>
             <div>1</div>
           </div>
-          
         </div>
-
       </div>
 
       <!-- Game's Turns -->
@@ -75,12 +68,10 @@
 
       <!-- PLAYER -->
       <div id="player2" class="player-card-me">
-
         <img class="bg-img demo-img" src="assets/icons/border-tierra2.png" />
         <div class="a">
-
           <div class="b">
-            <img  src="assets/icons/selectierra.png" />
+            <img src="assets/icons/selectierra.png" />
           </div>
 
           <div class="c">
@@ -92,9 +83,7 @@
             <p class="bg-text">turn</p>
             <div>1</div>
           </div>
-          
         </div>
-
       </div>
 
       <div id="dock" class="game-control">
@@ -104,17 +93,13 @@
         <button>CHAT</button>
         <button>HOME</button>
       </div>
-
-      <!-- Emotes -->
     </div>
 
     <!-- Scripts -->
     <div>
       <script src="/webjars/sockjs-client/sockjs.min.js"></script>
       <script src="/webjars/stomp-websocket/stomp.min.js"></script>
-      <script src="js/ships.js"></script>
-      <script src="js/grid.js"></script>
-      <script src="js/game.js"></script>
+      <script src="js/game.js" type="module"></script>
     </div>
   </body>
 </html>

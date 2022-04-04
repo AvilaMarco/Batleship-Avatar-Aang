@@ -1,7 +1,7 @@
 /*creates the grid structure. It requires a size, an element 
 where the grid will be attached to and an id to recognized it. 
 */
-const createGrid = function (size, element, id, idGrid) {
+export const createGrid = function (size, element, id, idGrid) {
   let wrapper = document.createElement("DIV"); //container of the grid
   wrapper.classList.add("grid-wrapper");
   wrapper.id = idGrid;
@@ -55,83 +55,79 @@ const createGrid = function (size, element, id, idGrid) {
   }
 
   element.appendChild(wrapper);
+};
 
-  //Event to allow the drop event.
-  function allowDrop(ev) {
-    // dockIsEmpty()
-    ev.preventDefault();
+// createGrid(9, document.getElementById("grid"), "ships", "gridShips");
+//createShips('carrier', 5, 'horizontal', document.getElementById('shipsA1'),true)
+//Event to allow the drop event.
+function allowDrop(ev) {
+  // dockIsEmpty()
+  ev.preventDefault();
+}
+
+//Event to manage what happen when a ship is dropped
+function dropShip(ev) {
+  ev.preventDefault();
+  document.querySelector("#display p").innerText = "";
+  //checks if the targeted element is a cell
+  if (!ev.target.classList.contains("grid-cell")) {
+    document.querySelector("#display p").innerText = "movement not allowed";
+    return;
   }
+  //variables where the data of the ship beeing dragged is stored
+  let data = ev.dataTransfer.getData("ship");
+  let ship = document.getElementById(data);
+  //variables where the data of the targeted cell is stored
+  let cell = ev.target;
+  let y = cell.dataset.y.charCodeAt() - 64;
+  let x = parseInt(cell.dataset.x);
 
-  //Event to manage what happen when a ship is dropped
-  function dropShip(ev) {
-    ev.preventDefault();
-    document.querySelector("#display p").innerText = "";
-    //checks if the targeted element is a cell
-    if (!ev.target.classList.contains("grid-cell")) {
+  //Before the ship is dropped to a cell, checks if the length of the ship exceed the grid width,
+  //If true, the drop event is aborted.
+  if (ship.dataset.orientation == "horizontal") {
+    if (parseInt(ship.dataset.length) + x > 11) {
       document.querySelector("#display p").innerText = "movement not allowed";
       return;
     }
-    //variables where the data of the ship beeing dragged is stored
-    let data = ev.dataTransfer.getData("ship");
-    let ship = document.getElementById(data);
-    //variables where the data of the targeted cell is stored
-    let cell = ev.target;
-    let y = cell.dataset.y.charCodeAt() - 64;
-    let x = parseInt(cell.dataset.x);
-
-    //Before the ship is dropped to a cell, checks if the length of the ship exceed the grid width,
-    //If true, the drop event is aborted.
-    if (ship.dataset.orientation == "horizontal") {
-      if (parseInt(ship.dataset.length) + x > 11) {
-        document.querySelector("#display p").innerText = "movement not allowed";
+    for (let i = 1; i < ship.dataset.length; i++) {
+      let id = cell.id
+        .match(new RegExp(`[^${cell.dataset.y}|^${cell.dataset.x}]`, "g"))
+        .join("");
+      let cellId = `${id}${cell.dataset.y}${parseInt(cell.dataset.x) + i}`;
+      if (document.getElementById(cellId).className.search(/busy-cell/) != -1) {
+        document.querySelector("#display p").innerText = "careful";
         return;
-      }
-      for (let i = 1; i < ship.dataset.length; i++) {
-        let id = cell.id
-          .match(new RegExp(`[^${cell.dataset.y}|^${cell.dataset.x}]`, "g"))
-          .join("");
-        let cellId = `${id}${cell.dataset.y}${parseInt(cell.dataset.x) + i}`;
-        if (
-          document.getElementById(cellId).className.search(/busy-cell/) != -1
-        ) {
-          document.querySelector("#display p").innerText = "careful";
-          return;
-        }
-      }
-    } else {
-      if (parseInt(ship.dataset.length) + y > 11) {
-        document.querySelector("#display p").innerText = "movement not allowed";
-        return;
-      }
-
-      for (let i = 1; i < ship.dataset.length; i++) {
-        let id = cell.id
-          .match(new RegExp(`[^${cell.dataset.y}|^${cell.dataset.x}]`, "g"))
-          .join("");
-        let cellId = `${id}${String.fromCharCode(
-          cell.dataset.y.charCodeAt() + i
-        )}${cell.dataset.x}`;
-        if (
-          document.getElementById(cellId).className.search(/busy-cell/) != -1
-        ) {
-          document.querySelector("#display p").innerText = "careful";
-          return;
-        }
       }
     }
-    //Else:
-    //the ship takes the position data of the targeted cell
-    ship.dataset.y = String.fromCharCode(y + 64);
-    ship.dataset.x = x;
-    //the ship is added to the cell
-    ev.target.appendChild(ship);
-    dockIsEmpty();
+  } else {
+    if (parseInt(ship.dataset.length) + y > 11) {
+      document.querySelector("#display p").innerText = "movement not allowed";
+      return;
+    }
 
-    //checkBusyCells(ship, ev.target);
+    for (let i = 1; i < ship.dataset.length; i++) {
+      let id = cell.id
+        .match(new RegExp(`[^${cell.dataset.y}|^${cell.dataset.x}]`, "g"))
+        .join("");
+      let cellId = `${id}${String.fromCharCode(
+        cell.dataset.y.charCodeAt() + i
+      )}${cell.dataset.x}`;
+      if (document.getElementById(cellId).className.search(/busy-cell/) != -1) {
+        document.querySelector("#display p").innerText = "careful";
+        return;
+      }
+    }
   }
-};
+  //Else:
+  //the ship takes the position data of the targeted cell
+  ship.dataset.y = String.fromCharCode(y + 64);
+  ship.dataset.x = x;
+  //the ship is added to the cell
+  ev.target.appendChild(ship);
+  dockIsEmpty();
 
-createGrid(9, document.getElementById("grid"), "ships", "gridShips");
+  //checkBusyCells(ship, ev.target);
+}
 
 function checkBusyCells(ship, cell) {
   let id = cell.id
@@ -156,5 +152,3 @@ function checkBusyCells(ship, cell) {
     }
   }
 }
-
-//createShips('carrier', 5, 'horizontal', document.getElementById('shipsA1'),true)

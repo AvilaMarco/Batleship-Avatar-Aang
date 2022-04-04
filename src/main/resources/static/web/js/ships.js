@@ -4,7 +4,7 @@ the amount of cells the ship is going to occupy in the grid;
 a parent where the ship will be appended to;
 and a boolean that specifies whether the ship can be moved or not.
 */
-const createShips = function (shipType, length, orientation, parent, isStatic) {
+export const createShips = function (shipType, length, orientation, parent, isStatic) {
   let ship = document.createElement("DIV");
   let grip = document.createElement("DIV");
   let content = document.createElement("DIV");
