@@ -1,0 +1,8 @@
+{
+  "name": "The Last Shipbender",
+  "short_name": "Aang",
+  "theme_color": "#06bc80",
+  "background_color": "#303030",
+  "display": "standalone",
+  "orientation": "landscape"
+}

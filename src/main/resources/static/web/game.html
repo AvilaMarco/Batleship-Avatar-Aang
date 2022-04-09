@@ -6,6 +6,7 @@
     <meta content="true" name="HandheldFriendly" />
     <meta content="user-scalable=no" name="viewport" />
     <link rel="shortcut icon" href="assets/icons/icon.png" sizes="196x196" />
+    <link rel="manifest" href="manifest.json" />
     <link rel="stylesheet" href="css/game.css" />
     <link
       rel="stylesheet"
@@ -37,19 +38,20 @@
       </div>
 
       <!-- PLAYER -->
-      <div id="player1" class="player-card-opponent">
-        <img class="bg-img demo-img" src="assets/icons/border-fuego3.png" />
-        <div class="a">
-          <div class="b">
+      <div id="player1" class="player-card-container">
+        <img class="bg-img" src="assets/icons/border-fuego3.png" />
+
+        <div class="player-card">
+          <div class="nation-logo">
             <img src="assets/icons/selectfuego.png" />
           </div>
 
-          <div class="c">
+          <div class="user-status">
             <p class="texto-emote">RacnarWan(200)</p>
             <div>SHIPS</div>
           </div>
 
-          <div class="d">
+          <div class="turn turn-card">
             <p class="bg-text">turn</p>
             <div>1</div>
           </div>
@@ -59,7 +61,7 @@
       <!-- Game's Turns -->
       <div class="game-info">
         <p>Nacion del fuego</p>
-        <div>
+        <div class="turn-card">
           <p>Turn</p>
           <div>2</div>
         </div>
@@ -67,19 +69,19 @@
       </div>
 
       <!-- PLAYER -->
-      <div id="player2" class="player-card-me">
-        <img class="bg-img demo-img" src="assets/icons/border-tierra2.png" />
-        <div class="a">
-          <div class="b">
+      <div id="player2" class="player-card-container">
+        <img class="bg-img" src="assets/icons/border-tierra2.png" />
+        <div class="player-card">
+          <div class="nation-logo">
             <img src="assets/icons/selectierra.png" />
           </div>
 
-          <div class="c">
+          <div class="user-status">
             <p class="texto-emote">RacnarWan(200)</p>
             <div>SHIPS</div>
           </div>
 
-          <div class="d">
+          <div class="turn turn-card">
             <p class="bg-text">turn</p>
             <div>1</div>
           </div>
@@ -90,8 +92,10 @@
         <div>
           <p>fireball</p>
         </div>
-        <button>CHAT</button>
-        <button>HOME</button>
+        <div>
+          <button>CHAT</button>
+          <button>HOME</button>
+        </div>
       </div>
     </div>
 

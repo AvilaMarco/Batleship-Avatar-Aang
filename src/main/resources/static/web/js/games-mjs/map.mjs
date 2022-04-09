@@ -1,10 +1,10 @@
-import { locations } from "./datosmap.js";
+import { locations } from "./datosmap.mjs";
 import {
   getHTML,
   gameSelected,
   resizeCoord,
   resizeCoordWithMargin,
-} from "./utils.js";
+} from "../utils/utils.mjs";
 
 /*crear area clickable para la imagen*/
 function createListenerInMap() {

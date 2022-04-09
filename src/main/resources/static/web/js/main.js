@@ -1,8 +1,16 @@
-import { createTableRanking, verDatosUser, verTutorial } from "./modalViews.js";
-import { hideModal, showModal, cleanModal } from "./modal.js";
-import { randomNation } from "./test.js";
-import { getHTML } from "./utils.js";
-import { createListenerInMap, createGamesOnMap, infoGame } from "./map.js";
+import { hideModal, showModal, cleanModal } from "./games-mjs/modal.mjs";
+import {
+  createListenerInMap,
+  createGamesOnMap,
+  infoGame,
+} from "./games-mjs/map.mjs";
+import {
+  createTableRanking,
+  verDatosUser,
+  verTutorial,
+} from "./games-mjs/modalViews.mjs";
+import { getHTML } from "./utils/utils.mjs";
+import { randomNation } from "./utils/test.mjs";
 
 //cargar datos
 let gamesData = [];

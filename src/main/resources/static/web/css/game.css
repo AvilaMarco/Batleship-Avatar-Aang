@@ -1,14 +1,5 @@
 /*card mobile*/
-.player-card-opponent {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-pack: distribute;
-      justify-content: space-around;
-  position: relative;
-}
-
-.player-card-me {
+.player-card-container {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -43,7 +34,7 @@ body {
   margin: 0;
 }
 
-.demo-img {
+.bg-img {
   width: 100%;
   height: 100%;
   position: absolute;
@@ -56,16 +47,16 @@ body {
   display: flex;
 }
 
-.a {
+.player-card {
   display: -ms-grid;
   display: grid;
       grid-template-areas: ". logo . card . turn .";
-  -ms-grid-columns: 2% 1fr 2% 3fr 1fr 1fr 2%;
-  grid-template-columns: 2% 1fr 2% 3fr 1fr 1fr 2%;
+  -ms-grid-columns: 2% 1fr 2% 4fr 2% 1fr 2%;
+  grid-template-columns: 2% 1fr 2% 4fr 2% 1fr 2%;
   padding: 5px 0;
 }
 
-.b {
+.nation-logo {
   -ms-grid-row: 1;
   -ms-grid-column: 2;
   grid-area: logo;
@@ -81,21 +72,22 @@ body {
   background-color: gray;
 }
 
-.b img {
+.nation-logo img {
   width: 90%;
 }
 
-.c {
+.user-status {
   -ms-grid-row: 1;
   -ms-grid-column: 4;
   grid-area: card;
 }
 
-.d {
+.turn {
   -ms-grid-row: 1;
   -ms-grid-column: 6;
   grid-area: turn;
   background-color: gray;
+  text-align: center;
 }
 
 p {
