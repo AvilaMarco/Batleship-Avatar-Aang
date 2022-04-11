@@ -9,11 +9,13 @@
         <outputRelativeToContentRoot value="true" />
         <module name="salvoGamesJava" />
         <module name="airbender" />
+        <module name="Batleship-Avatar-Aang" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="Batleship-Avatar-Aang" options="-parameters" />
       <module name="airbender" options="-parameters" />
       <module name="salvoGamesJava" options="-parameters" />
     </option>

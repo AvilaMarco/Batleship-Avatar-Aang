@@ -1,6 +1,6 @@
 package com.codeoftheweb.salvo.modelsDTO;
 
-import com.codeoftheweb.salvo.enums.TypeShips;
+import com.codeoftheweb.salvo.enums.ShipType;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -16,7 +16,7 @@ public class ShipsDTO {
     @GenericGenerator(name = "native", strategy = "native")
     private long id;
 
-    private TypeShips typeShip;
+    private ShipType typeShip;
 
     @ElementCollection
     private List<String> shipLocations;
@@ -25,7 +25,7 @@ public class ShipsDTO {
     public ShipsDTO() {
     }
 
-    public ShipsDTO(TypeShips typeShip, List<String> shipLocations) {
+    public ShipsDTO(ShipType typeShip, List<String> shipLocations) {
         this.typeShip = typeShip;
         this.shipLocations = shipLocations;
     }
@@ -40,7 +40,7 @@ public class ShipsDTO {
         return this.id;
     }
 
-    public TypeShips getTypeShips() {
+    public ShipType getTypeShips() {
         return this.typeShip;
     }
 

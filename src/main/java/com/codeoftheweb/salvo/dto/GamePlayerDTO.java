@@ -1,5 +1,6 @@
 package com.codeoftheweb.salvo.dto;
 
+import com.codeoftheweb.salvo.dto.response.PlayerDTO;
 import com.codeoftheweb.salvo.enums.NationType;
 import lombok.Data;
 
@@ -11,8 +12,6 @@ public class GamePlayerDTO {
 
     Long id;
 
-    @Enumerated(EnumType.STRING)
-    NationType type;
-    PlayerDTO player;
+    Integer playerId;
     Integer score;
 }

@@ -36,7 +36,7 @@ public class MatchService implements IMatchService {
         gameService.gameNotExists(direction);
 
         Player player = playerService.getPlayerAuthenticated(authentication);
-        Game game = new Game(0, location, direction);
+        Game game = new Game();
         GamePlayer gamePlayer = new GamePlayer(player, game);
 
         playerService.save(player); // TODO: delete ?

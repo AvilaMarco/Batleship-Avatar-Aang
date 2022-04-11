@@ -114,8 +114,7 @@ public class SalvoController {
     private com.codeoftheweb.salvo.repository.PlayerRepository PlayerRepository;
     @Autowired
     private com.codeoftheweb.salvo.repository.GamePlayerRepository gamePlayerRepository;
-    @Autowired
-    private com.codeoftheweb.salvo.repository.ScoreRepository ScoreRepository;
+
 
     private boolean isGuest(Authentication authentication) {
         return authentication == null || authentication instanceof AnonymousAuthenticationToken;

@@ -7,7 +7,6 @@ import com.codeoftheweb.salvo.exception.conflict.EmailAlreadyUseException;
 import com.codeoftheweb.salvo.exception.not_found.PlayerNotFoundException;
 import com.codeoftheweb.salvo.exception.unauthorized.PlayerNotLoginException;
 import com.codeoftheweb.salvo.models.Player;
-import com.codeoftheweb.salvo.models.Score;
 import com.codeoftheweb.salvo.repository.PlayerRepository;
 import com.codeoftheweb.salvo.service.intereface.IPlayerService;
 import org.modelmapper.ModelMapper;

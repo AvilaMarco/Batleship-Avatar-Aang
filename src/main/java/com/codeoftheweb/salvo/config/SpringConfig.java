@@ -1,20 +1,10 @@
 package com.codeoftheweb.salvo.config;
 
-import com.codeoftheweb.salvo.enums.TypeShips;
-import com.codeoftheweb.salvo.models.*;
-import com.codeoftheweb.salvo.repository.*;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.NamingConventions;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 @Configuration
 public class SpringConfig {
@@ -33,7 +23,7 @@ public class SpringConfig {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
-    @Bean
+/*    @Bean
     public CommandLineRunner initData(PlayerRepository PlayerRepository, GameRepository GameRepository,
                                       GamePlayerRepository GamePlayerRepository, ScoreRepository ScoreRepository) {
         return (args) -> {
@@ -144,5 +134,5 @@ public class SpringConfig {
             ScoreRepository.saveAll(scores);
 
         };
-    }
+    }*/
 }
