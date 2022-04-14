@@ -1,10 +1,10 @@
 package com.codeoftheweb.salvo.service.main;
 
-import com.codeoftheweb.salvo.dto.GameDTO;
-import com.codeoftheweb.salvo.dto.InfoGamesDTO;
+import com.codeoftheweb.salvo.dto.GameMapDTO;
 import com.codeoftheweb.salvo.dto.PlayerDTO;
 import com.codeoftheweb.salvo.dto.PlayerScoreDTO;
 import com.codeoftheweb.salvo.dto.request.SignInPlayerDTO;
+import com.codeoftheweb.salvo.dto.response.MenuViewDTO;
 import com.codeoftheweb.salvo.models.Player;
 import com.codeoftheweb.salvo.service.GamePlayerService;
 import com.codeoftheweb.salvo.service.GameService;
@@ -37,11 +37,11 @@ public class SalvoService implements ISalvoService {
     PasswordEncoder encoder;
 
     @Override
-    public InfoGamesDTO getInfoGames(Authentication authentication) {
-        PlayerDTO playerDTO = playerService.getAnyPlayer(authentication);
-        List<GameDTO> games = gameService.getGames();
+    public MenuViewDTO getInfoGames(Authentication authentication) {
+        PlayerScoreDTO playerDTO = playerService.getAnyPlayer(authentication);
+        List<GameMapDTO> games = gameService.getGames();
         List<PlayerScoreDTO> playersScore = playerService.getPlayersScore();
-        return new InfoGamesDTO(playerDTO, games, playersScore);
+        return new MenuViewDTO(playerDTO, games, playersScore);
     }
 
     @Override

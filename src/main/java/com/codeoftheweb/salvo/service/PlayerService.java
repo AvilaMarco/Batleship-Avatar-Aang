@@ -2,6 +2,7 @@ package com.codeoftheweb.salvo.service;
 
 import com.codeoftheweb.salvo.dto.PlayerDTO;
 import com.codeoftheweb.salvo.dto.PlayerScoreDTO;
+import com.codeoftheweb.salvo.dto.ScoreStatsDTO;
 import com.codeoftheweb.salvo.dto.request.SignInPlayerDTO;
 import com.codeoftheweb.salvo.exception.conflict.EmailAlreadyUseException;
 import com.codeoftheweb.salvo.exception.not_found.PlayerNotFoundException;
@@ -15,6 +16,7 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,14 +35,16 @@ public class PlayerService implements IPlayerService {
     }
 
     @Override
-    public PlayerDTO getAnyPlayer(Authentication authentication) {
-        if(isGuest(authentication)) return new PlayerDTO("Guess");
-        else return mapper.map(getPlayer(authentication.getName()), PlayerDTO.class);
+    public PlayerScoreDTO getAnyPlayer(Authentication authentication) {
+        if (isGuest(authentication)) return new PlayerScoreDTO("Guess");
+        Player player = getPlayer(authentication.getName());
+        PlayerDTO playerDTO = mapper.map(player, PlayerDTO.class);
+        return new PlayerScoreDTO(playerDTO, getStatsByPlayer(player.getScores()));
     }
 
     @Override
     public Player getPlayerAuthenticated(Authentication authentication) {
-        if(isGuest(authentication)) throw new PlayerNotLoginException();
+        if (isGuest(authentication)) throw new PlayerNotLoginException();
         else return getPlayer(authentication.getName());
     }
 
@@ -48,17 +52,17 @@ public class PlayerService implements IPlayerService {
     public List<PlayerDTO> getPlayers() {
         List<Player> players = playerRepository.findAll();
         return players.stream()
-                .map( p -> mapper.map(p, PlayerDTO.class))
+                .map(p -> mapper.map(p, PlayerDTO.class))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<PlayerScoreDTO> getPlayersScore(){
-        return playerRepository.findAll().stream()
-                .map( p ->  new PlayerScoreDTO(
+    public List<PlayerScoreDTO> getPlayersScore() {
+        return playerRepository.rankedPlayer().stream()
+                .map(p -> new PlayerScoreDTO(
                                 mapper.map(p, PlayerDTO.class),
-                                p.getScores().stream().map(Score::getScore).collect(Collectors.toList())
-                            )
+                                getStatsByPlayer(p.getScores())
+                        )
                 )
                 .collect(Collectors.toList());
     }
@@ -76,10 +80,23 @@ public class PlayerService implements IPlayerService {
     @Override
     public void isNotRegister(SignInPlayerDTO player) {
         String email = player.getEmail();
-        if(playerRepository.existsPlayer(email).isPresent())
+        if (playerRepository.existsPlayer(email).isPresent())
             throw new EmailAlreadyUseException(email);
     }
 
+    private ScoreStatsDTO getStatsByPlayer(List<Integer> scores) {
+        ScoreStatsDTO stats = new ScoreStatsDTO(0, 0, 0, 0, 0D);
+        if (scores.isEmpty()) return stats;
+        scores.forEach(score -> {
+            stats.plusScore(score);
+            if (score == 3) stats.plusWon();
+            else if (score == 1) stats.plusTied();
+            else if (score == 0) stats.plusLost();
+        });
+        Double winRate = (double) (stats.getWon() / scores.size()) * 100D;
+        stats.setWinRate(winRate);
+        return stats;
+    }
 
     // TODO: New service for save this methods
     private boolean isGuest(Authentication authentication) {

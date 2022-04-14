@@ -39,7 +39,7 @@ public class GamePlayer {
     private List<Ship> ships = new ArrayList<>();
 
     @OneToMany(mappedBy = "gamePlayer", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<Salvo> salvos = new ArrayList<>();
+    private Set<Salvo> salvos = new HashSet<>();
 
     //constructores
 

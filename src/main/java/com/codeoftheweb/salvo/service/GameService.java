@@ -1,6 +1,6 @@
 package com.codeoftheweb.salvo.service;
 
-import com.codeoftheweb.salvo.dto.GameDTO;
+import com.codeoftheweb.salvo.dto.GameMapDTO;
 import com.codeoftheweb.salvo.exception.conflict.GameAlreadyExistsException;
 import com.codeoftheweb.salvo.exception.conflict.GameIsFullException;
 import com.codeoftheweb.salvo.exception.conflict.PlayerAlreadyInGameException;
@@ -25,22 +25,22 @@ public class GameService implements IGameService {
     ModelMapper mapper;
 
     @Override
-    public GameDTO getGame(Long id) {
+    public GameMapDTO getGame(Long id) {
         Game game = repository.findById(id).orElseThrow(() -> new GameNotFoundException(id));
-        return mapper.map(game, GameDTO.class);
+        return mapper.map(game, GameMapDTO.class);
     }
 
     @Override
-    public List<GameDTO> getGames() {
-        List<Game> games = repository.findAll();
+    public List<GameMapDTO> getGames() {
+        List<Game> games = repository.findAllByFinishDateIsNull();
         return games.stream()
-                .map( g -> mapper.map(g, GameDTO.class))
+                .map( g -> mapper.map(g, GameMapDTO.class))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public GameDTO save(Game game) {
-        return mapper.map(repository.save(game), GameDTO.class);
+    public GameMapDTO save(Game game) {
+        return mapper.map(repository.save(game), GameMapDTO.class);
     }
 
     // Validations
@@ -52,9 +52,9 @@ public class GameService implements IGameService {
 
 
     @Override
-    public void gameNotExists(String direction) {
-        if(repository.getGameByDirection(direction).isPresent())
-            throw new GameAlreadyExistsException(direction);
+    public void gameNotExists(String location) {
+        if(repository.getGameByLocation(location).isPresent())
+            throw new GameAlreadyExistsException(location);
     }
 
     @Override

@@ -12,6 +12,7 @@ import javax.persistence.Enumerated;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PlayerDTO {
+
     Long id;
     String name;
     String email;

@@ -3,14 +3,14 @@ package com.codeoftheweb.salvo.repository;
 import com.codeoftheweb.salvo.models.Game;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface GameRepository extends JpaRepository<Game, Long> {
 
-    Game findByDirection(String direction);
+    @Query("FROM Game g WHERE g.location = :location ")
+    Optional<Game> getGameByLocation(String location);
 
-    @Query("FROM Game g WHERE g.direction = :direction AND g.endGame = false ")
-    Optional<Game> getGameByDirection(String direction);
+    List<Game> findAllByFinishDateIsNull();
 }

@@ -37,7 +37,15 @@ public class Game {
     @OneToMany(mappedBy = "game", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<GamePlayer> gamePlayers = new ArrayList<>();
 
-    void finishDate(){
+    public Game(NationType nation, String location) {
+        this.nation = nation;
+        this.location = location;
+    }
+
+    public void finishDate(){
         this.finishDate = LocalDateTime.now();
+    }
+    public List<Player> getPlayers(){
+        return gamePlayers.stream().map(GamePlayer::getPlayer).collect(Collectors.toList());
     }
 }

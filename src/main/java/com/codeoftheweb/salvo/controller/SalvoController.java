@@ -1,34 +1,22 @@
 package com.codeoftheweb.salvo.controller;
 
-import com.codeoftheweb.salvo.dto.GameDTO;
-import com.codeoftheweb.salvo.dto.GamePlayerDTO;
-import com.codeoftheweb.salvo.dto.InfoGamesDTO;
-import com.codeoftheweb.salvo.dto.PlayerDTO;
-import com.codeoftheweb.salvo.dto.error.ErrorDTO;
-import com.codeoftheweb.salvo.dto.request.SignInPlayerDTO;
 import com.codeoftheweb.salvo.dto.response.GameCreatedDTO;
-import com.codeoftheweb.salvo.models.*;
+import com.codeoftheweb.salvo.dto.response.MenuViewDTO;
+import com.codeoftheweb.salvo.enums.NationType;
+import com.codeoftheweb.salvo.models.GamePlayer;
+import com.codeoftheweb.salvo.models.Player;
+import com.codeoftheweb.salvo.models.Ship;
 import com.codeoftheweb.salvo.service.intereface.IMatchService;
 import com.codeoftheweb.salvo.service.intereface.ISalvoService;
-import com.codeoftheweb.salvo.service.main.SalvoService;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static java.lang.Integer.parseInt;
 
@@ -47,20 +35,14 @@ public class SalvoController {
 
     // listar info juegos
     @GetMapping(path = "/games")
-    public InfoGamesDTO getGamesAndPlayers(Authentication authentication) {
+    public MenuViewDTO getGamesAndPlayers(Authentication authentication) {
         return salvoService.getInfoGames(authentication);
     }
 
-    // registrar players
-    @PostMapping(path = "/players")
-    public PlayerDTO register(@Valid @RequestBody SignInPlayerDTO playerDTO) {
-        return salvoService.registerPlayer(playerDTO);
-    }
-
     // crear juegos
-    @PostMapping(path = "/match/games/{location}/{direction}")
-    public GameCreatedDTO createGame(Authentication authentication, @PathVariable String location, @PathVariable String direction) {
-        return matchService.createGame(authentication, location, direction);
+    @PostMapping(path = "/match/games/{nation}/{location}")
+    public GameCreatedDTO createGame(Authentication authentication, @PathVariable NationType nation, @PathVariable String location) {
+        return matchService.createGame(authentication, nation, location);
     }
 
     // unirse a juegos
@@ -69,42 +51,6 @@ public class SalvoController {
         return matchService.joinGame(authentication, id);
     }
 
-    /* WEB SOCKETS */
-
-    // unirse a la partida
-    @MessageMapping("/{gameId}")
-    @SendTo("/topic/match/{gameId}")
-    public GamePlayerDTO match(@DestinationVariable Long gameId, Authentication authentication){
-        return matchService.viewMatch(authentication, gameId);
-    }
-
-    // enviar barcos
-    @MessageMapping("/{gameId}")
-    @SendTo("/topic/match/{gameId}/ships")
-    public GamePlayerDTO matchShips(@DestinationVariable Long gameId, Authentication authentication){
-        return matchService.viewMatch(authentication, gameId);
-    }
-
-    // enviar emotes
-    @MessageMapping("/{gameId}")
-    @SendTo("/topic/match/{gameId}")
-    public GamePlayerDTO matchEmotes(@DestinationVariable Long gameId, Authentication authentication){
-        return matchService.viewMatch(authentication, gameId);
-    }
-
-    // enviar disparos
-    @MessageMapping("/{gameId}")
-    @SendTo("/topic/match/{gameId}")
-    public GamePlayerDTO matchSalvos(@DestinationVariable Long gameId, Authentication authentication){
-        return matchService.viewMatch(authentication, gameId);
-    }
-
-    // rematch
-    @MessageMapping("/{gameId}")
-    @SendTo("/topic/match/{gameId}")
-    public GamePlayerDTO reMatch(@DestinationVariable Long gameId, Authentication authentication){
-        return matchService.viewMatch(authentication, gameId);
-    }
 
     //Anotación que le dice a Spring que traiga toda la información y métodos del repositorio o clase a la que
     //hacemos referencia, podemos instanciar un repositorio
@@ -130,30 +76,30 @@ public class SalvoController {
     private boolean isConsecutive(Set<Ship> ships) {
         //codigo
         List<Boolean> list = new ArrayList<>(Collections.emptyList());
-        ships
-                .forEach(e -> {
-                    for (int i = 0; i < e.getShipLocations().size(); i++) {
-                        int aux = i;
-                        int aux2 = i + 1;
-                        //me fijo que es horizontal
-                        if (e.getShipLocations().stream().allMatch(p -> p.charAt(0) == e.getShipLocations().get(aux).charAt(0))
-                                && aux2 < e.getShipLocations().size() &&
-                                parseInt(e.getShipLocations().get(aux).substring(1)) + 1 == parseInt(e.getShipLocations().get(aux2).substring(1))
-                        ) {
-                            list.add(true);
-                            //es vertical
-                        } else if (e.getShipLocations().stream().allMatch(p -> parseInt(p.substring(1)) == parseInt(e.getShipLocations().get(aux).substring(1)))
-                                && aux2 < e.getShipLocations().size() &&
-                                e.getShipLocations().get(aux).charAt(0) + 1 == e.getShipLocations().get(aux2).charAt(0)
-                        ) {
-                            list.add(true);
-                        } else if (aux2 == e.getShipLocations().size()) {
-
-                        } else {
-                            list.add(false);
-                        }
-                    }
-                });
+//        ships
+//                .forEach(e -> {
+//                    for (int i = 0; i < e.getShipLocations().size(); i++) {
+//                        int aux = i;
+//                        int aux2 = i + 1;
+//                        //me fijo que es horizontal
+//                        if (e.getShipLocations().stream().allMatch(p -> p.charAt(0) == e.getShipLocations().get(aux).charAt(0))
+//                                && aux2 < e.getShipLocations().size() &&
+//                                parseInt(e.getShipLocations().get(aux).substring(1)) + 1 == parseInt(e.getShipLocations().get(aux2).substring(1))
+//                        ) {
+//                            list.add(true);
+//                            //es vertical
+//                        } else if (e.getShipLocations().stream().allMatch(p -> parseInt(p.substring(1)) == parseInt(e.getShipLocations().get(aux).substring(1)))
+//                                && aux2 < e.getShipLocations().size() &&
+//                                e.getShipLocations().get(aux).charAt(0) + 1 == e.getShipLocations().get(aux2).charAt(0)
+//                        ) {
+//                            list.add(true);
+//                        } else if (aux2 == e.getShipLocations().size()) {
+//
+//                        } else {
+//                            list.add(false);
+//                        }
+//                    }
+//                });
         return list.stream().allMatch(b -> b);
     }
 
@@ -166,8 +112,8 @@ public class SalvoController {
 
     private boolean realships(Set<Ship> ships) {
         return ships.stream().allMatch(s -> {
-            boolean correct = false;
-            switch (s.getTypeShip().toString()) {
+            boolean correct = true;
+/*            switch (s.getTypeShip().toString()) {
                 case "CARRIER":
                     correct = s.getShipLocations().size() == 5;
                     break;
@@ -181,7 +127,7 @@ public class SalvoController {
                 case "PATROL_BOAT":
                     correct = s.getShipLocations().size() == 2;
                     break;
-            }
+            }*/
             return correct;
         });
     }
@@ -190,9 +136,7 @@ public class SalvoController {
         long migpid = gamepplayer.getId();
         GamePlayer mygp = gamepplayer;
         GamePlayer gpOpponent = gamepplayer.getGame().getGamePlayers().stream().filter(gamep -> gamep.getId() != migpid).findFirst().orElse(null);
-        Score mypuntaje = new Score();
-        Score opponentpuntaje = new Score();
-        if (gpOpponent != null) {
+        /*if (gpOpponent != null) {
             //empate cuando mis disparos destruyen todos los barcos en el mismo turno que mi oponente hace lo mismo
             //de mi gp obtengo los barcos que destrui
             if (mygp.getSalvos().stream().anyMatch(s -> s.shipsDead() != null && s.shipsDead().size() == 5) && gpOpponent.getSalvos().stream().anyMatch(s -> s.shipsDead() != null && s.shipsDead().size() == 5)) {
@@ -210,7 +154,7 @@ public class SalvoController {
             }
             ScoreRepository.save(mypuntaje);
             ScoreRepository.save(opponentpuntaje);
-        }
+        }*/
     }
 
     @GetMapping(path = "/gp/{id}")
@@ -220,7 +164,7 @@ public class SalvoController {
         Map<String, Object> error = new HashMap<>();
         if (gp != null && player != null) {
             if (player.getGamePlayers().stream().anyMatch(e -> e.getId() == id)) {
-                return new ResponseEntity<>(gp.gameVIewDTO(), HttpStatus.ACCEPTED);
+                return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
             } else {
                 error.put("error", "no es tu juego");
                 return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
@@ -235,7 +179,7 @@ public class SalvoController {
     @RequestMapping(path = "/games/players/{gamePlayerId}/salvos", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> createSalvos(Authentication authentication, @PathVariable Long gamePlayerId, @RequestBody List<String> salvostring) {
         Map<String, Object> respuesta = new HashMap<>();
-        if (!isGuest(authentication)) {
+       /* if (!isGuest(authentication)) {
             Player player = PlayerRepository.findByEmail(authentication.getName()).get();
             if (player != null) {
                 GamePlayer gp = gamePlayerRepository.findById(gamePlayerId).orElse(null);
@@ -316,17 +260,17 @@ public class SalvoController {
                 respuesta.put("error", "el jugador no existe");
                 return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
             }
-        } else {
-            respuesta.put("error", "necesitas estar logeado para enviar salvo");
-            return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
-        }
+        } else {*/
+        respuesta.put("error", "necesitas estar logeado para enviar salvo");
+        return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
+        /*}*/
     }
 
     //setear barcos
     @RequestMapping(path = "/games/players/{gamePlayerId}/ships", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> createShips(Authentication authentication, @PathVariable Long gamePlayerId, @RequestBody Set<Ship> ships) {
         Map<String, Object> respuesta = new HashMap<>();
-        if (!isGuest(authentication)) {
+/*        if (!isGuest(authentication)) {
             Player player = PlayerRepository.findByEmail(authentication.getName()).get();
             if (player != null) {
                 GamePlayer gp = gamePlayerRepository.findById(gamePlayerId).orElse(null);
@@ -376,29 +320,12 @@ public class SalvoController {
         } else {
             respuesta.put("error", "you need to login");
             return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
-        }
+        }*/
+        respuesta.put("error", "you need to login");
+        return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
     }
 
-    //setear nacion player
-    @RequestMapping(path = "/setNacionPlayer/{nacion}", method = RequestMethod.POST)
-    public ResponseEntity<Map<String, Object>> setnacion(Authentication authentication, @PathVariable String nacion) {
-        Map<String, Object> respuesta = new HashMap<>();
-        if (!isGuest(authentication)) {
-            Player player = PlayerRepository.findByEmail(authentication.getName()).get();
-            if (player != null) {
-                player.setNation(nacion);
-                PlayerRepository.save(player);
-                respuesta.put("good", "nice");
-                return new ResponseEntity<>(respuesta, HttpStatus.ACCEPTED);
-            } else {
-                respuesta.put("error", "you need to login");
-                return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
-            }
-        } else {
-            respuesta.put("error", "you need to login");
-            return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
-        }
-    }
+
 
     //setear emote player
     @RequestMapping(path = "/emote/{id}/{emote}", method = RequestMethod.POST)
@@ -420,44 +347,6 @@ public class SalvoController {
             return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
         }
     }
-
-    //setear rematch player
-    @RequestMapping(path = "/rematch/{id}/{rematch}", method = RequestMethod.POST)
-    public ResponseEntity<Map<String, Object>> setRematch(Authentication authentication, @PathVariable Long id, @PathVariable Boolean rematch) {
-        Map<String, Object> respuesta = new HashMap<>();
-        if (!isGuest(authentication)) {
-            GamePlayer gp = gamePlayerRepository.findById(id).orElse(null);
-            if (gp != null) {
-                gp.setRematch(rematch);
-                gamePlayerRepository.save(gp);
-                respuesta.put("good", "nice");
-                return new ResponseEntity<>(respuesta, HttpStatus.ACCEPTED);
-            } else {
-                respuesta.put("error", "you need to login");
-                return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
-            }
-        } else {
-            respuesta.put("error", "you need to login");
-            return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
-        }
-    }
-
-    //setear setNewGameId
-    @RequestMapping(path = "/newGameId/{newgameid}/{gpid}", method = RequestMethod.POST)
-    public ResponseEntity<Map<String, Object>> setNewGameId(@PathVariable Long newgameid, @PathVariable Long gpid) {
-        Map<String, Object> respuesta = new HashMap<>();
-        GamePlayer gp = gamePlayerRepository.findById(gpid).orElse(null);
-        if (gp != null) {
-            gp.setnewGameId(newgameid);
-            gamePlayerRepository.save(gp);
-            respuesta.put("good", "nice");
-            return new ResponseEntity<>(respuesta, HttpStatus.ACCEPTED);
-        } else {
-            respuesta.put("error", "you need to login");
-            return new ResponseEntity<>(respuesta, HttpStatus.UNAUTHORIZED);
-        }
-    }
-
 
 
 }

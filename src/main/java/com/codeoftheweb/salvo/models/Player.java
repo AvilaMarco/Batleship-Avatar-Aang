@@ -2,18 +2,17 @@ package com.codeoftheweb.salvo.models;
 
 import com.codeoftheweb.salvo.enums.NationType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class Player {
 
     @Id
@@ -31,4 +30,17 @@ public class Player {
     @OneToMany(mappedBy = "player", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<GamePlayer> gamePlayers;
 
+    public Player(String name, String email, String password, NationType nation) {
+        this.nation = nation;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+    }
+
+    public List<Integer> getScores(){
+        return  gamePlayers.stream()
+                .map(GamePlayer::getScore)
+                .filter( score -> !Objects.isNull(score))
+                .collect(Collectors.toList());
+    }
 }

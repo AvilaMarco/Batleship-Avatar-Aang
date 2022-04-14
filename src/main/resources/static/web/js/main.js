@@ -1,16 +1,8 @@
-import { hideModal, showModal, cleanModal } from "./games-mjs/modal.mjs";
-import {
-  createListenerInMap,
-  createGamesOnMap,
-  infoGame,
-} from "./games-mjs/map.mjs";
-import {
-  createTableRanking,
-  verDatosUser,
-  verTutorial,
-} from "./games-mjs/modalViews.mjs";
-import { getHTML } from "./utils/utils.mjs";
-import { randomNation } from "./utils/test.mjs";
+import {cleanModal, hideModal, showModal} from "./games-mjs/modal.js";
+import {createGamesOnMap, createListenerInMap, infoGame} from "./games-mjs/map.js";
+import {createTableRanking, verDatosUser, verTutorial} from "./games-mjs/modalViews.js";
+import {getHTML} from "./utils/utils.js";
+import {randomNation} from "./utils/test.js";
 
 //cargar datos
 let gamesData = [];
@@ -37,15 +29,24 @@ let players = [
   },
 ];
 let playerData = {
+  id: 5,
   nation: "FIRE",
   email: "marco@digitalhouse.com",
   name: "racnar1",
+  stats: {
+    score: 3,
+    won: 1,
+    tied: 0,
+    lost: 0,
+    win_rate: 100
+  }
 };
 let recargarMapa = false;
 //referencias al DOM
 const logout = getHTML("#logout");
 const verMapa = getHTML("#verMapa");
 const info = getHTML("#info");
+const infoDataGame = getHTML("#infoGame");
 const player = getHTML("#player");
 const ladder = getHTML("#ladder");
 const closeModal = getHTML("#hideModal");
@@ -53,11 +54,19 @@ const manageJoin = getHTML("#manageJoin");
 //eventlistener
 manageJoin.addEventListener("click", manageJoinGame);
 closeModal.addEventListener("click", hideModal);
+infoDataGame.addEventListener("click", verdatos);
 info.addEventListener("click", verdatos);
 player.addEventListener("click", verdatos);
 ladder.addEventListener("click", verdatos);
 logout.addEventListener("click", logoutFunction);
 verMapa.addEventListener("click", viewMapa);
+
+getHTML("#inicoNacion").addEventListener("click", (event) => {
+  event.preventDefault();
+  if (event.target.dataset == null) return;
+  const {nation} = event.target.dataset;
+  setNacionPlayer(nation);
+});
 
 // COSAS
 let playerScore = [];
@@ -65,24 +74,26 @@ let playerScore = [];
 createListenerInMap();
 reloadInfo();
 
+// para formularios a JSON
+// Object.fromEntries(new FormData(formulario));
+
 function reloadInfo() {
   fetch("/api/games")
-    .then((res) => (res.ok ? res.json() : Promise.reject()))
-    .then(function (json) {
-      gamesData = json.games;
-      players = json.player_score;
-      playerData = json.player;
-      playerScore = json.player_score;
+      .then((res) => (res.ok ? res.json() : Promise.reject()))
+      .then(function (json) {
+        console.log(json);
+        gamesData = json.games;
+        players = json.players;
+        /*playerData = json.player;*/
 
-      playerData.nation != null ? inMenu(json) : chooseNation();
-
-      let games = json.games.filter((e) => e.direction != "00");
-      if (games.length != 0) {
-        console.log(games);
-        createGamesOnMap(games);
-      }
-    })
-    .catch((error) => console.log("AAAAAAAAAAAA"));
+        /*playerData.nation != null ? inMenu(json) : chooseNation();*/
+        inMenu(playerData.nation)
+        if (gamesData.length != 0) {
+          console.log(gamesData);
+          createGamesOnMap(gamesData, playerData.id);
+        }
+      })
+      .catch((error) => console.log(error))
 }
 
 /*funciones para modal y cambiar los datos que muestra*/
@@ -92,12 +103,14 @@ function verdatos(e) {
   cleanModal(playerData.nation);
   randomNation(playerData);
 
-  if (elementhtml.id == "player") {
+  if (elementhtml.id === "player") {
     verDatosUser(playerData);
-  } else if (elementhtml.id == "info") {
+  } else if (elementhtml.id === "info") {
     verTutorial();
-  } else if (elementhtml.id == "ladder") {
+  } else if (elementhtml.id === "ladder") {
     createTableRanking(players);
+  }else if(elementhtml.id === "infoGame"){
+    infoGame()
   }
 
   showModal();
@@ -107,72 +120,73 @@ function chooseNation() {
   getHTML("#inicoNacion").classList.remove("hidden");
 }
 
-function inMenu(json) {
+function inMenu(nation) {
   getHTML("#inicoNacion").classList.add("hidden");
-  document
-    .querySelector("#player")
-    .classList.add("iconTransparent" + json.player.nation);
+  getHTML("#player").classList.add("logo-" + nation);
   getHTML("#webGames").classList.remove("hidden");
   getHTML("#botonera").classList.remove("hidden");
 }
 
 function setNacionPlayer(nacion) {
-  fetch("/api/setNacionPlayer/" + nacion, {
+  fetch("/api/players/nation/" + nacion, {
     method: "POST",
   }).then((response) => {
     if (response.ok)
       fetch("/api/games")
-        .then((response) => {
-          if (response.ok) return response.json();
-        })
-        .then((_) => reloadInfo());
+          .then((response) => {
+            if (response.ok) return response.json();
+          })
+          .then((_) => reloadInfo());
   });
 }
 
 /* funciones relacionadas con los juegos, unirse, crear, volver*/
 function manageJoinGame(event) {
   let a = getHTML("div#" + getHTML("div[data-name*='selectGame']").dataset.id);
-  if (event.innerText == "Create") {
+  console.log(a)
+  const {name} = event.target
+  console.log(name)
+  if (name === "Create") {
     let data = getHTML("div[data-name*=selectGame]");
     crearjuego(data.dataset.location, data.dataset.id);
-  } else if (event.innerText == "Enter") {
-    const isPlayer1 = a.dataset.playerid1 == playerData.id;
+  } else if (name === "Enter") {
+    const isPlayer1 = a.dataset.playerid1 === playerData.id;
     playerData.gamePlayerId = isPlayer1 ? a.dataset.gpid1 : a.dataset.gpid2;
     playerData.gameId = a.dataset.gameId;
     saveUserData();
     goGame();
-  } else if (event.innerText == "Join") {
+  } else if (name === "Join") {
     joinGame(a.dataset.gameid);
-  } else if (event.innerText == "InGame") {
+  } else if (name === "InGame") {
     alert("Coming soon spectator mode");
   }
 }
 
 function joinGame(gameid) {
-  fetch(`/api/match/games/${gameid}`, { method: "POST" })
-    .then((res) => (res.ok ? res.json() : Promise.reject(res.json())))
-    .then((json) => {
-      playerData.gamePlayerId = json.game_player_id;
-      playerData.gameId = json.game_id;
-      saveUserData();
-      goGame();
-    })
-    .catch(function (error) {
-      console.log("Hubo un problema con la petición Fetch:" + error.message);
-    });
+  fetch(`/api/match/games/${gameid}`, {method: "POST"})
+      .then((res) => (res.ok ? res.json() : Promise.reject(res.json())))
+      .then((json) => {
+        playerData.gamePlayerId = json.game_player_id;
+        playerData.gameId = json.game_id;
+        saveUserData();
+        goGame();
+      })
+      .catch(function (error) {
+        console.log("Hubo un problema con la petición Fetch:" + error.message);
+      });
 }
 
-function crearjuego(location, direction) {
-  fetch(`/api/match/games/${location}/${direction}`, { method: "POST" })
-    .then((res) => (res.ok ? res.json() : Promise.reject(res.json())))
-    .then((json) => {
-      playerData.gamePlayerId = json.game_player_id;
-      playerData.gameId = json.game_id;
-      saveUserData();
-      goGame();
-    })
-    .catch((error) => error)
-    .then((json) => console.log(json));
+function crearjuego(nation, location) {
+  fetch(`/api/match/games/${nation}/${location}`, {method: "POST"})
+      .then((res) => (res.ok ? res.json() : Promise.reject(res.json())))
+      .then((json) => {
+        playerData.gamePlayerId = json.game_player_id;
+        playerData.gameId = json.game_id;
+        saveUserData();
+        goGame();
+      })
+      .catch((error) => error)
+      .then((json) => console.log(json));
 }
 
 function viewMenu() {
@@ -180,11 +194,11 @@ function viewMenu() {
   getHTML("#back").classList.add("hidden");
   getHTML("#reload").classList.add("hidden");
   document
-    .querySelectorAll("button[name*='botonesMenu']")
-    .forEach((e) => e.classList.remove("hidden"));
+      .querySelectorAll("button[name*='botonesMenu']")
+      .forEach((e) => e.classList.remove("hidden"));
   document
-    .querySelectorAll("div [name*='dataGame']")
-    .forEach((e) => e.classList.add("hidden"));
+      .querySelectorAll("div [name*='dataGame']")
+      .forEach((e) => e.classList.add("hidden"));
 }
 
 function viewMapa(event) {
@@ -205,13 +219,13 @@ function viewMapa(event) {
 
   getHTML("#mapabg").classList.add("hidden");
   document
-    .querySelectorAll("button[name*='botonesMenu']")
-    .forEach((e) => e.classList.add("hidden"));
+      .querySelectorAll("button[name*='botonesMenu']")
+      .forEach((e) => e.classList.add("hidden"));
 }
 
 //LOGOUT
 function logoutFunction() {
-  fetch("/api/logout", { method: "POST" }).then(() => location.assign("/"));
+  fetch("/api/logout", {method: "POST"}).then(() => location.assign("/"));
 }
 
 function saveUserData() {

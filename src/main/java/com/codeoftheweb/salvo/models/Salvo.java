@@ -18,9 +18,9 @@ import java.util.stream.Collectors;
 @Data
 @NoArgsConstructor
 public class Salvo {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
-    @GenericGenerator(name = "native", strategy = "native")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @ElementCollection

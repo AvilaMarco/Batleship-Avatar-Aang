@@ -1,19 +1,20 @@
 package com.codeoftheweb.salvo.dto;
 
-import com.codeoftheweb.salvo.enums.NationType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class PlayerScoreDTO extends PlayerDTO {
 
-    List<Integer> scores;
+    ScoreStatsDTO stats;
 
-    public PlayerScoreDTO(PlayerDTO playerDTO, List<Integer> scores) {
+    public PlayerScoreDTO(PlayerDTO playerDTO, ScoreStatsDTO stats) {
         super(playerDTO.getId(), playerDTO.getName(), playerDTO.getEmail(), playerDTO.getNation());
-        this.scores = scores;
+        this.stats = stats;
+    }
+
+    public PlayerScoreDTO(String name) {
+        super(name);
     }
 }

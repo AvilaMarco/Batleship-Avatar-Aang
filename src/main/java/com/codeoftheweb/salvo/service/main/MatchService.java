@@ -1,9 +1,9 @@
 package com.codeoftheweb.salvo.service.main;
 
-import com.codeoftheweb.salvo.dto.GameDTO;
+import com.codeoftheweb.salvo.dto.GameMapDTO;
 import com.codeoftheweb.salvo.dto.GamePlayerDTO;
-import com.codeoftheweb.salvo.dto.PlayerDTO;
 import com.codeoftheweb.salvo.dto.response.GameCreatedDTO;
+import com.codeoftheweb.salvo.enums.NationType;
 import com.codeoftheweb.salvo.models.Game;
 import com.codeoftheweb.salvo.models.GamePlayer;
 import com.codeoftheweb.salvo.models.Player;
@@ -32,15 +32,15 @@ public class MatchService implements IMatchService {
     ModelMapper mapper;
 
     @Override
-    public GameCreatedDTO createGame(Authentication authentication, String location, String direction){
-        gameService.gameNotExists(direction);
+    public GameCreatedDTO createGame(Authentication authentication, NationType nation, String location){
+        gameService.gameNotExists(location);
 
         Player player = playerService.getPlayerAuthenticated(authentication);
-        Game game = new Game();
+        Game game = new Game(nation, location);
         GamePlayer gamePlayer = new GamePlayer(player, game);
 
         playerService.save(player); // TODO: delete ?
-        GameDTO gameDTO = gameService.save(game);
+        GameMapDTO gameDTO = gameService.save(game);
         GamePlayerDTO gamePlayerDTO = gamePlayerService.save(gamePlayer);
 
         return new GameCreatedDTO(gameDTO.getId(), gamePlayerDTO.getId());
@@ -50,7 +50,7 @@ public class MatchService implements IMatchService {
     public GameCreatedDTO joinGame(Authentication authentication, Long GameId) {
 
         Player player = playerService.getPlayerAuthenticated(authentication);
-        GameDTO gameDTO =  gameService.getGame(GameId);
+        GameMapDTO gameDTO =  gameService.getGame(GameId);
         Game game = mapper.map(gameDTO, Game.class);
 
         gameService.gameIsNotFull(game);

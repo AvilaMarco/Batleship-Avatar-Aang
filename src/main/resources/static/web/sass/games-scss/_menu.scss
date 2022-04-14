@@ -18,7 +18,7 @@
 .container-map {
   @include full_screan();
   overflow: auto;
-  background: url("../assets/texturas/textura-mapa.jpg") no-repeat center;
+  background: url("/web/assets/texturas/textura-mapa.jpg") no-repeat center;
   background-size: cover;
 }
 

@@ -12,7 +12,7 @@ import java.util.List;
 public interface IPlayerService {
 
     Player getPlayer(String email);
-    PlayerDTO getAnyPlayer(Authentication authentication);
+    PlayerScoreDTO getAnyPlayer(Authentication authentication);
     Player getPlayerAuthenticated(Authentication authentication);
     List<PlayerDTO> getPlayers();
     List<PlayerScoreDTO> getPlayersScore();

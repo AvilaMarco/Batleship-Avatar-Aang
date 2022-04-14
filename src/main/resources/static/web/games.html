@@ -38,25 +38,26 @@
       <!-- CHOOSE NATION -->
       <div id="inicoNacion" class="container-choose-nation hidden">
         <p class="title">Choose Your Nation</p>
+
+        <!-- ToDo: agregar imagen para mejorar el click -->
         <div class="nation-card">
-          <div
-            class="nation-btn-earth"
-            onclick="setNacionPlayer('tierra')"
-          ></div>
-          <div class="nation-text-earth">Earth</div>
-        </div>
-        <div class="nation-card">
-          <div class="nation-btn-fire" onclick="setNacionPlayer('fuego')"></div>
-          <div class="nation-text-fire">Fire</div>
+          <div class="nation-btn-earth" data-nation="EARTH"></div>
+          <div class="nation-text-earth" data-nation="EARTH">Earth</div>
         </div>
 
         <div class="nation-card">
-          <div class="nation-btn-water" onclick="setNacionPlayer('agua')"></div>
-          <div class="nation-text-water">Water</div>
+          <div class="nation-btn-fire" data-nation="FIRE"></div>
+          <div class="nation-text-fire" data-nation="FIRE">Fire</div>
         </div>
+
         <div class="nation-card">
-          <div class="nation-btn-air" onclick="setNacionPlayer('viento')"></div>
-          <div class="nation-text-air">Air</div>
+          <div class="nation-btn-water" data-nation="WATER"></div>
+          <div class="nation-text-water" data-nation="WATER">Water</div>
+        </div>
+
+        <div class="nation-card">
+          <div class="nation-btn-air" data-nation="AIR"></div>
+          <div class="nation-text-air" data-nation="AIR">Air</div>
         </div>
       </div>
 
@@ -96,7 +97,6 @@
             id="infoGame"
             class="main-btn hidden"
             name="dataGame"
-            onclick="infoGame()"
           >
             Info
           </button>

@@ -18,6 +18,8 @@ public class Ship {
 
     @ElementCollection
     private List<String> locations;
+
+    @Enumerated(EnumType.STRING)
     private ShipType type;
 
     // Relations

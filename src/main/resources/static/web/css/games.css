@@ -488,28 +488,28 @@ body {
   }
 }
 .bg-EARTH {
-  background-image: url("../../assets/wallpapers/bg-EARTH.png");
+  background-image: url("/web/assets/wallpapers/bg-EARTH.png");
   background-position-y: 50%;
   background-size: 93%;
   background-repeat: no-repeat;
 }
 
 .bg-FIRE {
-  background-image: url("../../assets/wallpapers/bg-FIRE.png");
+  background-image: url("/web/assets/wallpapers/bg-FIRE.png");
   background-position-y: 50%;
   background-size: 93%;
   background-repeat: no-repeat;
 }
 
 .bg-WATER {
-  background-image: url("../../assets/wallpapers/bg-WATER.png");
+  background-image: url("/web/assets/wallpapers/bg-WATER.png");
   background-position-y: 50%;
   background-size: 93%;
   background-repeat: no-repeat;
 }
 
 .bg-AIR {
-  background-image: url("../../assets/wallpapers/bg-AIR.png");
+  background-image: url("/web/assets/wallpapers/bg-AIR.png");
   background-position-y: 50%;
   background-size: 93%;
   background-repeat: no-repeat;
@@ -552,28 +552,28 @@ body {
 }
 
 .logo-EARTH {
-  background-image: url("../../assets/icons/transparent-EARTH.png");
+  background-image: url("/web/assets/icons/transparent-EARTH.png");
   background-size: 90%;
   background-position: center;
   background-color: #e1d2a7;
 }
 
 .logo-FIRE {
-  background-image: url("../../assets/icons/transparent-FIRE.png");
+  background-image: url("/web/assets/icons/transparent-FIRE.png");
   background-size: 90%;
   background-position: center;
   background-color: #e1d2a7;
 }
 
 .logo-WATER {
-  background-image: url("../../assets/icons/transparent-WATER.png");
+  background-image: url("/web/assets/icons/transparent-WATER.png");
   background-size: 90%;
   background-position: center;
   background-color: #e1d2a7;
 }
 
 .logo-AIR {
-  background-image: url("../../assets/icons/transparent-AIR.png");
+  background-image: url("/web/assets/icons/transparent-AIR.png");
   background-size: 90%;
   background-position: center;
   background-color: #e1d2a7;
@@ -740,7 +740,7 @@ body {
   width: 100vw;
   height: 100vh;
   overflow: auto;
-  background: url("../assets/texturas/textura-mapa.jpg") no-repeat center;
+  background: url("/web/assets/texturas/textura-mapa.jpg") no-repeat center;
   background-size: cover;
 }
 
@@ -757,7 +757,7 @@ body {
 }
 
 .main-btn {
-  background-image: url("../../assets/texturas/btn-map.png");
+  background-image: url("/web/assets/texturas/btn-map.png");
   background-size: cover;
   border: solid 4px;
   position: absolute;
@@ -804,7 +804,7 @@ body {
 
 /* -----  */
 #info {
-  background-image: url("../../assets/icons/interrogante.png");
+  background-image: url("/web/assets/icons/interrogante.png");
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
@@ -946,7 +946,7 @@ body {
 
 table {
   width: 100%;
-  background-image: url("../../assets/texturas/textura-mapa.jpg");
+  background-image: url("/web/assets/texturas/textura-mapa.jpg");
   border-collapse: unset;
   border-spacing: 0;
 }

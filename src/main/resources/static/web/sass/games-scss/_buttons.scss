@@ -1,7 +1,7 @@
 @use "../utils/variables" as *;
 
 @mixin btn {
-  background-image: url("../../assets/texturas/btn-map.png");
+  background-image: url("/web/assets/texturas/btn-map.png");
   background-size: cover;
   border: solid 4px;
   position: absolute;
@@ -50,7 +50,7 @@
 
 /* -----  */
 #info {
-  background-image: url("../../assets/icons/interrogante.png");
+  background-image: url("/web/assets/icons/interrogante.png");
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
