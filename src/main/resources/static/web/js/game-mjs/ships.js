@@ -4,7 +4,13 @@ the amount of cells the ship is going to occupy in the grid;
 a parent where the ship will be appended to;
 and a boolean that specifies whether the ship can be moved or not.
 */
-export const createShips = function (shipType, length, orientation, parent, isStatic) {
+export const createShips = function (
+  shipType,
+  length,
+  orientation,
+  parent,
+  isStatic
+) {
   let ship = document.createElement("DIV");
   let grip = document.createElement("DIV");
   let content = document.createElement("DIV");
@@ -64,6 +70,7 @@ export const createShips = function (shipType, length, orientation, parent, isSt
 
   //event to allow the ship beeing dragged
   function dragShip(ev) {
+    if (!ev.target.classList.contains("grip")) return;
     ev.dataTransfer.setData("ship", ev.target.parentNode.id);
   }
 
@@ -72,7 +79,7 @@ export const createShips = function (shipType, length, orientation, parent, isSt
     // make the element draggable by giving it an absolute position and modifying the x and y coordinates
     ship.classList.add("absolute");
 
-    var touch = ev.targetTouches[0];
+    const touch = ev.targetTouches[0];
     // Place element where the finger is
     ship.style.left = touch.pageX - 25 + "px";
     ship.style.top = touch.pageY - 25 + "px";
@@ -103,8 +110,8 @@ export const createShips = function (shipType, length, orientation, parent, isSt
       let x = parseInt(endTarget.dataset.x);
       if (ship.dataset.orientation == "horizontal") {
         if (parseInt(ship.dataset.length) + x > 11) {
-          document.querySelector("#display p").innerText =
-            "movement not allowed";
+          /*document.querySelector("#display p").innerText =
+            "movement not allowed";*/
           return;
         }
         for (let i = 1; i < ship.dataset.length; i++) {
@@ -120,14 +127,14 @@ export const createShips = function (shipType, length, orientation, parent, isSt
           if (
             document.getElementById(cellId).className.search(/busy-cell/) != -1
           ) {
-            document.querySelector("#display p").innerText = "careful";
+            /*document.querySelector("#display p").innerText = "careful";*/
             return;
           }
         }
       } else {
         if (parseInt(ship.dataset.length) + y > 11) {
-          document.querySelector("#display p").innerText =
-            "movement not allowed";
+          /*document.querySelector("#display p").innerText =
+            "movement not allowed";*/
           return;
         }
         for (let i = 1; i < ship.dataset.length; i++) {
@@ -145,7 +152,7 @@ export const createShips = function (shipType, length, orientation, parent, isSt
           if (
             document.getElementById(cellId).className.search(/busy-cell/) != -1
           ) {
-            document.querySelector("#display p").innerText = "careful";
+            /*document.querySelector("#display p").innerText = "careful";*/
             return;
           }
         }
@@ -156,10 +163,10 @@ export const createShips = function (shipType, length, orientation, parent, isSt
 
       checkBusyCells(ship, endTarget);
     } else {
-      document.querySelector("#display p").innerText = "movement not allowed";
+      /*document.querySelector("#display p").innerText = "movement not allowed";*/
       return;
     }
-    dockIsEmpty();
+    /*dockIsEmpty();*/
   }
 
   //event to allow the ship rotation
@@ -167,7 +174,8 @@ export const createShips = function (shipType, length, orientation, parent, isSt
     document
       .querySelector(`#${shipType}`)
       .addEventListener("click", function (ev) {
-        document.querySelector("#display p").innerText = "";
+        /*document.querySelector("#display p").innerText = "";*/
+        if (!ev.target.classList.contains("grip")) return;
 
         let ship = ev.target.parentNode;
         let orientation = ship.dataset.orientation;
@@ -182,7 +190,7 @@ export const createShips = function (shipType, length, orientation, parent, isSt
                 (cell.dataset.y.charCodeAt() - 64) >
               11
             ) {
-              document.querySelector("#display p").innerText = "careful";
+              /*document.querySelector("#display p").innerText = "careful";*/
               return;
             }
 
@@ -196,16 +204,17 @@ export const createShips = function (shipType, length, orientation, parent, isSt
                 cell.dataset.y.charCodeAt() + i
               )}${cell.dataset.x}`;
               if (
-                document.getElementById(cellId).className.search(/busy-cell/) !=
-                -1
+                document
+                  .getElementById(cellId)
+                  .className.search(/busy-cell/) !== -1
               ) {
-                document.querySelector("#display p").innerText = "careful";
+                /*document.querySelector("#display p").innerText = "careful";*/
                 return;
               }
             }
           } else {
             if (parseInt(ship.dataset.length) + parseInt(cell.dataset.x) > 11) {
-              document.querySelector("#display p").innerText = "careful";
+              /*document.querySelector("#display p").innerText = "careful";*/
               return;
             }
 
@@ -219,10 +228,11 @@ export const createShips = function (shipType, length, orientation, parent, isSt
                 parseInt(cell.dataset.x) + i
               }`;
               if (
-                document.getElementById(cellId).className.search(/busy-cell/) !=
-                -1
+                document
+                  .getElementById(cellId)
+                  .className.search(/busy-cell/) !== -1
               ) {
-                document.querySelector("#display p").innerText = "careful";
+                /*document.querySelector("#display p").innerText = "careful";*/
                 return;
               }
             }
@@ -242,6 +252,38 @@ export const createShips = function (shipType, length, orientation, parent, isSt
       });
   }
 };
+
+function checkBusyCells(ship, cell) {
+  let id = cell.id
+    .match(new RegExp(`[^${cell.dataset.y}|^${cell.dataset.x}]`, "g"))
+    .join("");
+  let y = cell.dataset.y.charCodeAt() - 64;
+  let x = parseInt(cell.dataset.x);
+
+  document.querySelectorAll(`.${ship.id}-busy-cell`).forEach((cell) => {
+    cell.classList.remove(`${ship.id}-busy-cell`);
+  });
+
+  for (let i = 0; i < ship.dataset.length; i++) {
+    if (ship.dataset.orientation === "horizontal") {
+      document
+        .querySelector(`#${id}${String.fromCharCode(y + 64)}${x + i}`)
+        .classList.add(`${ship.id}-busy-cell`);
+    } else {
+      document
+        .querySelector(`#${id}${String.fromCharCode(y + 64 + i)}${x}`)
+        .classList.add(`${ship.id}-busy-cell`);
+    }
+  }
+}
+
+//me fijo si quedan barcos en el dock
+/*function dockIsEmpty() {
+  if (document.querySelectorAll("#dock .grid-item").length == 0) {
+    document.querySelector("#dock .ships").appendChild(send_Ships);
+    send_Ships.classList.remove("d-none");
+  }
+}*/
 
 //createShips('battleship', 4, 'horizontal', document.getElementById('dock'),false)
 //createShips('submarine', 3, 'horizontal', document.getElementById('dock'),false)

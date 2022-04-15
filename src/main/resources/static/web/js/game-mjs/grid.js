@@ -5,7 +5,7 @@ export const createGrid = function (size, element, id, idGrid) {
   let wrapper = document.createElement("DIV"); //container of the grid
   wrapper.classList.add("grid-wrapper");
   wrapper.id = idGrid;
-  if (id == "ships") {
+  if (id === "ships") {
     wrapper.classList.add("cero");
   }
 
@@ -84,7 +84,7 @@ function dropShip(ev) {
 
   //Before the ship is dropped to a cell, checks if the length of the ship exceed the grid width,
   //If true, the drop event is aborted.
-  if (ship.dataset.orientation == "horizontal") {
+  if (ship.dataset.orientation === "horizontal") {
     if (parseInt(ship.dataset.length) + x > 11) {
       document.querySelector("#display p").innerText = "movement not allowed";
       return;
@@ -94,7 +94,7 @@ function dropShip(ev) {
         .match(new RegExp(`[^${cell.dataset.y}|^${cell.dataset.x}]`, "g"))
         .join("");
       let cellId = `${id}${cell.dataset.y}${parseInt(cell.dataset.x) + i}`;
-      if (document.getElementById(cellId).className.search(/busy-cell/) != -1) {
+      if (document.getElementById(cellId).className.search(/busy-cell/) !== -1) {
         document.querySelector("#display p").innerText = "careful";
         return;
       }
@@ -112,7 +112,7 @@ function dropShip(ev) {
       let cellId = `${id}${String.fromCharCode(
         cell.dataset.y.charCodeAt() + i
       )}${cell.dataset.x}`;
-      if (document.getElementById(cellId).className.search(/busy-cell/) != -1) {
+      if (document.getElementById(cellId).className.search(/busy-cell/) !== -1) {
         document.querySelector("#display p").innerText = "careful";
         return;
       }
@@ -141,7 +141,7 @@ function checkBusyCells(ship, cell) {
   });
 
   for (let i = 0; i < ship.dataset.length; i++) {
-    if (ship.dataset.orientation == "horizontal") {
+    if (ship.dataset.orientation === "horizontal") {
       document
         .querySelector(`#${id}${String.fromCharCode(y + 64)}${x + i}`)
         .classList.add(`${ship.id}-busy-cell`);

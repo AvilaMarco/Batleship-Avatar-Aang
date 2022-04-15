@@ -1,12 +1,13 @@
+import {createGrid} from "./game-mjs/grid.js";
+import {createShips} from "./game-mjs/ships.js";
+import {getHTML} from "./utils/utils.js";
+
 /* WEB SOCKET */
 let stompClient = null;
 /* Player */
 let player = {};
 let rival = {};
 let game = {};
-
-let params = new URLSearchParams(location.search);
-let gp = params.get("gp");
 let shipsName = [
   "carrier",
   "battleship",
@@ -14,6 +15,73 @@ let shipsName = [
   "destroyer",
   "patrol_boat",
 ];
+
+beginGame()
+
+function beginGame() {
+  createGrid(9, document.getElementById("grid"), "ships", "gridShips");
+  createDefaultShip()
+}
+
+function createDefaultShip() {
+  [5, 4, 3, 3, 2].forEach((lengthShip, i) =>
+      createShips(
+          shipsName[i],
+          lengthShip,
+          "horizontal",
+          getHTML("#ships"),
+          false
+      )
+  );
+}
+
+//createShips('battleship', 4, 'horizontal', document.getElementById('dock'),false)
+/* START GAME - WEB SOCKET*/
+function connect() {
+  player = getPlayerData();
+  let socket = new SockJS("/the-last-airbender");
+  stompClient = Stomp.over(socket);
+
+  stompClient.connect({}, function (frame) {
+    console.log("Connected: " + frame);
+
+    const base = `/topic/match/${player.gameId}`;
+
+    /* Join To Game */
+    stompClient.subscribe(`${base}`, ({body}) => {
+      console.log(JSON.parse(body));
+    });
+
+    /* Send Ships */
+    stompClient.subscribe(`${base}/ships/`, ({body}) => {
+      console.log(JSON.parse(body));
+    });
+  });
+}
+
+function startGame() {
+  const base = `/topic/match/${player.gameId}`;
+
+  /* Send emotes */
+  stompClient.subscribe(`${base}/emote/${rival.gamePlayerId}`, ({body}) => {
+    console.log(JSON.parse(body));
+  });
+
+  /* Send Salvos */
+  stompClient.subscribe(`${base}/salvos/${rival.gamePlayerId}`, ({body}) => {
+    console.log(JSON.parse(body));
+  });
+
+  /* Send Rematch */
+  stompClient.subscribe(`${base}/rematch`, ({body}) => {
+    console.log(JSON.parse(body));
+  });
+}
+
+
+let params = new URLSearchParams(location.search);
+let gp = params.get("gp");
+
 let playerDataGame1 = {};
 let playerDataGame2 = {};
 let myturn = null;
@@ -44,47 +112,6 @@ let rematch = document.querySelector("#rematch");
 //   document.querySelector("#grid").addEventListener("touchend", endMov);
 // }
 
-/* START GAME - WEB SOCKET*/
-function connect() {
-  player = getPlayerData();
-  let socket = new SockJS("/the-last-airbender");
-  stompClient = Stomp.over(socket);
-
-  stompClient.connect({}, function (frame) {
-    console.log("Connected: " + frame);
-
-    const base = `/topic/match/${player.gameId}`;
-
-    /* Join To Game */
-    stompClient.subscribe(`${base}`, ({ body }) => {
-      console.log(JSON.parse(body));
-    });
-
-    /* Send Ships */
-    stompClient.subscribe(`${base}/ships/`, ({ body }) => {
-      console.log(JSON.parse(body));
-    });
-  });
-}
-
-function startGame() {
-  const base = `/topic/match/${player.gameId}`;
-
-  /* Send emotes */
-  stompClient.subscribe(`${base}/emote/${rival.gamePlayerId}`, ({ body }) => {
-    console.log(JSON.parse(body));
-  });
-
-  /* Send Salvos */
-  stompClient.subscribe(`${base}/salvos/${rival.gamePlayerId}`, ({ body }) => {
-    console.log(JSON.parse(body));
-  });
-
-  /* Send Rematch */
-  stompClient.subscribe(`${base}/rematch`, ({ body }) => {
-    console.log(JSON.parse(body));
-  });
-}
 
 function sendM(n) {
   stompClient.send(`/app/${n}`, {}, JSON.stringify({}));
@@ -357,20 +384,20 @@ function sendEmote(texto) {
     if (response.ok) {
       if (texotFetch[0] == "e") {
         document
-          .querySelector("#player1 .box-emotes p")
-          .classList.add("d-none");
+            .querySelector("#player1 .box-emotes p")
+            .classList.add("d-none");
         document
-          .querySelector("#player1 .box-emotes img")
-          .classList.remove("d-none");
+            .querySelector("#player1 .box-emotes img")
+            .classList.remove("d-none");
         document.querySelector("#player1 .box-emotes img").src =
-          "assets/emotes/" + texotFetch + ".png";
+            "assets/emotes/" + texotFetch + ".png";
       } else {
         document
-          .querySelector("#player1 .box-emotes p")
-          .classList.remove("d-none");
+            .querySelector("#player1 .box-emotes p")
+            .classList.remove("d-none");
         document
-          .querySelector("#player1 .box-emotes img")
-          .classList.add("d-none");
+            .querySelector("#player1 .box-emotes img")
+            .classList.add("d-none");
         document.querySelector("#player1 .box-emotes p").innerText = texotFetch;
       }
     }
@@ -484,13 +511,7 @@ function defaultships() {
   );
 }
 
-//me fijo si quedan barcos en el dock
-function dockIsEmpty() {
-  if (document.querySelectorAll("#dock .grid-item").length == 0) {
-    document.querySelector("#dock .ships").appendChild(send_Ships);
-    send_Ships.classList.remove("d-none");
-  }
-}
+
 
 function sendShips() {
   let shipsObjects = [];

@@ -1,4 +1,18 @@
 /*card mobile*/
+.game-items {
+  overflow-x: scroll;
+  width: 60%;
+  height: 100%;
+  position: relative;
+}
+
+.container-game-items {
+  position: absolute;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
 .player-card-container {
   display: -webkit-box;
   display: -ms-flexbox;

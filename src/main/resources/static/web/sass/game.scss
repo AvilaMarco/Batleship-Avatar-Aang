@@ -15,7 +15,16 @@
   justify-content: space-around;
   align-items: center;
 }
-
+.game-items{
+  overflow-x: scroll;
+  width: 60%;
+  height: 100%;
+  position: relative;
+}
+.container-game-items{
+  position: absolute;
+  display: flex;
+}
 .player-card-container {
   @include player();
 }
