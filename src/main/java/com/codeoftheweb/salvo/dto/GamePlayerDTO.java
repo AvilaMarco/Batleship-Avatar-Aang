@@ -8,5 +8,5 @@ public class GamePlayerDTO {
     Long id;
 
     PlayerDTO player;
-    Integer score;
+    Integer   score;
 }

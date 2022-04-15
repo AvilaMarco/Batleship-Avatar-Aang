@@ -35,19 +35,19 @@ public class SalvoController {
 
     // listar info juegos
     @GetMapping(path = "/games")
-    public MenuViewDTO getGamesAndPlayers(Authentication authentication) {
+    public MenuViewDTO getGamesAndPlayers ( Authentication authentication ) {
         return salvoService.getInfoGames(authentication);
     }
 
     // crear juegos
     @PostMapping(path = "/match/games/{nation}/{location}")
-    public GameCreatedDTO createGame(Authentication authentication, @PathVariable NationType nation, @PathVariable String location) {
+    public GameCreatedDTO createGame ( Authentication authentication, @PathVariable NationType nation, @PathVariable String location ) {
         return matchService.createGame(authentication, nation, location);
     }
 
     // unirse a juegos
     @PostMapping(path = "/match/games/{id}")
-    public GameCreatedDTO joinGame(Authentication authentication, @PathVariable Long id) {
+    public GameCreatedDTO joinGame ( Authentication authentication, @PathVariable Long id ) {
         return matchService.joinGame(authentication, id);
     }
 
@@ -55,25 +55,25 @@ public class SalvoController {
     //Anotación que le dice a Spring que traiga toda la información y métodos del repositorio o clase a la que
     //hacemos referencia, podemos instanciar un repositorio
     @Autowired
-    private com.codeoftheweb.salvo.repository.GameRepository gameRepository;
+    private com.codeoftheweb.salvo.repository.GameRepository       gameRepository;
     @Autowired
-    private com.codeoftheweb.salvo.repository.PlayerRepository PlayerRepository;
+    private com.codeoftheweb.salvo.repository.PlayerRepository     PlayerRepository;
     @Autowired
     private com.codeoftheweb.salvo.repository.GamePlayerRepository gamePlayerRepository;
 
 
-    private boolean isGuest(Authentication authentication) {
+    private boolean isGuest ( Authentication authentication ) {
         return authentication == null || authentication instanceof AnonymousAuthenticationToken;
     }
 
-    private boolean insideTheRange(List<String> lista) {
+    private boolean insideTheRange ( List<String> lista ) {
         return lista.stream()
-                .allMatch(location -> location.charAt(0) >= 'A' && location.charAt(0) <= 'J' &&
-                        parseInt(location.substring(1)) >= 1 && parseInt(location.substring(1)) <= 10
-                );
+          .allMatch(location -> location.charAt(0) >= 'A' && location.charAt(0) <= 'J' &&
+            parseInt(location.substring(1)) >= 1 && parseInt(location.substring(1)) <= 10
+          );
     }
 
-    private boolean isConsecutive(Set<Ship> ships) {
+    private boolean isConsecutive ( Set<Ship> ships ) {
         //codigo
         List<Boolean> list = new ArrayList<>(Collections.emptyList());
 //        ships
@@ -103,14 +103,14 @@ public class SalvoController {
         return list.stream().allMatch(b -> b);
     }
 
-    private boolean positionsNotRepeated(List<String> lista) {
-        int sizerOriginal = lista.size();
-        Set<String> set = new HashSet<>(lista);
-        int sizeReal = set.size();
+    private boolean positionsNotRepeated ( List<String> lista ) {
+        int         sizerOriginal = lista.size();
+        Set<String> set           = new HashSet<>(lista);
+        int         sizeReal      = set.size();
         return sizerOriginal == sizeReal;
     }
 
-    private boolean realships(Set<Ship> ships) {
+    private boolean realships ( Set<Ship> ships ) {
         return ships.stream().allMatch(s -> {
             boolean correct = true;
 /*            switch (s.getTypeShip().toString()) {
@@ -132,9 +132,9 @@ public class SalvoController {
         });
     }
 
-    private void elegirganador(GamePlayer gamepplayer) {
-        long migpid = gamepplayer.getId();
-        GamePlayer mygp = gamepplayer;
+    private void elegirganador ( GamePlayer gamepplayer ) {
+        long       migpid     = gamepplayer.getId();
+        GamePlayer mygp       = gamepplayer;
         GamePlayer gpOpponent = gamepplayer.getGame().getGamePlayers().stream().filter(gamep -> gamep.getId() != migpid).findFirst().orElse(null);
         /*if (gpOpponent != null) {
             //empate cuando mis disparos destruyen todos los barcos en el mismo turno que mi oponente hace lo mismo
@@ -158,10 +158,10 @@ public class SalvoController {
     }
 
     @GetMapping(path = "/gp/{id}")
-    public ResponseEntity<Map<String, Object>> getGame_view(Authentication authentication, @PathVariable Long id) {
-        GamePlayer gp = gamePlayerRepository.findById(id).orElse(null);
-        Player player = PlayerRepository.findByEmail(authentication.getName()).get();
-        Map<String, Object> error = new HashMap<>();
+    public ResponseEntity<Map<String, Object>> getGame_view ( Authentication authentication, @PathVariable Long id ) {
+        GamePlayer          gp     = gamePlayerRepository.findById(id).orElse(null);
+        Player              player = PlayerRepository.findByEmail(authentication.getName()).get();
+        Map<String, Object> error  = new HashMap<>();
         if (gp != null && player != null) {
             if (player.getGamePlayers().stream().anyMatch(e -> e.getId() == id)) {
                 return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
@@ -177,7 +177,7 @@ public class SalvoController {
 
     //setear salvo
     @RequestMapping(path = "/games/players/{gamePlayerId}/salvos", method = RequestMethod.POST)
-    public ResponseEntity<Map<String, Object>> createSalvos(Authentication authentication, @PathVariable Long gamePlayerId, @RequestBody List<String> salvostring) {
+    public ResponseEntity<Map<String, Object>> createSalvos ( Authentication authentication, @PathVariable Long gamePlayerId, @RequestBody List<String> salvostring ) {
         Map<String, Object> respuesta = new HashMap<>();
        /* if (!isGuest(authentication)) {
             Player player = PlayerRepository.findByEmail(authentication.getName()).get();
@@ -268,7 +268,7 @@ public class SalvoController {
 
     //setear barcos
     @RequestMapping(path = "/games/players/{gamePlayerId}/ships", method = RequestMethod.POST)
-    public ResponseEntity<Map<String, Object>> createShips(Authentication authentication, @PathVariable Long gamePlayerId, @RequestBody Set<Ship> ships) {
+    public ResponseEntity<Map<String, Object>> createShips ( Authentication authentication, @PathVariable Long gamePlayerId, @RequestBody Set<Ship> ships ) {
         Map<String, Object> respuesta = new HashMap<>();
 /*        if (!isGuest(authentication)) {
             Player player = PlayerRepository.findByEmail(authentication.getName()).get();
@@ -326,10 +326,9 @@ public class SalvoController {
     }
 
 
-
     //setear emote player
     @RequestMapping(path = "/emote/{id}/{emote}", method = RequestMethod.POST)
-    public ResponseEntity<Map<String, Object>> setemote(Authentication authentication, @PathVariable Long id, @PathVariable String emote) {
+    public ResponseEntity<Map<String, Object>> setemote ( Authentication authentication, @PathVariable Long id, @PathVariable String emote ) {
         Map<String, Object> respuesta = new HashMap<>();
         if (!isGuest(authentication)) {
             GamePlayer gp = gamePlayerRepository.findById(id).orElse(null);

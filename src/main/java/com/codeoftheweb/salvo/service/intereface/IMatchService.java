@@ -7,11 +7,11 @@ import org.springframework.security.core.Authentication;
 
 public interface IMatchService {
 
-    GameCreatedDTO createGame(Authentication authentication, NationType nation, String location);
+    GameCreatedDTO createGame ( Authentication authentication, NationType nation, String location );
 
-    GameCreatedDTO joinGame(Authentication authentication, Long id);
+    GameCreatedDTO joinGame ( Authentication authentication, Long id );
 
     /* WEB SOCKETS */
 
-    GamePlayerDTO viewMatch(Authentication authentication, Long gameId);
+    GamePlayerDTO viewMatch ( Authentication authentication, Long gameId );
 }

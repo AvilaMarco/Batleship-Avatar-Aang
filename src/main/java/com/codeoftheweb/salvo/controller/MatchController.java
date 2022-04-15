@@ -22,7 +22,7 @@ public class MatchController {
     // unirse a la partida
     @MessageMapping("/{gameId}")
     @SendTo("/topic/match/{gameId}")
-    public GamePlayerDTO match(@DestinationVariable Long gameId, Authentication authentication) {
+    public GamePlayerDTO match ( @DestinationVariable Long gameId, Authentication authentication ) {
         return matchService.viewMatch(authentication, gameId);
     }
 

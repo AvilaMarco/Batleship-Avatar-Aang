@@ -32,40 +32,39 @@ public class MatchService implements IMatchService {
     ModelMapper mapper;
 
     @Override
-    public GameCreatedDTO createGame(Authentication authentication, NationType nation, String location){
+    public GameCreatedDTO createGame ( Authentication authentication, NationType nation, String location ) {
         gameService.gameNotExists(location);
 
-        Player player = playerService.getPlayerAuthenticated(authentication);
-        Game game = new Game(nation, location);
+        Player     player     = playerService.getPlayerAuthenticated(authentication);
+        Game       game       = new Game(nation, location);
         GamePlayer gamePlayer = new GamePlayer(player, game);
 
         playerService.save(player); // TODO: delete ?
-        GameMapDTO gameDTO = gameService.save(game);
+        GameMapDTO    gameDTO       = gameService.save(game);
         GamePlayerDTO gamePlayerDTO = gamePlayerService.save(gamePlayer);
 
         return new GameCreatedDTO(gameDTO.getId(), gamePlayerDTO.getId());
     }
 
     @Override
-    public GameCreatedDTO joinGame(Authentication authentication, Long GameId) {
+    public GameCreatedDTO joinGame ( Authentication authentication, Long GameId ) {
 
-        Player player = playerService.getPlayerAuthenticated(authentication);
-        GameMapDTO gameDTO =  gameService.getGame(GameId);
-        Game game = mapper.map(gameDTO, Game.class);
+        Player     player  = playerService.getPlayerAuthenticated(authentication);
+        GameMapDTO gameDTO = gameService.getGame(GameId);
+        Game       game    = mapper.map(gameDTO, Game.class);
 
         gameService.gameIsNotFull(game);
         gameService.gameNotContainsThePlayer(game, player.getId());
 
         GamePlayer gamePlayer = new GamePlayer(player, game);
 
-        gameService.save(game); // TODO: delete ?
         gamePlayerService.save(gamePlayer);
 
         return new GameCreatedDTO(game.getId(), gamePlayer.getId());
     }
 
     /* WEB SOCKET */
-    public GamePlayerDTO viewMatch(Authentication authentication, Long gameId){
+    public GamePlayerDTO viewMatch ( Authentication authentication, Long gameId ) {
         Player player = playerService.getPlayerAuthenticated(authentication);
         gameService.gameExists(gameId);
 

@@ -6,7 +6,6 @@ import com.codeoftheweb.salvo.dto.PlayerScoreDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -15,8 +14,8 @@ import java.util.List;
 @NoArgsConstructor
 public class MenuViewDTO {
 
-    PlayerDTO player;
-    List<GameMapDTO> games;
+    PlayerDTO            player;
+    List<GameMapDTO>     games;
     List<PlayerScoreDTO> players;
 
 }

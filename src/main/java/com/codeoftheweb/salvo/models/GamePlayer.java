@@ -2,15 +2,15 @@ package com.codeoftheweb.salvo.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -23,8 +23,8 @@ public class GamePlayer {
 
     @CreationTimestamp
     private LocalDateTime joinDate;
-    private String emote;
-    private Integer score;
+    private String        emote;
+    private Integer       score;
 
     // Relations
     @ManyToOne(fetch = FetchType.EAGER)
@@ -43,20 +43,20 @@ public class GamePlayer {
 
     //constructores
 
-    public GamePlayer(Player jugador, Game juego) {
-        this.player = jugador;
-        this.game = juego;
+    public GamePlayer ( Player jugador, Game juego ) {
+        this.player   = jugador;
+        this.game     = juego;
         this.joinDate = LocalDateTime.now();
     }
 
-    public void addSalvo(Salvo salvo) {
+    public void addSalvo ( Salvo salvo ) {
         this.salvos.add(salvo);
         salvo.setGamePlayer(this);
     }
 
     @JsonIgnore
-    public boolean gamestard() {
-        long migpid = this.getId();
+    public boolean gamestard () {
+        long       migpid     = this.getId();
         GamePlayer gpOpponent = this.getGame().getGamePlayers().stream().filter(gamep -> gamep.getId() != migpid).findFirst().orElse(null);
         if (gpOpponent != null) {
             return this.getGame().getGamePlayers().stream().allMatch(gp -> gp.getShips().size() == 5);
@@ -67,14 +67,14 @@ public class GamePlayer {
     }
 
     @JsonIgnore
-    public int getMyTurn() {
-        return (this.getSalvos().size() + 1);
+    public int getMyTurn () {
+        return ( this.getSalvos().size() + 1 );
     }
 
     @JsonIgnore
-    public boolean gameover() {
-        long migpid = this.getId();
-        GamePlayer mygp = this;
+    public boolean gameover () {
+        long       migpid     = this.getId();
+        GamePlayer mygp       = this;
         GamePlayer gpOpponent = this.getGame().getGamePlayers().stream().filter(gamep -> gamep.getId() != migpid).findFirst().orElse(null);
         if (gpOpponent != null) {
             //empate cuando mis disparos destruyen todos los barcos en el mismo turno que mi oponente hace lo mismo

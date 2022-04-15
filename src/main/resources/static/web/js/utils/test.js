@@ -3,5 +3,17 @@ function randomNation(playerData) {
   const n = Math.round(Math.random() * 3);
   playerData.nation = nations[n];
 }
-
-export { randomNation };
+const playerTest = {
+  id: 5,
+  nation: "EARTH",
+  email: "marco@aaa.com",
+  name: "Marco Avila",
+  stats: {
+    score: 3,
+    won: 1,
+    tied: 0,
+    lost: 0,
+    win_rate: 100
+  }
+};
+export { randomNation, playerTest};

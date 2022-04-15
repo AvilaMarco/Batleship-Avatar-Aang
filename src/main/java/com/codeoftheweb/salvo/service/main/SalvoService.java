@@ -5,6 +5,7 @@ import com.codeoftheweb.salvo.dto.PlayerDTO;
 import com.codeoftheweb.salvo.dto.PlayerScoreDTO;
 import com.codeoftheweb.salvo.dto.request.SignInPlayerDTO;
 import com.codeoftheweb.salvo.dto.response.MenuViewDTO;
+import com.codeoftheweb.salvo.enums.NationType;
 import com.codeoftheweb.salvo.models.Player;
 import com.codeoftheweb.salvo.service.GamePlayerService;
 import com.codeoftheweb.salvo.service.GameService;
@@ -37,15 +38,15 @@ public class SalvoService implements ISalvoService {
     PasswordEncoder encoder;
 
     @Override
-    public MenuViewDTO getInfoGames(Authentication authentication) {
-        PlayerScoreDTO playerDTO = playerService.getAnyPlayer(authentication);
-        List<GameMapDTO> games = gameService.getGames();
+    public MenuViewDTO getInfoGames ( Authentication authentication ) {
+        PlayerScoreDTO       playerDTO    = playerService.getAnyPlayer(authentication);
+        List<GameMapDTO>     games        = gameService.getGames();
         List<PlayerScoreDTO> playersScore = playerService.getPlayersScore();
         return new MenuViewDTO(playerDTO, games, playersScore);
     }
 
     @Override
-    public PlayerDTO registerPlayer(SignInPlayerDTO playerDTO) {
+    public PlayerDTO registerPlayer ( SignInPlayerDTO playerDTO ) {
 
         playerService.isNotRegister(playerDTO);
 
@@ -53,6 +54,13 @@ public class SalvoService implements ISalvoService {
         // TODO: Add mapper for encode password into model mapper
         String passwordEncode = encoder.encode(player.getPassword());
         player.setPassword(passwordEncode);
+        return playerService.save(player);
+    }
+
+    @Override
+    public PlayerDTO setNationPlayer ( Authentication authentication, String nation ) {
+        Player player =  playerService.getPlayerAuthenticated(authentication);
+        player.setNation(NationType.valueOf(nation));
         return playerService.save(player);
     }
 }

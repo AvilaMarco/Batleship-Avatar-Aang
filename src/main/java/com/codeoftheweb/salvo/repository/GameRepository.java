@@ -9,8 +9,8 @@ import java.util.Optional;
 
 public interface GameRepository extends JpaRepository<Game, Long> {
 
-    @Query("FROM Game g WHERE g.location = :location ")
-    Optional<Game> getGameByLocation(String location);
+    @Query("FROM Game g WHERE g.location = :location AND g.finishDate IS NULL")
+    Optional<Game> getGameByLocation ( String location );
 
-    List<Game> findAllByFinishDateIsNull();
+    List<Game> findAllByFinishDateIsNull ();
 }

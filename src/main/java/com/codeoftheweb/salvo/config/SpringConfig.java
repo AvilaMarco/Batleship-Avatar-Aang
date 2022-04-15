@@ -21,7 +21,7 @@ import java.util.List;
 public class SpringConfig {
 
     @Bean
-    public ModelMapper getModelMapper() {
+    public ModelMapper getModelMapper () {
         /*        modelMapper.getConfiguration()
                 .setFieldMatchingEnabled(true)
                 *//*.setFieldAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PRIVATE)*//*
@@ -30,26 +30,26 @@ public class SpringConfig {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    public PasswordEncoder passwordEncoder () {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
-   @Bean
-    public CommandLineRunner initData(PlayerRepository PlayerRepository, GameRepository GameRepository,
-                                      GamePlayerRepository GamePlayerRepository) {
-        return (args) -> {
+    @Bean
+    public CommandLineRunner initData ( PlayerRepository PlayerRepository, GameRepository GameRepository,
+                                        GamePlayerRepository GamePlayerRepository ) {
+        return ( args ) -> {
 
             //variables pruebas  WATER, AIR, FIRE, EARTH
-            Player jack = new Player("Jack Bauer", "j.bauer@ctu.gov", passwordEncoder().encode("24"), NationType.AIR);
+            Player jack  = new Player("Jack Bauer", "j.bauer@ctu.gov", passwordEncoder().encode("24"), NationType.AIR);
             Player Chloe = new Player("Chloe O'Brian", "c.obrian@ctu.gov", passwordEncoder().encode("42"), NationType.WATER);
-            Player Kim = new Player("Kim Bauer", "kim_bauer@gmail.com", passwordEncoder().encode("kb"), NationType.FIRE);
-            Player Tony = new Player("Tony Almeida", "t.almeida@ctu.gov", passwordEncoder().encode("mole"), NationType.AIR);
+            Player Kim   = new Player("Kim Bauer", "kim_bauer@gmail.com", passwordEncoder().encode("kb"), NationType.FIRE);
+            Player Tony  = new Player("Tony Almeida", "t.almeida@ctu.gov", passwordEncoder().encode("mole"), NationType.AIR);
             Player marco = new Player("Marco Avila", "marco@aaa.com", passwordEncoder().encode("123"), NationType.EARTH);
 
-            Game one = new Game(NationType.EARTH, "E1");
-            Game two = new Game(NationType.WATER, "W1");
+            Game one   = new Game(NationType.EARTH, "E1");
+            Game two   = new Game(NationType.WATER, "W1");
             Game three = new Game(NationType.FIRE, "F1");
-            Game four = new Game(NationType.AIR, "A1");
+            Game four  = new Game(NationType.AIR, "A1");
 
             //ships position
 /*            List<String> position01 = Arrays.asList("A1", "A2", "A3", "A4", "A5");
@@ -121,7 +121,7 @@ public class SpringConfig {
 
             // save players in the PlayerRepository
             List<Player> players = List.of(
-                    jack, Chloe, Kim, Tony, marco
+              jack, Chloe, Kim, Tony, marco
             );
             PlayerRepository.saveAll(players);
 
@@ -133,7 +133,7 @@ public class SpringConfig {
 
             // save players in the GamePlayerRepository
             List<GamePlayer> gps = List.of(
-                    GamePlayer1, GamePlayer2, GamePlayer3, GamePlayer4, GamePlayer5, GamePlayer6
+              GamePlayer1, GamePlayer2, GamePlayer3, GamePlayer4, GamePlayer5, GamePlayer6
             );
             GamePlayerRepository.saveAll(gps);
 

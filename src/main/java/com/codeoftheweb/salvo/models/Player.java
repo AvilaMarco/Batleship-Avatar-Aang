@@ -1,12 +1,14 @@
 package com.codeoftheweb.salvo.models;
 
 import com.codeoftheweb.salvo.enums.NationType;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Entity
@@ -22,25 +24,25 @@ public class Player {
 
     @Enumerated(EnumType.STRING)
     private NationType nation;
-    private String name;
-    private String email;
-    private String password;
+    private String     name;
+    private String     email;
+    private String     password;
 
     // Relations
     @OneToMany(mappedBy = "player", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<GamePlayer> gamePlayers;
 
-    public Player(String name, String email, String password, NationType nation) {
-        this.nation = nation;
-        this.name = name;
-        this.email = email;
+    public Player ( String name, String email, String password, NationType nation ) {
+        this.nation   = nation;
+        this.name     = name;
+        this.email    = email;
         this.password = password;
     }
 
-    public List<Integer> getScores(){
-        return  gamePlayers.stream()
-                .map(GamePlayer::getScore)
-                .filter( score -> !Objects.isNull(score))
-                .collect(Collectors.toList());
+    public List<Integer> getScores () {
+        return gamePlayers.stream()
+          .map(GamePlayer::getScore)
+          .filter(score -> !Objects.isNull(score))
+          .collect(Collectors.toList());
     }
 }

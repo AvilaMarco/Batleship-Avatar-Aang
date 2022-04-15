@@ -13,14 +13,14 @@ import javax.persistence.Enumerated;
 @NoArgsConstructor
 public class PlayerDTO {
 
-    Long id;
+    Long   id;
     String name;
     String email;
 
     @Enumerated(EnumType.STRING)
     NationType nation;
 
-    public PlayerDTO(String name){
+    public PlayerDTO ( String name ) {
         this.name = name;
     }
 }

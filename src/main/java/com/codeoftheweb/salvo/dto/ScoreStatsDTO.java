@@ -13,18 +13,21 @@ public class ScoreStatsDTO {
     private Integer won;
     private Integer tied;
     private Integer lost;
-    private Double winRate;
+    private Double  winRate;
 
-    public void plusScore(Integer score){
+    public void plusScore ( Integer score ) {
         this.score += score;
     }
-    public void plusWon(){
+
+    public void plusWon () {
         this.won++;
     }
-    public void plusLost(){
+
+    public void plusLost () {
         this.lost++;
     }
-    public void plusTied(){
+
+    public void plusTied () {
         this.tied++;
     }
 }

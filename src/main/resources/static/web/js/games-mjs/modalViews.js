@@ -1,4 +1,4 @@
-function createTableRanking(players) {
+function createRankingTable(players) {
 
   players.sort((a, b) => b.stats.score - a.stats.score);
 
@@ -41,7 +41,7 @@ function createTableRanking(players) {
   modalDiv.innerHTML += body;
 }
 
-function verTutorial() {
+function watchTutorial() {
   let modalDiv = document.querySelector(".div-modal");
 
   let text = document.createElement("P");
@@ -51,7 +51,7 @@ function verTutorial() {
   modalDiv.appendChild(text);
 }
 
-function verDatosUser({name, email, nation, stats}) {
+function viewUserData({name, email, nation, stats}) {
   let modalDiv = document.querySelector(".div-modal");
   modalDiv.classList.add("bg-" + nation);
   modalDiv.classList.add("bg-solid-" + nation);
@@ -97,4 +97,4 @@ function tableUser(stats) {
   return table;
 }
 
-export {createTableRanking, verDatosUser, verTutorial};
+export {createRankingTable, viewUserData, watchTutorial};

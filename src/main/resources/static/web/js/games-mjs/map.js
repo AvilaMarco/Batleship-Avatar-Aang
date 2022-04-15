@@ -72,6 +72,36 @@ function createGamesOnMap(games, playerId) {
   });
 }
 
+function infoGame() {
+  const {dataset: {id}} = gameSelected();
+  const {dataset: {location, gameid, playername1, playername2}} = getHTML("div#" + id);
+  const thereP2 = playername2 !== undefined
+  const body = `
+    <div class="div-infoGame" style="background: white;">
+        <h1>${location} Nation</h1>
+        <div class="divStatus">
+            <p>Game Id: ${gameid}</p>
+            <p>Status: ${thereP2 ? "In Game" : "Create"}</p>
+        </div>
+        <p>Player 1: ${playername1}</p>
+        <p>Player 2: ${thereP2 ? playername2 : "-"}</p>
+    </div>`
+
+  console.log(getHTML("div#" + id))
+  let modalDiv = getHTML(".div-modal");
+  modalDiv.innerHTML = body
+}
+
+function reloadMap() {
+  const reload = getHTML("#reload");
+  reload.classList.add("Animation-reload");
+  setTimeout(() => {
+    reload.classList.remove("Animation-reload");
+  }, 1100);
+}
+
+export {createListenerInMap, createGamesOnMap, infoGame, reloadMap};
+
 function selectGame(event) {
   if (gameSelected() != null) {
     getHTML("#pivotMap").removeChild(gameSelected());
@@ -111,25 +141,3 @@ function unselectGame(event) {
   getAllHTML("div [name*='dataGame']")
       .forEach((e) => e.classList.add("hidden"));
 }
-
-function infoGame() {
-  const {dataset: {id}} = gameSelected();
-  const {dataset: {location, gameid, playername1, playername2}} = getHTML("div#" + id);
-  const thereP2 = playername2 !== undefined
-  const body = `
-    <div class="div-infoGame" style="background: white;">
-        <h1>${location} Nation</h1>
-        <div class="divStatus">
-            <p>Game Id: ${gameid}</p>
-            <p>Status: ${thereP2 ? "In Game" : "Create"}</p>
-        </div>
-        <p>Player 1: ${playername1}</p>
-        <p>Player 2: ${thereP2 ? playername2 : "-"}</p>
-    </div>`
-
-  console.log(getHTML("div#" + id))
-  let modalDiv = getHTML(".div-modal");
-  modalDiv.innerHTML = body
-}
-
-export {createListenerInMap, createGamesOnMap, infoGame};

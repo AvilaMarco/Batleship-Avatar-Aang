@@ -7,7 +7,9 @@ import org.springframework.security.core.Authentication;
 
 public interface ISalvoService {
 
-    MenuViewDTO getInfoGames(Authentication authentication);
+    MenuViewDTO getInfoGames ( Authentication authentication );
 
-    PlayerDTO registerPlayer(SignInPlayerDTO player);
+    PlayerDTO registerPlayer ( SignInPlayerDTO player );
+
+    PlayerDTO setNationPlayer( Authentication authentication, String nation);
 }

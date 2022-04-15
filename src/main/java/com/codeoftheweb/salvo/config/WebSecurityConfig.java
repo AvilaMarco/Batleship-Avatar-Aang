@@ -16,20 +16,20 @@ import javax.servlet.http.HttpSession;
 @EnableWebSecurity
 class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    protected void configure ( HttpSecurity http ) throws Exception {
         http.authorizeRequests()
-                //indico las direcciones a las quepuedeo acceder
-                .antMatchers("/rest/**").hasAuthority("ADMIN")
-                .antMatchers("/api/gp/**").hasAuthority("USER");
+          //indico las direcciones a las quepuedeo acceder
+          .antMatchers("/rest/**").hasAuthority("ADMIN")
+          .antMatchers("/api/gp/**").hasAuthority("USER");
 
         http.formLogin()
-                .usernameParameter("email")
-                .passwordParameter("password")
-                .loginPage("/api/login")
-                .failureHandler((request, response, exception) -> {
-                    /*response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "no");*/
-                    throw new AuthenticationException("ñalksjd");
-                });
+          .usernameParameter("email")
+          .passwordParameter("password")
+          .loginPage("/api/login")
+          .failureHandler(( request, response, exception ) -> {
+              /*response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "no");*/
+              throw new AuthenticationException("ñalksjd");
+          });
 
         http.logout().logoutUrl("/api/logout");
 
@@ -37,14 +37,14 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
 
         // if user is not authenticated, just send an authentication failure response
-        http.exceptionHandling().authenticationEntryPoint((req, res, exc) -> {
+        http.exceptionHandling().authenticationEntryPoint(( req, res, exc ) -> {
             /*res.sendError(HttpServletResponse.SC_UNAUTHORIZED);*/
             /*res.sendRedirect("/laksd");*/
             throw new AuthenticationException("CHAN");
         });
 
         // if login is successful, just clear the flags asking for authentication
-        http.formLogin().successHandler((req, res, auth) -> {
+        http.formLogin().successHandler(( req, res, auth ) -> {
             clearAuthenticationAttributes(req);
             res.sendRedirect("/web/games.html");
         });
@@ -56,7 +56,7 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.logout().logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler());
     }
 
-    private void clearAuthenticationAttributes(HttpServletRequest request) {
+    private void clearAuthenticationAttributes ( HttpServletRequest request ) {
         HttpSession session = request.getSession(false);
         if (session != null) {
             session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);

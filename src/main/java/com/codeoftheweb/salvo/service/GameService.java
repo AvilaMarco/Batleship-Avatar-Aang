@@ -25,47 +25,47 @@ public class GameService implements IGameService {
     ModelMapper mapper;
 
     @Override
-    public GameMapDTO getGame(Long id) {
+    public GameMapDTO getGame ( Long id ) {
         Game game = repository.findById(id).orElseThrow(() -> new GameNotFoundException(id));
         return mapper.map(game, GameMapDTO.class);
     }
 
     @Override
-    public List<GameMapDTO> getGames() {
+    public List<GameMapDTO> getGames () {
         List<Game> games = repository.findAllByFinishDateIsNull();
         return games.stream()
-                .map( g -> mapper.map(g, GameMapDTO.class))
-                .collect(Collectors.toList());
+          .map(g -> mapper.map(g, GameMapDTO.class))
+          .collect(Collectors.toList());
     }
 
     @Override
-    public GameMapDTO save(Game game) {
+    public GameMapDTO save ( Game game ) {
         return mapper.map(repository.save(game), GameMapDTO.class);
     }
 
     // Validations
-    public void gameExists(Long gameId){
-        if(!repository.existsById(gameId)){
+    public void gameExists ( Long gameId ) {
+        if (!repository.existsById(gameId)) {
             throw new GameNotFoundException(gameId);
         }
     }
 
 
     @Override
-    public void gameNotExists(String location) {
-        if(repository.getGameByLocation(location).isPresent())
+    public void gameNotExists ( String location ) {
+        if (repository.getGameByLocation(location).isPresent())
             throw new GameAlreadyExistsException(location);
     }
 
     @Override
-    public void gameIsNotFull(Game game) {
-        if(game.getGamePlayers().size() == 2)
+    public void gameIsNotFull ( Game game ) {
+        if (game.getGamePlayers().size() == 2)
             throw new GameIsFullException(game.getId());
     }
 
     @Override
-    public void gameNotContainsThePlayer(Game game, Long playerId) {
-        if(game.getPlayers().stream().anyMatch( p -> p.getId() == playerId))
+    public void gameNotContainsThePlayer ( Game game, Long playerId ) {
+        if (game.getPlayers().stream().anyMatch(p -> p.getId() == playerId))
             throw new PlayerAlreadyInGameException(playerId);
     }
 }

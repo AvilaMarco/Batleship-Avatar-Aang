@@ -23,11 +23,11 @@ public class GlobalAuthenticationConfig extends GlobalAuthenticationConfigurerAd
     private PlayerRepository playerRepository;
 
     @Override
-    public void init(AuthenticationManagerBuilder auth) throws Exception {
+    public void init ( AuthenticationManagerBuilder auth ) throws Exception {
         auth.userDetailsService(inputName -> {
             Player player = playerRepository.findByEmail(inputName).orElse(null);
 
-            if(player == null) throw new UsernameNotFoundException("Unknown user: " + inputName);
+            if (player == null) throw new UsernameNotFoundException("Unknown user: " + inputName);
 
             String name = player.getEmail();
             String pass = player.getPassword();

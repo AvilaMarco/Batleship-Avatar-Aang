@@ -1,19 +1,14 @@
 package com.codeoftheweb.salvo.models;
 
 import com.codeoftheweb.salvo.enums.NationType;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
@@ -27,7 +22,7 @@ public class Game {
 
     @Enumerated(EnumType.STRING)
     private NationType nation;
-    private String location;
+    private String     location;
 
     @CreationTimestamp
     private LocalDateTime created;
@@ -37,15 +32,16 @@ public class Game {
     @OneToMany(mappedBy = "game", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<GamePlayer> gamePlayers = new ArrayList<>();
 
-    public Game(NationType nation, String location) {
-        this.nation = nation;
+    public Game ( NationType nation, String location ) {
+        this.nation   = nation;
         this.location = location;
     }
 
-    public void finishDate(){
+    public void finishDate () {
         this.finishDate = LocalDateTime.now();
     }
-    public List<Player> getPlayers(){
+
+    public List<Player> getPlayers () {
         return gamePlayers.stream().map(GamePlayer::getPlayer).collect(Collectors.toList());
     }
 }

@@ -7,12 +7,16 @@ import java.util.List;
 
 public interface IGameService {
 
-    void gameNotExists(String direction);
-    GameMapDTO getGame(Long id);
-    List<GameMapDTO> getGames();
-    GameMapDTO save(Game game);
+    void gameNotExists ( String direction );
+
+    GameMapDTO getGame ( Long id );
+
+    List<GameMapDTO> getGames ();
+
+    GameMapDTO save ( Game game );
 
     // Validations
-    void gameIsNotFull(Game game);
-    void gameNotContainsThePlayer(Game game, Long playerId);
+    void gameIsNotFull ( Game game );
+
+    void gameNotContainsThePlayer ( Game game, Long playerId );
 }

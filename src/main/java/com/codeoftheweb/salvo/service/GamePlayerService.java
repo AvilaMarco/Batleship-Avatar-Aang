@@ -17,14 +17,14 @@ public class GamePlayerService {
     @Autowired
     ModelMapper mapper;
 
-    public GamePlayerDTO save(GamePlayer gamePlayer){
-       return mapper.map(repository.save(gamePlayer), GamePlayerDTO.class);
+    public GamePlayerDTO save ( GamePlayer gamePlayer ) {
+        return mapper.map(repository.save(gamePlayer), GamePlayerDTO.class);
     }
 
-    public GamePlayerDTO getGamePlayerBy(Long playerId, Long gameId){
+    public GamePlayerDTO getGamePlayerBy ( Long playerId, Long gameId ) {
         GamePlayer gamePlayer = repository
-                .findByPlayerIdAndGameId(playerId, gameId)
-                .orElseThrow(() -> new PlayerDoesNotBelongGame(playerId, gameId));
+          .findByPlayerIdAndGameId(playerId, gameId)
+          .orElseThrow(() -> new PlayerDoesNotBelongGame(playerId, gameId));
         return mapper.map(gamePlayer, GamePlayerDTO.class);
     }
 }

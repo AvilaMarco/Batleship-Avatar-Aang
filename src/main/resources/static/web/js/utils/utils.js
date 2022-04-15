@@ -31,6 +31,10 @@ function resizeCoordWithMargin(coords) {
   return [coordX, coordY];
 }
 
+function addClickEvent(query, action){
+  getHTML(query).addEventListener("click", action);
+}
+
 const gameSelected = () => getHTML("div[data-name*='selectGame']");
 
 export {
@@ -40,4 +44,5 @@ export {
   resizeCoord,
   resizeCoordWithMargin,
   gameSelected,
+  addClickEvent
 };

@@ -1,12 +1,12 @@
 {
-  "inboundOrder":{
+  "inboundOrder": {
     "orderNumber": 1,
     "orderDate": "20-09-2021",
     "section": {
       "sectionCode": "1",
       "warehouseCode": "4"
     },
-    "batchStock":[
+    "batchStock": [
       {
         "batchNumber": 1,
         "productId": "2",
