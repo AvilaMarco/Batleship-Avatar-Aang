@@ -1,0 +1,18 @@
+game_id: 1
+location: "fire"
+direction: "t3" --
+turn:null
+gameplayers:[
+	{
+	player:a
+	id:1
+	type:
+	score:null
+	salvos:[]
+	},
+	{}
+]
+
+ships:[]
+
+fix, feat, breakiing change, build, chore, ci, docs, style, refgactor, perf, test
