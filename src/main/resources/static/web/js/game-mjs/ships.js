@@ -1,16 +1,20 @@
+import { getHTML, list } from "../utils/utils.js";
+
 /*creates the ships with the ability of been placed in the grid. 
 It requires a shipType, that is, the id by wich the ship will be recongnized;
 the amount of cells the ship is going to occupy in the grid;
 a parent where the ship will be appended to;
 and a boolean that specifies whether the ship can be moved or not.
 */
-export const createShips = function (
-  shipType,
-  length,
-  orientation,
-  parent,
-  isStatic
-) {
+let shipsName = [
+  "carrier",
+  "battleship",
+  "submarine",
+  "destroyer",
+  "patrol_boat",
+];
+
+const createShips = function (shipType, length, orientation, parent, isStatic) {
   let ship = document.createElement("DIV");
   let grip = document.createElement("DIV");
   let content = document.createElement("DIV");
@@ -276,6 +280,37 @@ function checkBusyCells(ship, cell) {
     }
   }
 }
+
+function createDockerShip() {
+  [5, 4, 3, 3, 2].forEach((lengthShip, i) =>
+    createShips(
+      shipsName[i],
+      lengthShip,
+      "horizontal",
+      getHTML("#ships"),
+      false
+    )
+  );
+}
+
+const shipOnGrid = () =>
+  shipsName.map((ship) => {
+    const { length, orientation, x, y } = getHTML("#" + ship).dataset;
+    const position = list(parseInt(length)).map((_, i) =>
+      orientation == "horizontal"
+        ? y + (parseInt(x) + i)
+        : String.fromCharCode(y.charCodeAt(0) + i) + x
+    );
+    return {
+      type: ship.toUpperCase(),
+      locations: position,
+    };
+  });
+
+const someShipOnDocker = () =>
+  shipsName.some((ship) => getHTML("#" + ship).dataset.y == undefined);
+
+export { createShips, createDockerShip, shipOnGrid, someShipOnDocker };
 
 //me fijo si quedan barcos en el dock
 /*function dockIsEmpty() {

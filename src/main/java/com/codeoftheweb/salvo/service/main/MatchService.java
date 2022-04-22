@@ -3,6 +3,7 @@ package com.codeoftheweb.salvo.service.main;
 import com.codeoftheweb.salvo.dto.GameMapDTO;
 import com.codeoftheweb.salvo.dto.GamePlayerDTO;
 import com.codeoftheweb.salvo.dto.response.GameCreatedDTO;
+import com.codeoftheweb.salvo.dto.response.GameMatchDTO;
 import com.codeoftheweb.salvo.enums.NationType;
 import com.codeoftheweb.salvo.models.Game;
 import com.codeoftheweb.salvo.models.GamePlayer;
@@ -47,10 +48,10 @@ public class MatchService implements IMatchService {
     }
 
     @Override
-    public GameCreatedDTO joinGame ( Authentication authentication, Long GameId ) {
+    public GameCreatedDTO joinGame ( Authentication authentication, Long gameId ) {
 
         Player     player  = playerService.getPlayerAuthenticated(authentication);
-        GameMapDTO gameDTO = gameService.getGame(GameId);
+        GameMapDTO gameDTO = gameService.getGame(gameId);
         Game       game    = mapper.map(gameDTO, Game.class);
 
         gameService.gameIsNotFull(game);
@@ -64,10 +65,11 @@ public class MatchService implements IMatchService {
     }
 
     /* WEB SOCKET */
-    public GamePlayerDTO viewMatch ( Authentication authentication, Long gameId ) {
-        Player player = playerService.getPlayerAuthenticated(authentication);
-        gameService.gameExists(gameId);
-
-        return gamePlayerService.getGamePlayerBy(player.getId(), gameId);
+    public GameMatchDTO viewMatch ( Authentication authentication, Long gameId ) {
+/*        Player     player  = playerService.getPlayerAuthenticated(authentication);
+        GameMapDTO gameDTO = gameService.getGame(gameId);
+        Game       game    = mapper.map(gameDTO, Game.class);*/
+        //gameService.gameContainsThePlayer(game, player.getId());
+        return gameService.getGameMatch(gameId);
     }
 }

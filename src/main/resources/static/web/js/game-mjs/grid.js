@@ -68,10 +68,10 @@ function allowDrop(ev) {
 //Event to manage what happen when a ship is dropped
 function dropShip(ev) {
   ev.preventDefault();
-  document.querySelector("#display p").innerText = "";
+  /*document.querySelector("#display p").innerText = "";*/
   //checks if the targeted element is a cell
   if (!ev.target.classList.contains("grid-cell")) {
-    document.querySelector("#display p").innerText = "movement not allowed";
+    /*document.querySelector("#display p").innerText = "movement not allowed";*/
     return;
   }
   //variables where the data of the ship beeing dragged is stored
@@ -86,7 +86,7 @@ function dropShip(ev) {
   //If true, the drop event is aborted.
   if (ship.dataset.orientation === "horizontal") {
     if (parseInt(ship.dataset.length) + x > 11) {
-      document.querySelector("#display p").innerText = "movement not allowed";
+      /*document.querySelector("#display p").innerText = "movement not allowed";*/
       return;
     }
     for (let i = 1; i < ship.dataset.length; i++) {
@@ -95,13 +95,13 @@ function dropShip(ev) {
         .join("");
       let cellId = `${id}${cell.dataset.y}${parseInt(cell.dataset.x) + i}`;
       if (document.getElementById(cellId).className.search(/busy-cell/) !== -1) {
-        document.querySelector("#display p").innerText = "careful";
+        /*document.querySelector("#display p").innerText = "careful";*/
         return;
       }
     }
   } else {
     if (parseInt(ship.dataset.length) + y > 11) {
-      document.querySelector("#display p").innerText = "movement not allowed";
+      /*document.querySelector("#display p").innerText = "movement not allowed";*/
       return;
     }
 
@@ -113,7 +113,7 @@ function dropShip(ev) {
         cell.dataset.y.charCodeAt() + i
       )}${cell.dataset.x}`;
       if (document.getElementById(cellId).className.search(/busy-cell/) !== -1) {
-        document.querySelector("#display p").innerText = "careful";
+        /*document.querySelector("#display p").innerText = "careful";*/
         return;
       }
     }

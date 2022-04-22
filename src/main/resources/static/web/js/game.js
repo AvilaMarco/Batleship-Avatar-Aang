@@ -1,6 +1,10 @@
-import {createGrid} from "./game-mjs/grid.js";
-import {createShips} from "./game-mjs/ships.js";
-import {getHTML} from "./utils/utils.js";
+import { createGrid } from "./game-mjs/grid.js";
+import {
+  createDockerShip,
+  shipOnGrid,
+  someShipOnDocker,
+} from "./game-mjs/ships.js";
+import { addClickEvent, getHTML } from "./utils/utils.js";
 
 /* WEB SOCKET */
 let stompClient = null;
@@ -8,76 +12,103 @@ let stompClient = null;
 let player = {};
 let rival = {};
 let game = {};
-let shipsName = [
-  "carrier",
-  "battleship",
-  "submarine",
-  "destroyer",
-  "patrol_boat",
-];
 
-beginGame()
+const { gameId, gamePlayerId } = JSON.parse(localStorage.getItem("player"));
+const BASE_URL_TOPIC = `/topic/match/${gameId}`;
+const BASE_URL_APP = "/app";
+
+addClickEvent("#sendShips", sendShips);
+
+beginGame();
 
 function beginGame() {
   createGrid(9, document.getElementById("grid"), "ships", "gridShips");
-  createDefaultShip()
+  createDockerShip();
+  statusGame(gameId);
+  //consultar estado del juego
 }
 
-function createDefaultShip() {
-  [5, 4, 3, 3, 2].forEach((lengthShip, i) =>
-      createShips(
-          shipsName[i],
-          lengthShip,
-          "horizontal",
-          getHTML("#ships"),
-          false
-      )
+function statusGame(gameId) {
+  fetch(`/api/match/${gameId}/status`)
+    .then((res) => (res.ok ? res.json() : Promise.reject(res.body)))
+    .then(async (json) => {
+      connectClienSocket(json.game_players);
+    });
+}
+
+function sendShips() {
+  if (someShipOnDocker()) {
+    alert("faltan colocar ships");
+  }
+
+  stompClient.send(
+    `${BASE_URL_APP}/${gameId}`,
+    {},
+    JSON.stringify(shipOnGrid())
   );
 }
 
 //createShips('battleship', 4, 'horizontal', document.getElementById('dock'),false)
 /* START GAME - WEB SOCKET*/
-function connect() {
-  player = getPlayerData();
+function connectClienSocket(game_players) {
   let socket = new SockJS("/the-last-airbender");
   stompClient = Stomp.over(socket);
 
-  stompClient.connect({}, function (frame) {
+  stompClient.connect({}, (frame) => {
     console.log("Connected: " + frame);
+    if (game_players.length == 2) {
+      suscribeGame();
+    }
+    subscribeShips();
+  });
+}
 
-    const base = `/topic/match/${player.gameId}`;
-
-    /* Join To Game */
-    stompClient.subscribe(`${base}`, ({body}) => {
-      console.log(JSON.parse(body));
-    });
-
-    /* Send Ships */
-    stompClient.subscribe(`${base}/ships/`, ({body}) => {
-      console.log(JSON.parse(body));
-    });
+function subscribeShips() {
+  /* Send Ships */
+  stompClient.subscribe(`${BASE_URL_TOPIC}/ships`, ({ body }) => {
+    console.log(JSON.parse(body));
   });
 }
 
 function startGame() {
-  const base = `/topic/match/${player.gameId}`;
+  createSalvoGrid();
+  createDockerSalvos();
+  // decidir si lamar o no a la funcion
+  createStartedGame();
+}
 
+function createSalvoGrid() {}
+
+function createDockerSalvos() {}
+
+function createStartedGame() {
+  // crear barcos
+  // crear mis salvos
+  // crear salvos del oponente
+}
+
+function suscribeGame() {
   /* Send emotes */
-  stompClient.subscribe(`${base}/emote/${rival.gamePlayerId}`, ({body}) => {
-    console.log(JSON.parse(body));
-  });
+  stompClient.subscribe(
+    `${BASE_URL_TOPIC}/emote/${rival.gamePlayerId}`,
+    ({ body }) => {
+      console.log(JSON.parse(body));
+    }
+  );
 
   /* Send Salvos */
-  stompClient.subscribe(`${base}/salvos/${rival.gamePlayerId}`, ({body}) => {
-    console.log(JSON.parse(body));
-  });
+  stompClient.subscribe(
+    `${BASE_URL_TOPIC}/salvos/${rival.gamePlayerId}`,
+    ({ body }) => {
+      console.log(JSON.parse(body));
+    }
+  );
 
   /* Send Rematch */
-  stompClient.subscribe(`${base}/rematch`, ({body}) => {
+  stompClient.subscribe(`${BASE_URL_TOPIC}/rematch`, ({ body }) => {
     console.log(JSON.parse(body));
   });
 }
-
 
 let params = new URLSearchParams(location.search);
 let gp = params.get("gp");
@@ -111,7 +142,6 @@ let rematch = document.querySelector("#rematch");
 //   document.querySelector("#grid").addEventListener("touchstart", startMov);
 //   document.querySelector("#grid").addEventListener("touchend", endMov);
 // }
-
 
 function sendM(n) {
   stompClient.send(`/app/${n}`, {}, JSON.stringify({}));
@@ -370,7 +400,7 @@ function isGameStart(JSON) {
   updateSalvoes = window.setInterval(viewPlayer, 3000, gp, false, true);
 }
 
-/*FUNCIONES EMOTES*/
+/*FUNCIONES EMOTES*/ /*
 function sendEmote(texto) {
   let texotFetch;
   if (texto.tagName) {
@@ -384,20 +414,20 @@ function sendEmote(texto) {
     if (response.ok) {
       if (texotFetch[0] == "e") {
         document
-            .querySelector("#player1 .box-emotes p")
-            .classList.add("d-none");
+          .querySelector("#player1 .box-emotes p")
+          .classList.add("d-none");
         document
-            .querySelector("#player1 .box-emotes img")
-            .classList.remove("d-none");
+          .querySelector("#player1 .box-emotes img")
+          .classList.remove("d-none");
         document.querySelector("#player1 .box-emotes img").src =
-            "assets/emotes/" + texotFetch + ".png";
+          "assets/emotes/" + texotFetch + ".png";
       } else {
         document
-            .querySelector("#player1 .box-emotes p")
-            .classList.remove("d-none");
+          .querySelector("#player1 .box-emotes p")
+          .classList.remove("d-none");
         document
-            .querySelector("#player1 .box-emotes img")
-            .classList.add("d-none");
+          .querySelector("#player1 .box-emotes img")
+          .classList.add("d-none");
         document.querySelector("#player1 .box-emotes p").innerText = texotFetch;
       }
     }
@@ -416,9 +446,7 @@ function ocultarEmotes() {
   document.querySelector("#hideE").classList.add("d-none");
   let diplayEmotes = document.querySelector(".box-emotes-dock");
   diplayEmotes.classList.add("d-none");
-}
-
-/*
+} */ /* 5, 4, 3, 1, 1
 
 /*FUNCIONES DE ANIMACION DE LA GRILLA*/ /*
 /*
@@ -497,7 +525,7 @@ function activarAnimation(moveTo) {
     }
   }
 }
-*/ /* 5, 4, 3, 1, 1
+*/ /*
 /*FUNCIONES SHIPS*/ /*
 function defaultships() {
   [5, 4, 3, 3, 2].forEach((lengthShip, index) =>
@@ -599,7 +627,9 @@ function createShipsWeb(json) {
   }
 } */ /*
 
-/*FUNCIONES SALVO*/ /*
+/*FUNCIONES SALVO*/
+
+/*
 function createSalvoDock(numero) {
   for (var i = 0; i < numero; i++) {
     let div = document.createElement("div");

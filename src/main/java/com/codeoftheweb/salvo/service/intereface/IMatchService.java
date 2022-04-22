@@ -2,6 +2,7 @@ package com.codeoftheweb.salvo.service.intereface;
 
 import com.codeoftheweb.salvo.dto.GamePlayerDTO;
 import com.codeoftheweb.salvo.dto.response.GameCreatedDTO;
+import com.codeoftheweb.salvo.dto.response.GameMatchDTO;
 import com.codeoftheweb.salvo.enums.NationType;
 import org.springframework.security.core.Authentication;
 
@@ -13,5 +14,5 @@ public interface IMatchService {
 
     /* WEB SOCKETS */
 
-    GamePlayerDTO viewMatch ( Authentication authentication, Long gameId );
+    GameMatchDTO viewMatch ( Authentication authentication, Long gameId );
 }

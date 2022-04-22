@@ -1,6 +1,7 @@
 package com.codeoftheweb.salvo.service;
 
 import com.codeoftheweb.salvo.dto.GameMapDTO;
+import com.codeoftheweb.salvo.dto.response.GameMatchDTO;
 import com.codeoftheweb.salvo.exception.conflict.GameAlreadyExistsException;
 import com.codeoftheweb.salvo.exception.conflict.GameIsFullException;
 import com.codeoftheweb.salvo.exception.conflict.PlayerAlreadyInGameException;
@@ -28,6 +29,12 @@ public class GameService implements IGameService {
     public GameMapDTO getGame ( Long id ) {
         Game game = repository.findById(id).orElseThrow(() -> new GameNotFoundException(id));
         return mapper.map(game, GameMapDTO.class);
+    }
+
+    @Override
+    public GameMatchDTO getGameMatch ( Long id ) {
+        Game game = repository.findById(id).orElseThrow(() -> new GameNotFoundException(id));
+        return mapper.map(game, GameMatchDTO.class);
     }
 
     @Override
@@ -66,6 +73,12 @@ public class GameService implements IGameService {
     @Override
     public void gameNotContainsThePlayer ( Game game, Long playerId ) {
         if (game.getPlayers().stream().anyMatch(p -> p.getId() == playerId))
+            throw new PlayerAlreadyInGameException(playerId);
+    }
+
+    @Override
+    public void gameContainsThePlayer ( Game game, Long playerId ) {
+        if (game.getPlayers().stream().noneMatch(p -> p.getId() == playerId))
             throw new PlayerAlreadyInGameException(playerId);
     }
 }
