@@ -8,8 +8,8 @@ import java.util.List;
 
 @Data
 public class GameMatchDTO {
-    private Long                id;
-    private NationType          nation;
+    private Long                    id;
+    private NationType              nation;
     private String                  location;
     private List<GamePlayerDataDTO> gamePlayers;
 }

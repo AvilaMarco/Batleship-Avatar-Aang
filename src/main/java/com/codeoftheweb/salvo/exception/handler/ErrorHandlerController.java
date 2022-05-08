@@ -2,25 +2,26 @@ package com.codeoftheweb.salvo.exception.handler;
 
 import com.codeoftheweb.salvo.dto.error.ErrorDTO;
 import com.codeoftheweb.salvo.exception.AirbenderException;
-import com.codeoftheweb.salvo.exception.not_found.PlayerNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class ErrorHandlerController {
 
     @ExceptionHandler(AirbenderException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     ResponseEntity<ErrorDTO> playerNotFound ( AirbenderException exception ) {
         ErrorDTO errorDTO = new ErrorDTO();
         errorDTO.setError(exception.getException());
@@ -48,19 +49,20 @@ public class ErrorHandlerController {
 
         HashMap<String, List<String>> errors = new HashMap<>();
 
-        exception.getFieldErrors().forEach(e -> {
-            String field = e.getField();
-            String msg   = e.getDefaultMessage();
+        exception.getFieldErrors()
+          .forEach(e -> {
+              String field = e.getField();
+              String msg   = e.getDefaultMessage();
 
-            errors.compute(field, ( $, l ) ->
-              new ArrayList<>() {
-                  {
-                      addAll(!Objects.isNull(l) ? l : new ArrayList<>());
-                      add(msg);
-                  }
-              }
-            );
-        });
+              errors.compute(field, ( $, l ) ->
+                new ArrayList<>() {
+                    {
+                        addAll(!Objects.isNull(l) ? l : new ArrayList<>());
+                        add(msg);
+                    }
+                }
+              );
+          });
         errorDTO.setErrorFields(errors);
         return new ResponseEntity<>(errorDTO, HttpStatus.BAD_REQUEST);
     }

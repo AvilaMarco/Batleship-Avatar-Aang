@@ -7,12 +7,10 @@ import com.codeoftheweb.salvo.dto.request.SignInPlayerDTO;
 import com.codeoftheweb.salvo.dto.response.MenuViewDTO;
 import com.codeoftheweb.salvo.enums.NationType;
 import com.codeoftheweb.salvo.models.Player;
-import com.codeoftheweb.salvo.service.GamePlayerService;
-import com.codeoftheweb.salvo.service.GameService;
-import com.codeoftheweb.salvo.service.PlayerService;
+import com.codeoftheweb.salvo.service.intereface.IGameService;
+import com.codeoftheweb.salvo.service.intereface.IPlayerService;
 import com.codeoftheweb.salvo.service.intereface.ISalvoService;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,20 +20,17 @@ import java.util.List;
 @Service
 public class SalvoService implements ISalvoService {
 
-    @Autowired
-    PlayerService playerService;
-
-    @Autowired
-    GameService gameService;
-
-    @Autowired
-    GamePlayerService gamePlayerService;
-
-    @Autowired
-    ModelMapper mapper;
-
-    @Autowired
+    IPlayerService  playerService;
+    IGameService    gameService;
+    ModelMapper     mapper;
     PasswordEncoder encoder;
+
+    public SalvoService ( IPlayerService playerService, IGameService gameService, ModelMapper mapper, PasswordEncoder encoder ) {
+        this.playerService = playerService;
+        this.gameService   = gameService;
+        this.mapper        = mapper;
+        this.encoder       = encoder;
+    }
 
     @Override
     public MenuViewDTO getInfoGames ( Authentication authentication ) {
@@ -59,7 +54,7 @@ public class SalvoService implements ISalvoService {
 
     @Override
     public PlayerDTO setNationPlayer ( Authentication authentication, String nation ) {
-        Player player =  playerService.getPlayerAuthenticated(authentication);
+        Player player = playerService.getPlayerAuthenticated(authentication);
         player.setNation(NationType.valueOf(nation));
         return playerService.save(player);
     }

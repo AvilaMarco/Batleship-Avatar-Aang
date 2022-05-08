@@ -25,13 +25,15 @@ public class GlobalAuthenticationConfig extends GlobalAuthenticationConfigurerAd
     @Override
     public void init ( AuthenticationManagerBuilder auth ) throws Exception {
         auth.userDetailsService(inputName -> {
-            Player player = playerRepository.findByEmail(inputName).orElse(null);
+            Player player = playerRepository.findByEmail(inputName)
+              .orElse(null);
 
             if (player == null) throw new UsernameNotFoundException("Unknown user: " + inputName);
 
             String name = player.getEmail();
             String pass = player.getPassword();
-            String rol  = player.getEmail().equals("racnar1") ? "ADMIN" : "USER";
+            String rol = player.getEmail()
+              .equals("racnar1") ? "ADMIN" : "USER";
 
             return new User(name, pass, AuthorityUtils.createAuthorityList(rol));
         });

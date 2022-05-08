@@ -1,11 +1,13 @@
 package com.codeoftheweb.salvo.controller;
 
-import com.codeoftheweb.salvo.dto.GamePlayerDTO;
 import com.codeoftheweb.salvo.dto.ShipDTO;
+import com.codeoftheweb.salvo.dto.error.ErrorDTO;
 import com.codeoftheweb.salvo.dto.response.GameMatchDTO;
 import com.codeoftheweb.salvo.dto.response.StatusGameDTO;
 import com.codeoftheweb.salvo.service.intereface.IMatchService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -22,54 +24,58 @@ public class MatchController {
     IMatchService matchService;
 
     @GetMapping("/{game_id}/status")
-    public GameMatchDTO statusGame ( @PathVariable Long game_id, Authentication authentication ) {
-       return matchService.viewMatch(authentication, game_id);
+    public StatusGameDTO statusGame ( @PathVariable Long game_id, Authentication authentication ) {
+        return matchService.statusGame(authentication, game_id);
+    }
+
+    @GetMapping("/{game_id}")
+    public GameMatchDTO dataGame ( @PathVariable Long game_id, Authentication authentication ) {
+        return matchService.getGame(authentication, game_id);
     }
 
     /* WEB SOCKETS */
 
     // enviar barcos
-    @MessageMapping("/{gameId}")
+    @MessageMapping("/{gameId}/ships")
     @SendTo("/topic/match/{gameId}/ships")
-    public StatusGameDTO matchShips( @DestinationVariable Long gameId, @RequestBody List<ShipDTO> ships, Authentication authentication){
-        System.out.println(ships);
-        System.out.println(gameId);
-        return new StatusGameDTO("WAITING", 2L, null);
+    public ResponseEntity<StatusGameDTO> matchShips ( @DestinationVariable Long gameId, @RequestBody List<ShipDTO> ships, Authentication authentication ) {
+        return ResponseEntity
+          .status(HttpStatus.CREATED)
+          .body(matchService.createShips(authentication, gameId, ships));
     }
 
-    // unirse a la partida
-    /*@MessageMapping("/{gameId}")*/
-/*    @SendTo("/topic/match/{gameId}")
-    public GamePlayerDTO match ( @DestinationVariable Long gameId, Authentication authentication ) {
-        return matchService.viewMatch(authentication, gameId);
-    }*/
 
-    /* // enviar barcos
-     @MessageMapping("/{gameId}")
-     @SendTo("/topic/match/{gameId}/ships")
-     public GamePlayerDTO matchShips(@DestinationVariable Long gameId, Authentication authentication){
-         return matchService.viewMatch(authentication, gameId);
-     }
+    // enviar emotes
+    @MessageMapping("/{gameId}/emotes")
+    @SendTo("/topic/match/{gameId}/emotes")
+    public ResponseEntity<ErrorDTO> matchEmotes ( @DestinationVariable Long gameId, Authentication authentication ) {
+        System.out.println(gameId);
+        ErrorDTO a = new ErrorDTO("emotes", "creating emotes");
+        return ResponseEntity
+          .status(HttpStatus.CREATED)
+          .body(a);
+    }
 
-     // enviar emotes
-     @MessageMapping("/{gameId}")
-     @SendTo("/topic/match/{gameId}")
-     public GamePlayerDTO matchEmotes(@DestinationVariable Long gameId, Authentication authentication){
-         return matchService.viewMatch(authentication, gameId);
-     }
+    // enviar disparos
+    @MessageMapping("/{gameId}/salvoes")
+    @SendTo("/topic/match/{gameId}/salvoes")
+    public ResponseEntity<ErrorDTO> matchSalvos ( @DestinationVariable Long gameId, Authentication authentication ) {
+        System.out.println(gameId);
+        ErrorDTO a = new ErrorDTO("emotes", "creating emotes");
+        return ResponseEntity
+          .status(HttpStatus.CREATED)
+          .body(a);
+    }
 
-     // enviar disparos
-     @MessageMapping("/{gameId}")
-     @SendTo("/topic/match/{gameId}")
-     public GamePlayerDTO matchSalvos(@DestinationVariable Long gameId, Authentication authentication){
-         return matchService.viewMatch(authentication, gameId);
-     }
+    // rematch
+    @MessageMapping("/{gameId}/rematch")
+    @SendTo("/topic/match/{gameId}/rematch")
+    public ResponseEntity<ErrorDTO> reMatch ( @DestinationVariable Long gameId, Authentication authentication ) {
+        System.out.println(gameId);
+        ErrorDTO a = new ErrorDTO("emotes", "creating emotes");
+        return ResponseEntity
+          .status(HttpStatus.CREATED)
+          .body(a);
+    }
 
-     // rematch
-     @MessageMapping("/{gameId}")
-     @SendTo("/topic/match/{gameId}")
-     public GamePlayerDTO reMatch(@DestinationVariable Long gameId, Authentication authentication){
-         return matchService.viewMatch(authentication, gameId);
-     }
- */
 }

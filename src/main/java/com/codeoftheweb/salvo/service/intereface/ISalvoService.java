@@ -11,5 +11,5 @@ public interface ISalvoService {
 
     PlayerDTO registerPlayer ( SignInPlayerDTO player );
 
-    PlayerDTO setNationPlayer( Authentication authentication, String nation);
+    PlayerDTO setNationPlayer ( Authentication authentication, String nation );
 }

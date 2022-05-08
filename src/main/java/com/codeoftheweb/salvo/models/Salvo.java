@@ -30,11 +30,24 @@ public class Salvo {
     //otros metodos
     @JsonIgnore
     public List<String> goodShoot ( List<String> shoots ) {
-        long       migp = this.gamePlayer.getId();
-        GamePlayer gp   = this.gamePlayer.getGame().getGamePlayers().stream().filter(gamep -> gamep.getId() != migp).findFirst().orElse(null);
+        long migp = this.gamePlayer.getId();
+        GamePlayer gp = this.gamePlayer.getGame()
+          .getGamePlayers()
+          .stream()
+          .filter(gamep -> gamep.getId() != migp)
+          .findFirst()
+          .orElse(null);
         if (gp != null) {
-            List<String> positionShips = gp.getShips().stream().flatMap(e -> e.getLocations().stream().map(l -> l)).collect(Collectors.toList());
-            return shoots.stream().filter(s -> positionShips.stream().anyMatch(p -> p.equals(s))).collect(Collectors.toList());
+            List<String> positionShips = gp.getShips()
+              .stream()
+              .flatMap(e -> e.getLocations()
+                .stream()
+                .map(l -> l))
+              .collect(Collectors.toList());
+            return shoots.stream()
+              .filter(s -> positionShips.stream()
+                .anyMatch(p -> p.equals(s)))
+              .collect(Collectors.toList());
         } else {
             return null;
         }
@@ -43,18 +56,26 @@ public class Salvo {
     @JsonIgnore
     public List<Ship> shipsDead () {
         List<String> salvosposition = new ArrayList<>();
-        this.gamePlayer.getSalvos().stream()
+        this.gamePlayer.getSalvos()
+          .stream()
           .filter(salvo -> salvo.getTurn() <= this.getTurn())
           .forEach(salvo -> salvosposition.addAll(salvo.locations));
         long migp = this.gamePlayer.getId();
-        GamePlayer gp = this.gamePlayer.getGame().getGamePlayers().stream()
+        GamePlayer gp = this.gamePlayer.getGame()
+          .getGamePlayers()
+          .stream()
           .filter(gamep -> gamep.getId() != migp)
           .findFirst()
           .orElse(null);
 
         if (gp != null) {
-            List<Ship> ships     = new ArrayList<>(gp.getShips());
-            List<Ship> shipsDead = new ArrayList<>(ships.stream().filter(s -> s.getLocations().stream().allMatch(position -> salvosposition.stream().anyMatch(sp -> sp.equals(position)))).collect(Collectors.toList()));
+            List<Ship> ships = new ArrayList<>(gp.getShips());
+            List<Ship> shipsDead = new ArrayList<>(ships.stream()
+              .filter(s -> s.getLocations()
+                .stream()
+                .allMatch(position -> salvosposition.stream()
+                  .anyMatch(sp -> sp.equals(position))))
+              .collect(Collectors.toList()));
             if (shipsDead.size() != 0) {
                 return shipsDead;
             } else {

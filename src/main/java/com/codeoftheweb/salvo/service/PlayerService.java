@@ -30,7 +30,8 @@ public class PlayerService implements IPlayerService {
 
     @Override
     public Player getPlayer ( String email ) {
-        return playerRepository.findByEmail(email).orElseThrow(() -> new PlayerNotFoundException(email));
+        return playerRepository.findByEmail(email)
+          .orElseThrow(() -> new PlayerNotFoundException(email));
     }
 
     @Override
@@ -57,7 +58,8 @@ public class PlayerService implements IPlayerService {
 
     @Override
     public List<PlayerScoreDTO> getPlayersScore () {
-        return playerRepository.rankedPlayer().stream()
+        return playerRepository.rankedPlayer()
+          .stream()
           .map(p -> new PlayerScoreDTO(
               mapper.map(p, PlayerDTO.class),
               getStatsByPlayer(p.getScores())
@@ -79,7 +81,8 @@ public class PlayerService implements IPlayerService {
     @Override
     public void isNotRegister ( SignInPlayerDTO player ) {
         String email = player.getEmail();
-        if (playerRepository.existsPlayer(email).isPresent())
+        if (playerRepository.existsPlayer(email)
+          .isPresent())
             throw new EmailAlreadyUseException(email);
     }
 

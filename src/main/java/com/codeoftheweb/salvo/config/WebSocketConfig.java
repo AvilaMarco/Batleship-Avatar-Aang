@@ -18,7 +18,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints ( StompEndpointRegistry registry ) {
-        registry.addEndpoint("/the-last-airbender").withSockJS();
+        registry.addEndpoint("/the-last-airbender")
+          .withSockJS();
     }
 
 }

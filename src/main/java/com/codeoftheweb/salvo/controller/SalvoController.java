@@ -41,8 +41,10 @@ public class SalvoController {
 
     // crear juegos
     @PostMapping(path = "/match/games/{nation}/{location}")
-    public GameCreatedDTO createGame ( Authentication authentication, @PathVariable NationType nation, @PathVariable String location ) {
-        return matchService.createGame(authentication, nation, location);
+    public ResponseEntity<GameCreatedDTO> createGame ( Authentication authentication, @PathVariable NationType nation, @PathVariable String location ) {
+        return ResponseEntity
+          .status(HttpStatus.CREATED)
+          .body(matchService.createGame(authentication, nation, location));
     }
 
     // unirse a juegos
@@ -100,7 +102,8 @@ public class SalvoController {
 //                        }
 //                    }
 //                });
-        return list.stream().allMatch(b -> b);
+        return list.stream()
+          .allMatch(b -> b);
     }
 
     private boolean positionsNotRepeated ( List<String> lista ) {
@@ -111,8 +114,9 @@ public class SalvoController {
     }
 
     private boolean realships ( Set<Ship> ships ) {
-        return ships.stream().allMatch(s -> {
-            boolean correct = true;
+        return ships.stream()
+          .allMatch(s -> {
+              boolean correct = true;
 /*            switch (s.getTypeShip().toString()) {
                 case "CARRIER":
                     correct = s.getShipLocations().size() == 5;
@@ -128,14 +132,19 @@ public class SalvoController {
                     correct = s.getShipLocations().size() == 2;
                     break;
             }*/
-            return correct;
-        });
+              return correct;
+          });
     }
 
     private void elegirganador ( GamePlayer gamepplayer ) {
-        long       migpid     = gamepplayer.getId();
-        GamePlayer mygp       = gamepplayer;
-        GamePlayer gpOpponent = gamepplayer.getGame().getGamePlayers().stream().filter(gamep -> gamep.getId() != migpid).findFirst().orElse(null);
+        long       migpid = gamepplayer.getId();
+        GamePlayer mygp   = gamepplayer;
+        GamePlayer gpOpponent = gamepplayer.getGame()
+          .getGamePlayers()
+          .stream()
+          .filter(gamep -> gamep.getId() != migpid)
+          .findFirst()
+          .orElse(null);
         /*if (gpOpponent != null) {
             //empate cuando mis disparos destruyen todos los barcos en el mismo turno que mi oponente hace lo mismo
             //de mi gp obtengo los barcos que destrui
@@ -159,11 +168,15 @@ public class SalvoController {
 
     @GetMapping(path = "/gp/{id}")
     public ResponseEntity<Map<String, Object>> getGame_view ( Authentication authentication, @PathVariable Long id ) {
-        GamePlayer          gp     = gamePlayerRepository.findById(id).orElse(null);
-        Player              player = PlayerRepository.findByEmail(authentication.getName()).get();
-        Map<String, Object> error  = new HashMap<>();
+        GamePlayer gp = gamePlayerRepository.findById(id)
+          .orElse(null);
+        Player player = PlayerRepository.findByEmail(authentication.getName())
+          .get();
+        Map<String, Object> error = new HashMap<>();
         if (gp != null && player != null) {
-            if (player.getGamePlayers().stream().anyMatch(e -> e.getId() == id)) {
+            if (player.getGamePlayers()
+              .stream()
+              .anyMatch(e -> e.getId() == id)) {
                 return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
             } else {
                 error.put("error", "no es tu juego");
@@ -331,7 +344,8 @@ public class SalvoController {
     public ResponseEntity<Map<String, Object>> setemote ( Authentication authentication, @PathVariable Long id, @PathVariable String emote ) {
         Map<String, Object> respuesta = new HashMap<>();
         if (!isGuest(authentication)) {
-            GamePlayer gp = gamePlayerRepository.findById(id).orElse(null);
+            GamePlayer gp = gamePlayerRepository.findById(id)
+              .orElse(null);
             if (gp != null) {
                 gp.setEmote(emote);
                 gamePlayerRepository.save(gp);

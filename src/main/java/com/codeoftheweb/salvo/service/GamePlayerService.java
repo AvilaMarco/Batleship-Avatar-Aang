@@ -4,18 +4,20 @@ import com.codeoftheweb.salvo.dto.GamePlayerDTO;
 import com.codeoftheweb.salvo.exception.forbidden.PlayerDoesNotBelongGame;
 import com.codeoftheweb.salvo.models.GamePlayer;
 import com.codeoftheweb.salvo.repository.GamePlayerRepository;
+import com.codeoftheweb.salvo.service.intereface.IGamePlayerService;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class GamePlayerService {
+public class GamePlayerService implements IGamePlayerService {
 
-    @Autowired
     GamePlayerRepository repository;
+    ModelMapper          mapper;
 
-    @Autowired
-    ModelMapper mapper;
+    public GamePlayerService ( GamePlayerRepository repository, ModelMapper mapper ) {
+        this.repository = repository;
+        this.mapper     = mapper;
+    }
 
     public GamePlayerDTO save ( GamePlayer gamePlayer ) {
         return mapper.map(repository.save(gamePlayer), GamePlayerDTO.class);

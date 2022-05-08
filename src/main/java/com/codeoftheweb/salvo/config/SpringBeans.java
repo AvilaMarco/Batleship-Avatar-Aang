@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Configuration
-public class SpringConfig {
+public class SpringBeans {
 
     @Bean
     public ModelMapper getModelMapper () {
