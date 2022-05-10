@@ -110,7 +110,7 @@ public class SpringBeans {
             GamePlayer2.addShip(submarine2);
             GamePlayer2.addShip(patrolBoat2);*/
 
-            //salvoes
+            //salvos
 /*            GamePlayer2.addSalvo(salvo2);
             GamePlayer2.addSalvo(salvo4);*/
 

@@ -2,7 +2,7 @@ package com.codeoftheweb.salvo.service.main;
 
 import com.codeoftheweb.salvo.dto.GameMapDTO;
 import com.codeoftheweb.salvo.dto.GamePlayerDTO;
-import com.codeoftheweb.salvo.dto.ShipDTO;
+import com.codeoftheweb.salvo.dto.request.websocket.ShipDTO;
 import com.codeoftheweb.salvo.dto.response.GameCreatedDTO;
 import com.codeoftheweb.salvo.dto.response.GameMatchDTO;
 import com.codeoftheweb.salvo.dto.response.StatusGameDTO;

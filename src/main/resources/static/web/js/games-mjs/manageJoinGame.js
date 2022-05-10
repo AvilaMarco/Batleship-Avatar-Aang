@@ -13,7 +13,7 @@ function createGame(nation, location, playerData) {
 function enterGame({playerid1, gpid1, gpid2, gameid}, playerData) {
   const isPlayer1 = playerid1 === playerData.id;
   const gpid = isPlayer1 ? gpid1 : gpid2;
-  goGame({game_id:gameid, game_player_id: gpid}, playerData)
+  goGame({game_id: gameid, game_player_id: gpid}, playerData)
 }
 
 function joinGame(gameid, playerData) {
@@ -33,7 +33,7 @@ function watchGame() {
 
 export {createGame, enterGame, joinGame, watchGame}
 
-function goGame({game_id, game_player_id}, playerData){
+function goGame({game_id, game_player_id}, playerData) {
   playerData.gamePlayerId = game_player_id;
   playerData.gameId = game_id;
   saveUserData(playerData);
@@ -42,7 +42,7 @@ function goGame({game_id, game_player_id}, playerData){
 
 function saveUserData(playerData) {
   let userData = JSON.stringify(playerData);
-  localStorage.setItem("player", userData);
+  localStorage.setItem("player-" + playerData.id, userData);
 }
 
 function goWebGame() {

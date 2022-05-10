@@ -1,7 +1,8 @@
 package com.codeoftheweb.salvo.controller;
 
-import com.codeoftheweb.salvo.dto.ShipDTO;
 import com.codeoftheweb.salvo.dto.error.ErrorDTO;
+import com.codeoftheweb.salvo.dto.request.websocket.EmoteDTO;
+import com.codeoftheweb.salvo.dto.request.websocket.ShipDTO;
 import com.codeoftheweb.salvo.dto.response.GameMatchDTO;
 import com.codeoftheweb.salvo.dto.response.StatusGameDTO;
 import com.codeoftheweb.salvo.service.intereface.IMatchService;
@@ -38,7 +39,7 @@ public class MatchController {
     // enviar barcos
     @MessageMapping("/{gameId}/ships")
     @SendTo("/topic/match/{gameId}/ships")
-    public ResponseEntity<StatusGameDTO> matchShips ( @DestinationVariable Long gameId, @RequestBody List<ShipDTO> ships, Authentication authentication ) {
+    public ResponseEntity<StatusGameDTO> matchShips ( Authentication authentication, @DestinationVariable Long gameId, @RequestBody List<ShipDTO> ships ) {
         return ResponseEntity
           .status(HttpStatus.CREATED)
           .body(matchService.createShips(authentication, gameId, ships));
@@ -46,20 +47,18 @@ public class MatchController {
 
 
     // enviar emotes
-    @MessageMapping("/{gameId}/emotes")
-    @SendTo("/topic/match/{gameId}/emotes")
-    public ResponseEntity<ErrorDTO> matchEmotes ( @DestinationVariable Long gameId, Authentication authentication ) {
+    @MessageMapping("/{gameId}/emotes/{userId}") // entrada
+    @SendTo("/topic/match/{gameId}/emotes/{userId}") // salida
+    public ErrorDTO matchEmotes ( Authentication authentication, @DestinationVariable Long gameId, @DestinationVariable Long userId, @RequestBody EmoteDTO emote ) {
         System.out.println(gameId);
-        ErrorDTO a = new ErrorDTO("emotes", "creating emotes");
-        return ResponseEntity
-          .status(HttpStatus.CREATED)
-          .body(a);
+        System.out.println(emote);
+        return new ErrorDTO("emotes", "creating emotes" + userId);
     }
 
     // enviar disparos
-    @MessageMapping("/{gameId}/salvoes")
-    @SendTo("/topic/match/{gameId}/salvoes")
-    public ResponseEntity<ErrorDTO> matchSalvos ( @DestinationVariable Long gameId, Authentication authentication ) {
+    @MessageMapping("/{gameId}/salvos")
+    @SendTo("/topic/match/{gameId}/salvos")
+    public ResponseEntity<ErrorDTO> matchSalvos ( Authentication authentication, @DestinationVariable Long gameId, @DestinationVariable Long userId ) {
         System.out.println(gameId);
         ErrorDTO a = new ErrorDTO("emotes", "creating emotes");
         return ResponseEntity
@@ -70,7 +69,7 @@ public class MatchController {
     // rematch
     @MessageMapping("/{gameId}/rematch")
     @SendTo("/topic/match/{gameId}/rematch")
-    public ResponseEntity<ErrorDTO> reMatch ( @DestinationVariable Long gameId, Authentication authentication ) {
+    public ResponseEntity<ErrorDTO> reMatch ( Authentication authentication, @DestinationVariable Long gameId, @DestinationVariable Long userId ) {
         System.out.println(gameId);
         ErrorDTO a = new ErrorDTO("emotes", "creating emotes");
         return ResponseEntity

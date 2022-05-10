@@ -17,11 +17,11 @@ import javax.servlet.http.HttpSession;
 class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure ( HttpSecurity http ) throws Exception {
-        http.authorizeRequests()
-          //indico las direcciones a las quepuedeo acceder
-          //.antMatchers("/rest/**").hasAuthority("ADMIN")
-          .antMatchers("/api/gp/**")
-          .hasAuthority("USER");
+        /*http.authorizeRequests()*/
+        //indico las direcciones a las quepuedeo acceder
+        //.antMatchers("/rest/**").hasAuthority("ADMIN")
+/*          .antMatchers("/api/gp/**")
+          .hasAuthority("USER");*/
 
         http.formLogin()
           .usernameParameter("email")

@@ -1,25 +1,26 @@
 ### ----------------------------------------------------------------- ############### ---------------------------------- #####
 
 public Map<String, Object> gamesDTO() {
-        Map<String, Object> dto = new LinkedHashMap<>();
-        dto.put("id", this.id);
-        dto.put("created", this.created);
-        dto.put("ubicacion", this.location);
-        dto.put("direccion", this.direction);
-        dto.put("gameplayers", this.getGamePlayers().stream().map(GamePlayer::gamePlayerDTO));
-        return dto;
+Map<String, Object> dto = new LinkedHashMap<>();
+dto.put("id", this.id);
+dto.put("created", this.created);
+dto.put("ubicacion", this.location);
+dto.put("direccion", this.direction);
+dto.put("gameplayers", this.getGamePlayers().stream().map(GamePlayer::gamePlayerDTO));
+return dto;
 }
 
 ### ----------------------------------------------------------------- ############### ---------------------------------- #####
+
 //dto
-    public Map<String, Object> gamePlayerDTO() {
-        Map<String, Object> dto = new HashMap<>();
-        dto.put("id", this.id);
-        dto.put("tipo", this.type);
-        dto.put("player", this.player.playerDTO());
-        dto.put("Score", this.getScore());
-        return dto;
-    }
+public Map<String, Object> gamePlayerDTO() {
+Map<String, Object> dto = new HashMap<>();
+dto.put("id", this.id);
+dto.put("tipo", this.type);
+dto.put("player", this.player.playerDTO());
+dto.put("Score", this.getScore());
+return dto;
+}
 
     public Map<String, Object> gameVIewDTO() {
         Map<String, Object> dto = new LinkedHashMap<>();
@@ -42,11 +43,12 @@ public Map<String, Object> gamesDTO() {
         }
         dto.put("gamePlayers", this.game.getGamePlayers().stream().map(GamePlayer::gamePlayerDTO));
         dto.put("ships", this.getShips().stream().map(Ship::shipsDTO));
-        dto.put("salvoes", this.getGame().getGamePlayers().stream().flatMap(gp -> gp.getSalvos().stream().map(Salvo::salvoDTO)));
+        dto.put("salvos", this.getGame().getGamePlayers().stream().flatMap(gp -> gp.getSalvos().stream().map(Salvo::salvoDTO)));
         return dto;
     }
+
 ### ----------------------------------------------------------------- ############### ---------------------------------- #####    
-    
+
         //dto
     public Map<String, Object> playerDTO() {
         Map<String, Object> dto = new LinkedHashMap<>();
@@ -67,6 +69,7 @@ public Map<String, Object> gamesDTO() {
     }
 
 ### ----------------------------------------------------------------- ############### ---------------------------------- #####      
+
         //data transfer object
     public Map<String, Object> shipsDTO() {
         Map<String, Object> dto = new HashMap<>();
@@ -80,7 +83,7 @@ public Map<String, Object> gamesDTO() {
         dto.put("type_Ship", this.getTypeShip());
         return dto;
     }
-    
+
 ### ----------------------------------------------------------------- ############### ---------------------------------- #####  
 
     //dto

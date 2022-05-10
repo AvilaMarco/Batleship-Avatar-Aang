@@ -1,10 +1,6 @@
-import { createGrid } from "./game-mjs/grid.js";
-import {
-  createDockerShip,
-  shipOnGrid,
-  someShipOnDocker,
-} from "./game-mjs/ships.js";
-import { addClickEvent, getHTML } from "./utils/utils.js";
+import {createGrid} from "./game-mjs/grid.js";
+import {createDockerShip, shipOnGrid, someShipOnDocker,} from "./game-mjs/ships.js";
+import {addClickEvent} from "./utils/utils.js";
 
 /* WEB SOCKET */
 let stompClient = null;
@@ -12,10 +8,10 @@ let stompClient = null;
 let player = {};
 let rival = {};
 let game = {};
-
-const { gameId, gamePlayerId } = JSON.parse(localStorage.getItem("player"));
+const pid = parseInt(prompt("aa"))
+const {gameId, gamePlayerId} = JSON.parse(localStorage.getItem("player-" + pid));
 const BASE_URL_TOPIC = `/topic/match/${gameId}`;
-const BASE_URL_APP = "/app";
+const BASE_URL_APP = `/app/${gameId}`;
 
 addClickEvent("#sendShips", sendShips);
 
@@ -25,15 +21,17 @@ function beginGame() {
   createGrid(9, document.getElementById("grid"), "ships", "gridShips");
   createDockerShip();
   statusGame(gameId);
+  const id = parseInt(prompt("id player"));
+  rival.gamePlayerId = id;
   //consultar estado del juego
 }
 
 function statusGame(gameId) {
   fetch(`/api/match/${gameId}/status`)
-    .then((res) => (res.ok ? res.json() : Promise.reject(res.body)))
-    .then(async (json) => {
-      connectClienSocket(json.game_players);
-    });
+      .then((res) => (res.ok ? res.json() : Promise.reject(res.body)))
+      .then((json) => {
+        connectClienSocket(json.status);
+      });
 }
 
 function sendShips() {
@@ -41,31 +39,40 @@ function sendShips() {
     alert("faltan colocar ships");
   }
 
+  stompClient.send(`${BASE_URL_APP}/ships`, {}, JSON.stringify(shipOnGrid()));
+}
+
+function sendEmoteaa(emote) {
+  const emoteObject = {
+    gp_id: gamePlayerId,
+    emote: emote,
+  };
+
   stompClient.send(
-    `${BASE_URL_APP}/${gameId}`,
-    {},
-    JSON.stringify(shipOnGrid())
+      `${BASE_URL_APP}/emotes/${gamePlayerId}`,
+      {},
+      JSON.stringify(emoteObject)
   );
 }
 
 //createShips('battleship', 4, 'horizontal', document.getElementById('dock'),false)
 /* START GAME - WEB SOCKET*/
-function connectClienSocket(game_players) {
-  let socket = new SockJS("/the-last-airbender");
+function connectClienSocket(status) {
+  const socket = new SockJS("/the-last-shipbender");
   stompClient = Stomp.over(socket);
 
   stompClient.connect({}, (frame) => {
     console.log("Connected: " + frame);
-    if (game_players.length == 2) {
-      suscribeGame();
-    }
-    subscribeShips();
+    // if (status === "WAITING" || status === "WAITING_SHIPS") {
+    //   subscribeShips();
+    // }
+    suscribeGame();
   });
 }
 
 function subscribeShips() {
   /* Send Ships */
-  stompClient.subscribe(`${BASE_URL_TOPIC}/ships`, ({ body }) => {
+  stompClient.subscribe(`${BASE_URL_TOPIC}/ships`, ({body}) => {
     console.log(JSON.parse(body));
   });
 }
@@ -77,9 +84,11 @@ function startGame() {
   createStartedGame();
 }
 
-function createSalvoGrid() {}
+function createSalvoGrid() {
+}
 
-function createDockerSalvos() {}
+function createDockerSalvos() {
+}
 
 function createStartedGame() {
   // crear barcos
@@ -90,24 +99,25 @@ function createStartedGame() {
 function suscribeGame() {
   /* Send emotes */
   stompClient.subscribe(
-    `${BASE_URL_TOPIC}/emote/${rival.gamePlayerId}`,
-    ({ body }) => {
-      console.log(JSON.parse(body));
-    }
+      `${BASE_URL_TOPIC}/emotes/${rival.gamePlayerId}`,
+      ({body}) => {
+        console.log(JSON.parse(body));
+      }
   );
 
   /* Send Salvos */
-  stompClient.subscribe(
-    `${BASE_URL_TOPIC}/salvos/${rival.gamePlayerId}`,
-    ({ body }) => {
-      console.log(JSON.parse(body));
-    }
-  );
-
-  /* Send Rematch */
-  stompClient.subscribe(`${BASE_URL_TOPIC}/rematch`, ({ body }) => {
+  stompClient.subscribe(`${BASE_URL_TOPIC}/salvos`, ({body}) => {
     console.log(JSON.parse(body));
   });
+
+  /* Send Rematch */
+  stompClient.subscribe(`${BASE_URL_TOPIC}/rematch`, ({body}) => {
+    console.log(JSON.parse(body));
+  });
+
+  if (rival.gamePlayerId === 8) {
+    sendEmoteaa(prompt("emote"))
+  }
 }
 
 let params = new URLSearchParams(location.search);
@@ -117,11 +127,11 @@ let playerDataGame1 = {};
 let playerDataGame2 = {};
 let myturn = null;
 let turnOpponent = null;
-let salvoes = {};
+let salvos = {};
 let canShoot = true;
 //setinterval
 var intervalGamestard = null;
-var updateSalvoes = null;
+var updateSalvos = null;
 var updateRematch = null;
 var contador = 0;
 //botones dom
@@ -129,7 +139,7 @@ let backMenu = document.querySelector("#backmenu");
 let backMenu2 = document.querySelector("#backmenu-endGame");
 let send_Ships = document.querySelector("#sendShips");
 let send_Salvo = document.querySelector("#sendSalvo");
-let grid_salvoes = document.querySelector("#grid_salvoes");
+let grid_salvos = document.querySelector("#grid_salvos");
 let displayText = document.querySelector("#display");
 let rematch = document.querySelector("#rematch");
 //eventlistener
@@ -157,7 +167,7 @@ function cargarDatosScreen(json) {
   let player1 = document.querySelector("#player1");
   let player2 = document.querySelector("#player2");
   let dockImg = document.querySelector("#dock > img");
-  let grid_salvoes = document.querySelector("#grid_salvoes");
+  let grid_salvos = document.querySelector("#grid_salvos");
   let grid = document.querySelector("#grid");
 
   Array.from(player1.children).forEach((e) => {
@@ -177,7 +187,7 @@ function cargarDatosScreen(json) {
     });
   }
   dockImg.src = "assets/icons/borde-" + json.ubicacion + ".png";
-  grid_salvoes.classList.add("bgGrid-" + json.ubicacion);
+  grid_salvos.classList.add("bgGrid-" + json.ubicacion);
   grid.classList.add("bgGrid-" + json.ubicacion);
 } /*
 

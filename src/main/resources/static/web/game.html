@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <title>Battle | The Last Shipbender</title>
     <meta charset="utf-8" />
     <meta content="true" name="HandheldFriendly" />
@@ -9,8 +9,8 @@
     <link rel="manifest" href="manifest.json" />
     <link rel="stylesheet" href="css/game.css" />
     <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css?family=Permanent+Marker&display=swap"
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css?family=Permanent+Marker&display=swap"
     />
     <!-- DELETE -->
     <link href="css/style.css" rel="stylesheet" />
@@ -18,95 +18,95 @@
     <link rel="stylesheet" href="css/mobile/layout.css" />
     <!-- DESKTOP -->
     <link
-      rel="stylesheet"
-      href="css/desktop/layout.css"
-      media="screen and (min-width: 1024px)"
+            rel="stylesheet"
+            href="css/desktop/layout.css"
+            media="screen and (min-width: 1024px)"
     />
-    <link
-      href="css/desktop/desktop.css"
-      media="screen and (min-width: 1024px)"
-      rel="stylesheet"
-      type="text/css"
-    />
+    <!--    <link
+          href="css/desktop/desktop.css"
+          media="screen and (min-width: 1024px)"
+          rel="stylesheet"
+          type="text/css"
+        />-->
     <!-- DELETE -->
-  </head>
-  <body>
-    <div class="container-grid">
-      <!-- Grids -->
-      <div id="grid" class="container-grids">
-        <div class="d-none" id="grid_salvoes"></div>
-      </div>
+</head>
+<body>
+<div class="container-grid">
+    <!-- Grids -->
+    <div id="grid" class="container-grids">
+        <div class="d-none" id="grid_salvos"></div>
+    </div>
 
-      <!-- PLAYER -->
-      <div id="player1" class="player-card-container">
+    <!-- PLAYER -->
+    <div id="player1" class="player-card-container">
         <img class="bg-img" src="assets/icons/border-fuego3.png" />
 
         <div class="player-card">
-          <div class="nation-logo">
-            <img src="assets/icons/selectfuego.png" />
-          </div>
+            <div class="nation-logo">
+                <img src="assets/icons/selectfuego.png" />
+            </div>
 
-          <div class="user-status">
-            <p class="texto-emote">RacnarWan(200)</p>
-            <div>SHIPS</div>
-          </div>
+            <div class="user-status">
+                <p class="texto-emote">RacnarWan(200)</p>
+                <div>SHIPS</div>
+            </div>
 
-          <div class="turn turn-card">
-            <p class="bg-text">turn</p>
-            <div>1</div>
-          </div>
+            <div class="turn turn-card">
+                <p class="bg-text">turn</p>
+                <div>1</div>
+            </div>
         </div>
-      </div>
+    </div>
 
-      <!-- Game's Turns -->
-      <div class="game-info">
+    <!-- Game's Turns -->
+    <div class="game-info">
         <p>Nacion del fuego</p>
         <div class="turn-card">
-          <p>Turn</p>
-          <div>2</div>
+            <p>Turn</p>
+            <div>2</div>
         </div>
         <p>My Ships</p>
-      </div>
+    </div>
 
-      <!-- PLAYER -->
-      <div id="player2" class="player-card-container">
+    <!-- PLAYER -->
+    <div id="player2" class="player-card-container">
         <img class="bg-img" src="assets/icons/border-tierra2.png" />
         <div class="player-card">
-          <div class="nation-logo">
-            <img src="assets/icons/selectierra.png" />
-          </div>
+            <div class="nation-logo">
+                <img src="assets/icons/selectierra.png" />
+            </div>
 
-          <div class="user-status">
-            <p class="texto-emote">RacnarWan(200)</p>
-            <div>SHIPS</div>
-          </div>
+            <div class="user-status">
+                <p class="texto-emote">RacnarWan(200)</p>
+                <div>SHIPS</div>
+            </div>
 
-          <div class="turn turn-card">
-            <p class="bg-text">turn</p>
-            <div>1</div>
-          </div>
+            <div class="turn turn-card">
+                <p class="bg-text">turn</p>
+                <div>1</div>
+            </div>
         </div>
-      </div>
+    </div>
 
-      <div id="dock" class="game-control">
+    <div id="dock" class="game-control">
         <div class="game-items">
-          <div id="salvoes" class="container-game-items"></div>
-          <div id="ships" class="container-game-items"></div>
-          <button id="sendShips" class="">Send Ships</button>
-          <button id="sendSalvos" class="hidden">Send Salvos</button>
+            <div id="salvos" class="container-game-items"></div>
+            <div id="ships" class="container-game-items"></div>
+            <button id="sendShips" class="">Send Ships</button>
+            <button id="sendSalvos" class="hidden">Send Salvos</button>
         </div>
         <div>
-          <button id="chat">CHAT</button>
-          <button id="home">HOME</button>
+            <button id="chat">CHAT</button>
+            <button id="home">HOME</button>
         </div>
-      </div>
     </div>
+</div>
 
-    <!-- Scripts -->
-    <div>
-      <script src="/webjars/sockjs-client/sockjs.min.js"></script>
-      <script src="/webjars/stomp-websocket/stomp.min.js"></script>
-      <script src="js/game.js" type="module"></script>
-    </div>
-  </body>
+<!-- Scripts -->
+<div>
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+    <script src="js/game.js" type="module"></script>
+</div>
+</body>
 </html>

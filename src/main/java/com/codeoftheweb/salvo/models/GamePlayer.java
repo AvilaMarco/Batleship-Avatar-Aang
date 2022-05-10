@@ -3,7 +3,6 @@ package com.codeoftheweb.salvo.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -21,7 +20,6 @@ public class GamePlayer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @CreationTimestamp
     private LocalDateTime joinDate;
     private String        emote;
     private Integer       score;

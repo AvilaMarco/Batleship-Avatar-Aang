@@ -1,5 +1,6 @@
 package com.codeoftheweb.salvo.dto;
 
+import com.codeoftheweb.salvo.dto.request.websocket.ShipDTO;
 import lombok.Data;
 
 import java.util.List;

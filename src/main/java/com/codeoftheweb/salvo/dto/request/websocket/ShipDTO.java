@@ -1,4 +1,4 @@
-package com.codeoftheweb.salvo.dto;
+package com.codeoftheweb.salvo.dto.request.websocket;
 
 import com.codeoftheweb.salvo.enums.ShipType;
 import lombok.Data;

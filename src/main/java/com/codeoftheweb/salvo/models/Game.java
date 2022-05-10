@@ -9,7 +9,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 @Data
@@ -52,6 +51,7 @@ public class Game {
     }
 
     public void updateStatusGameOf ( StatusGameDTO.StatusGameDTOBuilder builder ) {
+        // ToDo: created enum for status game
         if (this.isGameStart()) {
             builder.status("GAME_START");
         } else if (this.isGameWatingShips()) {
@@ -99,17 +99,13 @@ public class Game {
 
     private Long getGPCreator () {
         // ! ToDo: review this content
-        return gamePlayers.stream()
-          .min(Comparator.comparing(GamePlayer::getJoinDate))
-          .get()
+        return gamePlayers.get(0)
           .getId();
     }
 
     private Long getGPJoined () {
         // ! ToDo: review this content
-        return gamePlayers.stream()
-          .max(Comparator.comparing(GamePlayer::getJoinDate))
-          .get()
+        return gamePlayers.get(1)
           .getId();
     }
 }
