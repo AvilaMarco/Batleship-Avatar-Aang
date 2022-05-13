@@ -1,6 +1,7 @@
 package com.codeoftheweb.salvo.models;
 
 import com.codeoftheweb.salvo.enums.NationType;
+import com.codeoftheweb.salvo.enums.Rol;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,9 +25,12 @@ public class Player {
 
     @Enumerated(EnumType.STRING)
     private NationType nation;
-    private String     name;
-    private String     email;
-    private String     password;
+
+    @ElementCollection
+    private List<Rol> roles;
+    private String    name;
+    private String    email;
+    private String    password;
 
     // Relations
     @OneToMany(mappedBy = "player", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
@@ -43,6 +47,13 @@ public class Player {
         return gamePlayers.stream()
           .map(GamePlayer::getScore)
           .filter(score -> !Objects.isNull(score))
+          .collect(Collectors.toList());
+    }
+
+    public List<String> getRols () {
+        return this.getRoles()
+          .stream()
+          .map(Enum::name)
           .collect(Collectors.toList());
     }
 }

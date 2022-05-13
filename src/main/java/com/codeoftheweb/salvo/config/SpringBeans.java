@@ -1,6 +1,7 @@
 package com.codeoftheweb.salvo.config;
 
 import com.codeoftheweb.salvo.enums.NationType;
+import com.codeoftheweb.salvo.enums.Rol;
 import com.codeoftheweb.salvo.models.Game;
 import com.codeoftheweb.salvo.models.GamePlayer;
 import com.codeoftheweb.salvo.models.Player;
@@ -15,6 +16,7 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 @Configuration
@@ -36,15 +38,17 @@ public class SpringBeans {
 
     @Bean
     public CommandLineRunner initData ( PlayerRepository PlayerRepository, GameRepository GameRepository,
-                                        GamePlayerRepository GamePlayerRepository ) {
+                                        GamePlayerRepository GamePlayerRepository, PasswordEncoder passwordEncoder ) {
         return ( args ) -> {
 
             //variables pruebas  WATER, AIR, FIRE, EARTH
-            Player jack  = new Player("Jack Bauer", "j.bauer@ctu.gov", passwordEncoder().encode("24"), NationType.AIR);
-            Player Chloe = new Player("Chloe O'Brian", "c.obrian@ctu.gov", passwordEncoder().encode("42"), NationType.WATER);
-            Player Kim   = new Player("Kim Bauer", "kim_bauer@gmail.com", passwordEncoder().encode("kb"), NationType.FIRE);
-            Player Tony  = new Player("Tony Almeida", "t.almeida@ctu.gov", passwordEncoder().encode("mole"), NationType.AIR);
-            Player marco = new Player("Marco Avila", "marco@aaa.com", passwordEncoder().encode("123"), NationType.EARTH);
+            Player jack  = new Player("Jack Bauer", "j.bauer@ctu.gov", passwordEncoder.encode("24"), NationType.AIR);
+            Player Chloe = new Player("Chloe O'Brian", "c.obrian@ctu.gov", passwordEncoder.encode("42"), NationType.WATER);
+            Player Kim   = new Player("Kim Bauer", "kim_bauer@gmail.com", passwordEncoder.encode("kb"), NationType.FIRE);
+            Player Tony  = new Player("Tony Almeida", "t.almeida@ctu.gov", passwordEncoder.encode("mole"), NationType.AIR);
+            Player marco = new Player("Marco Avila", "marco@aaa.com", passwordEncoder.encode("123"), NationType.EARTH);
+            Player admin = new Player("Marco Avila", "marco@admin.com", passwordEncoder.encode("123"), NationType.EARTH);
+            admin.setRoles(Arrays.asList(Rol.ADMIN, Rol.PLAYER, Rol.GUEST));
 
             Game one   = new Game(NationType.EARTH, "E1");
             Game two   = new Game(NationType.WATER, "W1");
@@ -121,7 +125,7 @@ public class SpringBeans {
 
             // save players in the PlayerRepository
             List<Player> players = List.of(
-              jack, Chloe, Kim, Tony, marco
+              jack, Chloe, Kim, Tony, marco, admin
             );
             PlayerRepository.saveAll(players);
 

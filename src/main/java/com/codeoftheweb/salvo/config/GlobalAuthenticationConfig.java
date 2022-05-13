@@ -1,3 +1,4 @@
+/*
 package com.codeoftheweb.salvo.config;
 
 import com.codeoftheweb.salvo.models.Player;
@@ -38,4 +39,4 @@ public class GlobalAuthenticationConfig extends GlobalAuthenticationConfigurerAd
             return new User(name, pass, AuthorityUtils.createAuthorityList(rol));
         });
     }
-}
+}*/

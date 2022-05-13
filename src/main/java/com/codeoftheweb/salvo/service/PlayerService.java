@@ -10,8 +10,8 @@ import com.codeoftheweb.salvo.exception.unauthorized.PlayerNotLoginException;
 import com.codeoftheweb.salvo.models.Player;
 import com.codeoftheweb.salvo.repository.PlayerRepository;
 import com.codeoftheweb.salvo.service.intereface.IPlayerService;
+import com.codeoftheweb.salvo.service.intereface.ISessionService;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -22,11 +22,15 @@ import java.util.stream.Collectors;
 @Service
 public class PlayerService implements IPlayerService {
 
-    @Autowired
     PlayerRepository playerRepository;
+    ModelMapper      mapper;
+    ISessionService  sessionService;
 
-    @Autowired
-    ModelMapper mapper;
+    public PlayerService ( PlayerRepository playerRepository, ModelMapper mapper, ISessionService sessionService ) {
+        this.playerRepository = playerRepository;
+        this.mapper           = mapper;
+        this.sessionService   = sessionService;
+    }
 
     @Override
     public Player getPlayer ( String email ) {

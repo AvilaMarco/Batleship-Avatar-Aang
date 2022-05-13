@@ -1,6 +1,7 @@
 package com.codeoftheweb.salvo.security;
 
 
+import com.codeoftheweb.salvo.utils.ENV_VARIABLES;
 import io.jsonwebtoken.*;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -15,10 +16,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class JWTAuthorizationFilter extends OncePerRequestFilter {
-    private final String HEADER = "Authorization";
-    private final String PREFIX = "Bearer ";
-    private final String SECRET = "mySecretKey";
+public class JWTAuthorizationFilter extends OncePerRequestFilter implements ENV_VARIABLES {
 
     /**
      * Filtro para solicitar validación por token
@@ -32,12 +30,14 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal ( HttpServletRequest request, HttpServletResponse response, FilterChain chain ) throws ServletException, IOException {
         try {
-            Claims claims = validateToken(request);
-            if (!existeJWTToken(request) || claims.get("authorities") == null) {
-                SecurityContextHolder.clearContext();
-            }
 
-            setUpSpringAuthentication(claims);
+            if (!existeJWTToken(request)) SecurityContextHolder.clearContext();
+            else {
+                Claims claims = validateToken(request);
+
+                if (claims == null) SecurityContextHolder.clearContext();
+                else setUpSpringAuthentication(claims);
+            }
             chain.doFilter(request, response);
         } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException e) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -55,7 +55,7 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
         String jwtToken = request.getHeader(HEADER)
           .replace(PREFIX, "");
         return Jwts.parser()
-          .setSigningKey(SECRET.getBytes())
+          .setSigningKey(SECRET_KEY)
           .parseClaimsJws(jwtToken)
           .getBody();
     }
@@ -67,7 +67,7 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
      */
     private void setUpSpringAuthentication ( Claims claims ) {
         @SuppressWarnings("unchecked")
-        List<String> authorities = (List<String>) claims.get("authorities");
+        List<String> authorities = (List<String>) claims.get(CLAIMS);
 
         UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
           claims.getSubject(),
