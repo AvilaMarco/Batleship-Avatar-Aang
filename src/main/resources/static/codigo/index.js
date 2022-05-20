@@ -41,25 +41,25 @@ function nextStep(clase) {
   document.querySelector(".registre").classList.remove("registreaux");
   document.querySelectorAll(".menu").forEach((e) => e.classList.add("d-none"));
   document
-    .querySelectorAll(".access")
-    .forEach((e) => e.classList.remove("d-none"));
+      .querySelectorAll(".access")
+      .forEach((e) => e.classList.remove("d-none"));
   document
-    .querySelectorAll("." + clase)
-    .forEach((e) => e.classList.remove("d-none"));
+      .querySelectorAll("." + clase)
+      .forEach((e) => e.classList.remove("d-none"));
   document.querySelector("#back").classList.remove("d-none");
 }
 
 function toMenu() {
   document.querySelector(".registre").classList.add("registreaux");
   document
-    .querySelectorAll(".menu")
-    .forEach((e) => e.classList.remove("d-none"));
+      .querySelectorAll(".menu")
+      .forEach((e) => e.classList.remove("d-none"));
   document
-    .querySelectorAll(".access")
-    .forEach((e) => e.classList.add("d-none"));
+      .querySelectorAll(".access")
+      .forEach((e) => e.classList.add("d-none"));
   document
-    .querySelectorAll(".registro")
-    .forEach((e) => e.classList.add("d-none"));
+      .querySelectorAll(".registro")
+      .forEach((e) => e.classList.add("d-none"));
   document.querySelectorAll(".login").forEach((e) => e.classList.add("d-none"));
   document.querySelector("#back").classList.add("d-none");
 }
@@ -90,7 +90,7 @@ function registre() {
     alert("Faltan Completar Algunos Campos");
   }
 
-  const signInPlayer = { name, email, password };
+  const signInPlayer = {name, email, password};
   const headers = {
     "Content-Type": "application/json",
   };
@@ -100,40 +100,37 @@ function registre() {
     body: JSON.stringify(signInPlayer),
     headers,
   })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      } else {
-        return Promise.reject(res.json());
-      }
-    })
-    .then(() => login())
-    .catch((error) => error)
-    .then((json) => {
-      if (json != undefined) return displayError(json);
-    })
-    .then(() => cleanForm());
+      .then((res) => (res.ok ? res.json() : Promise.reject(res.json())))
+      .then(() => login())
+      .catch((error) => error)
+      .then((json) => {
+        if (json != undefined) return displayError(json);
+      })
+      .then(() => cleanForm());
 }
 
 function login() {
   let email = getHTML("#email").value;
   let password = getHTML("#password").value;
-  let formlogin = new FormData();
-  formlogin.append("email", email);
-  formlogin.append("password", password);
+  const headers = {
+    "Content-Type": "application/json",
+  };
+  const user = {email, password};
 
-  fetch("/api/login", {
+  fetch("/api/players/login", {
     method: "POST",
-    body: formlogin,
+    body: JSON.stringify(user),
+    headers,
   })
-    .then((res) => (res.ok ? redirect(res) : Promise.reject(res.json())))
-    .catch((error) => error)
-    .then((json) => {
-      console.log("login");
-      console.log(json);
-      return displayError(json);
-    })
-    .then(() => cleanForm());
+      .then((res) => (res.ok ? res.json() : Promise.reject(res.json())))
+      .then((json) => {
+        cleanForm()
+        saveToken(json);
+        redirect();
+      })
+      .catch((error) => {
+        error.then(json => displayError(json))
+      })
 }
 
 function toglePassword(event) {
@@ -151,7 +148,7 @@ function getHTML(query) {
   return document.querySelector(query);
 }
 
-function displayError({ error, message, error_fields = [] }) {
+function displayError({error, message, error_fields = []}) {
   return Swal.fire({
     title: error,
     text: message,
@@ -159,8 +156,8 @@ function displayError({ error, message, error_fields = [] }) {
     showDenyButton: true,
     confirmButtonText: "See more...",
     denyButtonText: `Cancel`,
-  }).then(({ isConfirmed }) =>
-    isConfirmed ? displayErrorHTML(error, error_fields) : Promise.resolve()
+  }).then(({isConfirmed}) =>
+      isConfirmed ? displayErrorHTML(error, error_fields) : Promise.resolve()
   );
 }
 
@@ -177,7 +174,7 @@ function errorFieldsHTML(error_fields) {
   const keys = Object.keys(error_fields);
   const mapError = (e) => e.map((val) => `<p>${val}</p>`);
   const errors = keys.map(
-    (title) => `
+      (title) => `
     <div>
       <h2> ${title} </h2>
       ${mapError(error_fields[title])}
@@ -193,8 +190,11 @@ function cleanForm() {
   inputs.forEach((e) => (getHTML("#" + e).value = ""));
 }
 
-function redirect({ url }) {
-  console.log("redirect");
-  console.log();
-  location.assign(url.split("8080")[1]);
+function redirect() {
+  //location.assign(url.split("8080")[1]);
+  location.assign("/web/games.html")
+}
+
+function saveToken({token}) {
+  localStorage.setItem("user-token", JSON.stringify(token))
 }

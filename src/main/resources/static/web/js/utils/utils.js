@@ -35,14 +35,6 @@ function addClickEvent(query, action) {
   getHTML(query).addEventListener("click", action);
 }
 
-const postBody = (object) => ({
-  method: "POST",
-  body: JSON.stringify(object),
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
 const list = (n) => new Array(n).fill(0).map((_, i) => i + 1);
 
 const gameSelected = () => getHTML("div[data-name*='selectGame']");
@@ -55,6 +47,5 @@ export {
   resizeCoordWithMargin,
   gameSelected,
   addClickEvent,
-  postBody,
   list,
 };
