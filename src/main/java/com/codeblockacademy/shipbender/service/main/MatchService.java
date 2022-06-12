@@ -3,6 +3,7 @@ package com.codeblockacademy.shipbender.service.main;
 import com.codeblockacademy.shipbender.dto.GameMapDTO;
 import com.codeblockacademy.shipbender.dto.GamePlayerDTO;
 import com.codeblockacademy.shipbender.dto.response.GameCreatedDTO;
+import com.codeblockacademy.shipbender.dto.response.GameDataDTO;
 import com.codeblockacademy.shipbender.dto.response.GameMatchDTO;
 import com.codeblockacademy.shipbender.dto.response.StatusGameDTO;
 import com.codeblockacademy.shipbender.enums.NationType;
@@ -55,7 +56,7 @@ public class MatchService implements IMatchService {
         Game       game    = mapper.map(gameDTO, Game.class);
 
         gameService.gameIsNotFull(game);
-        gameService.gameNotContainsThePlayer(game, player.getId());
+        /*gameService.gameNotContainsThePlayer(game, player.getId());*/
 
         GamePlayer gamePlayer = new GamePlayer(player, game);
 
@@ -72,11 +73,12 @@ public class MatchService implements IMatchService {
     }
 
 
-    public StatusGameDTO statusGame ( Authentication authentication, Long gameId ) {
+    public GameDataDTO statusGame ( Authentication authentication, Long gameId ) {
         Player player = playerService.getPlayerAuthenticated(authentication);
         gameService.gameContainsThePlayer(gameId, player.getId());
-        return gameService.statusGame(gameId);
+        GameMatchDTO  data   = this.getGame(authentication, gameId);
+        StatusGameDTO status = gameService.statusGame(gameId);
+        return new GameDataDTO(data, status);
     }
-
 
 }

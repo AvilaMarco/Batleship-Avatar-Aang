@@ -1,8 +1,13 @@
 package com.codeblockacademy.shipbender.security;
 
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.codeblockacademy.shipbender.utils.ENV_VARIABLES;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,12 +36,12 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter implements ENV_
     protected void doFilterInternal ( HttpServletRequest request, HttpServletResponse response, FilterChain chain ) throws ServletException, IOException {
         try {
 
-            if (!existeJWTToken(request)) SecurityContextHolder.clearContext();
+            if (!this.existeJWTToken(request)) SecurityContextHolder.clearContext();
             else {
-                Claims claims = validateToken(request);
+                DecodedJWT decodedJWT = this.decodedValidJWT(request);
 
-                if (claims == null) SecurityContextHolder.clearContext();
-                else setUpSpringAuthentication(claims);
+                if (decodedJWT == null) SecurityContextHolder.clearContext();
+                else this.setUpSpringAuthentication(decodedJWT);
             }
             chain.doFilter(request, response);
         } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException e) {
@@ -51,35 +56,34 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter implements ENV_
      * @param request petition of client
      * @return if the token is valid, return the roles of user authenticated
      */
-    private Claims validateToken ( HttpServletRequest request ) {
+    private DecodedJWT decodedValidJWT ( HttpServletRequest request ) {
         String jwtToken = request.getHeader(HEADER)
           .replace(PREFIX, "");
-        return Jwts.parser()
-          .setSigningKey(SECRET_KEY)
-          .parseClaimsJws(jwtToken)
-          .getBody();
+
+        JWTVerifier verifier = JWT.require(ALGORITHM)
+          .build();
+        return verifier.verify(jwtToken);
     }
 
     /**
      * Función para autenticarnos dentro del flujo de Spring
      *
-     * @param claims roles of the user authenticated by token
+     * @param decodedJWT object with token's data (authorities and username)
      */
-    private void setUpSpringAuthentication ( Claims claims ) {
-        @SuppressWarnings("unchecked")
-        List<String> authorities = (List<String>) claims.get(CLAIMS);
+    private void setUpSpringAuthentication ( DecodedJWT decodedJWT ) {
 
-        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-          claims.getSubject(),
+        List<SimpleGrantedAuthority> authorities = getAuthorities(decodedJWT);
+
+        String username = decodedJWT.getSubject();
+
+        var auth = new UsernamePasswordAuthenticationToken(
+          username,
           null,
-          authorities.stream()
-            .map(SimpleGrantedAuthority::new)
-            .collect(Collectors.toList())
+          authorities
         );
         SecurityContextHolder
           .getContext()
           .setAuthentication(auth);
-
     }
 
     /**
@@ -91,5 +95,14 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter implements ENV_
     private boolean existeJWTToken ( HttpServletRequest request ) {
         String authenticationHeader = request.getHeader(HEADER);
         return authenticationHeader != null && authenticationHeader.startsWith(PREFIX);
+    }
+
+    private List<SimpleGrantedAuthority> getAuthorities ( DecodedJWT decodedJWT ) {
+        return decodedJWT
+          .getClaim(CLAIMS)
+          .asList(String.class)
+          .stream()
+          .map(SimpleGrantedAuthority::new)
+          .collect(Collectors.toList());
     }
 }

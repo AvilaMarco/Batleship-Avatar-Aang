@@ -1,7 +1,9 @@
 package com.codeblockacademy.shipbender.models;
 
 import com.codeblockacademy.shipbender.dto.response.StatusGameDTO;
+import com.codeblockacademy.shipbender.enums.GameStatus;
 import com.codeblockacademy.shipbender.enums.NationType;
+import com.codeblockacademy.shipbender.enums.PlayerStatus;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -40,24 +42,29 @@ public class Game {
     /* PUBLIC METHODS */
 
     public void updateStatusGpOf ( StatusGameDTO.StatusGameDTOBuilder builder ) {
-        if (!this.isGameWaiting()) {
-            builder
-              .gpPlayerOneId(getGPCreator())
-              .gpPlayerTwoId(getGPJoined());
+        if (!this.isGameWaitingPlayer()) {
+            if (this.isClientHasShips()) {
+                builder.client(PlayerStatus.CLIENT_WITH_SHIPS);
+            } else {
+                builder.client(PlayerStatus.CLIENT_WITHOUT_SHIPS);
+            }
         } else {
-            builder
-              .gpPlayerOneId(getGPCreator());
+            builder.client(PlayerStatus.CLIENT_WAITING);
+        }
+        if (this.isHostHasShips()) {
+            builder.host(PlayerStatus.HOST_WITH_SHIPS);
+        } else {
+            builder.host(PlayerStatus.HOST_WITHOUT_SHIPS);
         }
     }
 
     public void updateStatusGameOf ( StatusGameDTO.StatusGameDTOBuilder builder ) {
-        // ToDo: created enum for status game
-        if (this.isGameStart()) {
-            builder.status("GAME_START");
-        } else if (this.isGameWatingShips()) {
-            builder.status("WAITING_SHIPS");
-        } else if (this.isGameWaiting()) {
-            builder.status("WAITING");
+        if (this.isGameWaitingPlayer() || this.isGameWaitingShips()) {
+            builder.game(GameStatus.CREATED);
+        } else if (this.isGameFinish()) {
+            builder.game(GameStatus.FINISH);
+        } else {
+            builder.game(GameStatus.IN_GAME);
         }
     }
 
@@ -81,31 +88,22 @@ public class Game {
     }
 
     /* UTILS */
-    private boolean isGameStart () {
-        return gamePlayers.stream()
-          .noneMatch(gp -> gp.getShips()
-            .isEmpty());
-    }
-
-    private boolean isGameWatingShips () {
-        return gamePlayers.stream()
-          .anyMatch(gp -> gp.getShips()
-            .isEmpty());
-    }
-
-    private boolean isGameWaiting () {
+    private boolean isGameWaitingPlayer () {
         return gamePlayers.size() == 1;
     }
 
-    private Long getGPCreator () {
-        // ! ToDo: review this content
-        return gamePlayers.get(0)
-          .getId();
+    private boolean isGameWaitingShips () {
+        return !gamePlayers.stream()
+          .allMatch(GamePlayer::hasShips);
     }
 
-    private Long getGPJoined () {
-        // ! ToDo: review this content
+    private boolean isClientHasShips () {
         return gamePlayers.get(1)
-          .getId();
+          .hasShips();
+    }
+
+    private boolean isHostHasShips () {
+        return gamePlayers.get(0)
+          .hasShips();
     }
 }

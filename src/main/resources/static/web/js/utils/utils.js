@@ -35,6 +35,8 @@ function addClickEvent(query, action) {
   getHTML(query).addEventListener("click", action);
 }
 
+const getItemStorage = name => JSON.parse(localStorage.getItem(name));
+
 const list = (n) => new Array(n).fill(0).map((_, i) => i + 1);
 
 const gameSelected = () => getHTML("div[data-name*='selectGame']");
@@ -48,4 +50,5 @@ export {
   gameSelected,
   addClickEvent,
   list,
+  getItemStorage
 };

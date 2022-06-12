@@ -9,6 +9,8 @@ import com.codeblockacademy.shipbender.repository.GamePlayerRepository;
 import com.codeblockacademy.shipbender.repository.GameRepository;
 import com.codeblockacademy.shipbender.repository.PlayerRepository;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,6 +23,11 @@ import java.util.List;
 
 @Configuration
 public class SpringBeans {
+
+    @Bean
+    public Logger getLogger () {
+        return LoggerFactory.getLogger("WEB");
+    }
 
     @Bean
     public ModelMapper getModelMapper () {
@@ -103,7 +110,7 @@ public class SpringBeans {
 /*            GamePlayer1.addSalvo(salvo1);
             GamePlayer1.addSalvo(salvo3);*/
 
-            GamePlayer GamePlayer2 = new GamePlayer(Chloe, one);
+            GamePlayer GamePlayer2 = new GamePlayer(admin, one);
             GamePlayer2.setScore(0);
             one.setFinishDate(LocalDateTime.now());
             //ships
@@ -120,7 +127,7 @@ public class SpringBeans {
 
             GamePlayer GamePlayer3 = new GamePlayer(Kim, two);
             GamePlayer GamePlayer4 = new GamePlayer(jack, two);
-            GamePlayer GamePlayer5 = new GamePlayer(marco, three);
+            GamePlayer GamePlayer5 = new GamePlayer(admin, three);
             GamePlayer GamePlayer6 = new GamePlayer(Chloe, four);
 
             // save players in the PlayerRepository

@@ -91,8 +91,8 @@ function dropShip(ev) {
     }
     for (let i = 1; i < ship.dataset.length; i++) {
       let id = cell.id
-        .match(new RegExp(`[^${cell.dataset.y}|^${cell.dataset.x}]`, "g"))
-        .join("");
+          .match(new RegExp(`[^${cell.dataset.y}|^${cell.dataset.x}]`, "g"))
+          .join("");
       let cellId = `${id}${cell.dataset.y}${parseInt(cell.dataset.x) + i}`;
       if (document.getElementById(cellId).className.search(/busy-cell/) !== -1) {
         /*document.querySelector("#display p").innerText = "careful";*/
@@ -107,10 +107,10 @@ function dropShip(ev) {
 
     for (let i = 1; i < ship.dataset.length; i++) {
       let id = cell.id
-        .match(new RegExp(`[^${cell.dataset.y}|^${cell.dataset.x}]`, "g"))
-        .join("");
+          .match(new RegExp(`[^${cell.dataset.y}|^${cell.dataset.x}]`, "g"))
+          .join("");
       let cellId = `${id}${String.fromCharCode(
-        cell.dataset.y.charCodeAt() + i
+          cell.dataset.y.charCodeAt() + i
       )}${cell.dataset.x}`;
       if (document.getElementById(cellId).className.search(/busy-cell/) !== -1) {
         /*document.querySelector("#display p").innerText = "careful";*/
@@ -124,15 +124,15 @@ function dropShip(ev) {
   ship.dataset.x = x;
   //the ship is added to the cell
   ev.target.appendChild(ship);
-  dockIsEmpty();
+  /*dockIsEmpty();*/
 
   //checkBusyCells(ship, ev.target);
 }
 
 function checkBusyCells(ship, cell) {
   let id = cell.id
-    .match(new RegExp(`[^${cell.dataset.y}|^${cell.dataset.x}]`, "g"))
-    .join("");
+      .match(new RegExp(`[^${cell.dataset.y}|^${cell.dataset.x}]`, "g"))
+      .join("");
   let y = cell.dataset.y.charCodeAt() - 64;
   let x = parseInt(cell.dataset.x);
 
@@ -143,12 +143,12 @@ function checkBusyCells(ship, cell) {
   for (let i = 0; i < ship.dataset.length; i++) {
     if (ship.dataset.orientation === "horizontal") {
       document
-        .querySelector(`#${id}${String.fromCharCode(y + 64)}${x + i}`)
-        .classList.add(`${ship.id}-busy-cell`);
+          .querySelector(`#${id}${String.fromCharCode(y + 64)}${x + i}`)
+          .classList.add(`${ship.id}-busy-cell`);
     } else {
       document
-        .querySelector(`#${id}${String.fromCharCode(y + 64 + i)}${x}`)
-        .classList.add(`${ship.id}-busy-cell`);
+          .querySelector(`#${id}${String.fromCharCode(y + 64 + i)}${x}`)
+          .classList.add(`${ship.id}-busy-cell`);
     }
   }
 }

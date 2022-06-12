@@ -196,5 +196,5 @@ function redirect() {
 }
 
 function saveToken({token}) {
-  localStorage.setItem("user-token", JSON.stringify(token))
+  localStorage.setItem(`user-token`, JSON.stringify(token))
 }

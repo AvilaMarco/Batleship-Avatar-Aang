@@ -1,30 +1,12 @@
-import { cleanModal, hideModal, showModal } from "./games-mjs/modal.js";
-import {
-  createGamesOnMap,
-  createListenerInMap,
-  infoGame,
-  reloadMap,
-} from "./games-mjs/map.js";
-import {
-  createRankingTable,
-  viewUserData,
-  watchTutorial,
-} from "./games-mjs/modalViews.js";
-import {
-  chooseNation,
-  inMenu,
-  toggleView,
-} from "./games-mjs/manageViewHTML.js";
-import {
-  createGame,
-  joinGame,
-  enterGame,
-  watchGame,
-} from "./games-mjs/manageJoinGame.js";
-import { logoutFunction, setNationPlayer } from "./games-mjs/player.js";
-import { addClickEvent, gameSelected, getHTML } from "./utils/utils.js";
-import { getToken } from "./utils/payload.js";
-import { playerTest, randomNation } from "./utils/test.js";
+import {cleanModal, hideModal, showModal} from "./games-mjs/modal.js";
+import {createGamesOnMap, createListenerInMap, infoGame, reloadMap,} from "./games-mjs/map.js";
+import {createRankingTable, viewUserData, watchTutorial,} from "./games-mjs/modalViews.js";
+import {chooseNation, inMenu, toggleView,} from "./games-mjs/manageViewHTML.js";
+import {createGame, enterGame, joinGame, watchGame,} from "./games-mjs/manageJoinGame.js";
+import {logoutFunction, setNationPlayer} from "./games-mjs/player.js";
+import {addClickEvent, gameSelected, getHTML} from "./utils/utils.js";
+import {getToken} from "./utils/payload.js";
+import {randomNation} from "./utils/test.js";
 
 // Load Data
 let playersData = [];
@@ -32,45 +14,47 @@ let playerData = {};
 const TOKEN = getUserToken();
 
 // Add Events Listener
-addClickEvent("#back", toggleView);
-addClickEvent("#verMapa", toggleView);
+(function () {
+  addClickEvent("#back", toggleView);
+  addClickEvent("#verMapa", toggleView);
 
-addClickEvent("#hideModal", hideModal);
-addClickEvent("#manageJoin", manageJoinGame);
-addClickEvent("#logout", () => logoutFunction(TOKEN));
-addClickEvent("#reload", () => {
-  reloadMap();
-  reloadInfo();
-});
-addClickEvent("#inicoNacion", async (event) => {
-  const response = await setNationPlayer(event, TOKEN);
-  if (response) reloadInfo();
-});
+  addClickEvent("#hideModal", hideModal);
+  addClickEvent("#manageJoin", manageJoinGame);
+  addClickEvent("#logout", () => logoutFunction(TOKEN));
+  addClickEvent("#reload", () => {
+    reloadMap();
+    reloadInfo();
+  });
+  addClickEvent("#inicoNacion", async (event) => {
+    const response = await setNationPlayer(event, TOKEN);
+    if (response) reloadInfo();
+  });
 
-addClickEvent("#info", viewModalWithData);
-addClickEvent("#infoGame", viewModalWithData);
-addClickEvent("#player", viewModalWithData);
-addClickEvent("#ladder", viewModalWithData);
+  addClickEvent("#info", viewModalWithData);
+  addClickEvent("#infoGame", viewModalWithData);
+  addClickEvent("#player", viewModalWithData);
+  addClickEvent("#ladder", viewModalWithData);
+})()
 
 createListenerInMap();
 reloadInfo();
 
 function reloadInfo() {
   fetch("/api/games", getToken(TOKEN))
-    .then((res) => (res.ok ? res.json() : Promise.reject()))
-    .then(({ player, games, players }) => {
-      playersData = players;
-      playerData = player;
+      .then((res) => (res.ok ? res.json() : Promise.reject()))
+      .then(({player, games, players}) => {
+        playersData = players;
+        playerData = player;
 
-      playerData.nation != null ? inMenu(playerData.nation) : chooseNation();
-      /*inMenu(playerData.nation)*/
-      createGamesOnMap(games, playerData.id);
-    })
-    .catch((error) => console.log(error));
+        playerData.nation != null ? inMenu(playerData.nation) : chooseNation();
+        /*inMenu(playerData.nation)*/
+        createGamesOnMap(games, playerData.id);
+      })
+      .catch((error) => console.log(error));
 }
 
 /* functions for change modal's view*/
-function viewModalWithData({ target: { id } }) {
+function viewModalWithData({target: {id}}) {
   cleanModal(playerData.nation);
   randomNation(playerData);
 
@@ -83,15 +67,15 @@ function viewModalWithData({ target: { id } }) {
 }
 
 /* functions for game, join, create, enter, watch*/
-function manageJoinGame({ target: { name } }) {
+function manageJoinGame({target: {name}}) {
   const {
-    dataset: { location, id },
+    dataset: {location, id},
   } = gameSelected();
-  const { dataset } = getHTML("div#" + id) || { dataset: "none" };
+  const {dataset} = getHTML("div#" + id) || {dataset: "none"};
 
-  if (name === "Create") createGame(location, id, playerData);
+  if (name === "Create") createGame(location, id, playerData, TOKEN);
   else if (name === "Enter") enterGame(dataset, playerData);
-  else if (name === "Join") joinGame(dataset.gameid, playerData);
+  else if (name === "Join") joinGame(dataset.gameid, playerData, TOKEN);
   else if (name === "InGame") watchGame();
 }
 
@@ -99,30 +83,3 @@ function getUserToken() {
   const jsonToken = localStorage.getItem("user-token");
   return JSON.parse(jsonToken);
 }
-
-// get form info
-// Object.fromEntries(new FormData(form));
-
-//reference to DOM
-/*
-const back = getHTML("#back");
-back.addEventListener("click", toggleView);
-const viewMap = getHTML("#verMapa");
-viewMap.addEventListener("click", toggleView);
-const closeModal = getHTML("#hideModal");
-closeModal.addEventListener("click", hideModal);
-const info = getHTML("#info");
-info.addEventListener("click", viewModalWithData);
-const infoDataGame = getHTML("#infoGame");
-infoDataGame.addEventListener("click", viewModalWithData);
-const player = getHTML("#player");
-player.addEventListener("click", viewModalWithData);
-const ladder = getHTML("#ladder");
-ladder.addEventListener("click", viewModalWithData);
-const manageJoin = getHTML("#manageJoin");
-manageJoin.addEventListener("click", manageJoinGame);
-const logout = getHTML("#logout");
-logout.addEventListener("click", logoutFunction);
-getHTML("#reload")
-reload.addEventListener("click", reloadMap);
-*/

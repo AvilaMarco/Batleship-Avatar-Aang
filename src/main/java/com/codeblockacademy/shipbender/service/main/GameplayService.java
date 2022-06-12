@@ -44,6 +44,9 @@ public class GameplayService implements IGameplayService {
           .map(s -> mapper.map(s, Ship.class))
           .collect(toList());
         gamePlayer.setShips(ships);
+        //Todo: arreglar problema al mapear cosas que no existen, en este caso el id
+        gamePlayer.getGame()
+          .setId(gameId);
         gamePlayerService.save(gamePlayer);
         return gameService.statusGame(gameId);
     }

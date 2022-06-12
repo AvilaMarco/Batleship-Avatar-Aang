@@ -1,5 +1,7 @@
 package com.codeblockacademy.shipbender.dto.response;
 
+import com.codeblockacademy.shipbender.enums.GameStatus;
+import com.codeblockacademy.shipbender.enums.PlayerStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class StatusGameDTO {
-    String status;
-    Long   gpPlayerOneId;
-    Long   gpPlayerTwoId;
+    GameStatus   game;
+    PlayerStatus host;
+    PlayerStatus client;
 }

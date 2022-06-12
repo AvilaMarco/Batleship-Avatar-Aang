@@ -4,33 +4,24 @@ import com.codeblockacademy.shipbender.dto.response.UserTokenDTO;
 import com.codeblockacademy.shipbender.exception.not_found.LoginException;
 import com.codeblockacademy.shipbender.models.Player;
 import com.codeblockacademy.shipbender.repository.PlayerRepository;
+import com.codeblockacademy.shipbender.security.JWTUtil;
 import com.codeblockacademy.shipbender.service.intereface.ISessionService;
-import com.codeblockacademy.shipbender.utils.ENV_VARIABLES;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.KeyStoreException;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
-public class SessionService implements ISessionService, ENV_VARIABLES {
+public class SessionService implements ISessionService {
 
     PlayerRepository playerRepository;
     PasswordEncoder  passwordEncoder;
+    JWTUtil          jwtUtil;
 
-    public SessionService ( PlayerRepository playerRepository, PasswordEncoder passwordEncoder ) {
+    public SessionService ( PlayerRepository playerRepository, PasswordEncoder passwordEncoder, JWTUtil jwtUtil ) {
         this.playerRepository = playerRepository;
         this.passwordEncoder  = passwordEncoder;
+        this.jwtUtil          = jwtUtil;
     }
 
     @Override
@@ -44,68 +35,8 @@ public class SessionService implements ISessionService, ENV_VARIABLES {
             throw new LoginException();
         }
 
-        String token = getJWTToken(username, player.getRolls());
+        String token = jwtUtil.getJWTToken(username, player.getRolls());
         return new UserTokenDTO(username, token);
-    }
-
-    /**
-     * Genera un token para un usuario específico, válido por 10'
-     *
-     * @param username - user to login
-     * @param roles    - collection of user's roles
-     * @return String
-     */
-    /* lista de roles */
-    private String getJWTToken ( String username, List<String> roles ) {
-
-        System.out.println(roles);
-        List<String> authorities = roles
-          .stream()
-          .map(AuthorityUtils::commaSeparatedStringToAuthorityList)
-          .flatMap(Collection::stream)
-          .map(GrantedAuthority::getAuthority)
-          .collect(Collectors.toList());
-        System.out.println(authorities);
-        LocalDateTime expired = LocalDateTime.now()
-          .plusMinutes(MINUTES_TOKEN_EXPIRATION);
-        Date expiredTime = Date.from(expired.atZone(ZoneId.systemDefault())
-          .toInstant());
-
-        String token = Jwts
-          .builder()
-          .setId("softtekJWT")
-          .setSubject(username)
-          .claim(CLAIMS, authorities)
-          .setIssuedAt(new Date(System.currentTimeMillis()))
-          .setExpiration(expiredTime)
-          .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
-          .compact();
-
-        return PREFIX + token;
-    }
-
-    /**
-     * Decodifica un token para poder obtener los componentes que contiene el mismo
-     *
-     * @param token tokenJWT
-     * @return Claims
-     */
-    private static Claims decodeJWT ( String token ) {
-        return Jwts.parser()
-          .setSigningKey(SECRET_KEY)
-          .parseClaimsJws(token)
-          .getBody();
-    }
-
-    /**
-     * Permite obtener el username según el token indicado
-     *
-     * @param token token JWT
-     * @return String User's Email
-     */
-    public static String getUsername ( String token ) {
-        Claims claims = decodeJWT(token);
-        return claims.get("sub", String.class);
     }
 
 }

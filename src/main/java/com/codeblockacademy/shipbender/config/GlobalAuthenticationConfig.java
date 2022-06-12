@@ -1,6 +1,21 @@
+/*
 package com.codeblockacademy.shipbender.config;
 
-/*
+
+import com.codeblockacademy.shipbender.models.Player;
+import com.codeblockacademy.shipbender.repository.PlayerRepository;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.GlobalAuthenticationConfigurerAdapter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Configuration
 public class GlobalAuthenticationConfig extends GlobalAuthenticationConfigurerAdapter {
@@ -30,4 +45,5 @@ public class GlobalAuthenticationConfig extends GlobalAuthenticationConfigurerAd
         });
     }
 }
+
 */

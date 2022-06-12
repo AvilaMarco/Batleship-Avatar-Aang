@@ -5,24 +5,28 @@ import com.codeblockacademy.shipbender.dto.request.websocket.EmoteDTO;
 import com.codeblockacademy.shipbender.dto.request.websocket.ShipDTO;
 import com.codeblockacademy.shipbender.dto.response.StatusGameDTO;
 import com.codeblockacademy.shipbender.service.intereface.IGameplayService;
+import com.codeblockacademy.shipbender.service.intereface.IMatchService;
+import org.slf4j.Logger;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/api/gameplay")
+@Controller
 public class GameplayController {
 
+    Logger           logger;
     IGameplayService gameplayService;
+    IMatchService    matchService;
 
-    public GameplayController ( IGameplayService gameplayService ) {
+    public GameplayController ( Logger logger, IGameplayService gameplayService, IMatchService matchService ) {
+        this.logger          = logger;
         this.gameplayService = gameplayService;
+        this.matchService    = matchService;
     }
 
     /* WEB SOCKETS */
@@ -30,17 +34,18 @@ public class GameplayController {
     // enviar barcos
     @MessageMapping("/{gameId}/ships")
     @SendTo("/topic/gameplay/{gameId}/ships")
-    public StatusGameDTO matchShips ( Authentication authentication, @DestinationVariable Long gameId, @RequestBody List<ShipDTO> ships ) {
+    public StatusGameDTO matchShips ( @DestinationVariable Long gameId, @RequestBody List<ShipDTO> ships, Authentication authentication ) {
         return gameplayService.createShips(authentication, gameId, ships);
     }
 
     // enviar emotes
-    @MessageMapping("/{gameId}/emotes/{userId}") // entrada
-    @SendTo("/topic/gameplay/{gameId}/emotes/{userId}") // salida
-    public ErrorDTO matchEmotes ( Authentication authentication, @DestinationVariable Long gameId, @DestinationVariable Long userId, @RequestBody EmoteDTO emote ) {
-        System.out.println(gameId);
-        System.out.println(emote);
-        return new ErrorDTO("emotes", "creating emotes" + userId);
+    @MessageMapping("/{gameId}/emotes") // entrada
+    @SendTo("/topic/gameplay/{gameId}/emotes") // salida
+    public ErrorDTO matchEmotes ( Authentication authentication, @DestinationVariable Long gameId, @RequestBody EmoteDTO emote ) {
+
+        logger.debug(emote + "");
+        logger.debug(gameId + "");
+        return new ErrorDTO("emotes", "creating emotes");
     }
 
     // enviar disparos
