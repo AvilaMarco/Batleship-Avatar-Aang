@@ -4,7 +4,7 @@ package com.codeblockacademy.shipbender.security;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.codeblockacademy.shipbender.utils.ENV_VARIABLES;
+import com.codeblockacademy.shipbender.config.ENV_VARIABLES;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;

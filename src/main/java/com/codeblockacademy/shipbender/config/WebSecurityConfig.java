@@ -4,6 +4,7 @@ package com.codeblockacademy.shipbender.config;
 import com.codeblockacademy.shipbender.security.JWTAuthorizationFilter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.WebAttributes;
@@ -68,7 +69,7 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      * @param web WebSecurity config use for ignore authenticated
      * @throws Exception for throw the exceptions
      */
-/*    @Override
+    @Override
     public void configure ( WebSecurity web ) throws Exception {
         web.ignoring()
           .antMatchers(
@@ -81,7 +82,8 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         web.ignoring()
           .antMatchers(
             "/h2-console/**");
-    }*/
+    }
+
     private void clearAuthenticationAttributes ( HttpServletRequest request ) {
         HttpSession session = request.getSession(false);
         if (session != null) {

@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface IGameService {
 
-    GameMapDTO getGame ( Long id );
+    Game getGame ( Long id );
 
     GameMatchDTO getGameMatch ( Long id );
 

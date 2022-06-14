@@ -1,6 +1,5 @@
 package com.codeblockacademy.shipbender.service;
 
-import com.codeblockacademy.shipbender.dto.GamePlayerDTO;
 import com.codeblockacademy.shipbender.exception.forbidden.PlayerDoesNotBelongGame;
 import com.codeblockacademy.shipbender.models.GamePlayer;
 import com.codeblockacademy.shipbender.repository.GamePlayerRepository;
@@ -19,14 +18,13 @@ public class GamePlayerService implements IGamePlayerService {
         this.mapper     = mapper;
     }
 
-    public GamePlayerDTO save ( GamePlayer gamePlayer ) {
-        return mapper.map(repository.save(gamePlayer), GamePlayerDTO.class);
+    public GamePlayer save ( GamePlayer gamePlayer ) {
+        return repository.saveAndFlush(gamePlayer);
     }
 
-    public GamePlayerDTO getGamePlayerBy ( Long playerId, Long gameId ) {
-        GamePlayer gamePlayer = repository
+    public GamePlayer getGamePlayerBy ( Long playerId, Long gameId ) {
+        return repository
           .findByPlayerIdAndGameId(playerId, gameId)
           .orElseThrow(() -> new PlayerDoesNotBelongGame(playerId, gameId));
-        return mapper.map(gamePlayer, GamePlayerDTO.class);
     }
 }

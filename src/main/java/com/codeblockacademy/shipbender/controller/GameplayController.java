@@ -6,7 +6,6 @@ import com.codeblockacademy.shipbender.dto.request.websocket.ShipDTO;
 import com.codeblockacademy.shipbender.dto.response.StatusGameDTO;
 import com.codeblockacademy.shipbender.service.intereface.IGameplayService;
 import com.codeblockacademy.shipbender.service.intereface.IMatchService;
-import org.slf4j.Logger;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -19,12 +18,10 @@ import java.util.List;
 @Controller
 public class GameplayController {
 
-    Logger           logger;
     IGameplayService gameplayService;
     IMatchService    matchService;
 
-    public GameplayController ( Logger logger, IGameplayService gameplayService, IMatchService matchService ) {
-        this.logger          = logger;
+    public GameplayController ( IGameplayService gameplayService, IMatchService matchService ) {
         this.gameplayService = gameplayService;
         this.matchService    = matchService;
     }
@@ -43,8 +40,6 @@ public class GameplayController {
     @SendTo("/topic/gameplay/{gameId}/emotes") // salida
     public ErrorDTO matchEmotes ( Authentication authentication, @DestinationVariable Long gameId, @RequestBody EmoteDTO emote ) {
 
-        logger.debug(emote + "");
-        logger.debug(gameId + "");
         return new ErrorDTO("emotes", "creating emotes");
     }
 

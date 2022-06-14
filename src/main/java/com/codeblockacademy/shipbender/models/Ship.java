@@ -23,8 +23,8 @@ public class Ship {
     private ShipType type;
 
     // Relations
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "gamePlayer_id")
-    private GamePlayer gamePlayer;
+//    @ManyToOne(fetch = FetchType.EAGER)
+//    @JoinColumn(name = "gamePlayer_id")
+//    private GamePlayer gamePlayer;
 
 }

@@ -1,7 +1,6 @@
 package com.codeblockacademy.shipbender.service.main;
 
 import com.codeblockacademy.shipbender.dto.GameMapDTO;
-import com.codeblockacademy.shipbender.dto.GamePlayerDTO;
 import com.codeblockacademy.shipbender.dto.response.GameCreatedDTO;
 import com.codeblockacademy.shipbender.dto.response.GameDataDTO;
 import com.codeblockacademy.shipbender.dto.response.GameMatchDTO;
@@ -42,18 +41,18 @@ public class MatchService implements IMatchService {
         GamePlayer gamePlayer = new GamePlayer(player, game);
 
         //playerService.save(player); // TODO: delete ?
-        GameMapDTO    gameDTO       = gameService.save(game);
-        GamePlayerDTO gamePlayerDTO = gamePlayerService.save(gamePlayer);
+        GameMapDTO gameDTO = gameService.save(game);
+        gamePlayerService.save(gamePlayer);
 
-        return new GameCreatedDTO(gameDTO.getId(), gamePlayerDTO.getId());
+        return new GameCreatedDTO(gameDTO.getId(), gamePlayer.getId());
     }
 
     @Override
     public GameCreatedDTO joinGame ( Authentication authentication, Long gameId ) {
 
-        Player     player  = playerService.getPlayerAuthenticated(authentication);
-        GameMapDTO gameDTO = gameService.getGame(gameId);
-        Game       game    = mapper.map(gameDTO, Game.class);
+        Player player = playerService.getPlayerAuthenticated(authentication);
+        Game   game   = gameService.getGame(gameId);
+
 
         gameService.gameIsNotFull(game);
         /*gameService.gameNotContainsThePlayer(game, player.getId());*/

@@ -1,3 +1,5 @@
+import 'sockjs' // ejecuta codigo de sockJS y permite usar el objeto SockJS
+import 'stomp' // ejecuta codigo de stompJS y permite usar el objeto Stomp
 import {createGrid} from "./game-mjs/grid.js";
 import {shipOnGrid,} from "./game-mjs/ships.js";
 import {getHTML, getItemStorage} from "./utils/utils.js";
@@ -20,6 +22,15 @@ let TOKEN = getItemStorage("user-token")
 const HEADER = {login: "marco@admin.com", passcode: "123", 'Authorization': TOKEN}
 const BASE_URL_TOPIC = `/topic/gameplay/${gameId}`;
 const BASE_URL_APP = `/app/${gameId}`;
+
+// TEST
+const status = document.getElementById("HOME_TEST")
+status.addEventListener("click", async () => {
+  const {status, data} = await statusGame(gameId, TOKEN);
+  let {game, host, client} = status;
+  console.log(data)
+  console.log(status)
+})
 
 document.addEventListener('DOMContentLoaded', async () => {
 
@@ -50,54 +61,58 @@ function connectClientSocket({game, client}) {
   const socket = new SockJS("/the-last-shipbender");
   stompClient = Stomp.over(socket);
 
-  stompClient.connect(HEADER, function (frame) {
-    console.log("Connected: " + frame);
-
-    if (game === "CREATED") {
-      if (client === "CLIENT_WAITING") {
-        subscribeWaitingPlayer()
-      }
-      subscribeShips()
-    } else {
-      suscribeGame()
+  if (game === "CREATED") {
+    if (client === "CLIENT_WAITING") {
+      connectAndSuscribeWaitingClient()
     }
+    connectAndSubscribeShips()
+  } else {
+    connectAndSuscribeGame()
+  }
 
+}
+
+function connectAndSuscribeWaitingClient() {
+  stompClient.connect(HEADER, (frame) => {
+    console.log("Connected: " + frame);
+    /* Send Waiting Player */
+    stompClient.subscribe(`${BASE_URL_TOPIC}/waiting-player`, ({body}) => {
+      console.log(JSON.parse(body));
+    }, HEADER);
   });
 }
 
-function subscribeWaitingPlayer() {
-  /* Send Waiting Player */
-  stompClient.subscribe(`${BASE_URL_TOPIC}/waiting-player`, ({body}) => {
-    console.log(JSON.parse(body));
-  }, HEADER);
-
+function connectAndSubscribeShips() {
+  stompClient.connect(HEADER, (frame) => {
+    console.log("Connected: " + frame);
+    /* Send Ships */
+    stompClient.subscribe(`${BASE_URL_TOPIC}/ships`, ({body}) => {
+      console.log(JSON.parse(body));
+    }, HEADER);
+  });
 }
 
-function subscribeShips() {
-  /* Send Ships */
-  stompClient.subscribe(`${BASE_URL_TOPIC}/ships`, ({body}) => {
-    console.log(JSON.parse(body));
-  }, HEADER);
-}
+function connectAndSuscribeGame() {
+  stompClient.connect(HEADER, (frame) => {
+    console.log("Connected: " + frame);
+    /* Send emotes */
+    stompClient.subscribe(
+        `${BASE_URL_TOPIC}/emotes`,
+        ({body}) => {
+          console.log(JSON.parse(body));
+        }, HEADER
+    );
 
-function suscribeGame() {
-  /* Send emotes */
-  stompClient.subscribe(
-      `${BASE_URL_TOPIC}/emotes`,
-      ({body}) => {
-        console.log(JSON.parse(body));
-      }, HEADER
-  );
+    /* Send Salvos */
+    stompClient.subscribe(`${BASE_URL_TOPIC}/salvos`, ({body}) => {
+      console.log(JSON.parse(body));
+    }, HEADER);
 
-  /* Send Salvos */
-  stompClient.subscribe(`${BASE_URL_TOPIC}/salvos`, ({body}) => {
-    console.log(JSON.parse(body));
-  }, HEADER);
-
-  /* Send Rematch */
-  stompClient.subscribe(`${BASE_URL_TOPIC}/rematch`, ({body}) => {
-    console.log(JSON.parse(body));
-  }, HEADER);
+    /* Send Rematch */
+    stompClient.subscribe(`${BASE_URL_TOPIC}/rematch`, ({body}) => {
+      console.log(JSON.parse(body));
+    }, HEADER);
+  });
 }
 
 /* END GAME - WEB SOCKET*/

@@ -14,6 +14,7 @@ import com.codeblockacademy.shipbender.service.intereface.ISessionService;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -40,16 +41,20 @@ public class PlayerService implements IPlayerService {
 
     @Override
     public PlayerScoreDTO getAnyPlayer ( Authentication authentication ) {
-        if (isGuest(authentication)) return new PlayerScoreDTO("Guess");
-        Player    player    = getPlayer(authentication.getName());
+        Authentication auth = SecurityContextHolder.getContext()
+          .getAuthentication();
+        if (isGuest(auth)) return new PlayerScoreDTO("Guess");
+        Player    player    = getPlayer(auth.getName());
         PlayerDTO playerDTO = mapper.map(player, PlayerDTO.class);
         return new PlayerScoreDTO(playerDTO, getStatsByPlayer(player.getScores()));
     }
 
     @Override
     public Player getPlayerAuthenticated ( Authentication authentication ) {
-        if (isGuest(authentication)) throw new PlayerNotLoginException();
-        else return getPlayer(authentication.getName());
+        Authentication auth = SecurityContextHolder.getContext()
+          .getAuthentication();
+        if (isGuest(auth)) throw new PlayerNotLoginException();
+        else return getPlayer(auth.getName());
     }
 
     @Override

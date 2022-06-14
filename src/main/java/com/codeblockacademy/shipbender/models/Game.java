@@ -4,8 +4,9 @@ import com.codeblockacademy.shipbender.dto.response.StatusGameDTO;
 import com.codeblockacademy.shipbender.enums.GameStatus;
 import com.codeblockacademy.shipbender.enums.NationType;
 import com.codeblockacademy.shipbender.enums.PlayerStatus;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -13,7 +14,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @Entity
 @NoArgsConstructor
 public class Game {

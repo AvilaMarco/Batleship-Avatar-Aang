@@ -23,7 +23,7 @@ import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Date;
 
-import static com.codeblockacademy.shipbender.utils.ENV_VARIABLES.SECRET_KEY;
+import static com.codeblockacademy.shipbender.config.ENV_VARIABLES.SECRET_KEY;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;

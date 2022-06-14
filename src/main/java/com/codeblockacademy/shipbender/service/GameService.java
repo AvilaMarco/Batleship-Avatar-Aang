@@ -28,10 +28,9 @@ public class GameService implements IGameService {
     }
 
     @Override
-    public GameMapDTO getGame ( Long id ) {
-        Game game = repository.findById(id)
+    public Game getGame ( Long id ) {
+        return repository.findById(id)
           .orElseThrow(() -> new GameNotFoundException(id));
-        return mapper.map(game, GameMapDTO.class);
     }
 
     @Override
@@ -51,11 +50,11 @@ public class GameService implements IGameService {
 
     @Override
     public GameMapDTO save ( Game game ) {
-        return mapper.map(repository.save(game), GameMapDTO.class);
+        return mapper.map(repository.saveAndFlush(game), GameMapDTO.class);
     }
 
     public StatusGameDTO statusGame ( Long gameId ) {
-        Game game = mapper.map(getGame(gameId), Game.class);
+        Game game = getGame(gameId);
         // ToDo: create new throw Exception
         if (game.isGameFinish()) return null;
 
@@ -95,8 +94,7 @@ public class GameService implements IGameService {
 
     @Override
     public void gameContainsThePlayer ( Long gameId, Long playerId ) {
-        GameMapDTO gameDTO = getGame(gameId);
-        Game       game    = mapper.map(gameDTO, Game.class);
+        Game game = getGame(gameId);
         if (!game.containsPlayer(playerId))
             throw new PlayerAlreadyInGameException(playerId);
     }

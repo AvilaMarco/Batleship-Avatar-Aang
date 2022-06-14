@@ -3,8 +3,9 @@ package com.codeblockacademy.shipbender.models;
 import com.codeblockacademy.shipbender.enums.NationType;
 import com.codeblockacademy.shipbender.enums.Rol;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -14,7 +15,8 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Player {

@@ -61,7 +61,7 @@
         </div>
         <div>
             <button id="chat">CHAT</button>
-            <button id="home">HOME</button>
+            <button id="HOME_TEST">HOME</button>
         </div>
     </div>
 </div>
@@ -91,8 +91,16 @@
 
 <!-- Scripts -->
 <div>
-    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
-    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+    <script type="importmap">
+    	{
+    		"imports": {
+    			"sockjs": "/webjars/sockjs-client/sockjs.min.js",
+    			"stomp": "/webjars/stomp-websocket/stomp.min.js"
+    		}
+    	}
+
+
+    </script>
     <script src="js/game.js" type="module"></script>
 </div>
 </body>

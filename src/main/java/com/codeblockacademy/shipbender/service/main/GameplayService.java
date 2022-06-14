@@ -1,8 +1,9 @@
 package com.codeblockacademy.shipbender.service.main;
 
-import com.codeblockacademy.shipbender.dto.GamePlayerDTO;
 import com.codeblockacademy.shipbender.dto.request.websocket.ShipDTO;
 import com.codeblockacademy.shipbender.dto.response.StatusGameDTO;
+import com.codeblockacademy.shipbender.enums.GameStatus;
+import com.codeblockacademy.shipbender.enums.PlayerStatus;
 import com.codeblockacademy.shipbender.models.GamePlayer;
 import com.codeblockacademy.shipbender.models.Player;
 import com.codeblockacademy.shipbender.models.Ship;
@@ -15,8 +16,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
-import static java.util.stream.Collectors.toList;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class GameplayService implements IGameplayService {
@@ -35,19 +36,17 @@ public class GameplayService implements IGameplayService {
 
     @Override
     public StatusGameDTO createShips ( Authentication authentication, Long gameId, List<ShipDTO> shipsDTO ) {
-        Player        player        = playerService.getPlayerAuthenticated(authentication);
-        GamePlayerDTO gamePlayerDTO = gamePlayerService.getGamePlayerBy(player.getId(), gameId);
-        GamePlayer    gamePlayer    = mapper.map(gamePlayerDTO, GamePlayer.class);
+        Player     player     = playerService.getPlayerAuthenticated(authentication);
+        GamePlayer gamePlayer = gamePlayerService.getGamePlayerBy(player.getId(), gameId);
         // ToDo: create exception for when gamePlayer has ships
         if (gamePlayer.hasShips()) throw new RuntimeException();
-        List<Ship> ships = shipsDTO.stream()
+        Set<Ship> ships = shipsDTO.stream()
           .map(s -> mapper.map(s, Ship.class))
-          .collect(toList());
+          .collect(Collectors.toSet());
         gamePlayer.setShips(ships);
-        //Todo: arreglar problema al mapear cosas que no existen, en este caso el id
-        gamePlayer.getGame()
-          .setId(gameId);
         gamePlayerService.save(gamePlayer);
-        return gameService.statusGame(gameId);
+        gameService.save(gamePlayer.getGame());
+//        return gameService.statusGame(gameId);
+        return new StatusGameDTO(GameStatus.IN_GAME, PlayerStatus.HOST_WITH_SHIPS, PlayerStatus.CLIENT_WAITING);
     }
 }

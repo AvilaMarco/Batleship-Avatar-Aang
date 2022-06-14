@@ -3,6 +3,7 @@ package com.codeblockacademy.shipbender.unit.service;
 import com.codeblockacademy.shipbender.dto.GameMapDTO;
 import com.codeblockacademy.shipbender.dto.GamePlayerDTO;
 import com.codeblockacademy.shipbender.dto.response.GameCreatedDTO;
+import com.codeblockacademy.shipbender.models.Game;
 import com.codeblockacademy.shipbender.models.Player;
 import com.codeblockacademy.shipbender.service.GamePlayerService;
 import com.codeblockacademy.shipbender.service.GameService;
@@ -51,7 +52,7 @@ public class MatchServiceTest {
         lenient().when(playerService.getPlayerAuthenticated(authMock))
           .thenReturn(playerMock);
 
-        when(gameService.getGame(gameId)).thenReturn(gameMatchDTO);
+        when(gameService.getGame(gameId)).thenReturn(new Game());
 
 
         doNothing()

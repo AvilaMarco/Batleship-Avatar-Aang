@@ -1,4 +1,4 @@
-package com.codeblockacademy.shipbender.utils;
+package com.codeblockacademy.shipbender.config;
 
 import com.auth0.jwt.algorithms.Algorithm;
 

@@ -1,0 +1,209 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'Permanent Marker', cursive !important;
+}
+
+.d-none {
+    display: none !important;
+}
+
+body {
+    width: 100%;
+    height: 100%;
+    background: none;
+}
+
+input::placeholder {
+    color: white;
+}
+
+input:focus {
+    background-color: black;
+    text-shadow: 0 0 30px #fff;
+    box-shadow: 0 0 40px #2dcae9;
+    vertical-align: text-top;
+    font-size: 40px;
+}
+
+.shadow {
+    box-shadow: 0 0 40px #2dcae9;
+}
+
+.fondo {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: -999;
+}
+
+#desktop {
+    display: none;
+}
+
+#title {
+    position: fixed;
+    z-index: -99;
+    height: 20vh;
+    width: 100vw;
+}
+
+.registre {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    width: 90vw;
+    height: 95vh;
+    margin: auto;
+}
+
+.input-form {
+    width: 100%;
+    margin: 10px;
+    padding: 50px;
+    font-size: 50px;
+    height: 70px;
+    border-radius: 10px;
+    background-color: initial;
+    border: solid 5px #2dcae9;
+    color: white;
+}
+
+.btn {
+    width: 100%;
+    margin: 10px;
+    padding: 20px;
+    font-size: 50px;
+    border-radius: 10px;
+    background-color: initial;
+    border: solid 5px #2dcae9;
+    color: white;
+    margin-top: 35vh;
+    cursor: pointer;
+}
+
+.eye {
+    position: relative;
+    left: 78%;
+    bottom: 50%;
+    padding: 15px;
+    font-size: 50px;
+    color: #2fd1eb;
+    border: 0;
+    background-color: initial;
+}
+
+.eye:focus {
+    text-decoration: none;
+    outline: 0 !important;
+}
+
+.btn-audio {
+    position: fixed;
+    top: 3%;
+    right: 3%;
+}
+
+.btn-back {
+    position: fixed;
+    top: 3%;
+    left: 3%;
+}
+
+/*registre or login*/
+.btnaux {
+    margin-top: 5% !important;
+}
+
+.registreaux {
+    height: 99vh !important;
+}
+
+/*animation*/
+.left {
+    left: 100vw;
+}
+
+.carruselentry {
+    animation: 3s carruselEntry;
+}
+
+.carruselOut {
+    animation: 3s carruselOut;
+}
+
+@keyframes carruselEntry {
+    from {
+        left: 100vw;
+    }
+    to {
+        left: 0;
+    }
+}
+
+@keyframes carruselOut {
+    from {
+        right: 0;
+    }
+    to {
+        right: 100vw;
+    }
+}
+
+/*pc escritorio*/
+@media screen and (min-width: 1024px) {
+    #title {
+        display: none;
+    }
+
+    #mobile {
+        display: none;
+    }
+
+    #desktop {
+        display: initial;
+    }
+
+    .registre {
+        width: 30vw;
+        justify-content: flex-end;
+    }
+
+    .registreaux {
+        height: 60vh !important;
+    }
+
+    .btn {
+        margin-top: 38%;
+    }
+
+    .input-form, .btn {
+        font-size: 27px;
+        padding: 10px;
+        background-color: white;
+        color: black;
+        border: solid 2px #000000;
+    }
+
+    input::placeholder {
+        color: black;
+        font-size: 25px;
+    }
+
+    .eye {
+        bottom: 50%;
+        left: 75%;
+        padding: 20px;
+        font-size: 20px;
+        color: black;
+    }
+
+    input:focus {
+        background-color: #f1eabf;
+        box-shadow: 0 0 20px #c4cbc2;
+        vertical-align: text-top;
+        font-size: 20px;
+        outline: 0 !important;
+    }
+}
