@@ -47,6 +47,7 @@ public class SpringBeans {
             Player Kim   = new Player("Kim Bauer", "kim_bauer@gmail.com", passwordEncoder.encode("kb"), NationType.FIRE);
             Player Tony  = new Player("Tony Almeida", "t.almeida@ctu.gov", passwordEncoder.encode("mole"), NationType.AIR);
             Player marco = new Player("Marco Avila", "marco@aaa.com", passwordEncoder.encode("123"), NationType.EARTH);
+            marco.setRoles(Arrays.asList(Rol.PLAYER));
             Player admin = new Player("Marco Avila", "marco@admin.com", passwordEncoder.encode("123"), NationType.EARTH);
             admin.setRoles(Arrays.asList(Rol.ADMIN, Rol.PLAYER, Rol.GUEST));
 
@@ -122,6 +123,7 @@ public class SpringBeans {
             GamePlayer GamePlayer4 = new GamePlayer(jack, two);
             GamePlayer GamePlayer5 = new GamePlayer(admin, three);
             GamePlayer GamePlayer6 = new GamePlayer(Chloe, four);
+            GamePlayer GamePlayer7 = new GamePlayer(marco, three);
 
             // save players in the PlayerRepository
             List<Player> players = List.of(
@@ -137,7 +139,7 @@ public class SpringBeans {
 
             // save players in the GamePlayerRepository
             List<GamePlayer> gps = List.of(
-              GamePlayer1, GamePlayer2, GamePlayer3, GamePlayer4, GamePlayer5, GamePlayer6
+              GamePlayer1, GamePlayer2, GamePlayer3, GamePlayer4, GamePlayer5, GamePlayer6, GamePlayer7
             );
             GamePlayerRepository.saveAll(gps);
 

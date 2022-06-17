@@ -1,4 +1,4 @@
-package com.codeblockacademy.shipbender.service.main;
+package com.codeblockacademy.shipbender.service;
 
 import com.codeblockacademy.shipbender.dto.GameMapDTO;
 import com.codeblockacademy.shipbender.dto.PlayerDTO;

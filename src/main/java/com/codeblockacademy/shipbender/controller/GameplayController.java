@@ -1,21 +1,21 @@
 package com.codeblockacademy.shipbender.controller;
 
 import com.codeblockacademy.shipbender.dto.error.ErrorDTO;
-import com.codeblockacademy.shipbender.dto.request.websocket.EmoteDTO;
 import com.codeblockacademy.shipbender.dto.request.websocket.ShipDTO;
 import com.codeblockacademy.shipbender.dto.response.StatusGameDTO;
+import com.codeblockacademy.shipbender.dto.response.UserEmoteDTO;
 import com.codeblockacademy.shipbender.service.intereface.IGameplayService;
 import com.codeblockacademy.shipbender.service.intereface.IMatchService;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@Controller
+@RestController
 public class GameplayController {
 
     IGameplayService gameplayService;
@@ -38,9 +38,8 @@ public class GameplayController {
     // enviar emotes
     @MessageMapping("/{gameId}/emotes") // entrada
     @SendTo("/topic/gameplay/{gameId}/emotes") // salida
-    public ErrorDTO matchEmotes ( Authentication authentication, @DestinationVariable Long gameId, @RequestBody EmoteDTO emote ) {
-
-        return new ErrorDTO("emotes", "creating emotes");
+    public UserEmoteDTO matchEmotes ( @DestinationVariable Long gameId, @RequestBody String emote ) {
+        return gameplayService.sendEmote(gameId, emote);
     }
 
     // enviar disparos

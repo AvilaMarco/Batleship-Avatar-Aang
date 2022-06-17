@@ -1,11 +1,8 @@
-package com.codeblockacademy.shipbender.service;
+package com.codeblockacademy.shipbender.service.model;
 
 import com.codeblockacademy.shipbender.dto.GameMapDTO;
 import com.codeblockacademy.shipbender.dto.response.GameMatchDTO;
 import com.codeblockacademy.shipbender.dto.response.StatusGameDTO;
-import com.codeblockacademy.shipbender.exception.conflict.GameAlreadyExistsException;
-import com.codeblockacademy.shipbender.exception.conflict.GameIsFullException;
-import com.codeblockacademy.shipbender.exception.conflict.PlayerAlreadyInGameException;
 import com.codeblockacademy.shipbender.exception.not_found.GameNotFoundException;
 import com.codeblockacademy.shipbender.models.Game;
 import com.codeblockacademy.shipbender.repository.GameRepository;
@@ -64,38 +61,5 @@ public class GameService implements IGameService {
         game.updateStatusGameOf(builder);
 
         return builder.build();
-    }
-
-    // Validations
-    public void gameExists ( Long gameId ) {
-        if (!repository.existsById(gameId)) {
-            throw new GameNotFoundException(gameId);
-        }
-    }
-
-    @Override
-    public void gameNotExists ( String location ) {
-        if (repository.getGameByLocation(location)
-          .isPresent())
-            throw new GameAlreadyExistsException(location);
-    }
-
-    @Override
-    public void gameIsNotFull ( Game game ) {
-        if (game.isFullGame())
-            throw new GameIsFullException(game.getId());
-    }
-
-    @Override
-    public void gameNotContainsThePlayer ( Game game, Long playerId ) {
-        if (game.containsPlayer(playerId))
-            throw new PlayerAlreadyInGameException(playerId);
-    }
-
-    @Override
-    public void gameContainsThePlayer ( Long gameId, Long playerId ) {
-        Game game = getGame(gameId);
-        if (!game.containsPlayer(playerId))
-            throw new PlayerAlreadyInGameException(playerId);
     }
 }

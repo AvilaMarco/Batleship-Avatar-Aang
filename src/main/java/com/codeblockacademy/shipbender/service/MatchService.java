@@ -1,4 +1,4 @@
-package com.codeblockacademy.shipbender.service.main;
+package com.codeblockacademy.shipbender.service;
 
 import com.codeblockacademy.shipbender.dto.GameMapDTO;
 import com.codeblockacademy.shipbender.dto.response.GameCreatedDTO;
@@ -9,11 +9,11 @@ import com.codeblockacademy.shipbender.enums.NationType;
 import com.codeblockacademy.shipbender.models.Game;
 import com.codeblockacademy.shipbender.models.GamePlayer;
 import com.codeblockacademy.shipbender.models.Player;
-import com.codeblockacademy.shipbender.service.GamePlayerService;
-import com.codeblockacademy.shipbender.service.GameService;
-import com.codeblockacademy.shipbender.service.PlayerService;
 import com.codeblockacademy.shipbender.service.intereface.IMatchService;
-import org.modelmapper.ModelMapper;
+import com.codeblockacademy.shipbender.service.model.GamePlayerService;
+import com.codeblockacademy.shipbender.service.model.GameService;
+import com.codeblockacademy.shipbender.service.model.PlayerService;
+import com.codeblockacademy.shipbender.service.validations.IGameValidation;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -23,18 +23,19 @@ public class MatchService implements IMatchService {
     PlayerService     playerService;
     GameService       gameService;
     GamePlayerService gamePlayerService;
-    ModelMapper       mapper;
 
-    public MatchService ( PlayerService playerService, GameService gameService, GamePlayerService gamePlayerService, ModelMapper mapper ) {
+    IGameValidation gameValidation;
+
+    public MatchService ( PlayerService playerService, GameService gameService, GamePlayerService gamePlayerService, IGameValidation gameValidation ) {
         this.playerService     = playerService;
         this.gameService       = gameService;
         this.gamePlayerService = gamePlayerService;
-        this.mapper            = mapper;
+        this.gameValidation    = gameValidation;
     }
 
     @Override
     public GameCreatedDTO createGame ( Authentication authentication, NationType nation, String location ) {
-        gameService.gameNotExists(location);
+        gameValidation.notExists(location);
 
         Player     player     = playerService.getPlayerAuthenticated(authentication);
         Game       game       = new Game(nation, location);
@@ -54,7 +55,8 @@ public class MatchService implements IMatchService {
         Game   game   = gameService.getGame(gameId);
 
 
-        gameService.gameIsNotFull(game);
+        gameValidation.isNotFull(game);
+//        ToDo: fix this
         /*gameService.gameNotContainsThePlayer(game, player.getId());*/
 
         GamePlayer gamePlayer = new GamePlayer(player, game);
@@ -67,14 +69,14 @@ public class MatchService implements IMatchService {
     /* WEB SOCKET */
     public GameMatchDTO getGame ( Authentication authentication, Long gameId ) {
         Player player = playerService.getPlayerAuthenticated(authentication);
-        gameService.gameContainsThePlayer(gameId, player.getId());
+        gameValidation.containsThePlayer(gameId, player.getId());
         return gameService.getGameMatch(gameId);
     }
 
 
     public GameDataDTO statusGame ( Authentication authentication, Long gameId ) {
         Player player = playerService.getPlayerAuthenticated(authentication);
-        gameService.gameContainsThePlayer(gameId, player.getId());
+        gameValidation.containsThePlayer(gameId, player.getId());
         GameMatchDTO  data   = this.getGame(authentication, gameId);
         StatusGameDTO status = gameService.statusGame(gameId);
         return new GameDataDTO(data, status);

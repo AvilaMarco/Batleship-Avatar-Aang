@@ -1,4 +1,4 @@
-package com.codeblockacademy.shipbender.service;
+package com.codeblockacademy.shipbender.service.model;
 
 import com.codeblockacademy.shipbender.exception.forbidden.PlayerDoesNotBelongGame;
 import com.codeblockacademy.shipbender.models.GamePlayer;

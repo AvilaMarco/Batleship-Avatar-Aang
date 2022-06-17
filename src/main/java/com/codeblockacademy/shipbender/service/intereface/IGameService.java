@@ -16,12 +16,4 @@ public interface IGameService {
 
     GameMapDTO save ( Game game );
 
-    // Validations
-    void gameNotExists ( String direction );
-
-    void gameIsNotFull ( Game game );
-
-    void gameNotContainsThePlayer ( Game game, Long playerId );
-
-    void gameContainsThePlayer ( Long gameId, Long playerId );
 }

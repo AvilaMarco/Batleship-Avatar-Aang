@@ -1,4 +1,4 @@
-package com.codeblockacademy.shipbender.service;
+package com.codeblockacademy.shipbender.service.model;
 
 import com.codeblockacademy.shipbender.dto.PlayerDTO;
 import com.codeblockacademy.shipbender.dto.PlayerScoreDTO;
@@ -10,7 +10,6 @@ import com.codeblockacademy.shipbender.exception.unauthorized.PlayerNotLoginExce
 import com.codeblockacademy.shipbender.models.Player;
 import com.codeblockacademy.shipbender.repository.PlayerRepository;
 import com.codeblockacademy.shipbender.service.intereface.IPlayerService;
-import com.codeblockacademy.shipbender.service.intereface.ISessionService;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -25,12 +24,10 @@ public class PlayerService implements IPlayerService {
 
     PlayerRepository playerRepository;
     ModelMapper      mapper;
-    ISessionService  sessionService;
 
-    public PlayerService ( PlayerRepository playerRepository, ModelMapper mapper, ISessionService sessionService ) {
+    public PlayerService ( PlayerRepository playerRepository, ModelMapper mapper ) {
         this.playerRepository = playerRepository;
         this.mapper           = mapper;
-        this.sessionService   = sessionService;
     }
 
     @Override
