@@ -1,0 +1,53 @@
+/* Layout for mobile landscape */
+.container-grid {
+  width: 100vw;
+  height: 100vh;
+  display: grid;
+  grid-template-columns: 5.5fr 4.5fr;
+  grid-template-rows: repeat(6, 1fr);
+  grid-template-areas:
+    "g po"
+    "g ig"
+    "g ig"
+    "g co"
+    "g gc"
+    "g pm";
+}
+.host-player {
+  grid-area: po;
+}
+
+.client-player {
+  grid-area: pm;
+}
+
+.console {
+  grid-area: co;
+}
+.player-card-me {
+  grid-area: pm;
+  /* background-color: red; */
+}
+
+.player-card-opponent {
+  grid-area: po;
+  /* background-color: blue; */
+}
+
+.game-info {
+  grid-area: ig;
+  background-color: gray;
+}
+
+.game-control {
+  grid-area: gc;
+  background-color: skyblue;
+}
+
+.container-grids {
+  grid-area: g;
+  background-color: green;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

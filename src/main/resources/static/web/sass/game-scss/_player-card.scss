@@ -1,0 +1,41 @@
+@mixin player-card-content {
+  height: 90%;
+  background-color: gray;
+}
+
+.player-card-container {
+  position: relative;
+  .bg-img {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: -1;
+  }
+  .player-card {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 100%;
+
+    .nation-logo {
+      @include player-card-content();
+      width: 8vw;
+      img {
+        width: 100%;
+      }
+    }
+
+    .user-status {
+      @include player-card-content();
+      width: 25vw;
+    }
+    .turn {
+      width: 8vw;
+      @include player-card-content();
+      text-align: center;
+    }
+    p {
+      margin: 0;
+    }
+  }
+}

@@ -1,79 +1,10 @@
+/* Fontawesome */
+@use "fontawesome/scss/fontawesome.scss";
 @use "utils/colors";
 @use "utils/utils";
-
-@mixin player {
-  display: flex;
-  justify-content: space-around;
-  // background-color: skyblue;
-  // background-image: url("../assets/icons/border-viento2.png");
-  // background-position: CENTER;
-  // background-size: cover;
-  position: relative;
-}
-
-@mixin other {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-}
-.game-items {
-  overflow-x: scroll;
-  width: 60%;
-  height: 100%;
-  position: relative;
-}
-.container-game-items {
-  position: absolute;
-  display: flex;
-}
-.player-card-container {
-  @include player();
-}
-.game-info {
-  @include other();
-}
-.game-control {
-  @include other();
-}
-body {
-  margin: 0;
-}
-
-.bg-img {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  z-index: -1;
-}
-
-.flex-box {
-  display: flex;
-}
-.player-card {
-  display: grid;
-  grid-template-areas: ". logo . card . turn .";
-  grid-template-columns: 2% 1fr 2% 4fr 2% 1fr 2%;
-  padding: 5px 0;
-}
-.nation-logo {
-  grid-area: logo;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: gray;
-}
-
-.nation-logo img {
-  width: 90%;
-}
-.user-status {
-  grid-area: card;
-}
-.turn {
-  grid-area: turn;
-  background-color: gray;
-  text-align: center;
-}
-p {
-  margin: 0;
-}
+@use "game-scss/layout";
+/* GRID STYLES */
+@use "game-scss/ship";
+@use "game-scss/grid";
+/* GAME DATA STYLES*/
+@use "game-scss/player-card";

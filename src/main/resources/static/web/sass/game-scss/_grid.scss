@@ -1,7 +1,14 @@
-.host-player {
-  grid-area: po;
+.cell-position {
+  position: absolute;
+  z-index: 0;
 }
 
-.client-player {
-  grid-area: pm;
+.cell-position-col {
+  top: 0;
+  left: 0;
+}
+
+.cell-position-row {
+  bottom: 0;
+  right: 0;
 }

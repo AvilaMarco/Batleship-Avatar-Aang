@@ -1,13 +1,22 @@
-import 'sockjs' // ejecuta codigo de sockJS y permite usar el objeto SockJS
-import 'stomp' // ejecuta codigo de stompJS y permite usar el objeto Stomp
-import {createGrid} from "./game-mjs/grid.js";
-import {getHTML} from "./utils/utils.js";
-import {getToken} from "./utils/payload.js";
-import {setupShipsHost, setupTitleGame, startGame, viewClientData} from "./game-mjs/update_html.js";
-import {CLIENT, HOST} from "./game-mjs/TEST_DATA.js"
-import {gameId, HEADER, TOKEN} from "./game-mjs/websocket/data_connection.js";
-import {subscribeShips, suscribeGame, suscribeWaitingClient} from "./game-mjs/websocket/topics.js";
-import {sendEmote} from "./game-mjs/websocket/sends.js";
+/* import "sockjs"; // ejecuta codigo de sockJS y permite usar el objeto SockJS
+import "stomp"; // ejecuta codigo de stompJS y permite usar el objeto Stomp */
+import { createGrid } from "./game-mjs/grid.js";
+import { getHTML } from "./utils/utils.js";
+import { getToken } from "./utils/payload.js";
+import {
+  setupShipsHost,
+  setupTitleGame,
+  startGame,
+  viewClientData,
+} from "./game-mjs/update_html.js";
+import { CLIENT, DATA, HOST, STATUS } from "./game-mjs/TEST_DATA.js";
+import { gameId, HEADER, TOKEN } from "./game-mjs/websocket/data_connection.js";
+import {
+  subscribeShips,
+  suscribeGame,
+  suscribeWaitingClient,
+} from "./game-mjs/websocket/topics.js";
+import { sendEmote } from "./game-mjs/websocket/sends.js";
 
 /* WEB SOCKET */
 let stomp = null;
@@ -17,36 +26,36 @@ let rival = {};
 let game = {};
 
 // TEST
-const status = document.getElementById("HOME_TEST")
+const status = document.getElementById("HOME_TEST");
 status.addEventListener("click", async () => {
-  const {status, data} = await statusGame(gameId, TOKEN);
-  let {game, host, client} = status;
-  console.log(data)
-  console.log(status)
-})
+  const { status, data } = await statusGame(gameId, TOKEN);
+  let { game, host, client } = status;
+  console.log(data);
+  console.log(status);
+});
 
-const emote = document.getElementById("EMOTE_CHAT")
+const emote = document.getElementById("EMOTE_CHAT");
 emote.addEventListener("click", async () => {
-  const emote = prompt("ingresa un emote")
+  const emote = prompt("ingresa un emote");
   sendEmote(stomp, emote);
-})
+});
 
-document.addEventListener('DOMContentLoaded', async () => {
-
+document.addEventListener("DOMContentLoaded", async () => {
   createGrid(9, getHTML("#grid"), "ships", "gridShips");
-  const {status, data} = await statusGame(gameId, TOKEN);
-  let {game, host, client} = status;
-  console.log(data)
-  console.log(status)
-  connectClientSocket(status);
+  /*   const { status, data } = await statusGame(gameId, TOKEN);
+  let { game, host, client } = status; */
+  const { status, data } = { data: DATA, status: STATUS };
+  let { game, host, client } = status;
+  console.log(data);
+  console.log(status);
+  /* connectClientSocket(status); */
 
-  viewClientData(HOST)
-  setupTitleGame(data.nation)
+  viewClientData(HOST);
+  setupTitleGame(data.nation);
   if (game === "CREATED") {
-
     // HOST
     if (host === "HOST_WITHOUT_SHIPS") {
-      setupShipsHost(stomp)
+      setupShipsHost(stomp);
     } else if (host === "HOST_WITH_SHIPS") {
       // created existends ships
     }
@@ -54,19 +63,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (client === "CLIENT_WAITING") {
       // view señor x
     } else if (client === "CLIENT_WITHOUT_SHIPS") {
-      viewClientData(CLIENT)
+      viewClientData(CLIENT);
     } else if (client === "CLIENT_WITH_SHIPS") {
-      viewClientData(CLIENT)
+      viewClientData(CLIENT);
     }
-
   } else if (game === "IN_GAME") {
-    startGame()
+    startGame();
   }
-
-})
+});
 
 /* WEB SOCKET*/
-function connectClientSocket({game, client}) {
+function connectClientSocket({ game, client }) {
   const socket = new SockJS("/the-last-shipbender");
   stomp = Stomp.over(socket);
   stomp.connect(HEADER, (frame) => {
@@ -74,19 +81,19 @@ function connectClientSocket({game, client}) {
 
     if (game === "CREATED") {
       if (client === "CLIENT_WAITING") {
-        suscribeWaitingClient(stomp)
+        suscribeWaitingClient(stomp);
       }
-      subscribeShips(stomp)
+      subscribeShips(stomp);
     } else if (game === "IN_GAME") {
-      suscribeGame(stomp)
+      suscribeGame(stomp);
     }
-  })
-
+  });
 }
 
 function statusGame(gameId, token) {
-  return fetch(`/api/match/${gameId}/status`, getToken(token))
-      .then((res) => (res.ok ? res.json() : Promise.reject(res.body)))
+  return fetch(`/api/match/${gameId}/status`, getToken(token)).then((res) =>
+    res.ok ? res.json() : Promise.reject(res.body)
+  );
 }
 
 /* Load Data Local Storage */

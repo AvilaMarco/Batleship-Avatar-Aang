@@ -1,0 +1,31 @@
+@use "../utils/mixins" as *;
+
+@mixin other {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.game-info {
+  @include other();
+}
+.game-control {
+  @include other();
+}
+.game-items {
+  overflow-x: scroll;
+  width: 60%;
+  height: 100%;
+  position: relative;
+}
+.container-game-items {
+  position: absolute;
+  display: flex;
+}
+body {
+  margin: 0;
+}
+
+.flex-box {
+  display: flex;
+}

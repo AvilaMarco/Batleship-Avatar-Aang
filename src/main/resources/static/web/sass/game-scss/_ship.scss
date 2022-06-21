@@ -1,0 +1,197 @@
+:root {
+  --cell-size-s: 30px;
+  --cell-size-m: 35px;
+  --cell-size-l: 50px;
+
+  --letter-space-cell: 4px;
+  --letter-margin-cell: 7px;
+}
+
+.flex-container {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: url("../assets/img/bg-game.jpg");
+}
+
+.grid-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.grid-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.grid-cell {
+  display: flex;
+  box-sizing: border-box;
+  width: var(--cell-size-s);
+  height: var(--cell-size-s);
+  border: 1.3px solid rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  vertical-align: middle;
+  font-weight: bold;
+  text-align: center;
+  align-items: center;
+  position: relative;
+}
+
+.carrier-busy-cell,
+.battleship-busy-cell,
+.submarine-busy-cell,
+.destroyer-busy-cell,
+.patrol_boat-busy-cell {
+  background-color: rgba(0, 119, 190, 0.5);
+}
+
+#display {
+  color: black;
+  background-image: url("../assets/texturas/mapaTextura.png");
+  background-size: cover;
+  height: 25px;
+  width: 92%;
+  padding: 0.2rem;
+  order: 1;
+  display: block;
+  font-weight: bold;
+  border-radius: 10px;
+  border: solid 2px;
+}
+
+#display p {
+  font-size: 0.7em;
+  display: inline-block;
+  overflow: hidden; /* Ensures the content is not revealed until the animation */
+  border-right: 0.15em solid black; /* The typwriter cursor */
+  white-space: nowrap; /* Keeps the content on a single line */
+  margin: 0 auto; /* Gives that scrolling effect as the typing happens */
+  letter-spacing: 0.15em; /* Adjust as needed */
+  animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+}
+
+/* The typing effect */
+@keyframes typing {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+/* The typewriter cursor effect */
+@keyframes blink-caret {
+  from,
+  to {
+    border-color: transparent;
+  }
+  50% {
+    border-color: black;
+  }
+}
+
+.grip {
+  position: absolute;
+  z-index: 99;
+  left: 5px;
+  top: 5px;
+  width: 25px;
+  height: 25px;
+  background: gray;
+  background-image: url("../assets/icons/hand-grab-icon.jpg");
+  background-size: contain;
+  border-radius: 50%;
+  opacity: 0.7;
+  cursor: grab;
+}
+
+.grid-item {
+  transform-origin: 25px center;
+  position: relative;
+}
+
+.grid-item .grid-item-content {
+  width: inherit;
+  height: inherit;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+#carrier .grid-item-content {
+  background-image: url("../assets/ships/carrier.png");
+  background-size: 85% 100%;
+}
+
+#battleship .grid-item-content {
+  background-image: url("../assets/ships/battleship.png");
+  background-size: 85% 100%;
+}
+
+#submarine .grid-item-content {
+  background-image: url("../assets/ships/submarine.png");
+  background-size: 90% 100%;
+}
+
+#destroyer .grid-item-content {
+  background-image: url("../assets/ships/destroyer.png");
+  background-size: 100% 150%;
+}
+
+#patrol_boat .grid-item-content {
+  background-image: url("../assets/ships/patrol_boat.png");
+  background-size: 100% 150%;
+}
+
+.absolute {
+  position: absolute;
+}
+
+.hide {
+  top: -1000px;
+  left: -1000px;
+}
+
+@media only screen and (min-width: 576px) {
+  .flex-container {
+    flex-flow: row-reverse wrap;
+  }
+
+  #display {
+    height: 50px;
+  }
+
+  .grid-cell {
+    width: var(--cell-size-m);
+    height: var(--cell-size-m);
+  }
+
+  .grip {
+    width: 25px;
+    height: 25px;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .flex-container {
+    flex-flow: row-reverse wrap;
+  }
+
+  #display {
+    height: 50px;
+    margin: 2%;
+  }
+
+  .grid-cell {
+    width: var(--cell-size-l);
+    height: var(--cell-size-l);
+  }
+
+  .grip {
+    width: 35px;
+    height: 35px;
+  }
+}
