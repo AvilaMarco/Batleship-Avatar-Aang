@@ -1,9 +1,10 @@
 import {createDockerShip} from "./ships.js";
 import {addClickEvent} from "../utils/utils.js";
+import {sendShips} from "./websocket/sends.js";
 
-const setupShipsHost = (sendShips) => {
+const setupShipsHost = (stomp) => {
   createDockerShip();
-  addClickEvent("#sendShips", sendShips);
+  addClickEvent("#sendShips", () => sendShips(stomp));
 }
 const viewClientData = ({name, score, nation, user_type}) => {
   const template = document.getElementById("TEMPLATE_PLAYER").content
