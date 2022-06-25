@@ -11,8 +11,12 @@
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css?family=Permanent+Marker&display=swap"
+      crossorigin="anonymous"
     />
-    <script src="https://kit.fontawesome.com/f202acb0f8.js"></script>
+    <script
+      src="https://kit.fontawesome.com/f202acb0f8.js"
+      crossorigin="anonymous"
+    ></script>
   </head>
   <body>
     <div id="main-container" class="container-grid">
@@ -40,17 +44,20 @@
         <div class="game-items">
           <div id="salvos" class="container-game-items"></div>
           <div id="ships" class="container-game-items"></div>
-          <button id="sendShips" class="">Send Ships</button>
-          <button id="sendSalvos" class="hidden">Send Salvos</button>
+          <button id="sendShips" class="btn-action">Send Ships</button>
+          <button id="sendSalvos" class="btn-action hidden">Send Salvos</button>
         </div>
-        <div>
-          <i class="fa-brands fa-github fa-fw fa-xl"></i>
-          <span>aa<i class="fa-thin fa-00"></i></span>
+        <div class="dock-buttons">
           <button id="EMOTE_CHAT">
-            <i class="fa-solid fa-comment-dots"></i>
+            <!-- <img
+              src="assets/svg_icons/comment-dots-solid.svg"
+              alt="emote icon"
+            /> -->
+            CHAT
           </button>
           <button id="HOME_TEST">
-            <i class="fa-solid fa-globe"></i>
+            <!-- <img src="assets/svg_icons/globe-solid.svg" alt="emote icon" /> -->
+            HOME
           </button>
         </div>
       </div>

@@ -1,27 +1,36 @@
 @use "../utils/mixins" as *;
 
-@mixin other {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-}
-
 .game-info {
-  @include other();
 }
 .game-control {
-  @include other();
-}
-.game-items {
-  overflow-x: scroll;
-  width: 60%;
-  height: 100%;
-  position: relative;
-}
-.container-game-items {
-  position: absolute;
   display: flex;
+  justify-content: space-between;
+
+  .game-items {
+    // overflow-x: scroll;
+    // width: 60%;
+    // height: 100%;
+    // position: relative;
+    flex: 1 0 70%;
+    // position: absolute;
+    .container-game-items {
+      display: flex;
+      // position: relative;
+    }
+    .btn-action {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
+  .dock-buttons {
+    flex: 1 0 30%;
+    display: flex;
+    justify-content: space-around;
+  }
 }
+
 body {
   margin: 0;
 }

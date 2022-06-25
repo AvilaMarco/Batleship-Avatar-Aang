@@ -1,4 +1,4 @@
-import {getHTML, list} from "../utils/utils.js";
+import { getHTML, list } from "../utils/utils.js";
 
 /*creates the ships with the ability of been placed in the grid. 
 It requires a shipType, that is, the id by wich the ship will be recongnized;
@@ -7,14 +7,14 @@ a parent where the ship will be appended to;
 and a boolean that specifies whether the ship can be moved or not.
 */
 let shipsName = [
-  "carrier"
-  /*  "battleship",
-    "submarine",
-    "destroyer",
-    "patrol_boat",*/
+  "carrier",
+  "battleship",
+  "submarine",
+  "destroyer",
+  "patrol_boat",
 ];
 
-const createShips = function (shipType, length, orientation, parent, isStatic) {
+const createShips = (shipType, length, orientation, parent, isStatic) => {
   let ship = document.createElement("DIV");
   let grip = document.createElement("DIV");
   let content = document.createElement("DIV");
@@ -96,8 +96,8 @@ const createShips = function (shipType, length, orientation, parent, isStatic) {
     ship.style.top = "-1000px";
     // find the element on the last draggable position
     let endTarget = document.elementFromPoint(
-        ev.changedTouches[0].pageX,
-        ev.changedTouches[0].pageY
+      ev.changedTouches[0].pageX,
+      ev.changedTouches[0].pageY
     );
 
     // position it relative again and remove the inline styles that aren't needed anymore
@@ -120,16 +120,16 @@ const createShips = function (shipType, length, orientation, parent, isStatic) {
         }
         for (let i = 1; i < ship.dataset.length; i++) {
           let id = endTarget.id
-              .match(
-                  new RegExp(
-                      `[^${endTarget.dataset.y}|^${endTarget.dataset.x}]`,
-                      "g"
-                  )
+            .match(
+              new RegExp(
+                `[^${endTarget.dataset.y}|^${endTarget.dataset.x}]`,
+                "g"
               )
-              .join("");
+            )
+            .join("");
           let cellId = `${id}${endTarget.dataset.y}${x + i}`;
           if (
-              document.getElementById(cellId).className.search(/busy-cell/) !== -1
+            document.getElementById(cellId).className.search(/busy-cell/) !== -1
           ) {
             /*document.querySelector("#display p").innerText = "careful";*/
             return;
@@ -143,18 +143,18 @@ const createShips = function (shipType, length, orientation, parent, isStatic) {
         }
         for (let i = 1; i < ship.dataset.length; i++) {
           let id = endTarget.id
-              .match(
-                  new RegExp(
-                      `[^${endTarget.dataset.y}|^${endTarget.dataset.x}]`,
-                      "g"
-                  )
+            .match(
+              new RegExp(
+                `[^${endTarget.dataset.y}|^${endTarget.dataset.x}]`,
+                "g"
               )
-              .join("");
+            )
+            .join("");
           let cellId = `${id}${String.fromCharCode(
-              endTarget.dataset.y.charCodeAt() + i
+            endTarget.dataset.y.charCodeAt() + i
           )}${x}`;
           if (
-              document.getElementById(cellId).className.search(/busy-cell/) !== -1
+            document.getElementById(cellId).className.search(/busy-cell/) !== -1
           ) {
             /*document.querySelector("#display p").innerText = "careful";*/
             return;
@@ -176,91 +176,91 @@ const createShips = function (shipType, length, orientation, parent, isStatic) {
   //event to allow the ship rotation
   function rotateShips(shipType) {
     document
-        .querySelector(`#${shipType}`)
-        .addEventListener("click", function (ev) {
-          /*document.querySelector("#display p").innerText = "";*/
-          if (!ev.target.classList.contains("grip")) return;
+      .querySelector(`#${shipType}`)
+      .addEventListener("click", function (ev) {
+        /*document.querySelector("#display p").innerText = "";*/
+        if (!ev.target.classList.contains("grip")) return;
 
-          let ship = ev.target.parentNode;
-          let orientation = ship.dataset.orientation;
-          let cell = ship.parentElement.classList.contains("grid-cell")
-              ? ship.parentElement
-              : null;
+        let ship = ev.target.parentNode;
+        let orientation = ship.dataset.orientation;
+        let cell = ship.parentElement.classList.contains("grid-cell")
+          ? ship.parentElement
+          : null;
 
-          if (cell != null) {
-            if (orientation === "horizontal") {
+        if (cell != null) {
+          if (orientation === "horizontal") {
+            if (
+              parseInt(ship.dataset.length) +
+                (cell.dataset.y.charCodeAt() - 64) >
+              11
+            ) {
+              /*document.querySelector("#display p").innerText = "careful";*/
+              return;
+            }
+
+            for (let i = 1; i < ship.dataset.length; i++) {
+              let id = cell.id
+                .match(
+                  new RegExp(`[^${cell.dataset.y}|^${cell.dataset.x}]`, "g")
+                )
+                .join("");
+              let cellId = `${id}${String.fromCharCode(
+                cell.dataset.y.charCodeAt() + i
+              )}${cell.dataset.x}`;
               if (
-                  parseInt(ship.dataset.length) +
-                  (cell.dataset.y.charCodeAt() - 64) >
-                  11
+                document
+                  .getElementById(cellId)
+                  .className.search(/busy-cell/) !== -1
               ) {
                 /*document.querySelector("#display p").innerText = "careful";*/
                 return;
               }
+            }
+          } else {
+            if (parseInt(ship.dataset.length) + parseInt(cell.dataset.x) > 11) {
+              /*document.querySelector("#display p").innerText = "careful";*/
+              return;
+            }
 
-              for (let i = 1; i < ship.dataset.length; i++) {
-                let id = cell.id
-                    .match(
-                        new RegExp(`[^${cell.dataset.y}|^${cell.dataset.x}]`, "g")
-                    )
-                    .join("");
-                let cellId = `${id}${String.fromCharCode(
-                    cell.dataset.y.charCodeAt() + i
-                )}${cell.dataset.x}`;
-                if (
-                    document
-                        .getElementById(cellId)
-                        .className.search(/busy-cell/) !== -1
-                ) {
-                  /*document.querySelector("#display p").innerText = "careful";*/
-                  return;
-                }
-              }
-            } else {
-              if (parseInt(ship.dataset.length) + parseInt(cell.dataset.x) > 11) {
+            for (let i = 1; i < ship.dataset.length; i++) {
+              let id = cell.id
+                .match(
+                  new RegExp(`[^${cell.dataset.y}|^${cell.dataset.x}]`, "g")
+                )
+                .join("");
+              let cellId = `${id}${cell.dataset.y}${
+                parseInt(cell.dataset.x) + i
+              }`;
+              if (
+                document
+                  .getElementById(cellId)
+                  .className.search(/busy-cell/) !== -1
+              ) {
                 /*document.querySelector("#display p").innerText = "careful";*/
                 return;
               }
-
-              for (let i = 1; i < ship.dataset.length; i++) {
-                let id = cell.id
-                    .match(
-                        new RegExp(`[^${cell.dataset.y}|^${cell.dataset.x}]`, "g")
-                    )
-                    .join("");
-                let cellId = `${id}${cell.dataset.y}${
-                    parseInt(cell.dataset.x) + i
-                }`;
-                if (
-                    document
-                        .getElementById(cellId)
-                        .className.search(/busy-cell/) !== -1
-                ) {
-                  /*document.querySelector("#display p").innerText = "careful";*/
-                  return;
-                }
-              }
             }
           }
+        }
 
-          if (orientation == "horizontal") {
-            ship.dataset.orientation = "vertical";
-            ship.style.transform = "rotate(90deg)";
-          } else {
-            ship.dataset.orientation = "horizontal";
-            ship.style.transform = "rotate(360deg)";
-          }
-          if (cell != null) {
-            checkBusyCells(ship, cell);
-          }
-        });
+        if (orientation == "horizontal") {
+          ship.dataset.orientation = "vertical";
+          ship.style.transform = "rotate(90deg)";
+        } else {
+          ship.dataset.orientation = "horizontal";
+          ship.style.transform = "rotate(360deg)";
+        }
+        if (cell != null) {
+          checkBusyCells(ship, cell);
+        }
+      });
   }
 };
 
 function checkBusyCells(ship, cell) {
   let id = cell.id
-      .match(new RegExp(`[^${cell.dataset.y}|^${cell.dataset.x}]`, "g"))
-      .join("");
+    .match(new RegExp(`[^${cell.dataset.y}|^${cell.dataset.x}]`, "g"))
+    .join("");
   let y = cell.dataset.y.charCodeAt() - 64;
   let x = parseInt(cell.dataset.x);
 
@@ -271,48 +271,48 @@ function checkBusyCells(ship, cell) {
   for (let i = 0; i < ship.dataset.length; i++) {
     if (ship.dataset.orientation === "horizontal") {
       document
-          .querySelector(`#${id}${String.fromCharCode(y + 64)}${x + i}`)
-          .classList.add(`${ship.id}-busy-cell`);
+        .querySelector(`#${id}${String.fromCharCode(y + 64)}${x + i}`)
+        .classList.add(`${ship.id}-busy-cell`);
     } else {
       document
-          .querySelector(`#${id}${String.fromCharCode(y + 64 + i)}${x}`)
-          .classList.add(`${ship.id}-busy-cell`);
+        .querySelector(`#${id}${String.fromCharCode(y + 64 + i)}${x}`)
+        .classList.add(`${ship.id}-busy-cell`);
     }
   }
 }
 
 function createDockerShip() {
-  /*const shipsLength = [5, 4, 3, 3, 2];*/
-  const shipsLength = [5];
+  const shipsLength = [5, 4, 3, 3, 2];
+  // const shipsLength = [5];
   shipsLength.forEach((lengthShip, i) =>
-      createShips(
-          shipsName[i],
-          lengthShip,
-          "horizontal",
-          getHTML("#ships"),
-          false
-      )
+    createShips(
+      shipsName[i],
+      lengthShip,
+      "horizontal",
+      getHTML("#ships"),
+      false
+    )
   );
 }
 
 const shipOnGrid = () =>
-    shipsName.map((ship) => {
-      const {length, orientation, x, y} = getHTML("#" + ship).dataset;
-      const position = list(parseInt(length)).map((_, i) =>
-          orientation === "horizontal"
-              ? y + (parseInt(x) + i)
-              : String.fromCharCode(y.charCodeAt(0) + i) + x
-      );
-      return {
-        type: ship.toUpperCase(),
-        locations: position,
-      };
-    });
+  shipsName.map((ship) => {
+    const { length, orientation, x, y } = getHTML("#" + ship).dataset;
+    const position = list(parseInt(length)).map((_, i) =>
+      orientation === "horizontal"
+        ? y + (parseInt(x) + i)
+        : String.fromCharCode(y.charCodeAt(0) + i) + x
+    );
+    return {
+      type: ship.toUpperCase(),
+      locations: position,
+    };
+  });
 
 const someShipOnDocker = () =>
-    shipsName.some((ship) => getHTML("#" + ship).dataset.y === undefined);
+  shipsName.some((ship) => getHTML("#" + ship).dataset.y === undefined);
 
-export {createShips, createDockerShip, shipOnGrid, someShipOnDocker};
+export { createShips, createDockerShip, shipOnGrid, someShipOnDocker };
 
 //me fijo si quedan barcos en el dock
 /*function dockIsEmpty() {
