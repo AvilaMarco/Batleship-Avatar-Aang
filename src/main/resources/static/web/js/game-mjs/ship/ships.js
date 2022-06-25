@@ -1,5 +1,7 @@
-import { getHTML, list } from "../utils/utils.js";
-
+import { getHTML, list } from "../../utils/utils.js";
+import { GRID_SIZE } from "../CONSTANTS.js";
+import { rotateShips } from "./rotate_ship.js";
+import { checkBusyCells } from "./validations.js";
 /*creates the ships with the ability of been placed in the grid. 
 It requires a shipType, that is, the id by wich the ship will be recongnized;
 the amount of cells the ship is going to occupy in the grid;
@@ -55,9 +57,13 @@ const createShips = (shipType, length, orientation, parent, isStatic) => {
   if (!isStatic) {
     grip.classList.add("grip");
     grip.draggable = "true";
-    grip.addEventListener("dragstart", dragShip);
+    // Events drag
+    ship.addEventListener("dragstart", dragShip);
+    // Events drag mobile
+    ship.addEventListener("touchstart", touchShipStart);
     ship.addEventListener("touchmove", touchShip);
     ship.addEventListener("touchend", touchShipEnd);
+
     ship.appendChild(grip);
   }
 
@@ -74,26 +80,31 @@ const createShips = (shipType, length, orientation, parent, isStatic) => {
 
   //event to allow the ship beeing dragged
   function dragShip(ev) {
-    if (!ev.target.classList.contains("grip")) return;
-    ev.dataTransfer.setData("ship", ev.target.parentNode.id);
+    // if (!ev.target.classList.contains("grip")) return;
+    // ev.dataTransfer.setData("ship", ev.target.parentNode.id);
+  }
+
+  function touchShipStart(ev) {
+    ev.preventDefault();
   }
 
   //event to allow the ship beeing dragged on touch devices
   function touchShip(ev) {
     // make the element draggable by giving it an absolute position and modifying the x and y coordinates
-    ship.classList.add("absolute");
+    // ship.classList.add("absolute");
 
-    const touch = ev.targetTouches[0];
-    // Place element where the finger is
-    ship.style.left = touch.pageX - 25 + "px";
-    ship.style.top = touch.pageY - 25 + "px";
-    event.preventDefault();
+    // const touch = ev.targetTouches[0];
+    // // Place element where the finger is
+    // ship.style.left = touch.pageX - 25 + "px";
+    // ship.style.top = touch.pageY - 25 + "px";
+    ev.preventDefault();
   }
 
   function touchShipEnd(ev) {
+    console.log(ev);
     // hide the draggable element, or the elementFromPoint won't find what's underneath
-    ship.style.left = "-1000px";
-    ship.style.top = "-1000px";
+    // ship.style.left = "-1000px";
+    // ship.style.top = "-1000px";
     // find the element on the last draggable position
     let endTarget = document.elementFromPoint(
       ev.changedTouches[0].pageX,
@@ -101,24 +112,26 @@ const createShips = (shipType, length, orientation, parent, isStatic) => {
     );
 
     // position it relative again and remove the inline styles that aren't needed anymore
-    ship.classList.remove("absolute");
-    ship.style.left = "";
-    ship.style.top = "";
+    // ship.classList.remove("absolute");
+    // ship.style.left = "";
+    // ship.style.top = "";
     // put the draggable into it's new home
 
     if (endTarget.classList.contains("cell-position")) {
       endTarget = endTarget.parentElement;
     }
     if (endTarget.classList.contains("grid-cell")) {
-      let y = endTarget.dataset.y.charCodeAt() - 64;
-      let x = parseInt(endTarget.dataset.x);
+      const y = endTarget.dataset.y.charCodeAt() - 64;
+      const x = parseInt(endTarget.dataset.x);
+      const lengthShip = parseInt(ship.dataset.length);
+
       if (ship.dataset.orientation === "horizontal") {
-        if (parseInt(ship.dataset.length) + x > 11) {
+        if (lengthShip + x > GRID_SIZE) {
           /*document.querySelector("#display p").innerText =
             "movement not allowed";*/
           return;
         }
-        for (let i = 1; i < ship.dataset.length; i++) {
+        for (let i = 1; i < lengthShip; i++) {
           let id = endTarget.id
             .match(
               new RegExp(
@@ -136,7 +149,7 @@ const createShips = (shipType, length, orientation, parent, isStatic) => {
           }
         }
       } else {
-        if (parseInt(ship.dataset.length) + y > 11) {
+        if (parseInt(ship.dataset.length) + y > GRID_SIZE) {
           /*document.querySelector("#display p").innerText =
             "movement not allowed";*/
           return;
@@ -172,114 +185,7 @@ const createShips = (shipType, length, orientation, parent, isStatic) => {
     }
     /*dockIsEmpty();*/
   }
-
-  //event to allow the ship rotation
-  function rotateShips(shipType) {
-    document
-      .querySelector(`#${shipType}`)
-      .addEventListener("click", function (ev) {
-        /*document.querySelector("#display p").innerText = "";*/
-        if (!ev.target.classList.contains("grip")) return;
-
-        let ship = ev.target.parentNode;
-        let orientation = ship.dataset.orientation;
-        let cell = ship.parentElement.classList.contains("grid-cell")
-          ? ship.parentElement
-          : null;
-
-        if (cell != null) {
-          if (orientation === "horizontal") {
-            if (
-              parseInt(ship.dataset.length) +
-                (cell.dataset.y.charCodeAt() - 64) >
-              11
-            ) {
-              /*document.querySelector("#display p").innerText = "careful";*/
-              return;
-            }
-
-            for (let i = 1; i < ship.dataset.length; i++) {
-              let id = cell.id
-                .match(
-                  new RegExp(`[^${cell.dataset.y}|^${cell.dataset.x}]`, "g")
-                )
-                .join("");
-              let cellId = `${id}${String.fromCharCode(
-                cell.dataset.y.charCodeAt() + i
-              )}${cell.dataset.x}`;
-              if (
-                document
-                  .getElementById(cellId)
-                  .className.search(/busy-cell/) !== -1
-              ) {
-                /*document.querySelector("#display p").innerText = "careful";*/
-                return;
-              }
-            }
-          } else {
-            if (parseInt(ship.dataset.length) + parseInt(cell.dataset.x) > 11) {
-              /*document.querySelector("#display p").innerText = "careful";*/
-              return;
-            }
-
-            for (let i = 1; i < ship.dataset.length; i++) {
-              let id = cell.id
-                .match(
-                  new RegExp(`[^${cell.dataset.y}|^${cell.dataset.x}]`, "g")
-                )
-                .join("");
-              let cellId = `${id}${cell.dataset.y}${
-                parseInt(cell.dataset.x) + i
-              }`;
-              if (
-                document
-                  .getElementById(cellId)
-                  .className.search(/busy-cell/) !== -1
-              ) {
-                /*document.querySelector("#display p").innerText = "careful";*/
-                return;
-              }
-            }
-          }
-        }
-
-        if (orientation == "horizontal") {
-          ship.dataset.orientation = "vertical";
-          ship.style.transform = "rotate(90deg)";
-        } else {
-          ship.dataset.orientation = "horizontal";
-          ship.style.transform = "rotate(360deg)";
-        }
-        if (cell != null) {
-          checkBusyCells(ship, cell);
-        }
-      });
-  }
 };
-
-function checkBusyCells(ship, cell) {
-  let id = cell.id
-    .match(new RegExp(`[^${cell.dataset.y}|^${cell.dataset.x}]`, "g"))
-    .join("");
-  let y = cell.dataset.y.charCodeAt() - 64;
-  let x = parseInt(cell.dataset.x);
-
-  document.querySelectorAll(`.${ship.id}-busy-cell`).forEach((cell) => {
-    cell.classList.remove(`${ship.id}-busy-cell`);
-  });
-
-  for (let i = 0; i < ship.dataset.length; i++) {
-    if (ship.dataset.orientation === "horizontal") {
-      document
-        .querySelector(`#${id}${String.fromCharCode(y + 64)}${x + i}`)
-        .classList.add(`${ship.id}-busy-cell`);
-    } else {
-      document
-        .querySelector(`#${id}${String.fromCharCode(y + 64 + i)}${x}`)
-        .classList.add(`${ship.id}-busy-cell`);
-    }
-  }
-}
 
 function createDockerShip() {
   const shipsLength = [5, 4, 3, 3, 2];
@@ -315,12 +221,12 @@ const someShipOnDocker = () =>
 export { createShips, createDockerShip, shipOnGrid, someShipOnDocker };
 
 //me fijo si quedan barcos en el dock
-/*function dockIsEmpty() {
+/* function dockIsEmpty() {
   if (document.querySelectorAll("#dock .grid-item").length == 0) {
     document.querySelector("#dock .ships").appendChild(send_Ships);
     send_Ships.classList.remove("d-none");
   }
-}*/
+} */
 
 //createShips('battleship', 4, 'horizontal', document.getElementById('dock'),false)
 //createShips('submarine', 3, 'horizontal', document.getElementById('dock'),false)

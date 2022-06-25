@@ -17,6 +17,7 @@ import {
   suscribeWaitingClient,
 } from "./game-mjs/websocket/topics.js";
 import { sendEmote } from "./game-mjs/websocket/sends.js";
+import { GRID_SIZE } from "./game-mjs/CONSTANTS.js";
 
 /* WEB SOCKET */
 let stomp = null;
@@ -41,7 +42,7 @@ emote.addEventListener("click", async () => {
 });
 
 document.addEventListener("DOMContentLoaded", async () => {
-  createGrid(9, getHTML("#grid"), "ships", "gridShips");
+  createGrid(GRID_SIZE, getHTML("#grid"), "ships", "gridShips");
   /*   const { status, data } = await statusGame(gameId, TOKEN);
   let { game, host, client } = status; */
   const { status, data } = { data: DATA, status: STATUS };
