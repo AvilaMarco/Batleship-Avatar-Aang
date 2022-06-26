@@ -31,7 +31,7 @@ const viewClientData = ({ name, score, nation, user_type }) => {
 };
 
 const setupTitleGame = (nation) => {
-  document.getElementById("GAME_TITLE").textContent = `${nation}'s Nation`;
+  document.getElementById("GAME_TITLE").textContent = `${nation}'s`;
   /*document.getElementById("GAME_TURN")
   document.getElementById("GRID_VIEW")*/
 };

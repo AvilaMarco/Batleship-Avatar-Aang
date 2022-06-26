@@ -7,16 +7,20 @@
     <meta content="user-scalable=no" name="viewport" />
     <link rel="shortcut icon" href="assets/icons/icon.png" sizes="196x196" />
     <link rel="manifest" href="manifest.json" />
+    <script
+      src="https://kit.fontawesome.com/f202acb0f8.js"
+      crossorigin="anonymous"
+    ></script>
+    <!-- <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"
+    /> -->
     <link rel="stylesheet" href="css/game.css" />
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css?family=Permanent+Marker&display=swap"
       crossorigin="anonymous"
     />
-    <script
-      src="https://kit.fontawesome.com/f202acb0f8.js"
-      crossorigin="anonymous"
-    ></script>
   </head>
   <body>
     <div id="main-container" class="container-grid">
@@ -29,12 +33,18 @@
 
       <!-- Game's Turns -->
       <div class="game-info">
-        <p id="GAME_TITLE">Nacion del fuego</p>
+        <div class="titles">
+          <p id="GAME_TITLE"></p>
+          <p>Nation</p>
+        </div>
         <div class="turn-card">
           <p>Turn</p>
           <div id="GAME_TURN">2</div>
         </div>
-        <p id="GRID_VIEW">My Ships</p>
+        <div class="titles">
+          <p>My</p>
+          <p id="GRID_VIEW">Ships</p>
+        </div>
       </div>
 
       <!-- PLAYER CLIENT -->
@@ -42,20 +52,23 @@
       <!-- DOCK -->
       <div id="dock" class="game-control">
         <div class="game-items">
-          <div id="salvos" class="container-game-items"></div>
+          <div id="salvos" class="container-game-items hidden"></div>
           <div id="ships" class="container-game-items"></div>
           <button id="sendShips" class="btn-action">Send Ships</button>
           <button id="sendSalvos" class="btn-action hidden">Send Salvos</button>
         </div>
         <div class="dock-buttons">
-          <button id="EMOTE_CHAT">
+          <button id="EMOTE_CHAT" class="button is-small">
             <!-- <img
               src="assets/svg_icons/comment-dots-solid.svg"
               alt="emote icon"
             /> -->
+            <!-- <span class="icon">
+              <i class="fa-solid fa-alarm-clock"></i>
+            </span> -->
             CHAT
           </button>
-          <button id="HOME_TEST">
+          <button id="HOME_TEST" class="button is-small">
             <!-- <img src="assets/svg_icons/globe-solid.svg" alt="emote icon" /> -->
             HOME
           </button>
@@ -63,7 +76,7 @@
       </div>
 
       <div id="console" class="console">
-        <p>message on console</p>
+        <p class="typing-console typing-anim">message on console</p>
       </div>
     </div>
 

@@ -47,7 +47,7 @@
   background-color: rgba(0, 119, 190, 0.5);
 }
 
-#display {
+#console {
   color: black;
   background-image: url("../assets/texturas/mapaTextura.png");
   background-size: cover;

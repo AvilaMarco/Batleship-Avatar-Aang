@@ -48,13 +48,14 @@
   background-color: rgba(0, 119, 190, 0.5);
 }
 
-#display {
+#console {
   color: black;
   background-image: url("../assets/texturas/mapaTextura.png");
   background-size: cover;
-  height: 25px;
-  width: 92%;
-  padding: 0.2rem;
+  background-position: center;
+  // height: 25px;
+  // width: 92%;
+  padding: 0.5rem;
   order: 1;
   display: block;
   font-weight: bold;
@@ -62,7 +63,7 @@
   border: solid 2px;
 }
 
-#display p {
+.typing-console {
   font-size: 0.7em;
   display: inline-block;
   overflow: hidden; /* Ensures the content is not revealed until the animation */
@@ -70,7 +71,10 @@
   white-space: nowrap; /* Keeps the content on a single line */
   margin: 0 auto; /* Gives that scrolling effect as the typing happens */
   letter-spacing: 0.15em; /* Adjust as needed */
-  animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+}
+
+.typing-anim {
+  animation: typing 3s steps(40, end), blink-caret 0.75s step-end infinite;
 }
 
 /* The typing effect */
@@ -160,9 +164,9 @@
     flex-flow: row-reverse wrap;
   }
 
-  #display {
-    height: 50px;
-  }
+  // #console {
+  //   height: 50px;
+  // }
 
   .grid-cell {
     width: var(--cell-size-m);
@@ -180,10 +184,10 @@
     flex-flow: row-reverse wrap;
   }
 
-  #display {
-    height: 50px;
-    margin: 2%;
-  }
+  // #console {
+  //   height: 50px;
+  //   margin: 2%;
+  // }
 
   .grid-cell {
     width: var(--cell-size-l);

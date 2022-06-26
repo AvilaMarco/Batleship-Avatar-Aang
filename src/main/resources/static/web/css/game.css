@@ -10372,8 +10372,8 @@ body {
   height: 100vh;
   display: -ms-grid;
   display: grid;
-  -ms-grid-columns: 5.5fr 4.5fr;
-  grid-template-columns: 5.5fr 4.5fr;
+  -ms-grid-columns: 5.1fr 4.9fr;
+  grid-template-columns: 5.1fr 4.9fr;
   -ms-grid-rows: (1fr)[6];
   grid-template-rows: repeat(6, 1fr);
       grid-template-areas: "g po" "g ig" "g ig" "g co" "g gc" "g pm";
@@ -10516,13 +10516,12 @@ body {
   background-color: rgba(0, 119, 190, 0.5);
 }
 
-#display {
+#console {
   color: black;
   background-image: url("../assets/texturas/mapaTextura.png");
   background-size: cover;
-  height: 25px;
-  width: 92%;
-  padding: 0.2rem;
+  background-position: center;
+  padding: 0.5rem;
   -webkit-box-ordinal-group: 2;
       -ms-flex-order: 1;
           order: 1;
@@ -10532,7 +10531,7 @@ body {
   border: solid 2px;
 }
 
-#display p {
+.typing-console {
   font-size: 0.7em;
   display: inline-block;
   overflow: hidden;
@@ -10545,8 +10544,11 @@ body {
   /* Gives that scrolling effect as the typing happens */
   letter-spacing: 0.15em;
   /* Adjust as needed */
-  -webkit-animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
-          animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+}
+
+.typing-anim {
+  -webkit-animation: typing 3s steps(40, end), blink-caret 0.75s step-end infinite;
+          animation: typing 3s steps(40, end), blink-caret 0.75s step-end infinite;
 }
 
 /* The typing effect */
@@ -10654,10 +10656,6 @@ body {
             flex-flow: row-reverse wrap;
   }
 
-  #display {
-    height: 50px;
-  }
-
   .grid-cell {
     width: var(--cell-size-m);
     height: var(--cell-size-m);
@@ -10674,11 +10672,6 @@ body {
     -webkit-box-direction: reverse;
         -ms-flex-flow: row-reverse wrap;
             flex-flow: row-reverse wrap;
-  }
-
-  #display {
-    height: 50px;
-    margin: 2%;
   }
 
   .grid-cell {
@@ -10749,6 +10742,33 @@ body {
   margin: 0;
 }
 
+.game-info {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+  text-align: center;
+}
+.game-info .titles {
+  -webkit-box-flex: 0;
+      -ms-flex: 0 0 31%;
+          flex: 0 0 31%;
+  background: yellow;
+  padding: 1rem 0.5rem;
+  font-size: 1.2rem;
+}
+.game-info .turn-card {
+  -webkit-box-flex: 0;
+      -ms-flex: 0 0 26%;
+          flex: 0 0 26%;
+  background: red;
+  padding: 1.9rem 0px;
+}
+
 .game-control {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -10758,6 +10778,7 @@ body {
           justify-content: space-between;
 }
 .game-control .game-items {
+  position: relative;
   -webkit-box-flex: 1;
       -ms-flex: 1 0 70%;
           flex: 1 0 70%;
@@ -10766,6 +10787,10 @@ body {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+  height: 100%;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
 }
 .game-control .game-items .btn-action {
   position: absolute;
@@ -10773,6 +10798,7 @@ body {
   left: 50%;
   -webkit-transform: translate(-50%, -50%);
           transform: translate(-50%, -50%);
+  z-index: 0;
 }
 .game-control .dock-buttons {
   -webkit-box-flex: 1;
@@ -10783,6 +10809,13 @@ body {
   display: flex;
   -ms-flex-pack: distribute;
       justify-content: space-around;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.game-control .dock-buttons button {
+  padding: 10px 10px;
+  text-align: center;
 }
 
 body {

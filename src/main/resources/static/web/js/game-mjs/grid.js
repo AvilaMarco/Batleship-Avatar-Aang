@@ -1,5 +1,5 @@
 import { GRID_SIZE } from "../game-mjs/CONSTANTS.js";
-
+import { updateConsole } from "./console.js";
 /*creates the grid structure. It requires a size, an element 
 where the grid will be attached to and an id to recognized it. 
 */
@@ -73,7 +73,7 @@ function dropShip(ev) {
   /*document.querySelector("#display p").innerText = "";*/
   //checks if the targeted element is a cell
   if (!ev.target.classList.contains("grid-cell")) {
-    /*document.querySelector("#display p").innerText = "movement not allowed";*/
+    updateConsole("movement not allowed");
     return;
   }
   //variables where the data of the ship beeing dragged is stored
@@ -88,7 +88,7 @@ function dropShip(ev) {
   //If true, the drop event is aborted.
   if (ship.dataset.orientation === "horizontal") {
     if (parseInt(ship.dataset.length) + x > GRID_SIZE) {
-      /*document.querySelector("#display p").innerText = "movement not allowed";*/
+      updateConsole("movement not allowed");
       return;
     }
     for (let i = 1; i < ship.dataset.length; i++) {
@@ -99,13 +99,13 @@ function dropShip(ev) {
       if (
         document.getElementById(cellId).className.search(/busy-cell/) !== -1
       ) {
-        /*document.querySelector("#display p").innerText = "careful";*/
+        updateConsole("careful");
         return;
       }
     }
   } else {
     if (parseInt(ship.dataset.length) + y > GRID_SIZE) {
-      /*document.querySelector("#display p").innerText = "movement not allowed";*/
+      updateConsole("movement not allowed");
       return;
     }
 
@@ -119,7 +119,7 @@ function dropShip(ev) {
       if (
         document.getElementById(cellId).className.search(/busy-cell/) !== -1
       ) {
-        /*document.querySelector("#display p").innerText = "careful";*/
+        updateConsole("careful");
         return;
       }
     }
@@ -129,10 +129,10 @@ function dropShip(ev) {
   ship.dataset.y = String.fromCharCode(y + 64);
   ship.dataset.x = x;
   //the ship is added to the cell
-  ev.target.appendChild(ship);
+  cell.appendChild(ship);
   /*dockIsEmpty();*/
 
-  //checkBusyCells(ship, ev.target);
+  checkBusyCells(ship, cell);
 }
 
 function checkBusyCells(ship, cell) {

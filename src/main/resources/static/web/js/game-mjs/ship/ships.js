@@ -56,11 +56,11 @@ const createShips = (shipType, length, orientation, parent, isStatic) => {
 
   if (!isStatic) {
     grip.classList.add("grip");
-    grip.draggable = "true";
+    ship.draggable = "true";
     // Events drag
     ship.addEventListener("dragstart", dragShip);
     // Events drag mobile
-    ship.addEventListener("touchstart", touchShipStart);
+    grip.addEventListener("touchstart", touchShipStart);
     ship.addEventListener("touchmove", touchShip);
     ship.addEventListener("touchend", touchShipEnd);
 
@@ -80,12 +80,15 @@ const createShips = (shipType, length, orientation, parent, isStatic) => {
 
   //event to allow the ship beeing dragged
   function dragShip(ev) {
+    // ev.preventDefault();
     // if (!ev.target.classList.contains("grip")) return;
-    // ev.dataTransfer.setData("ship", ev.target.parentNode.id);
+    ev.dataTransfer.setData("ship", ev.target.id);
   }
 
   function touchShipStart(ev) {
     ev.preventDefault();
+    if (!ev.target.classList.contains("grip")) return;
+    ev.dataTransfer.setData("ship", ev.target.parentNode.id);
   }
 
   //event to allow the ship beeing dragged on touch devices
@@ -188,8 +191,8 @@ const createShips = (shipType, length, orientation, parent, isStatic) => {
 };
 
 function createDockerShip() {
-  const shipsLength = [5, 4, 3, 3, 2];
-  // const shipsLength = [5];
+  // const shipsLength = [5, 4, 3, 3, 2];
+  const shipsLength = [4, 2];
   shipsLength.forEach((lengthShip, i) =>
     createShips(
       shipsName[i],

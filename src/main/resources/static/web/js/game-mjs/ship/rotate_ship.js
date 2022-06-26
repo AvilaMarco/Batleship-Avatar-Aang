@@ -1,4 +1,6 @@
+import { updateConsole } from "../console.js";
 import { GRID_SIZE } from "../CONSTANTS.js";
+import { checkBusyCells } from "./validations.js";
 
 //event to allow the ship rotation
 const rotateShips = (shipType) => {
@@ -20,7 +22,7 @@ const rotateShips = (shipType) => {
             parseInt(ship.dataset.length) + (cell.dataset.y.charCodeAt() - 64) >
             GRID_SIZE
           ) {
-            /*document.querySelector("#display p").innerText = "careful";*/
+            updateConsole("careful");
             return;
           }
 
@@ -35,7 +37,7 @@ const rotateShips = (shipType) => {
               document.getElementById(cellId).className.search(/busy-cell/) !==
               -1
             ) {
-              /*document.querySelector("#display p").innerText = "careful";*/
+              updateConsole("careful");
               return;
             }
           }
@@ -44,7 +46,7 @@ const rotateShips = (shipType) => {
             parseInt(ship.dataset.length) + parseInt(cell.dataset.x) >
             GRID_SIZE
           ) {
-            /*document.querySelector("#display p").innerText = "careful";*/
+            updateConsole("careful");
             return;
           }
 
@@ -59,7 +61,7 @@ const rotateShips = (shipType) => {
               document.getElementById(cellId).className.search(/busy-cell/) !==
               -1
             ) {
-              /*document.querySelector("#display p").innerText = "careful";*/
+              updateConsole("careful");
               return;
             }
           }
