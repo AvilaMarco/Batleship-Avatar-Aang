@@ -10498,7 +10498,6 @@ body {
   width: var(--cell-size-s);
   height: var(--cell-size-s);
   border: 1.3px solid rgba(0, 0, 0, 0.3);
-  border-radius: 10px;
   vertical-align: middle;
   font-weight: bold;
   text-align: center;
@@ -10516,75 +10515,6 @@ body {
   background-color: rgba(0, 119, 190, 0.5);
 }
 
-#console {
-  color: black;
-  background-image: url("../assets/texturas/mapaTextura.png");
-  background-size: cover;
-  background-position: center;
-  padding: 0.5rem;
-  -webkit-box-ordinal-group: 2;
-      -ms-flex-order: 1;
-          order: 1;
-  display: block;
-  font-weight: bold;
-  border-radius: 10px;
-  border: solid 2px;
-}
-
-.typing-console {
-  font-size: 0.7em;
-  display: inline-block;
-  overflow: hidden;
-  /* Ensures the content is not revealed until the animation */
-  border-right: 0.15em solid black;
-  /* The typwriter cursor */
-  white-space: nowrap;
-  /* Keeps the content on a single line */
-  margin: 0 auto;
-  /* Gives that scrolling effect as the typing happens */
-  letter-spacing: 0.15em;
-  /* Adjust as needed */
-}
-
-.typing-anim {
-  -webkit-animation: typing 3s steps(40, end), blink-caret 0.75s step-end infinite;
-          animation: typing 3s steps(40, end), blink-caret 0.75s step-end infinite;
-}
-
-/* The typing effect */
-@-webkit-keyframes typing {
-  from {
-    width: 0;
-  }
-  to {
-    width: 100%;
-  }
-}
-@keyframes typing {
-  from {
-    width: 0;
-  }
-  to {
-    width: 100%;
-  }
-}
-/* The typewriter cursor effect */
-@-webkit-keyframes blink-caret {
-  from, to {
-    border-color: transparent;
-  }
-  50% {
-    border-color: black;
-  }
-}
-@keyframes blink-caret {
-  from, to {
-    border-color: transparent;
-  }
-  50% {
-    border-color: black;
-  }
-}
 .grip {
   position: absolute;
   z-index: 99;
@@ -10687,16 +10617,33 @@ body {
 .cell-position {
   position: absolute;
   z-index: 0;
+  font-size: 1rem;
 }
 
 .cell-position-col {
-  top: 0;
-  left: 0;
+  top: -1px;
+  left: 4px;
 }
 
 .cell-position-row {
-  bottom: 0;
-  right: 0;
+  bottom: -1px;
+  right: 4px;
+}
+
+.corner-top-left {
+  border-radius: 25% 0 0 0;
+}
+
+.corner-top-rigth {
+  border-radius: 0 25% 0 0;
+}
+
+.corner-bottom-rigth {
+  border-radius: 0 0 25% 0;
+}
+
+.corner-bottom-left {
+  border-radius: 0 0 0 25%;
 }
 
 .player-card-container {
@@ -10732,6 +10679,16 @@ body {
   background-color: gray;
   width: 25vw;
 }
+.player-card-container .player-card .user-status .ships {
+  display: -ms-grid;
+  display: grid;
+      grid-template-areas: "c c c c c b b b b" "s s s s d d d p p";
+  -ms-grid-columns: (1fr)[9];
+  grid-template-columns: repeat(9, 1fr);
+  -ms-grid-rows: (1fr)[2];
+  grid-template-rows: repeat(2, 1fr);
+  font-size: 1rem;
+}
 .player-card-container .player-card .turn {
   width: 8vw;
   height: 90%;
@@ -10742,6 +10699,110 @@ body {
   margin: 0;
 }
 
+.carrier-life {
+  -ms-grid-row: 1;
+  -ms-grid-column: 1;
+  -ms-grid-column-span: 5;
+  grid-area: c;
+}
+
+.battleship-life {
+  -ms-grid-row: 1;
+  -ms-grid-column: 6;
+  -ms-grid-column-span: 4;
+  grid-area: b;
+}
+
+.submarine-life {
+  -ms-grid-row: 2;
+  -ms-grid-column: 1;
+  -ms-grid-column-span: 4;
+  grid-area: s;
+}
+
+.destroyer-life {
+  -ms-grid-row: 2;
+  -ms-grid-column: 5;
+  -ms-grid-column-span: 3;
+  grid-area: d;
+}
+
+.patrol_boat-life {
+  -ms-grid-row: 2;
+  -ms-grid-column: 8;
+  -ms-grid-column-span: 2;
+  grid-area: p;
+}
+
+#console {
+  color: black;
+  background-image: url("../assets/texturas/mapaTextura.png");
+  background-size: cover;
+  background-position: center;
+  padding: 0.5rem;
+  -webkit-box-ordinal-group: 2;
+      -ms-flex-order: 1;
+          order: 1;
+  display: block;
+  font-weight: bold;
+  border-radius: 10px;
+  border: solid 2px;
+}
+
+.typing-console {
+  font-size: 0.7em;
+  display: inline-block;
+  overflow: hidden;
+  /* Ensures the content is not revealed until the animation */
+  border-right: 0.15em solid black;
+  /* The typwriter cursor */
+  white-space: nowrap;
+  /* Keeps the content on a single line */
+  margin: 0 auto;
+  /* Gives that scrolling effect as the typing happens */
+  letter-spacing: 0.25em;
+  /* Adjust as needed */
+}
+
+.typing-anim {
+  -webkit-animation: typing 0.6s steps(60, end), blink-caret 0.75s step-end infinite;
+          animation: typing 0.6s steps(60, end), blink-caret 0.75s step-end infinite;
+}
+
+/* The typing effect */
+@-webkit-keyframes typing {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+@keyframes typing {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+/* The typewriter cursor effect */
+@-webkit-keyframes blink-caret {
+  from, to {
+    border-color: transparent;
+  }
+  50% {
+    border-color: black;
+  }
+}
+@keyframes blink-caret {
+  from, to {
+    border-color: transparent;
+  }
+  50% {
+    border-color: black;
+  }
+}
 .game-info {
   display: -webkit-box;
   display: -ms-flexbox;

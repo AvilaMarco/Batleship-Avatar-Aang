@@ -1,39 +1,18 @@
-@use "../utils/mixins" as *;
+@use "../../utils/mixins" as *;
+@use "./console" as *;
+@use "./game_info" as *;
 
-.game-info {
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  text-align: center;
-  .titles {
-    flex: 0 0 31%;
-    background: yellow;
-    padding: 1rem 0.5rem;
-    font-size: 1.2rem;
-  }
-  .turn-card {
-    flex: 0 0 26%;
-    background: red;
-    padding: 1.9rem 0px;
-  }
-}
 .game-control {
   display: flex;
   justify-content: space-between;
 
   .game-items {
-    // overflow-x: scroll;
-    // width: 60%;
-    // height: 100%;
     position: relative;
     flex: 1 0 70%;
-    // position: absolute;
     .container-game-items {
       display: flex;
       height: 100%;
-      // position: relative;
       align-items: center;
-      // position: relative;
     }
     .btn-action {
       position: absolute;

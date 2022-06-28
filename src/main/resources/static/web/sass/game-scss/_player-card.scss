@@ -28,6 +28,13 @@
     .user-status {
       @include player-card-content();
       width: 25vw;
+      .ships {
+        display: grid;
+        grid-template-areas: "c c c c c b b b b" "s s s s d d d p p";
+        grid-template-columns: repeat(9, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+        font-size: 1rem;
+      }
     }
     .turn {
       width: 8vw;
@@ -38,4 +45,24 @@
       margin: 0;
     }
   }
+}
+
+.carrier-life {
+  grid-area: c;
+}
+
+.battleship-life {
+  grid-area: b;
+}
+
+.submarine-life {
+  grid-area: s;
+}
+
+.destroyer-life {
+  grid-area: d;
+}
+
+.patrol_boat-life {
+  grid-area: p;
 }

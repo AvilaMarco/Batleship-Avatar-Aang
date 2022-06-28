@@ -40,6 +40,9 @@ export const createGrid = function (size, element, id, idGrid) {
         textNode.innerText = i;
         cellPositionCol.appendChild(textNode);
         cell.appendChild(cellPositionCol);
+
+        if (i === 1) cell.classList.add("corner-top-left");
+        if (i === size - 1) cell.classList.add("corner-bottom-left");
       }
 
       //if i is equal to 0, the cells belongs to the first row, so the number is added as text node
@@ -50,7 +53,11 @@ export const createGrid = function (size, element, id, idGrid) {
         textNode.innerText = String.fromCharCode(j + 64);
         cellPositionRow.appendChild(textNode);
         cell.appendChild(cellPositionRow);
+
+        if (j === size - 1) cell.classList.add("corner-bottom-rigth");
       }
+
+      if (i === 1 && j === size - 1) cell.classList.add("corner-top-rigth");
 
       row.appendChild(cell);
     }

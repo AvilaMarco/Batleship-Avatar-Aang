@@ -1,10 +1,11 @@
-import {getItemStorage} from "../../utils/utils.js";
+import { getItemStorage } from "../../utils/utils.js";
 
-const params = new URLSearchParams(location.search);
-const playerRoute = params.get("player-id");
-const {gameId, email} = getItemStorage("player-" + playerRoute)
+// const params = new URLSearchParams(location.search);
+// const playerRoute = params.get("player-id");
+// const {gameId, email} = getItemStorage("player-" + playerRoute)
+const { gameId, email } = { gameId: 1, email: "asds" };
 
-let TOKEN = getItemStorage("user-token")
-const HEADER = {login: email, 'Authorization': TOKEN}
+let TOKEN = getItemStorage("user-token");
+const HEADER = { login: email, Authorization: TOKEN };
 
-export {gameId, TOKEN, HEADER}
+export { gameId, TOKEN, HEADER };

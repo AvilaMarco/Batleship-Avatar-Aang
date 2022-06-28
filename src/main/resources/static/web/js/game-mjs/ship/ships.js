@@ -191,7 +191,7 @@ const createShips = (shipType, length, orientation, parent, isStatic) => {
 };
 
 function createDockerShip() {
-  // const shipsLength = [5, 4, 3, 3, 2];
+  // const shipsLength = [5, 4, 4, 3, 2];
   const shipsLength = [4, 2];
   shipsLength.forEach((lengthShip, i) =>
     createShips(

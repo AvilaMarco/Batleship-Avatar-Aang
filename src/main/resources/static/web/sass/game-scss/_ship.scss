@@ -32,7 +32,6 @@
   width: var(--cell-size-s);
   height: var(--cell-size-s);
   border: 1.3px solid rgba(0, 0, 0, 0.3);
-  border-radius: 10px;
   vertical-align: middle;
   font-weight: bold;
   text-align: center;
@@ -46,56 +45,6 @@
 .destroyer-busy-cell,
 .patrol_boat-busy-cell {
   background-color: rgba(0, 119, 190, 0.5);
-}
-
-#console {
-  color: black;
-  background-image: url("../assets/texturas/mapaTextura.png");
-  background-size: cover;
-  background-position: center;
-  // height: 25px;
-  // width: 92%;
-  padding: 0.5rem;
-  order: 1;
-  display: block;
-  font-weight: bold;
-  border-radius: 10px;
-  border: solid 2px;
-}
-
-.typing-console {
-  font-size: 0.7em;
-  display: inline-block;
-  overflow: hidden; /* Ensures the content is not revealed until the animation */
-  border-right: 0.15em solid black; /* The typwriter cursor */
-  white-space: nowrap; /* Keeps the content on a single line */
-  margin: 0 auto; /* Gives that scrolling effect as the typing happens */
-  letter-spacing: 0.15em; /* Adjust as needed */
-}
-
-.typing-anim {
-  animation: typing 3s steps(40, end), blink-caret 0.75s step-end infinite;
-}
-
-/* The typing effect */
-@keyframes typing {
-  from {
-    width: 0;
-  }
-  to {
-    width: 100%;
-  }
-}
-
-/* The typewriter cursor effect */
-@keyframes blink-caret {
-  from,
-  to {
-    border-color: transparent;
-  }
-  50% {
-    border-color: black;
-  }
 }
 
 .grip {
@@ -164,10 +113,6 @@
     flex-flow: row-reverse wrap;
   }
 
-  // #console {
-  //   height: 50px;
-  // }
-
   .grid-cell {
     width: var(--cell-size-m);
     height: var(--cell-size-m);
@@ -183,11 +128,6 @@
   .flex-container {
     flex-flow: row-reverse wrap;
   }
-
-  // #console {
-  //   height: 50px;
-  //   margin: 2%;
-  // }
 
   .grid-cell {
     width: var(--cell-size-l);
