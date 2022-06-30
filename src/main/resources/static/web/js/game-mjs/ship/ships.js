@@ -1,7 +1,8 @@
 import { getHTML, list } from "../../utils/utils.js";
-import { GRID_SIZE } from "../CONSTANTS.js";
+
 import { rotateShips } from "./rotate_ship.js";
-import { checkBusyCells } from "./validations.js";
+import { checkBusyCells, isShipOffBounds } from "./validations.js";
+import { updateConsole } from "../console.js";
 /*creates the ships with the ability of been placed in the grid. 
 It requires a shipType, that is, the id by wich the ship will be recongnized;
 the amount of cells the ship is going to occupy in the grid;
@@ -60,7 +61,7 @@ const createShips = (shipType, length, orientation, parent, isStatic) => {
     // Events drag
     ship.addEventListener("dragstart", dragShip);
     // Events drag mobile
-    grip.addEventListener("touchstart", touchShipStart);
+    // grip.addEventListener("touchstart", touchShipStart);
     ship.addEventListener("touchmove", touchShip);
     ship.addEventListener("touchend", touchShipEnd);
 
@@ -86,28 +87,32 @@ const createShips = (shipType, length, orientation, parent, isStatic) => {
   }
 
   function touchShipStart(ev) {
-    ev.preventDefault();
-    if (!ev.target.classList.contains("grip")) return;
-    ev.dataTransfer.setData("ship", ev.target.parentNode.id);
+    // ev.preventDefault();
+    console.log(ev);
+    // ev.preventDefault();
+    // if (!ev.target.classList.contains("grip")) return;
+    // ev.dataTransfer.setData("ship", ev.target.parentNode.id);
   }
 
   //event to allow the ship beeing dragged on touch devices
   function touchShip(ev) {
     // make the element draggable by giving it an absolute position and modifying the x and y coordinates
-    // ship.classList.add("absolute");
-
-    // const touch = ev.targetTouches[0];
-    // // Place element where the finger is
-    // ship.style.left = touch.pageX - 25 + "px";
-    // ship.style.top = touch.pageY - 25 + "px";
+    ship.classList.add("fixed");
+    // ship.style.position = "absolute";
+    // console.log(ev.targetTouches[0]);
+    const touch = ev.targetTouches[0];
+    // Place element where the finger is
+    const x = touch.pageX - visualViewport.width * 0.44;
+    const y = touch.pageY - visualViewport.height * 0.59;
+    ship.style.left = x + "px";
+    ship.style.top = y + "px";
     ev.preventDefault();
   }
 
   function touchShipEnd(ev) {
-    console.log(ev);
     // hide the draggable element, or the elementFromPoint won't find what's underneath
-    // ship.style.left = "-1000px";
-    // ship.style.top = "-1000px";
+    ship.style.left = "-1000px";
+    ship.style.top = "-1000px";
     // find the element on the last draggable position
     let endTarget = document.elementFromPoint(
       ev.changedTouches[0].pageX,
@@ -115,77 +120,27 @@ const createShips = (shipType, length, orientation, parent, isStatic) => {
     );
 
     // position it relative again and remove the inline styles that aren't needed anymore
-    // ship.classList.remove("absolute");
-    // ship.style.left = "";
-    // ship.style.top = "";
+    ship.classList.add("fixed");
+    ship.style.left = "";
+    ship.style.top = "";
     // put the draggable into it's new home
 
     if (endTarget.classList.contains("cell-position")) {
       endTarget = endTarget.parentElement;
     }
-    if (endTarget.classList.contains("grid-cell")) {
-      const y = endTarget.dataset.y.charCodeAt() - 64;
-      const x = parseInt(endTarget.dataset.x);
-      const lengthShip = parseInt(ship.dataset.length);
 
-      if (ship.dataset.orientation === "horizontal") {
-        if (lengthShip + x > GRID_SIZE) {
-          /*document.querySelector("#display p").innerText =
-            "movement not allowed";*/
-          return;
-        }
-        for (let i = 1; i < lengthShip; i++) {
-          let id = endTarget.id
-            .match(
-              new RegExp(
-                `[^${endTarget.dataset.y}|^${endTarget.dataset.x}]`,
-                "g"
-              )
-            )
-            .join("");
-          let cellId = `${id}${endTarget.dataset.y}${x + i}`;
-          if (
-            document.getElementById(cellId).className.search(/busy-cell/) !== -1
-          ) {
-            /*document.querySelector("#display p").innerText = "careful";*/
-            return;
-          }
-        }
-      } else {
-        if (parseInt(ship.dataset.length) + y > GRID_SIZE) {
-          /*document.querySelector("#display p").innerText =
-            "movement not allowed";*/
-          return;
-        }
-        for (let i = 1; i < ship.dataset.length; i++) {
-          let id = endTarget.id
-            .match(
-              new RegExp(
-                `[^${endTarget.dataset.y}|^${endTarget.dataset.x}]`,
-                "g"
-              )
-            )
-            .join("");
-          let cellId = `${id}${String.fromCharCode(
-            endTarget.dataset.y.charCodeAt() + i
-          )}${x}`;
-          if (
-            document.getElementById(cellId).className.search(/busy-cell/) !== -1
-          ) {
-            /*document.querySelector("#display p").innerText = "careful";*/
-            return;
-          }
-        }
-      }
-      endTarget.appendChild(ship);
-      ship.dataset.x = x;
-      ship.dataset.y = String.fromCharCode(y + 64);
+    if (!endTarget.classList.contains("grid-cell"))
+      return updateConsole("movement not allowed");
 
-      checkBusyCells(ship, endTarget);
-    } else {
-      /*document.querySelector("#display p").innerText = "movement not allowed";*/
-      return;
-    }
+    console.log(isShipOffBounds(endTarget, ship));
+
+    const { x, y } = endTarget.dataset;
+    endTarget.appendChild(ship);
+    ship.dataset.x = x;
+    ship.dataset.y = y;
+
+    checkBusyCells(ship, endTarget);
+
     /*dockIsEmpty();*/
   }
 };

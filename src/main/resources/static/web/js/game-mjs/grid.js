@@ -1,5 +1,6 @@
 import { GRID_SIZE } from "../game-mjs/CONSTANTS.js";
 import { updateConsole } from "./console.js";
+import { isShipOffBounds } from "./ship/validations.js";
 /*creates the grid structure. It requires a size, an element 
 where the grid will be attached to and an id to recognized it. 
 */
@@ -27,10 +28,12 @@ export const createGrid = function (size, element, id, idGrid) {
       cell.id = `${id}${String.fromCharCode(i - 1 + 65)}${j}`;
       cell.dataset.y = String.fromCharCode(i - 1 + 65);
       cell.dataset.x = j;
-      cell.addEventListener("drop", (event) => dropShip(event));
-      //cell.addEventListener('touchmove', function(event) {dropShip(event)})
+      // drag and drop - desktop
       cell.addEventListener("dragover", (event) => allowDrop(event));
-      //cell.addEventListener('touchend',function(event) {allowDrop(event)})
+      cell.addEventListener("drop", (event) => dropShip(event));
+      // drag and drop - mobile
+      // cell.addEventListener("touchmove", (event) => allowDrop(event));
+      // cell.addEventListener("touchend", (event) => dropShip(event));
 
       //if j is equal to 0, the cells belongs to the first colummn, so the letter is added as text node
       if (j === 1) {
@@ -80,60 +83,22 @@ function dropShip(ev) {
   /*document.querySelector("#display p").innerText = "";*/
   //checks if the targeted element is a cell
   if (!ev.target.classList.contains("grid-cell")) {
-    updateConsole("movement not allowed");
-    return;
+    return updateConsole("movement not allowed");
   }
   //variables where the data of the ship beeing dragged is stored
   let data = ev.dataTransfer.getData("ship");
   let ship = document.getElementById(data);
   //variables where the data of the targeted cell is stored
   let cell = ev.target;
-  let y = cell.dataset.y.charCodeAt() - 64;
-  let x = parseInt(cell.dataset.x);
 
   //Before the ship is dropped to a cell, checks if the length of the ship exceed the grid width,
   //If true, the drop event is aborted.
-  if (ship.dataset.orientation === "horizontal") {
-    if (parseInt(ship.dataset.length) + x > GRID_SIZE) {
-      updateConsole("movement not allowed");
-      return;
-    }
-    for (let i = 1; i < ship.dataset.length; i++) {
-      let id = cell.id
-        .match(new RegExp(`[^${cell.dataset.y}|^${cell.dataset.x}]`, "g"))
-        .join("");
-      let cellId = `${id}${cell.dataset.y}${parseInt(cell.dataset.x) + i}`;
-      if (
-        document.getElementById(cellId).className.search(/busy-cell/) !== -1
-      ) {
-        updateConsole("careful");
-        return;
-      }
-    }
-  } else {
-    if (parseInt(ship.dataset.length) + y > GRID_SIZE) {
-      updateConsole("movement not allowed");
-      return;
-    }
+  console.log(isShipOffBounds(cell, ship));
 
-    for (let i = 1; i < ship.dataset.length; i++) {
-      let id = cell.id
-        .match(new RegExp(`[^${cell.dataset.y}|^${cell.dataset.x}]`, "g"))
-        .join("");
-      let cellId = `${id}${String.fromCharCode(
-        cell.dataset.y.charCodeAt() + i
-      )}${cell.dataset.x}`;
-      if (
-        document.getElementById(cellId).className.search(/busy-cell/) !== -1
-      ) {
-        updateConsole("careful");
-        return;
-      }
-    }
-  }
   //Else:
   //the ship takes the position data of the targeted cell
-  ship.dataset.y = String.fromCharCode(y + 64);
+  const { x, y } = cell.dataset;
+  ship.dataset.y = y;
   ship.dataset.x = x;
   //the ship is added to the cell
   cell.appendChild(ship);

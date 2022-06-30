@@ -27,7 +27,6 @@ const viewClientData = ({ name, score, nation, user_type }) => {
 
   fragment.appendChild(playerCard);
   container.appendChild(fragment);
-  console.log(fragment);
 };
 
 const setupTitleGame = (nation) => {
