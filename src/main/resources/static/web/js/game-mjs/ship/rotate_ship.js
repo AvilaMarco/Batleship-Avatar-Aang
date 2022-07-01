@@ -1,80 +1,30 @@
-import { getHTML } from "../../utils/utils.js";
-import { updateConsole } from "../console.js";
-import { GRID_SIZE } from "../CONSTANTS.js";
-import { checkBusyCells } from "./validations.js";
+import {getHTML} from "../../utils/utils.js";
+import {updateConsole} from "../console.js";
+import {GRID_SIZE} from "../CONSTANTS.js";
+import {checkBusyCells, isHorizontal, isShipOffBounds} from "./validations.js";
 
 //event to allow the ship rotation
 const rotateShips = (shipType) => {
-  getHTML(`#${shipType}`).addEventListener("click", function (ev) {
+  getHTML(`#${shipType}`).addEventListener("click", (ev) => {
     updateConsole("");
     console.log(ev.target);
     if (!ev.target.classList.contains("grip")) return;
 
-    let ship = ev.target.parentNode;
-    let orientation = ship.dataset.orientation;
-    let cell = ship.parentElement.classList.contains("grid-cell")
-      ? ship.parentElement
-      : null;
+    const ship = ev.target.parentNode;
+    const cell = ship.parentElement;
 
-    if (cell != null) {
-      if (orientation === "horizontal") {
-        if (
-          parseInt(ship.dataset.length) + (cell.dataset.y.charCodeAt() - 64) >
-          GRID_SIZE
-        ) {
-          updateConsole("careful");
-          return;
-        }
+    if (!cell.classList.contains("grid-cell")) return;
 
-        for (let i = 1; i < ship.dataset.length; i++) {
-          let id = cell.id
-            .match(new RegExp(`[^${cell.dataset.y}|^${cell.dataset.x}]`, "g"))
-            .join("");
-          let cellId = `${id}${String.fromCharCode(
-            cell.dataset.y.charCodeAt() + i
-          )}${cell.dataset.x}`;
-          if (
-            document.getElementById(cellId).className.search(/busy-cell/) !== -1
-          ) {
-            updateConsole("careful");
-            return;
-          }
-        }
-      } else {
-        if (
-          parseInt(ship.dataset.length) + parseInt(cell.dataset.x) >
-          GRID_SIZE
-        ) {
-          updateConsole("careful");
-          return;
-        }
-
-        for (let i = 1; i < ship.dataset.length; i++) {
-          let id = cell.id
-            .match(new RegExp(`[^${cell.dataset.y}|^${cell.dataset.x}]`, "g"))
-            .join("");
-          let cellId = `${id}${cell.dataset.y}${parseInt(cell.dataset.x) + i}`;
-          if (
-            document.getElementById(cellId).className.search(/busy-cell/) !== -1
-          ) {
-            updateConsole("careful");
-            return;
-          }
-        }
-      }
+    ship.dataset.orientation = isHorizontal(ship) ? "vertical" : "horizontal"
+    if (isShipOffBounds(cell, ship)) {
+      return ship.dataset.orientation = isHorizontal(ship) ? "vertical" : "horizontal"
     }
 
-    if (orientation == "horizontal") {
-      ship.dataset.orientation = "vertical";
-      ship.style.transform = "rotate(90deg)";
-    } else {
-      ship.dataset.orientation = "horizontal";
-      ship.style.transform = "rotate(360deg)";
-    }
-    if (cell != null) {
-      checkBusyCells(ship, cell);
-    }
+    ship.style.transform = isHorizontal(ship) ? "rotate(90deg)" : "rotate(360deg)";
+
+    checkBusyCells(ship, cell);
+
   });
 };
 
-export { rotateShips };
+export {rotateShips};

@@ -1,6 +1,7 @@
 import { getAllHTML, getHTML } from "../../utils/utils.js";
 import { GRID_SIZE } from "../CONSTANTS.js";
 import { updateConsole } from "../console.js";
+import {toLetter} from "../../utils/string_helper.js";
 
 const checkBusyCells = (ship, cell) => {
   getAllHTML(`.${ship.id}-busy-cell`).forEach((cell) => {
@@ -13,7 +14,7 @@ const checkBusyCells = (ship, cell) => {
   let codeX = parseInt(x);
 
   for (let i = 0; i < ship.dataset.length; i++) {
-    let row = String.fromCharCode(codeY + 64 + (!isHorizontal(ship) ? i : 0));
+    let row = toLetter(codeY + (!isHorizontal(ship) ? i : 0));
     let col = codeX + (isHorizontal(ship) ? i : 0);
     const cell = getHTML(`#${id}${row}${col}`);
     cell.classList.add(`${ship.id}-busy-cell`);
@@ -45,7 +46,7 @@ const isShipOffBounds = (endTarget, ship) => {
   }
 };
 
-function isHorizontal(ship) {
+const isHorizontal = (ship) => {
   return ship.dataset.orientation === "horizontal";
 }
 
@@ -57,4 +58,4 @@ function getMainCellId(cell, x, y) {
   return cell.id.match(new RegExp(`[^${y}|^${x}]`, "g")).join("");
 }
 
-export { checkBusyCells, isShipOffBounds };
+export { checkBusyCells, isShipOffBounds, isHorizontal };

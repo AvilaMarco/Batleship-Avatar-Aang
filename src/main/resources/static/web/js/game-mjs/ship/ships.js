@@ -31,28 +31,10 @@ const createShips = (shipType, length, orientation, parent, isStatic) => {
     ship.style.transform = "rotate(90deg)";
   }
 
-  if (window.innerWidth >= 768) {
-    ship.style.width = `${length * 45}px`;
-    ship.style.height = "45px";
-  } else if (window.innerWidth >= 576) {
-    ship.style.width = `${length * 35}px`;
-    ship.style.height = "35px";
-  } else {
-    ship.style.width = `${length * 30}px`;
-    ship.style.height = "30px";
-  }
+  resizeShip()
 
   window.addEventListener("resize", () => {
-    if (window.innerWidth >= 768) {
-      ship.style.width = `${length * 45}px`;
-      ship.style.height = "45px";
-    } else if (window.innerWidth >= 576) {
-      ship.style.width = `${length * 35}px`;
-      ship.style.height = "35px";
-    } else {
-      ship.style.width = `${length * 30}px`;
-      ship.style.height = "30px";
-    }
+    resizeShip()
   });
 
   if (!isStatic) {
@@ -61,7 +43,6 @@ const createShips = (shipType, length, orientation, parent, isStatic) => {
     // Events drag
     ship.addEventListener("dragstart", dragShip);
     // Events drag mobile
-    // grip.addEventListener("touchstart", touchShipStart);
     ship.addEventListener("touchmove", touchShip);
     ship.addEventListener("touchend", touchShipEnd);
 
@@ -79,6 +60,19 @@ const createShips = (shipType, length, orientation, parent, isStatic) => {
     checkBusyCells(ship, parent);
   }
 
+  function resizeShip(){
+    if (window.innerWidth >= 768) {
+      ship.style.width = `${length * 45}px`;
+      ship.style.height = "45px";
+    } else if (window.innerWidth >= 576) {
+      ship.style.width = `${length * 35}px`;
+      ship.style.height = "35px";
+    } else {
+      ship.style.width = `${length * 30}px`;
+      ship.style.height = "30px";
+    }
+  }
+
   //event to allow the ship beeing dragged
   function dragShip(ev) {
     // ev.preventDefault();
@@ -86,20 +80,10 @@ const createShips = (shipType, length, orientation, parent, isStatic) => {
     ev.dataTransfer.setData("ship", ev.target.id);
   }
 
-  function touchShipStart(ev) {
-    // ev.preventDefault();
-    console.log(ev);
-    // ev.preventDefault();
-    // if (!ev.target.classList.contains("grip")) return;
-    // ev.dataTransfer.setData("ship", ev.target.parentNode.id);
-  }
-
   //event to allow the ship beeing dragged on touch devices
   function touchShip(ev) {
     // make the element draggable by giving it an absolute position and modifying the x and y coordinates
     ship.classList.add("fixed");
-    // ship.style.position = "absolute";
-    // console.log(ev.targetTouches[0]);
     const touch = ev.targetTouches[0];
     // Place element where the finger is
     const x = touch.pageX - visualViewport.width * 0.44;
@@ -123,8 +107,8 @@ const createShips = (shipType, length, orientation, parent, isStatic) => {
     ship.classList.add("fixed");
     ship.style.left = "";
     ship.style.top = "";
-    // put the draggable into it's new home
 
+    // put the draggable into it's new home
     if (endTarget.classList.contains("cell-position")) {
       endTarget = endTarget.parentElement;
     }
