@@ -1,13 +1,24 @@
-import "sockjs"; // ejecuta codigo de sockJS y permite usar el objeto SockJS
-import "stomp"; // ejecuta codigo de stompJS y permite usar el objeto Stomp
-import {createGrid} from "./game-mjs/grid.js";
-import {getHTML} from "./utils/utils.js";
-import {getToken} from "./utils/payload.js";
-import {setupShipsHost, setupTitleGame, startGame, viewClientData,} from "./game-mjs/update_html.js";
-import {CLIENT, DATA, HOST, STATUS} from "./game-mjs/TEST_DATA.js";
-import {gameId, HEADER, TOKEN} from "./game-mjs/websocket/data_connection.js";
-import {subscribeShips, suscribeGame, suscribeWaitingClient,} from "./game-mjs/websocket/topics.js";
-import {sendEmote} from "./game-mjs/websocket/sends.js";
+/* import "sockjs"; // ejecuta codigo de sockJS y permite usar el objeto SockJS
+import "stomp"; // ejecuta codigo de stompJS y permite usar el objeto Stomp */
+import { createGrid } from "./game-mjs/grid.js";
+import { getHTML } from "./utils/utils.js";
+import { getToken } from "./utils/payload.js";
+import {
+  setupShipsHost,
+  setupTitleGame,
+  startGame,
+  viewClientData,
+} from "./game-mjs/update_html.js";
+import { CLIENT, DATA, HOST, STATUS } from "./game-mjs/TEST_DATA.js";
+import { gameId, HEADER, TOKEN } from "./game-mjs/websocket/data_connection.js";
+import {
+  subscribeShips,
+  suscribeGame,
+  suscribeWaitingClient,
+} from "./game-mjs/websocket/topics.js";
+import { sendEmote } from "./game-mjs/websocket/sends.js";
+import { GRID_SIZE } from "./game-mjs/CONSTANTS.js";
+
 
 /* WEB SOCKET */
 let stomp = null;
@@ -32,7 +43,7 @@ emote.addEventListener("click", async () => {
 });
 
 document.addEventListener("DOMContentLoaded", async () => {
-  createGrid(9, getHTML("#grid"), "ships", "gridShips");
+  createGrid(GRID_SIZE, getHTML("#grid"), "ships", "gridShips");
   /*   const { status, data } = await statusGame(gameId, TOKEN);
   let { game, host, client } = status; */
   const {status, data} = {data: DATA, status: STATUS};

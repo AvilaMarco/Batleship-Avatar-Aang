@@ -1,0 +1,17 @@
+.game-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  text-align: center;
+  .titles {
+    flex: 0 0 31%;
+    background: yellow;
+    padding: 1rem 0.5rem;
+    font-size: 1.2rem;
+  }
+  .turn-card {
+    flex: 0 0 26%;
+    background: red;
+    padding: 1.9rem 0px;
+  }
+}

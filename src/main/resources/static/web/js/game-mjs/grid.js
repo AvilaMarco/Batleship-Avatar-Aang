@@ -1,3 +1,8 @@
+import { GRID_SIZE } from "../game-mjs/CONSTANTS.js";
+import { updateConsole } from "./console.js";
+import { isShipOffBounds } from "./ship/validations.js";
+import {toLetter} from "../utils/string_helper.js";
+import {getAllHTML} from "../utils/utils";
 /*creates the grid structure. It requires a size, an element 
 where the grid will be attached to and an id to recognized it. 
 */
@@ -10,47 +15,56 @@ export const createGrid = function (size, element, id, idGrid) {
   }
 
   //the first loop creates the rows of the grid
-  for (let i = 1; i < size; i++) {
-    let row = document.createElement("DIV");
-    row.classList.add("grid-row");
-    row.id = `${id}-grid-row${i}`;
-    wrapper.appendChild(row); // appends the row created in each itaration to the container
+  for (let row = 1; row < size; row++) {
+    let $row = document.createElement("DIV");
+    $row.classList.add("grid-row");
+    $row.id = `${id}-grid-row${row}`;
+    wrapper.appendChild($row); // appends the row created in each itaration to the container
 
     //the second loop creates the amount of cells needed given the size of the grid for every row
-    for (let j = 1; j < size; j++) {
+    for (let col = 1; col < size; col++) {
       let cell = document.createElement("DIV");
       cell.classList.add("grid-cell");
 
       //if j and i are greater than 0, the drop event is activated
-      cell.id = `${id}${String.fromCharCode(i - 1 + 65)}${j}`;
-      cell.dataset.y = String.fromCharCode(i - 1 + 65);
-      cell.dataset.x = j;
-      cell.addEventListener("drop", (event) => dropShip(event));
-      //cell.addEventListener('touchmove', function(event) {dropShip(event)})
+      cell.id = `${id}${toLetter(row)}${col}`;
+      cell.dataset.y = toLetter(row);
+      cell.dataset.x = col + "";
+      // drag and drop - desktop
       cell.addEventListener("dragover", (event) => allowDrop(event));
-      //cell.addEventListener('touchend',function(event) {allowDrop(event)})
+      cell.addEventListener("drop", (event) => dropShip(event));
+      // drag and drop - mobile
+      // cell.addEventListener("touchmove", (event) => allowDrop(event));
+      // cell.addEventListener("touchend", (event) => dropShip(event));
 
       //if j is equal to 0, the cells belongs to the first colummn, so the letter is added as text node
-      if (j === 1) {
+      if (col === 1) {
         let cellPositionCol = document.createElement("DIV");
         cellPositionCol.classList.add("cell-position", "cell-position-col");
         let textNode = document.createElement("SPAN");
-        textNode.innerText = i;
+        textNode.innerText = row + "";
         cellPositionCol.appendChild(textNode);
         cell.appendChild(cellPositionCol);
+
+        if (row === 1) cell.classList.add("corner-top-left");
+        if (row === size - 1) cell.classList.add("corner-bottom-left");
       }
 
       //if i is equal to 0, the cells belongs to the first row, so the number is added as text node
-      if (i === size - 1) {
+      if (row === size - 1) {
         let cellPositionRow = document.createElement("DIV");
         cellPositionRow.classList.add("cell-position", "cell-position-row");
         let textNode = document.createElement("SPAN");
-        textNode.innerText = String.fromCharCode(j + 64);
+        textNode.innerText = toLetter(col);
         cellPositionRow.appendChild(textNode);
         cell.appendChild(cellPositionRow);
+
+        if (col === size - 1) cell.classList.add("corner-bottom-rigth");
       }
 
-      row.appendChild(cell);
+      if (row === 1 && col === size - 1) cell.classList.add("corner-top-rigth");
+
+      $row.appendChild(cell);
     }
   }
 
@@ -71,84 +85,50 @@ function dropShip(ev) {
   /*document.querySelector("#display p").innerText = "";*/
   //checks if the targeted element is a cell
   if (!ev.target.classList.contains("grid-cell")) {
-    /*document.querySelector("#display p").innerText = "movement not allowed";*/
-    return;
+    return updateConsole("movement not allowed");
   }
   //variables where the data of the ship beeing dragged is stored
   let data = ev.dataTransfer.getData("ship");
   let ship = document.getElementById(data);
   //variables where the data of the targeted cell is stored
   let cell = ev.target;
-  let y = cell.dataset.y.charCodeAt() - 64;
-  let x = parseInt(cell.dataset.x);
 
   //Before the ship is dropped to a cell, checks if the length of the ship exceed the grid width,
   //If true, the drop event is aborted.
-  if (ship.dataset.orientation === "horizontal") {
-    if (parseInt(ship.dataset.length) + x > 11) {
-      /*document.querySelector("#display p").innerText = "movement not allowed";*/
-      return;
-    }
-    for (let i = 1; i < ship.dataset.length; i++) {
-      let id = cell.id
-          .match(new RegExp(`[^${cell.dataset.y}|^${cell.dataset.x}]`, "g"))
-          .join("");
-      let cellId = `${id}${cell.dataset.y}${parseInt(cell.dataset.x) + i}`;
-      if (document.getElementById(cellId).className.search(/busy-cell/) !== -1) {
-        /*document.querySelector("#display p").innerText = "careful";*/
-        return;
-      }
-    }
-  } else {
-    if (parseInt(ship.dataset.length) + y > 11) {
-      /*document.querySelector("#display p").innerText = "movement not allowed";*/
-      return;
-    }
+  console.log(isShipOffBounds(cell, ship));
 
-    for (let i = 1; i < ship.dataset.length; i++) {
-      let id = cell.id
-          .match(new RegExp(`[^${cell.dataset.y}|^${cell.dataset.x}]`, "g"))
-          .join("");
-      let cellId = `${id}${String.fromCharCode(
-          cell.dataset.y.charCodeAt() + i
-      )}${cell.dataset.x}`;
-      if (document.getElementById(cellId).className.search(/busy-cell/) !== -1) {
-        /*document.querySelector("#display p").innerText = "careful";*/
-        return;
-      }
-    }
-  }
   //Else:
   //the ship takes the position data of the targeted cell
-  ship.dataset.y = String.fromCharCode(y + 64);
+  const { x, y } = cell.dataset;
+  ship.dataset.y = y;
   ship.dataset.x = x;
   //the ship is added to the cell
-  ev.target.appendChild(ship);
+  cell.appendChild(ship);
   /*dockIsEmpty();*/
 
-  //checkBusyCells(ship, ev.target);
+  checkBusyCells(ship, cell);
 }
 
 function checkBusyCells(ship, cell) {
   let id = cell.id
-      .match(new RegExp(`[^${cell.dataset.y}|^${cell.dataset.x}]`, "g"))
-      .join("");
+    .match(new RegExp(`[^${cell.dataset.y}|^${cell.dataset.x}]`, "g"))
+    .join("");
   let y = cell.dataset.y.charCodeAt() - 64;
   let x = parseInt(cell.dataset.x);
 
-  document.querySelectorAll(`.${ship.id}-busy-cell`).forEach((cell) => {
+  getAllHTML(`.${ship.id}-busy-cell`).forEach((cell) => {
     cell.classList.remove(`${ship.id}-busy-cell`);
   });
 
   for (let i = 0; i < ship.dataset.length; i++) {
     if (ship.dataset.orientation === "horizontal") {
       document
-          .querySelector(`#${id}${String.fromCharCode(y + 64)}${x + i}`)
-          .classList.add(`${ship.id}-busy-cell`);
+        .querySelector(`#${id}${toLetter(y)}${x + i}`)
+        .classList.add(`${ship.id}-busy-cell`);
     } else {
       document
-          .querySelector(`#${id}${String.fromCharCode(y + 64 + i)}${x}`)
-          .classList.add(`${ship.id}-busy-cell`);
+        .querySelector(`#${id}${toLetter(y + i)}${x}`)
+        .classList.add(`${ship.id}-busy-cell`);
     }
   }
 }

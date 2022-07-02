@@ -7,7 +7,7 @@ const CLIENT = {
 
 const DATA = {
   id: 3,
-  nation: "FIRE",
+  nation: "WATER",
   location: "F1",
   game_players: [
     {
