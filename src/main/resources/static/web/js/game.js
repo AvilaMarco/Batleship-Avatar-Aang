@@ -1,22 +1,13 @@
-/* import "sockjs"; // ejecuta codigo de sockJS y permite usar el objeto SockJS
-import "stomp"; // ejecuta codigo de stompJS y permite usar el objeto Stomp */
-import { createGrid } from "./game-mjs/grid.js";
-import { getHTML } from "./utils/utils.js";
-import { getToken } from "./utils/payload.js";
-import {
-  setupShipsHost,
-  setupTitleGame,
-  startGame,
-  viewClientData,
-} from "./game-mjs/update_html.js";
-import { CLIENT, DATA, HOST, STATUS } from "./game-mjs/TEST_DATA.js";
-import { gameId, HEADER, TOKEN } from "./game-mjs/websocket/data_connection.js";
-import {
-  subscribeShips,
-  suscribeGame,
-  suscribeWaitingClient,
-} from "./game-mjs/websocket/topics.js";
-import { sendEmote } from "./game-mjs/websocket/sends.js";
+import "sockjs"; // ejecuta codigo de sockJS y permite usar el objeto SockJS
+import "stomp"; // ejecuta codigo de stompJS y permite usar el objeto Stomp
+import {createGrid} from "./game-mjs/grid.js";
+import {getHTML} from "./utils/utils.js";
+import {getToken} from "./utils/payload.js";
+import {setupShipsHost, setupTitleGame, startGame, viewClientData,} from "./game-mjs/update_html.js";
+import {CLIENT, DATA, HOST, STATUS} from "./game-mjs/TEST_DATA.js";
+import {gameId, HEADER, TOKEN} from "./game-mjs/websocket/data_connection.js";
+import {subscribeShips, suscribeGame, suscribeWaitingClient,} from "./game-mjs/websocket/topics.js";
+import {sendEmote} from "./game-mjs/websocket/sends.js";
 
 /* WEB SOCKET */
 let stomp = null;
@@ -28,8 +19,8 @@ let game = {};
 // TEST
 const status = document.getElementById("HOME_TEST");
 status.addEventListener("click", async () => {
-  const { status, data } = await statusGame(gameId, TOKEN);
-  let { game, host, client } = status;
+  const {status, data} = await statusGame(gameId, TOKEN);
+  let {game, host, client} = status;
   console.log(data);
   console.log(status);
 });
@@ -44,11 +35,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   createGrid(9, getHTML("#grid"), "ships", "gridShips");
   /*   const { status, data } = await statusGame(gameId, TOKEN);
   let { game, host, client } = status; */
-  const { status, data } = { data: DATA, status: STATUS };
-  let { game, host, client } = status;
+  const {status, data} = {data: DATA, status: STATUS};
+  let {game, host, client} = status;
   console.log(data);
   console.log(status);
-  /* connectClientSocket(status); */
+  connectClientSocket(status);
 
   viewClientData(HOST);
   setupTitleGame(data.nation);
@@ -73,26 +64,32 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 /* WEB SOCKET*/
-function connectClientSocket({ game, client }) {
+async function connectClientSocket({game, client}) {
   const socket = new SockJS("/the-last-shipbender");
   stomp = Stomp.over(socket);
-  stomp.connect(HEADER, (frame) => {
-    console.log("Connected: " + frame);
+  const frame = await AsyncStomp(HEADER);
 
-    if (game === "CREATED") {
-      if (client === "CLIENT_WAITING") {
-        suscribeWaitingClient(stomp);
-      }
-      subscribeShips(stomp);
-    } else if (game === "IN_GAME") {
-      suscribeGame(stomp);
+  console.log("Connected: " + frame);
+
+  if (game === "CREATED") {
+    if (client === "CLIENT_WAITING") {
+      suscribeWaitingClient(stomp);
     }
-  });
+    subscribeShips(stomp);
+  } else if (game === "IN_GAME") {
+    suscribeGame(stomp);
+  }
+}
+
+function AsyncStomp(Header) {
+  return new Promise((resolve) => {
+    stomp.connect(Header, resolve);
+  })
 }
 
 function statusGame(gameId, token) {
   return fetch(`/api/match/${gameId}/status`, getToken(token)).then((res) =>
-    res.ok ? res.json() : Promise.reject(res.body)
+      res.ok ? res.json() : Promise.reject(res.body)
   );
 }
 
