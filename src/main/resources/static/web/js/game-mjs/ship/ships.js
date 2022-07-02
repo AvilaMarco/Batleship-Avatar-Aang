@@ -31,10 +31,10 @@ const createShips = (shipType, length, orientation, parent, isStatic) => {
     ship.style.transform = "rotate(90deg)";
   }
 
-  resizeShip()
+  resizeShip();
 
   window.addEventListener("resize", () => {
-    resizeShip()
+    resizeShip();
   });
 
   if (!isStatic) {
@@ -60,7 +60,7 @@ const createShips = (shipType, length, orientation, parent, isStatic) => {
     checkBusyCells(ship, parent);
   }
 
-  function resizeShip(){
+  function resizeShip() {
     if (window.innerWidth >= 768) {
       ship.style.width = `${length * 45}px`;
       ship.style.height = "45px";
@@ -84,12 +84,10 @@ const createShips = (shipType, length, orientation, parent, isStatic) => {
   function touchShip(ev) {
     // make the element draggable by giving it an absolute position and modifying the x and y coordinates
     ship.classList.add("fixed");
-    const touch = ev.targetTouches[0];
+    const { pageX, pageY } = ev.targetTouches[0];
     // Place element where the finger is
-    const x = touch.pageX - visualViewport.width * 0.44;
-    const y = touch.pageY - visualViewport.height * 0.59;
-    ship.style.left = x + "px";
-    ship.style.top = y + "px";
+    ship.style.left = pageX - 25 + "px";
+    ship.style.top = pageY - 25 + "px";
     ev.preventDefault();
   }
 
@@ -104,7 +102,7 @@ const createShips = (shipType, length, orientation, parent, isStatic) => {
     );
 
     // position it relative again and remove the inline styles that aren't needed anymore
-    ship.classList.add("fixed");
+    ship.classList.remove("fixed");
     ship.style.left = "";
     ship.style.top = "";
 
@@ -130,8 +128,8 @@ const createShips = (shipType, length, orientation, parent, isStatic) => {
 };
 
 function createDockerShip() {
-  // const shipsLength = [5, 4, 4, 3, 2];
-  const shipsLength = [4, 2];
+  const shipsLength = [4, 4, 3, 3, 2];
+  // const shipsLength = [4, 2];
   shipsLength.forEach((lengthShip, i) =>
     createShips(
       shipsName[i],

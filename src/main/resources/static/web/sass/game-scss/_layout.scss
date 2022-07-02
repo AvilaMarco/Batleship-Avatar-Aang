@@ -19,6 +19,9 @@
 
 .client-player {
   grid-area: pm;
+  .player-card {
+    flex-direction: row-reverse;
+  }
 }
 
 .console {

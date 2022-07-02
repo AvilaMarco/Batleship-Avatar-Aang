@@ -1,8 +1,8 @@
 import { GRID_SIZE } from "../game-mjs/CONSTANTS.js";
 import { updateConsole } from "./console.js";
 import { isShipOffBounds } from "./ship/validations.js";
-import {toLetter} from "../utils/string_helper.js";
-import {getAllHTML} from "../utils/utils";
+import { toLetter } from "../utils/string_helper.js";
+import { getAllHTML } from "../utils/utils.js";
 /*creates the grid structure. It requires a size, an element 
 where the grid will be attached to and an id to recognized it. 
 */

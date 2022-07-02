@@ -3,16 +3,23 @@
 @use "./game_info" as *;
 
 .game-control {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-areas: "grid-items chat home";
+  grid-template-columns: 7fr 1.5fr 1.5fr;
+  overflow: hidden;
+  padding: 15px 10px;
+  gap: 10px;
 
   .game-items {
     position: relative;
-    flex: 1 0 70%;
+    grid-area: grid-items;
+    overflow: hidden;
+
     .container-game-items {
       display: flex;
       height: 100%;
       align-items: center;
+      background-color: black;
     }
     .btn-action {
       position: absolute;
@@ -22,15 +29,17 @@
       z-index: 0;
     }
   }
-  .dock-buttons {
-    flex: 1 0 30%;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    button {
-      padding: 10px 10px;
-      text-align: center;
-    }
+
+  #EMOTE_CHAT {
+    grid-area: chat;
+  }
+  #HOME_TEST {
+    grid-area: home;
+  }
+  .button {
+    padding: 10px 10px;
+    text-align: center;
+    height: 100%;
   }
 }
 

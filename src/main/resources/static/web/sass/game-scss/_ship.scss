@@ -65,6 +65,7 @@
 .grid-item {
   transform-origin: 25px center;
   position: relative;
+  z-index: 99;
 }
 
 .grid-item .grid-item-content {

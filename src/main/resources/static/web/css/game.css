@@ -10390,6 +10390,12 @@ body {
   -ms-grid-column: 2;
   grid-area: pm;
 }
+.client-player .player-card {
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: reverse;
+      -ms-flex-direction: row-reverse;
+          flex-direction: row-reverse;
+}
 
 .console {
   -ms-grid-row: 4;
@@ -10535,6 +10541,7 @@ body {
   -webkit-transform-origin: 25px center;
           transform-origin: 25px center;
   position: relative;
+  z-index: 99;
 }
 
 .grid-item .grid-item-content {
@@ -10835,18 +10842,21 @@ body {
 }
 
 .game-control {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: justify;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
+  display: -ms-grid;
+  display: grid;
+      grid-template-areas: "grid-items chat home";
+  -ms-grid-columns: 7fr 10px 1.5fr 10px 1.5fr;
+  grid-template-columns: 7fr 1.5fr 1.5fr;
+  overflow: hidden;
+  padding: 15px 10px;
+  gap: 10px;
 }
 .game-control .game-items {
+  -ms-grid-row: 1;
+  -ms-grid-column: 1;
   position: relative;
-  -webkit-box-flex: 1;
-      -ms-flex: 1 0 70%;
-          flex: 1 0 70%;
+  grid-area: grid-items;
+  overflow: hidden;
 }
 .game-control .game-items .container-game-items {
   display: -webkit-box;
@@ -10856,6 +10866,7 @@ body {
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
+  background-color: black;
 }
 .game-control .game-items .btn-action {
   position: absolute;
@@ -10865,22 +10876,20 @@ body {
           transform: translate(-50%, -50%);
   z-index: 0;
 }
-.game-control .dock-buttons {
-  -webkit-box-flex: 1;
-      -ms-flex: 1 0 30%;
-          flex: 1 0 30%;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-pack: distribute;
-      justify-content: space-around;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
+.game-control #EMOTE_CHAT {
+  -ms-grid-row: 1;
+  -ms-grid-column: 3;
+  grid-area: chat;
 }
-.game-control .dock-buttons button {
+.game-control #HOME_TEST {
+  -ms-grid-row: 1;
+  -ms-grid-column: 5;
+  grid-area: home;
+}
+.game-control .button {
   padding: 10px 10px;
   text-align: center;
+  height: 100%;
 }
 
 body {
