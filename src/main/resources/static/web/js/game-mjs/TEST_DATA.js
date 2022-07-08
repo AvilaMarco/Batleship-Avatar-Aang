@@ -1,4 +1,4 @@
-const CLIENT = {
+const CLIENT_TEST = {
   name: "PLAYER2",
   score: 288,
   nation: "FIRE",
@@ -44,7 +44,7 @@ const STATUS = {
   client: "CLIENT_WITHOUT_SHIPS",
 };
 
-const HOST = {
+const HOST_TEST = {
   name: "RacnarWAn",
   score: 1222,
   nation: "WATER",
@@ -55,7 +55,7 @@ const SIMULATE_LOGIN = () => {
   const headers = {
     "Content-Type": "application/json",
   };
-  const user = { email: "marco@admin.com", password: 123 };
+  const user = {email: "marco@admin.com", password: 123};
 
   return fetch("/api/players/login", {
     method: "POST",
@@ -64,4 +64,4 @@ const SIMULATE_LOGIN = () => {
   }).then((res) => (res.ok ? res.json() : Promise.reject(res.json())));
 };
 
-export { HOST, CLIENT, DATA, STATUS, SIMULATE_LOGIN };
+export {HOST_TEST, CLIENT_TEST, DATA, STATUS, SIMULATE_LOGIN};

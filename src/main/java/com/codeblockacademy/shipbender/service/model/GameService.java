@@ -5,6 +5,7 @@ import com.codeblockacademy.shipbender.dto.response.GameMatchDTO;
 import com.codeblockacademy.shipbender.dto.response.StatusGameDTO;
 import com.codeblockacademy.shipbender.exception.not_found.GameNotFoundException;
 import com.codeblockacademy.shipbender.models.Game;
+import com.codeblockacademy.shipbender.models.GamePlayer;
 import com.codeblockacademy.shipbender.repository.GameRepository;
 import com.codeblockacademy.shipbender.service.intereface.IGameService;
 import org.modelmapper.ModelMapper;
@@ -31,9 +32,18 @@ public class GameService implements IGameService {
     }
 
     @Override
-    public GameMatchDTO getGameMatch ( Long id ) {
+    public GameMatchDTO getGameMatch ( Long id, Long gamePlayerId ) {
         Game game = repository.findById(id)
           .orElseThrow(() -> new GameNotFoundException(id));
+        /*ToDo: is this correct?, are you deleting the ships?*/
+        List<GamePlayer> gpsOnlyWithCorrectShips = game.getGamePlayers()
+          .stream()
+          .peek(gp -> {
+              if (gp.getId() == 1) gp.emptyShips();
+          })
+          .distinct()
+          .collect(Collectors.toList());
+        game.setGamePlayers(gpsOnlyWithCorrectShips);
         return mapper.map(game, GameMatchDTO.class);
     }
 

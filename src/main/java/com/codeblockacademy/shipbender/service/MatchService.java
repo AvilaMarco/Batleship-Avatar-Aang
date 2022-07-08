@@ -67,13 +67,16 @@ public class MatchService implements IMatchService {
     }
 
     /* WEB SOCKET */
+    @Override
     public GameMatchDTO getGame ( Authentication authentication, Long gameId ) {
         Player player = playerService.getPlayerAuthenticated(authentication);
         gameValidation.containsThePlayer(gameId, player.getId());
-        return gameService.getGameMatch(gameId);
+        GamePlayer gamePlayer = gamePlayerService.getGamePlayerBy(player.getId(), gameId);
+        return gameService.getGameMatch(gameId, gamePlayer.getId());
     }
 
 
+    @Override
     public GameDataDTO statusGame ( Authentication authentication, Long gameId ) {
         Player player = playerService.getPlayerAuthenticated(authentication);
         gameValidation.containsThePlayer(gameId, player.getId());

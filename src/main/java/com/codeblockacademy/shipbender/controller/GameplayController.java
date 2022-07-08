@@ -2,7 +2,7 @@ package com.codeblockacademy.shipbender.controller;
 
 import com.codeblockacademy.shipbender.dto.error.ErrorDTO;
 import com.codeblockacademy.shipbender.dto.request.websocket.ShipDTO;
-import com.codeblockacademy.shipbender.dto.response.StatusGameDTO;
+import com.codeblockacademy.shipbender.dto.response.GameDataDTO;
 import com.codeblockacademy.shipbender.dto.response.UserEmoteDTO;
 import com.codeblockacademy.shipbender.service.intereface.IGameplayService;
 import com.codeblockacademy.shipbender.service.intereface.IMatchService;
@@ -31,7 +31,7 @@ public class GameplayController {
     // enviar barcos
     @MessageMapping("/{gameId}/ships")
     @SendTo("/topic/gameplay/{gameId}/ships")
-    public StatusGameDTO matchShips ( @DestinationVariable Long gameId, @RequestBody List<ShipDTO> ships, Authentication authentication ) {
+    public GameDataDTO matchShips ( @DestinationVariable Long gameId, @RequestBody List<ShipDTO> ships, Authentication authentication ) {
         return gameplayService.createShips(authentication, gameId, ships);
     }
 

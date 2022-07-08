@@ -1,20 +1,20 @@
-import { getHTML, list } from "../../utils/utils.js";
+import {getHTML} from "../../utils/utils.js";
 
-import { rotateShips } from "./rotate_ship.js";
-import { checkBusyCells, isShipOffBounds } from "./validations.js";
-import { updateConsole } from "../console.js";
+import {rotateShips} from "./rotate_ship.js";
+import {checkBusyCells, isShipOffBounds} from "./validations.js";
+import {updateConsole} from "../console.js";
 /*creates the ships with the ability of been placed in the grid. 
 It requires a shipType, that is, the id by wich the ship will be recongnized;
 the amount of cells the ship is going to occupy in the grid;
 a parent where the ship will be appended to;
 and a boolean that specifies whether the ship can be moved or not.
 */
-let shipsName = [
-  "carrier",
-  "battleship",
-  "submarine",
-  "destroyer",
-  "patrol_boat",
+const SHIPS_NAMES = [
+  "carrier"
+  // "battleship",
+  // "submarine",
+  // "destroyer",
+  // "patrol_boat",
 ];
 
 const createShips = (shipType, length, orientation, parent, isStatic) => {
@@ -84,7 +84,7 @@ const createShips = (shipType, length, orientation, parent, isStatic) => {
   function touchShip(ev) {
     // make the element draggable by giving it an absolute position and modifying the x and y coordinates
     ship.classList.add("fixed");
-    const { pageX, pageY } = ev.targetTouches[0];
+    const {pageX, pageY} = ev.targetTouches[0];
     // Place element where the finger is
     ship.style.left = pageX - 25 + "px";
     ship.style.top = pageY - 25 + "px";
@@ -98,8 +98,8 @@ const createShips = (shipType, length, orientation, parent, isStatic) => {
 
     // find the element on the last draggable position
     let endTarget = document.elementFromPoint(
-      ev.changedTouches[0].pageX,
-      ev.changedTouches[0].pageY
+        ev.changedTouches[0].pageX,
+        ev.changedTouches[0].pageY
     );
 
     // position it relative again and remove the inline styles that aren't needed anymore
@@ -117,7 +117,7 @@ const createShips = (shipType, length, orientation, parent, isStatic) => {
 
     if (isShipOffBounds(endTarget, ship)) return;
 
-    const { x, y } = endTarget.dataset;
+    const {x, y} = endTarget.dataset;
     endTarget.appendChild(ship);
     ship.dataset.x = x;
     ship.dataset.y = y;
@@ -129,47 +129,18 @@ const createShips = (shipType, length, orientation, parent, isStatic) => {
 };
 
 function createDockerShip() {
-  const shipsLength = [4, 4, 3, 3, 2];
-  // const shipsLength = [4, 2];
+  // const shipsLength = [4, 4, 3, 3, 2];
+
+  const shipsLength = [4];
   shipsLength.forEach((lengthShip, i) =>
-    createShips(
-      shipsName[i],
-      lengthShip,
-      "horizontal",
-      getHTML("#ships"),
-      false
-    )
+      createShips(
+          SHIPS_NAMES[i],
+          lengthShip,
+          "horizontal",
+          getHTML("#ships"),
+          false
+      )
   );
 }
 
-const shipOnGrid = () =>
-  shipsName.map((ship) => {
-    const { length, orientation, x, y } = getHTML("#" + ship).dataset;
-    const position = list(parseInt(length)).map((_, i) =>
-      orientation === "horizontal"
-        ? y + (parseInt(x) + i)
-        : String.fromCharCode(y.charCodeAt(0) + i) + x
-    );
-    return {
-      type: ship.toUpperCase(),
-      locations: position,
-    };
-  });
-
-const someShipOnDocker = () =>
-  shipsName.some((ship) => getHTML("#" + ship).dataset.y === undefined);
-
-export { createShips, createDockerShip, shipOnGrid, someShipOnDocker };
-
-//me fijo si quedan barcos en el dock
-/* function dockIsEmpty() {
-  if (document.querySelectorAll("#dock .grid-item").length == 0) {
-    document.querySelector("#dock .ships").appendChild(send_Ships);
-    send_Ships.classList.remove("d-none");
-  }
-} */
-
-//createShips('battleship', 4, 'horizontal', document.getElementById('dock'),false)
-//createShips('submarine', 3, 'horizontal', document.getElementById('dock'),false)
-//createShips('destroyer', 3, 'horizontal', document.getElementById('dock'),false)
-//createShips('patrol_boat', 2, 'horizontal', document.getElementById('dock'),false)
+export {createShips, createDockerShip, SHIPS_NAMES};
