@@ -9,6 +9,6 @@ import java.util.List;
 public class ShipDTO {
 
     private List<String> locations;
-
-    private ShipType type;
+    private List<String> salvosImpacted;
+    private ShipType     type;
 }

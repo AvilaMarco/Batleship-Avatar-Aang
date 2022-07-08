@@ -9,10 +9,10 @@ import com.codeblockacademy.shipbender.enums.NationType;
 import com.codeblockacademy.shipbender.models.Game;
 import com.codeblockacademy.shipbender.models.GamePlayer;
 import com.codeblockacademy.shipbender.models.Player;
+import com.codeblockacademy.shipbender.service.intereface.IGamePlayerService;
+import com.codeblockacademy.shipbender.service.intereface.IGameService;
 import com.codeblockacademy.shipbender.service.intereface.IMatchService;
-import com.codeblockacademy.shipbender.service.model.GamePlayerService;
-import com.codeblockacademy.shipbender.service.model.GameService;
-import com.codeblockacademy.shipbender.service.model.PlayerService;
+import com.codeblockacademy.shipbender.service.intereface.IPlayerService;
 import com.codeblockacademy.shipbender.service.validations.IGameValidation;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -20,13 +20,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class MatchService implements IMatchService {
 
-    PlayerService     playerService;
-    GameService       gameService;
-    GamePlayerService gamePlayerService;
+    IPlayerService     playerService;
+    IGameService       gameService;
+    IGamePlayerService gamePlayerService;
 
     IGameValidation gameValidation;
 
-    public MatchService ( PlayerService playerService, GameService gameService, GamePlayerService gamePlayerService, IGameValidation gameValidation ) {
+    public MatchService ( IPlayerService playerService, IGameService gameService, IGamePlayerService gamePlayerService, IGameValidation gameValidation ) {
         this.playerService     = playerService;
         this.gameService       = gameService;
         this.gamePlayerService = gamePlayerService;

@@ -2,6 +2,8 @@ import {createDockerShip, createShips, SHIPS_NAMES} from "./ship/ships.js";
 import {addClickEvent, getHTML} from "../utils/utils.js";
 import {sendShips} from "./websocket/sends.js";
 import {getShipsOf, isShipsDockEmpty} from "./ship/helper.js";
+import {createGrid} from "./grid";
+import {GRID_SIZE} from "./CONSTANTS";
 
 const setupShipsHost = (stomp) => {
   createDockerShip();
@@ -13,6 +15,17 @@ const viewClientData = ({name, score, nation, user_type}) => {
   const container = document.getElementById("main-container");
 
   const card = template.cloneNode(true);
+
+  if (name === undefined) {
+    card.id = "señorx"
+    fragment.appendChild(card);
+    return container.appendChild(fragment);
+  }
+
+  if (getHTML("#señorx")) {
+    getHTML("#señorx").remove()
+  }
+
   card
       .querySelector("[data-player]")
       .classList.add(`${user_type.toLowerCase()}-player`);
@@ -50,6 +63,7 @@ const startGame = (data) => {
 
 function createGridSalvo() {
   console.log("creating grid salvo...")
+  createGrid(GRID_SIZE, getHTML("#grid"), "salvos", "gridSalvos");
 }
 
 function createMySalvoGrid() {

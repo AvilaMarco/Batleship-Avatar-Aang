@@ -56,6 +56,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // CLIENT
     if (client === "WAITING") {
       // view señor x
+      viewClientData({});
     } else if (client === "WITHOUT_SHIPS") {
       viewClientData(CLIENT_TEST);
     } else if (client === "WITH_SHIPS") {
@@ -97,9 +98,9 @@ function statusGame(gameId, token) {
 }
 
 function updataHostAndClientData({game_players}) {
-  HOST = game_players.find(gp => gp.player.id == playerRoute)
+  HOST = game_players.find(gp => gp.player.id === playerRoute)
   HOST.user_type = "HOST"
-  CLIENT = game_players.find(gp => gp.player.id == playerRoute)
+  CLIENT = game_players.find(gp => gp.player.id === playerRoute)
   CLIENT.user_type = "CLIENT"
 }
 

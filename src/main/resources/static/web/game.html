@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <title>Battle | The Last Shipbender</title>
     <meta charset="utf-8" />
     <meta content="true" name="HandheldFriendly" />
@@ -8,8 +8,8 @@
     <link rel="shortcut icon" href="assets/icons/icon.png" sizes="196x196" />
     <link rel="manifest" href="manifest.json" />
     <script
-      src="https://kit.fontawesome.com/f202acb0f8.js"
-      crossorigin="anonymous"
+            src="https://kit.fontawesome.com/f202acb0f8.js"
+            crossorigin="anonymous"
     ></script>
     <!-- <link
       rel="stylesheet"
@@ -17,111 +17,115 @@
     /> -->
     <link rel="stylesheet" href="css/game.css" />
     <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css?family=Permanent+Marker&display=swap"
-      crossorigin="anonymous"
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css?family=Permanent+Marker&display=swap"
+            crossorigin="anonymous"
     />
-  </head>
-  <body>
-    <div id="main-container" class="container-grid">
-      <!-- Grids -->
-      <div id="grid" class="container-grids">
+</head>
+<body>
+<div id="main-container" class="container-grid">
+    <!-- Grids -->
+    <div id="grid" class="container-grids">
         <div class="d-none" id="grid_salvos"></div>
-      </div>
-
-      <!-- PLAYER HOST -->
-
-      <!-- Game's Turns -->
-      <div class="game-info">
-        <div class="titles">
-          <p id="GAME_TITLE"></p>
-          <p>Nation</p>
-        </div>
-        <div class="turn-card">
-          <p>Turn</p>
-          <div id="GAME_TURN">2</div>
-        </div>
-        <div class="titles">
-          <p>My</p>
-          <p id="GRID_VIEW">Ships</p>
-        </div>
-      </div>
-
-      <!-- PLAYER CLIENT -->
-
-      <!-- DOCK -->
-      <div id="dock" class="game-control">
-        <div class="game-items">
-          <div id="salvos" class="container-game-items hidden"></div>
-          <div id="ships" class="container-game-items"></div>
-          <button id="sendShips" class="btn-action">Send Ships</button>
-          <button id="sendSalvos" class="btn-action hidden">Send Salvos</button>
-        </div>
-        <button id="EMOTE_CHAT" class="button is-small">
-          <!-- <img
-              src="assets/svg_icons/comment-dots-solid.svg"
-              alt="emote icon"
-            /> -->
-          <!-- <span class="icon">
-              <i class="fa-solid fa-alarm-clock"></i>
-            </span> -->
-          CHAT
-        </button>
-        <button id="HOME_TEST" class="button is-small">
-          <!-- <img src="assets/svg_icons/globe-solid.svg" alt="emote icon" /> -->
-          HOME
-        </button>
-      </div>
-
-      <div id="console" class="console">
-        <div style="width: fit-content">
-          <p class="typing-console typing-anim">message on console</p>
-        </div>
-      </div>
     </div>
 
-    <!-- TEMPLATES -->
-    <template id="TEMPLATE_PLAYER">
-      <div data-player class="player-card-container">
+    <!-- PLAYER HOST -->
+
+    <!-- Game's Turns -->
+    <div class="game-info">
+        <div class="titles">
+            <p id="GAME_TITLE"></p>
+            <p>Nation</p>
+        </div>
+        <div class="turn-card">
+            <p>Turn</p>
+            <div id="GAME_TURN">2</div>
+        </div>
+        <div class="titles">
+            <p>My</p>
+            <p id="GRID_VIEW">Ships</p>
+        </div>
+    </div>
+
+    <!-- PLAYER CLIENT -->
+
+    <!-- DOCK -->
+    <div id="dock" class="game-control">
+        <div class="game-items">
+            <div id="salvos" class="container-game-items hidden"></div>
+            <div id="ships" class="container-game-items"></div>
+            <button id="sendShips" class="btn-action">Send Ships</button>
+            <button id="sendSalvos" class="btn-action hidden">Send Salvos</button>
+        </div>
+        <button id="EMOTE_CHAT" class="button is-small">
+            <!-- <img
+                src="assets/svg_icons/comment-dots-solid.svg"
+                alt="emote icon"
+              /> -->
+            <!-- <span class="icon">
+                <i class="fa-solid fa-alarm-clock"></i>
+              </span> -->
+            CHAT
+        </button>
+        <button id="HOME_TEST" class="button is-small">
+            <!-- <img src="assets/svg_icons/globe-solid.svg" alt="emote icon" /> -->
+            HOME
+        </button>
+    </div>
+
+    <div id="console" class="console">
+        <div style="width: fit-content">
+            <p class="typing-console typing-anim">message on console</p>
+        </div>
+    </div>
+</div>
+
+<!-- TEMPLATES -->
+<template id="TEMPLATE_PLAYER">
+    <div data-player class="player-card-container">
         <img data-bg-nation class="bg-img" src="#" alt="Nation's Background" />
 
         <div class="player-card">
-          <div class="nation-logo">
-            <img data-logo-nation src="#" alt="Nation's Logo" />
-          </div>
-
-          <div class="user-status">
-            <p data-username class="texto-emote">RacnarWan(200)</p>
-            <div id="SHIPS_" class="ships">
-              <div class="carrier-life" data-a="15px">c</div>
-              <div class="battleship-life">b</div>
-              <div class="submarine-life">s</div>
-              <div class="destroyer-life">d</div>
-              <div class="patrol_boat-life">p</div>
+            <div class="nation-logo">
+                <img data-logo-nation src="assets/icons/señorx.png" alt="Nation's Logo" />
             </div>
-          </div>
 
-          <div class="turn turn-card">
-            <p class="bg-text">Turn</p>
-            <div id="TURN">1</div>
-          </div>
+            <div class="user-status">
+                <p data-username class="texto-emote">Señor X (---)</p>
+                <div id="SHIPS_" class="ships">
+                    <div class="carrier-life">c</div>
+                    <div class="battleship-life">b</div>
+                    <div class="submarine-life">s</div>
+                    <div class="destroyer-life">d</div>
+                    <div class="patrol_boat-life">p</div>
+                </div>
+            </div>
+
+            <div class="turn turn-card">
+                <p class="bg-text">Turn</p>
+                <div id="TURN">X</div>
+            </div>
         </div>
-      </div>
-    </template>
+    </div>
+</template>
 
-    <!-- Scripts -->
-    <div>
-      <script type="importmap">
+<!-- Scripts -->
+<div>
+    <script type="importmap">
         {
           "imports": {
             "sockjs": "/webjars/sockjs-client/sockjs.min.js",
             "stomp": "/webjars/stomp-websocket/stomp.min.js"
           }
         }
-      </script>
-      <script src="js/game.js" type="module"></script>
-    </div>
-  </body>
+
+
+
+
+    </script>
+    <script src="js/game.js" type="module"></script>
+</div>
+</body>
 </html>
 <!--<div id="player1" class="player-card-container">
     <img class="bg-img" src="assets/icons/border-fuego3.png" />

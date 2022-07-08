@@ -60,6 +60,7 @@ public class GameService implements IGameService {
         return mapper.map(repository.saveAndFlush(game), GameMapDTO.class);
     }
 
+    @Override
     public StatusGameDTO statusGame ( Long gameId ) {
         Game game = getGame(gameId);
         // ToDo: create new throw Exception
