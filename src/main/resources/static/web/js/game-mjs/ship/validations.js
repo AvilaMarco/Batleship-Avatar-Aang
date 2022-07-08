@@ -1,12 +1,10 @@
 import { getAllHTML, getHTML } from "../../utils/utils.js";
 import { GRID_SIZE } from "../CONSTANTS.js";
 import { updateConsole } from "../console.js";
-import {toLetter} from "../../utils/string_helper.js";
+import { toLetter } from "../../utils/string_helper.js";
 
 const checkBusyCells = (ship, cell) => {
-  getAllHTML(`.${ship.id}-busy-cell`).forEach((cell) => {
-    cell.classList.remove(`${ship.id}-busy-cell`);
-  });
+  removeBusyCell(ship.id);
 
   const { x, y } = cell.dataset;
   let id = getMainCellId(cell, x, y);
@@ -30,25 +28,42 @@ const isShipOffBounds = (endTarget, ship) => {
   const id = getMainCellId(endTarget, x, y);
 
   if (isHorizontal(ship)) {
-    if (lengthShip + codeX > GRID_SIZE)
-      return updateConsole("movement not allowed");
+    if (lengthShip + codeX > GRID_SIZE) {
+      updateConsole("Movement not allowed");
+      return true;
+    }
+
     for (let i = 1; i < lengthShip; i++) {
       let cellId = `${id}${y}${codeX + i}`;
-      if (cellIsFull(cellId)) return updateConsole("careful");
+      if (cellIsFull(cellId)) {
+        updateConsole("Careful");
+        return true;
+      }
     }
   } else {
-    if (lengthShip + codeY > GRID_SIZE)
-      return updateConsole("movement not allowed");
+    if (lengthShip + codeY > GRID_SIZE) {
+      updateConsole("Movement not allowed");
+      return true;
+    }
+
     for (let i = 1; i < lengthShip; i++) {
       let cellId = `${id}${String.fromCharCode(y.charCodeAt() + i)}${codeX}`;
-      if (cellIsFull(cellId)) return updateConsole("careful");
+      if (cellIsFull(cellId)) {
+        updateConsole("Careful");
+        return true;
+      }
     }
   }
 };
 
 const isHorizontal = (ship) => {
   return ship.dataset.orientation === "horizontal";
-}
+};
+
+const removeBusyCell = (shipId) =>
+  getAllHTML(`.${shipId}-busy-cell`).forEach((cell) => {
+    cell.classList.remove(`${shipId}-busy-cell`);
+  });
 
 function cellIsFull(cellId) {
   return getHTML("#" + cellId).className.search(/busy-cell/) !== -1;

@@ -1,5 +1,5 @@
-/* import "sockjs"; // ejecuta codigo de sockJS y permite usar el objeto SockJS
-import "stomp"; // ejecuta codigo de stompJS y permite usar el objeto Stomp */
+ import "sockjs"; // ejecuta codigo de sockJS y permite usar el objeto SockJS
+import "stomp"; // ejecuta codigo de stompJS y permite usar el objeto Stomp
 import { createGrid } from "./game-mjs/grid.js";
 import { getHTML } from "./utils/utils.js";
 import { getToken } from "./utils/payload.js";
@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   let { game, host, client } = status;
   console.log(data);
   console.log(status);
-  // connectClientSocket(status);
+  connectClientSocket(status);
 
   viewClientData(HOST);
   setupTitleGame(data.nation);

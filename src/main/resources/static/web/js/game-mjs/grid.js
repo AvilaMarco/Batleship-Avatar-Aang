@@ -1,6 +1,6 @@
 import { GRID_SIZE } from "../game-mjs/CONSTANTS.js";
 import { updateConsole } from "./console.js";
-import { isShipOffBounds } from "./ship/validations.js";
+import { isShipOffBounds, checkBusyCells } from "./ship/validations.js";
 import { toLetter } from "../utils/string_helper.js";
 import { getAllHTML } from "../utils/utils.js";
 /*creates the grid structure. It requires a size, an element 
@@ -95,7 +95,7 @@ function dropShip(ev) {
 
   //Before the ship is dropped to a cell, checks if the length of the ship exceed the grid width,
   //If true, the drop event is aborted.
-  console.log(isShipOffBounds(cell, ship));
+  if (isShipOffBounds(cell, ship)) return;
 
   //Else:
   //the ship takes the position data of the targeted cell
@@ -107,28 +107,4 @@ function dropShip(ev) {
   /*dockIsEmpty();*/
 
   checkBusyCells(ship, cell);
-}
-
-function checkBusyCells(ship, cell) {
-  let id = cell.id
-    .match(new RegExp(`[^${cell.dataset.y}|^${cell.dataset.x}]`, "g"))
-    .join("");
-  let y = cell.dataset.y.charCodeAt() - 64;
-  let x = parseInt(cell.dataset.x);
-
-  getAllHTML(`.${ship.id}-busy-cell`).forEach((cell) => {
-    cell.classList.remove(`${ship.id}-busy-cell`);
-  });
-
-  for (let i = 0; i < ship.dataset.length; i++) {
-    if (ship.dataset.orientation === "horizontal") {
-      document
-        .querySelector(`#${id}${toLetter(y)}${x + i}`)
-        .classList.add(`${ship.id}-busy-cell`);
-    } else {
-      document
-        .querySelector(`#${id}${toLetter(y + i)}${x}`)
-        .classList.add(`${ship.id}-busy-cell`);
-    }
-  }
 }

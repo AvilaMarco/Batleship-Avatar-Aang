@@ -95,6 +95,7 @@ const createShips = (shipType, length, orientation, parent, isStatic) => {
     // hide the draggable element, or the elementFromPoint won't find what's underneath
     ship.style.left = "-1000px";
     ship.style.top = "-1000px";
+
     // find the element on the last draggable position
     let endTarget = document.elementFromPoint(
       ev.changedTouches[0].pageX,
@@ -114,7 +115,7 @@ const createShips = (shipType, length, orientation, parent, isStatic) => {
     if (!endTarget.classList.contains("grid-cell"))
       return updateConsole("movement not allowed");
 
-    console.log(isShipOffBounds(endTarget, ship));
+    if (isShipOffBounds(endTarget, ship)) return;
 
     const { x, y } = endTarget.dataset;
     endTarget.appendChild(ship);
