@@ -46,17 +46,17 @@ public class Game {
     public void updateStatusGpOf ( StatusGameDTO.StatusGameDTOBuilder builder ) {
         if (!this.isGameWaitingPlayer()) {
             if (this.isClientHasShips()) {
-                builder.client(PlayerStatus.CLIENT_WITH_SHIPS);
+                builder.client(PlayerStatus.WITH_SHIPS);
             } else {
-                builder.client(PlayerStatus.CLIENT_WITHOUT_SHIPS);
+                builder.client(PlayerStatus.WITHOUT_SHIPS);
             }
         } else {
-            builder.client(PlayerStatus.CLIENT_WAITING);
+            builder.client(PlayerStatus.WAITING);
         }
         if (this.isHostHasShips()) {
-            builder.host(PlayerStatus.HOST_WITH_SHIPS);
+            builder.host(PlayerStatus.WITH_SHIPS);
         } else {
-            builder.host(PlayerStatus.HOST_WITHOUT_SHIPS);
+            builder.host(PlayerStatus.WITHOUT_SHIPS);
         }
     }
 

@@ -1,6 +1,6 @@
-import { shipOnGrid } from "../ship/ships.js";
-import { SEND_EMOTES, SEND_REMATCH, SEND_SHIPS } from "./url_send.js";
-import { HEADER } from "./data_connection.js";
+import {SEND_EMOTES, SEND_REMATCH, SEND_SHIPS} from "./url_send.js";
+import {HEADER} from "./data_connection.js";
+import {getShipsOnGrid} from "../ship/helper.js";
 
 const sendShips = (stomp) => {
   /*  if (someShipOnDocker()) {
@@ -8,7 +8,7 @@ const sendShips = (stomp) => {
       return
     }*/
 
-  stomp.send(SEND_SHIPS, HEADER, JSON.stringify(shipOnGrid()));
+  stomp.send(SEND_SHIPS, HEADER, JSON.stringify(getShipsOnGrid()));
 };
 
 const sendEmote = (stomp, emote) => {
@@ -19,4 +19,4 @@ const sendRematch = (stomp) => {
   stomp.send(SEND_REMATCH, HEADER, JSON.stringify({}));
 };
 
-export { sendEmote, sendShips, sendRematch };
+export {sendEmote, sendShips, sendRematch};

@@ -1,15 +1,12 @@
 package com.codeblockacademy.shipbender.service;
 
 import com.codeblockacademy.shipbender.dto.request.websocket.ShipDTO;
-import com.codeblockacademy.shipbender.dto.response.StatusGameDTO;
+import com.codeblockacademy.shipbender.dto.response.GameDataDTO;
 import com.codeblockacademy.shipbender.dto.response.UserEmoteDTO;
 import com.codeblockacademy.shipbender.models.GamePlayer;
 import com.codeblockacademy.shipbender.models.Player;
 import com.codeblockacademy.shipbender.models.Ship;
-import com.codeblockacademy.shipbender.service.intereface.IGameplayService;
-import com.codeblockacademy.shipbender.service.model.GamePlayerService;
-import com.codeblockacademy.shipbender.service.model.GameService;
-import com.codeblockacademy.shipbender.service.model.PlayerService;
+import com.codeblockacademy.shipbender.service.intereface.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,20 +19,22 @@ import java.util.stream.Collectors;
 @Service
 public class GameplayService implements IGameplayService {
 
-    PlayerService     playerService;
-    GameService       gameService;
-    GamePlayerService gamePlayerService;
-    ModelMapper       mapper;
+    IPlayerService     playerService;
+    IGameService       gameService;
+    IGamePlayerService gamePlayerService;
+    IMatchService      matchService;
+    ModelMapper        mapper;
 
-    public GameplayService ( PlayerService playerService, GameService gameService, GamePlayerService gamePlayerService, ModelMapper mapper ) {
+    public GameplayService ( IPlayerService playerService, IGameService gameService, IGamePlayerService gamePlayerService, IMatchService matchService, ModelMapper mapper ) {
         this.playerService     = playerService;
         this.gameService       = gameService;
         this.gamePlayerService = gamePlayerService;
+        this.matchService      = matchService;
         this.mapper            = mapper;
     }
 
     @Override
-    public StatusGameDTO createShips ( Authentication authentication, Long gameId, List<ShipDTO> shipsDTO ) {
+    public GameDataDTO createShips ( Authentication authentication, Long gameId, List<ShipDTO> shipsDTO ) {
         Player     player     = playerService.getPlayerAuthenticated(authentication);
         GamePlayer gamePlayer = gamePlayerService.getGamePlayerBy(player.getId(), gameId);
         // ToDo: create exception for when gamePlayer has ships
@@ -45,8 +44,7 @@ public class GameplayService implements IGameplayService {
           .collect(Collectors.toSet());
         gamePlayer.setShips(ships);
         gamePlayerService.save(gamePlayer);
-//        gameService.save(gamePlayer.getGame());
-        return gameService.statusGame(gameId);
+        return matchService.statusGame(authentication, gameId);
     }
 
     @Override

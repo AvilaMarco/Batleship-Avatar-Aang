@@ -48,8 +48,8 @@ public class GameValidation implements IGameValidation {
 
     @Override
     public void containsThePlayer ( Long gameId, Long playerId ) {
-        this.exists(gameId);
-        Game game = repository.getById(gameId);
+        Game game = repository.findById(gameId)
+          .orElseThrow(() -> new GameNotFoundException(gameId));
         if (!game.containsPlayer(playerId))
             throw new PlayerAlreadyInGameException(playerId);
     }

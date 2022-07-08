@@ -6,6 +6,7 @@ import com.codeblockacademy.shipbender.repository.GamePlayerRepository;
 import com.codeblockacademy.shipbender.service.intereface.IGamePlayerService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class GamePlayerService implements IGamePlayerService {
@@ -18,6 +19,7 @@ public class GamePlayerService implements IGamePlayerService {
         this.mapper     = mapper;
     }
 
+    @Transactional
     public GamePlayer save ( GamePlayer gamePlayer ) {
         return repository.saveAndFlush(gamePlayer);
     }

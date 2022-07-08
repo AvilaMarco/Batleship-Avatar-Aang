@@ -10,7 +10,7 @@ public interface IGameService {
 
     Game getGame ( Long id );
 
-    GameMatchDTO getGameMatch ( Long id );
+    GameMatchDTO getGameMatch ( Long id, Long gamePlayerId );
 
     List<GameMapDTO> getGames ();
 

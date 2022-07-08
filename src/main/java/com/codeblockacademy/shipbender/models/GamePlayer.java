@@ -63,6 +63,10 @@ public class GamePlayer {
         return !ships.isEmpty();
     }
 
+    public void emptyShips () {
+        this.ships = new HashSet<>();
+    }
+
 //    @JsonIgnore
 //    public boolean gamestard () {
 //        long migpid = this.getId();
