@@ -4,11 +4,16 @@ import com.codeblockacademy.shipbender.dto.GameMapDTO;
 import com.codeblockacademy.shipbender.dto.GamePlayerDTO;
 import com.codeblockacademy.shipbender.dto.response.GameCreatedDTO;
 import com.codeblockacademy.shipbender.models.Game;
+import com.codeblockacademy.shipbender.models.GamePlayer;
 import com.codeblockacademy.shipbender.models.Player;
 import com.codeblockacademy.shipbender.service.MatchService;
+import com.codeblockacademy.shipbender.service.intereface.IGamePlayerService;
+import com.codeblockacademy.shipbender.service.intereface.IGameService;
+import com.codeblockacademy.shipbender.service.intereface.IPlayerService;
 import com.codeblockacademy.shipbender.service.model.GamePlayerService;
 import com.codeblockacademy.shipbender.service.model.GameService;
 import com.codeblockacademy.shipbender.service.model.PlayerService;
+import com.codeblockacademy.shipbender.service.validations.IGameValidation;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,14 +31,14 @@ import static org.mockito.Mockito.*;
 public class MatchServiceTest {
 
     @Mock
-    PlayerService     playerService;
+    IPlayerService playerService;
     @Mock
-    GameService       gameService;
+    IGameService gameService;
     @Mock
-    GamePlayerService gamePlayerService;
+    IGamePlayerService gamePlayerService;
+    @Mock
 
-    @Spy
-    ModelMapper mapper;
+    IGameValidation gameValidation;
 
     @InjectMocks
     MatchService matchService;
@@ -64,7 +69,7 @@ public class MatchServiceTest {
           .when(gameService)
           .gameNotContainsThePlayer(any(), eq(anyLong()));*/
 
-        when(gamePlayerService.save(any())).thenReturn(any(GamePlayerDTO.class));
+        when(gamePlayerService.save(any())).thenReturn(any(GamePlayer.class));
 
         GameCreatedDTO result = matchService.joinGame(authMock, gameId);
         log.debug("mensaje: {}", result);
