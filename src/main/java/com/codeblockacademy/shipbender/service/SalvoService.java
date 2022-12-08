@@ -2,7 +2,7 @@ package com.codeblockacademy.shipbender.service;
 
 import com.codeblockacademy.shipbender.dto.GameMapDTO;
 import com.codeblockacademy.shipbender.dto.PlayerDTO;
-import com.codeblockacademy.shipbender.dto.PlayerScoreDTO;
+import com.codeblockacademy.shipbender.dto.PlayerStatsDTO;
 import com.codeblockacademy.shipbender.dto.request.SignInPlayerDTO;
 import com.codeblockacademy.shipbender.dto.response.MenuViewDTO;
 import com.codeblockacademy.shipbender.enums.NationType;
@@ -35,9 +35,9 @@ public class SalvoService implements ISalvoService {
 
     @Override
     public MenuViewDTO getInfoGames ( Authentication authentication ) {
-        PlayerScoreDTO       playerDTO    = playerService.getAnyPlayer(authentication);
+        PlayerStatsDTO       playerDTO    = playerService.getAnyPlayer(authentication);
         List<GameMapDTO>     games        = gameService.getGames();
-        List<PlayerScoreDTO> playersScore = playerService.getPlayersScore();
+        List<PlayerStatsDTO> playersScore = playerService.getPlayersScore();
         return new MenuViewDTO(playerDTO, games, playersScore);
     }
 

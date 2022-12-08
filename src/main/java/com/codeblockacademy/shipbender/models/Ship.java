@@ -19,7 +19,7 @@ public class Ship {
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> locations;
 
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection
     private List<String> salvosImpacted;
 
     @Enumerated(EnumType.STRING)

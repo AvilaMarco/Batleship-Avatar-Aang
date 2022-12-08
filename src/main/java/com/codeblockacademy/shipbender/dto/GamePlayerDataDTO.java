@@ -14,7 +14,7 @@ public class GamePlayerDataDTO {
     private String  emote;
     private Integer score;
 
-    private PlayerDTO      player;
+    private PlayerScoreDTO player;
     private List<ShipDTO>  ships;
     private List<SalvoDTO> salvos; /*ToDo: delete*/
 

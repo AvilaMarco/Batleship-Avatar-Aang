@@ -4,7 +4,6 @@ import {createGrid} from "./game-mjs/grid.js";
 import {getHTML} from "./utils/utils.js";
 import {getToken} from "./utils/payload.js";
 import {createShipGrid, setupShipsHost, setupTitleGame, startGame, viewClientData,} from "./game-mjs/update_html.js";
-import {CLIENT_TEST, HOST_TEST} from "./game-mjs/TEST_DATA.js";
 import {gameId, HEADER, playerRoute, TOKEN} from "./game-mjs/websocket/data_connection.js";
 import {subscribeShips, suscribeGame, suscribeWaitingClient,} from "./game-mjs/websocket/topics.js";
 import {sendEmote} from "./game-mjs/websocket/sends.js";
@@ -44,8 +43,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   console.log(status);
   connectClientSocket(status);
 
-  viewClientData(HOST_TEST);
-  setupTitleGame(data.nation);
+  viewClientData(HOST);
+  setupTitleGame(data);
   if (game === "CREATED") {
     // HOST
     if (host === "WITHOUT_SHIPS") {
@@ -58,9 +57,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       // view señor x
       viewClientData({});
     } else if (client === "WITHOUT_SHIPS") {
-      viewClientData(CLIENT_TEST);
+      viewClientData(CLIENT);
     } else if (client === "WITH_SHIPS") {
-      viewClientData(CLIENT_TEST);
+      viewClientData(CLIENT);
     }
   } else if (game === "IN_GAME") {
     startGame(data);
@@ -99,9 +98,9 @@ function statusGame(gameId, token) {
 
 function updataHostAndClientData({game_players}) {
   HOST = game_players.find(gp => gp.player.id === playerRoute)
-  HOST.user_type = "HOST"
-  CLIENT = game_players.find(gp => gp.player.id === playerRoute)
-  CLIENT.user_type = "CLIENT"
+  HOST.player.user_type = "HOST"
+  CLIENT = game_players.find(gp => gp.player.id !== playerRoute)
+  CLIENT.player.user_type = "CLIENT"
 }
 
 /* Load Data Local Storage */

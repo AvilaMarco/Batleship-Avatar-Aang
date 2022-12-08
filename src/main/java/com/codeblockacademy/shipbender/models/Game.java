@@ -27,6 +27,7 @@ public class Game {
     @Enumerated(EnumType.STRING)
     private NationType nation;
     private String     location;
+    private Integer    turn;
 
     @CreationTimestamp
     private LocalDateTime created;
@@ -39,6 +40,7 @@ public class Game {
     public Game ( NationType nation, String location ) {
         this.nation   = nation;
         this.location = location;
+        this.turn     = 1;
     }
 
     /* PUBLIC METHODS */

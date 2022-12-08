@@ -39,11 +39,12 @@ public class GameService implements IGameService {
         List<GamePlayer> gpsOnlyWithCorrectShips = game.getGamePlayers()
           .stream()
           .peek(gp -> {
-              if (gp.getId() == 1) gp.emptyShips();
+              if (gp.getId() != gamePlayerId) gp.emptyShips();
           })
           .distinct()
           .collect(Collectors.toList());
         game.setGamePlayers(gpsOnlyWithCorrectShips);
+        /*ToDo: add correct scores*/
         return mapper.map(game, GameMatchDTO.class);
     }
 

@@ -2,20 +2,19 @@ package com.codeblockacademy.shipbender.dto;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-@NoArgsConstructor
-public class PlayerScoreDTO extends PlayerDTO {
-    Integer score;
+public class PlayerStatsDTO extends PlayerDTO {
 
-    public PlayerScoreDTO ( PlayerDTO playerDTO, Integer score ) {
+    ScoreStatsDTO stats;
+
+    public PlayerStatsDTO ( PlayerDTO playerDTO, ScoreStatsDTO stats ) {
         super(playerDTO.getId(), playerDTO.getName(), playerDTO.getEmail(), playerDTO.getNation());
-        this.score = score;
+        this.stats = stats;
     }
 
-    public PlayerScoreDTO ( String name ) {
+    public PlayerStatsDTO ( String name ) {
         super(name);
     }
 }

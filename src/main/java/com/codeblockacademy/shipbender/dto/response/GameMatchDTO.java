@@ -11,5 +11,6 @@ public class GameMatchDTO {
     private Long                    id;
     private NationType              nation;
     private String                  location;
+    private Integer                 turn;
     private List<GamePlayerDataDTO> gamePlayers;
 }

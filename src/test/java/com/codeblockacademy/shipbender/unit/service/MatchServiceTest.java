@@ -1,7 +1,6 @@
 package com.codeblockacademy.shipbender.unit.service;
 
 import com.codeblockacademy.shipbender.dto.GameMapDTO;
-import com.codeblockacademy.shipbender.dto.GamePlayerDTO;
 import com.codeblockacademy.shipbender.dto.response.GameCreatedDTO;
 import com.codeblockacademy.shipbender.models.Game;
 import com.codeblockacademy.shipbender.models.Player;
@@ -64,7 +63,7 @@ public class MatchServiceTest {
           .when(gameService)
           .gameNotContainsThePlayer(any(), eq(anyLong()));*/
 
-        when(gamePlayerService.save(any())).thenReturn(any(GamePlayerDTO.class));
+//        when(gamePlayerService.save(any())).thenReturn(any(GamePlayerDTO.class));
 
         GameCreatedDTO result = matchService.joinGame(authMock, gameId);
         log.debug("mensaje: {}", result);

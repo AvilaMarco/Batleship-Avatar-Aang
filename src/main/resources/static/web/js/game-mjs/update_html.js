@@ -2,8 +2,8 @@ import {createDockerShip, createShips, SHIPS_NAMES} from "./ship/ships.js";
 import {addClickEvent, getHTML} from "../utils/utils.js";
 import {sendShips} from "./websocket/sends.js";
 import {getShipsOf, isShipsDockEmpty} from "./ship/helper.js";
-import {createGrid} from "./grid";
-import {GRID_SIZE} from "./CONSTANTS";
+import {createGrid} from "./grid.js";
+import {GRID_SIZE} from "./CONSTANTS.js";
 
 const setupShipsHost = (stomp) => {
   createDockerShip();
@@ -43,10 +43,10 @@ const viewClientData = ({name, score, nation, user_type}) => {
   container.appendChild(fragment);
 };
 
-const setupTitleGame = (nation) => {
+const setupTitleGame = ({nation, turn}) => {
   document.getElementById("GAME_TITLE").textContent = `${nation}'s`;
-  /*document.getElementById("GAME_TURN")
-  document.getElementById("GRID_VIEW")*/
+  document.getElementById("GAME_TURN").textContent = turn;
+  // document.getElementById("GRID_VIEW")
 };
 
 const startGame = (data) => {
@@ -59,6 +59,9 @@ const startGame = (data) => {
   createOpponentSalvoGrid()
 
   createSalvoDocker()
+
+  /*Turn*/
+  getHTML("#GAME_TURN").textContent = data?.turn;
 }
 
 function createGridSalvo() {

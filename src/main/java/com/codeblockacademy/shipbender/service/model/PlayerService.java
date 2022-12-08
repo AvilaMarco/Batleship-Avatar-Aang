@@ -1,7 +1,7 @@
 package com.codeblockacademy.shipbender.service.model;
 
 import com.codeblockacademy.shipbender.dto.PlayerDTO;
-import com.codeblockacademy.shipbender.dto.PlayerScoreDTO;
+import com.codeblockacademy.shipbender.dto.PlayerStatsDTO;
 import com.codeblockacademy.shipbender.dto.ScoreStatsDTO;
 import com.codeblockacademy.shipbender.dto.request.SignInPlayerDTO;
 import com.codeblockacademy.shipbender.exception.conflict.EmailAlreadyUseException;
@@ -37,13 +37,13 @@ public class PlayerService implements IPlayerService {
     }
 
     @Override
-    public PlayerScoreDTO getAnyPlayer ( Authentication authentication ) {
+    public PlayerStatsDTO getAnyPlayer ( Authentication authentication ) {
         Authentication auth = SecurityContextHolder.getContext()
           .getAuthentication();
-        if (isGuest(auth)) return new PlayerScoreDTO("Guess");
+        if (isGuest(auth)) return new PlayerStatsDTO("Guess");
         Player    player    = getPlayer(auth.getName());
         PlayerDTO playerDTO = mapper.map(player, PlayerDTO.class);
-        return new PlayerScoreDTO(playerDTO, getStatsByPlayer(player.getScores()));
+        return new PlayerStatsDTO(playerDTO, getStatsByPlayer(player.getScores()));
     }
 
     @Override
@@ -63,10 +63,10 @@ public class PlayerService implements IPlayerService {
     }
 
     @Override
-    public List<PlayerScoreDTO> getPlayersScore () {
+    public List<PlayerStatsDTO> getPlayersScore () {
         return playerRepository.rankedPlayer()
           .stream()
-          .map(p -> new PlayerScoreDTO(
+          .map(p -> new PlayerStatsDTO(
               mapper.map(p, PlayerDTO.class),
               getStatsByPlayer(p.getScores())
             )
