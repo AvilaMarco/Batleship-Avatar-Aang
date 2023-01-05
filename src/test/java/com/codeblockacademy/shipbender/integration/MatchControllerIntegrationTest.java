@@ -1,14 +1,12 @@
 package com.codeblockacademy.shipbender.integration;
 
+import com.auth0.jwt.JWT;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -23,7 +21,7 @@ import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Date;
 
-import static com.codeblockacademy.shipbender.config.ENV_VARIABLES.SECRET_KEY;
+import static com.codeblockacademy.shipbender.dto.config.ENV_VARIABLES.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -38,34 +36,26 @@ public class MatchControllerIntegrationTest {
     static String token;
 
     @BeforeAll
-    static void setup () {
+    static void setup() {
         LocalDateTime expired = LocalDateTime.now()
-          .plusMinutes(1);
+                .plusMinutes(1);
         Date expiredTime = Date.from(expired.atZone(ZoneId.systemDefault())
-          .toInstant());
+                .toInstant());
 
-        token = "Bearer " + Jwts
-          .builder()
-          .setSubject("marco@admin.com")
-          .claim("AUTHORITIES", Arrays.asList("ADMIN", "PLAYER", "GUEST"))
-          .setIssuedAt(new Date(System.currentTimeMillis()))
-          .setExpiration(expiredTime)
-          .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
-          .compact();
-    }
-
-    @BeforeEach
-    void a () {
-        token = "";
+        token = PREFIX + JWT.create()
+                .withSubject("marco@admin.com")
+                .withExpiresAt(expiredTime)
+                .withClaim(CLAIMS, Arrays.asList("ADMIN", "PLAYER", "GUEST"))
+                .sign(ALGORITHM);
     }
 
     @Test
-    void aaa () throws JsonProcessingException {
+    void aaa() throws JsonProcessingException {
 
         ObjectWriter writer = new ObjectMapper()
-          .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
-          .registerModule(new JavaTimeModule())
-          .writer();
+                .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+                .registerModule(new JavaTimeModule())
+                .writer();
 
         LocalDate add = LocalDate.now();
 
@@ -75,25 +65,25 @@ public class MatchControllerIntegrationTest {
     }
 
     @Test
-    void aaabbb () throws Exception {
+    void aaabbb() throws Exception {
 
         ResultMatcher statusOk = status()
-          .isOk();
+                .isOk();
 
         var request = get("/api/match/{game_id}", 1).header("Authorization", token);
         mockMvc
-          .perform(request)
-          .andDo(print())
-          .andExpectAll(
-            statusOk
-          );
+                .perform(request)
+                .andDo(print())
+                .andExpectAll(
+                        statusOk
+                );
 
         MvcResult response = mockMvc
-          .perform(request)
-          .andReturn();
+                .perform(request)
+                .andReturn();
 
         String content = response.getResponse()
-          .getContentAsString();
+                .getContentAsString();
 
     }
 }
