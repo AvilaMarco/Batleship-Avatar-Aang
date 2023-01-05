@@ -1,4 +1,4 @@
-package com.codeblockacademy.shipbender.dto.config.websocket;
+package com.codeblockacademy.shipbender.config.websocket;
 
 import com.codeblockacademy.shipbender.security.AuthChannelInterceptorAdapter;
 import org.springframework.beans.factory.annotation.Autowired;

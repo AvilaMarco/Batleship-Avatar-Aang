@@ -3,7 +3,7 @@ package com.codeblockacademy.shipbender.security;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.codeblockacademy.shipbender.dto.config.ENV_VARIABLES;
+import com.codeblockacademy.shipbender.config.ENV_VARIABLES;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 

@@ -1,4 +1,4 @@
-package com.codeblockacademy.shipbender.dto.config;
+package com.codeblockacademy.shipbender.config;
 
 import com.codeblockacademy.shipbender.enums.NationType;
 import com.codeblockacademy.shipbender.enums.Rol;

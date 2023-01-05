@@ -1,4 +1,4 @@
-package com.codeblockacademy.shipbender.dto.config.websocket;
+package com.codeblockacademy.shipbender.config.websocket;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
