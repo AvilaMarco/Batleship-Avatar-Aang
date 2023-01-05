@@ -14,7 +14,7 @@
     <name>The Last Shipbender</name>
     <description>naval battle online 1 vs 1, with theme of the last airbender</description>
     <properties>
-        <java.version>11</java.version>
+        <java.version>17</java.version>
     </properties>
     <dependencies>
 
@@ -35,27 +35,7 @@
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-ui</artifactId>
-            <version>1.6.8</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-webflux-ui</artifactId>
-            <version>1.6.8</version>
-        </dependency>
-        <!--        <dependency>
-                    <groupId>org.springdoc</groupId>
-                    <artifactId>springdoc-openapi-data-rest</artifactId>
-                    <version>1.6.8</version>
-                </dependency>-->
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-security</artifactId>
-            <version>1.6.8</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-webmvc-core</artifactId>
-            <version>1.6.8</version>
+            <version>1.6.14</version>
         </dependency>
 
         <!-- Login JWT -->
@@ -69,12 +49,7 @@
         <dependency>
             <groupId>com.auth0</groupId>
             <artifactId>java-jwt</artifactId>
-            <version>3.19.2</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-webflux</artifactId>
+            <version>4.2.1</version>
         </dependency>
 
         <!-- WEBSOCKET -->
@@ -113,12 +88,14 @@
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
-
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>
         <!-- DATABASE -->
-        <!--        <dependency>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-data-rest</artifactId>
-                </dependency>-->
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -195,7 +172,7 @@
                 <configuration>
                     <apiDocsUrl>http://localhost:8080/v3/api-docs</apiDocsUrl>
                     <outputFileName>openapi.json</outputFileName>
-                    <outputDir>${project.build.directory}</outputDir>
+                    <outputDir>${project.build.directory}/docs/swagger</outputDir>
                 </configuration>
             </plugin>
         </plugins>
