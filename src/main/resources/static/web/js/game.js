@@ -37,8 +37,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   let {game, host, client} = status;
   updataHostAndClientData(data)
   GAME = data
-  // const {status, data} = {data: DATA, status: STATUS};
-  // let {game, host, client} = status;
   console.log(data);
   console.log(status);
   connectClientSocket(status);
