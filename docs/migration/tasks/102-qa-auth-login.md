@@ -1,5 +1,5 @@
 # 102 · qa · Caracterización de auth: login, registro y JWT
-Estado: pendiente
+Estado: hecha
 Fase: F1
 Depende de: 101
 
@@ -27,3 +27,4 @@ Criterios de aceptación:
 - `git diff --stat -- src/main` → vacío.
 
 ## Resultado
+Creados `AuthHelper`, `AuthIntegrationTest` (7 tests) y reescrito `MatchControllerIntegrationTest` (sin ENV_VARIABLES). Estados observados: password incorrecta 404, email repetido 409, sin Authorization 403, firma inválida: MockMvc lanza excepción (fijado con assertThrows). El email admite max 30 chars (`@Size(max=30)`), por eso el helper usa un UUID recortado. `./mvnw test` verde (9 tests); `src/main` sin cambios.

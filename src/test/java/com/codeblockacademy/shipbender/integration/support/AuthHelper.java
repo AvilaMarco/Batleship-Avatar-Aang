@@ -1,0 +1,40 @@
+package com.codeblockacademy.shipbender.integration.support;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.UUID;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+public final class AuthHelper {
+    private static final ObjectMapper JSON = new ObjectMapper();
+
+    private AuthHelper () {}
+
+    /** Devuelve el token ya con prefijo "Bearer ". */
+    public static String loginToken ( MockMvc mvc, String email, String password ) throws Exception {
+        String body = mvc.perform(post("/api/players/login").contentType(MediaType.APPLICATION_JSON)
+            .content(JSON.writeValueAsString(new Creds(email, password))))
+          .andExpect(status().isOk())
+          .andReturn().getResponse().getContentAsString();
+        JsonNode node = JSON.readTree(body);
+        return node.get("token").asText();
+    }
+
+    public static String registerAndLogin ( MockMvc mvc ) throws Exception {
+        // el email admite max 30 caracteres
+        String email = "u" + UUID.randomUUID().toString().substring(0, 8) + "@t.com";
+        mvc.perform(post("/api/players").contentType(MediaType.APPLICATION_JSON)
+            .content(JSON.writeValueAsString(new Creds(email, "pw123", "Tester"))))
+          .andExpect(status().isCreated());
+        return loginToken(mvc, email, "pw123");
+    }
+
+    public record Creds(String email, String password, String name) {
+        Creds ( String email, String password ) { this(email, password, null); }
+    }
+}
