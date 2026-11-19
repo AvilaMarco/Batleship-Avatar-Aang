@@ -11,6 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
@@ -34,6 +35,7 @@ public class GameplayService implements IGameplayService {
     }
 
     @Override
+    @Transactional
     public GameDataDTO createShips ( Authentication authentication, Long gameId, List<ShipDTO> shipsDTO ) {
         Player     player     = playerService.getPlayerAuthenticated(authentication);
         GamePlayer gamePlayer = gamePlayerService.getGamePlayerBy(player.getId(), gameId);
