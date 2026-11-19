@@ -288,3 +288,6 @@ prepros.config
 *.scss.map
 
 # End of https://www.toptal.com/developers/gitignore/api/intellij,intellij+iml,intellij+all,java,maven,sass,prepros
+### Proyecto ###
+.env
+.claude/settings.local.json
