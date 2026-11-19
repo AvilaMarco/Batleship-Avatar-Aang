@@ -1,5 +1,5 @@
 # 105 · qa · Unit tests: arreglar MatchServiceTest y cubrir GameValidation
-Estado: pendiente
+Estado: hecha
 Fase: F1
 Depende de: 101
 
@@ -28,3 +28,7 @@ Criterios de aceptación:
 - `git diff --stat -- src/main` → vacío.
 
 ## Resultado
+MatchServiceTest reescrito (3 casos, sin lenient ni any() mal usado); GameValidationTest nuevo (7 casos); borrados SalvoServiceTest y BeansTest.
+`./mvnw test` -> 18 tests, BUILD SUCCESS; greps de aceptacion vacios; `git diff -- src/main` vacio.
+Hallazgo: el "bug" de `Game.containsPlayer` (Long con ==) NO se reproduce: `Player.id` es `long` primitivo, el == desempaqueta. El test fija que con id 1000 devuelve true. El arquitecto debe corregir la nota de F4.
+Hallazgo: un run (de 3) tuvo 1 fallo en AuthIntegrationTest (flaky, no reproducido); revisar orden/estado compartido.

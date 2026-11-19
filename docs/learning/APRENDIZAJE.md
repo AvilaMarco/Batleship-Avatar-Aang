@@ -32,7 +32,7 @@ Formato de entrada:
 - Código muerto (`static/web/js/game-mjs/sobras.js`, `static/web/delete/`) → F2.
 - Build no reproducible: falta `.mvn/wrapper/` y Lombok no compila en JDK 21 → F1 (101). Concepto: build reproducible.
 - `service/validations/ShipValidation.java`: métodos `void` que calculan un booleano y lo descartan; nadie los inyecta → el servidor acepta cualquier barco → F2/F4. Concepto: validar en el límite de confianza, fail fast.
-- `models/Game.java:82`, `controller/SalvoController.java:96`: `Long == Long` (falla con ids > 127 por el caché de Integer/Long) → F4. Concepto: identidad vs. igualdad.
+- `models/Game.java:82`: parecía `Long == Long`, pero `Player.id` es `long` primitivo y el test (F1/105) demostró que NO falla. Corrección de una nota mía: verificar antes de afirmar. `SalvoController.java:96` y `GameService.java:41` (`gp.getId() != gamePlayerId`) sí comparan `Long` por referencia → F2/F4. Concepto: identidad vs. igualdad.
 - `security/JWTAuthorizationFilter.java:47`: atrapa excepciones de jjwt pero verifica con auth0, y duplica `JWTUtil` → F2. Concepto: DRY, una librería por responsabilidad.
 - `ENV_VARIABLES.java`: interfaz de constantes implementada por 3 clases → F2. Concepto: antipatrón *Constant Interface*.
 - `GameValidation.containsThePlayer` lanza `PlayerAlreadyInGameException` cuando el jugador NO está; `PlayerService.getPlayerAuthenticated` ignora su parámetro y lee `SecurityContextHolder` → F4. Concepto: nombres honestos, dependencias explícitas.
@@ -44,6 +44,33 @@ Formato de entrada:
 - `static/web/js/games-mjs/player.js:14`: llama a `/api/logout` pero el backend expone `/api/players/logout` → F5. Concepto: contrato de API compartido.
 
 ## F1 · Red de seguridad
+
+### El WebSocket de barcos nunca publicaba nada (prioridad alta)
+- **Antes**: `service/GameplayService.java:47` → `GameService.java:48`; `@SendTo` en `GameplayController.java:32`. Nadie lo había notado: guardaba los barcos y fallaba en silencio.
+- **Problema**: `LazyInitializationException` (`Ship.salvosImpacted`): en el hilo STOMP no hay sesión de Hibernate abierta. Como no hay `@MessageExceptionHandler`, la excepción se pierde y ningún cliente se entera.
+- **Después**: F1 lo fija con un test ("se guarda pero no se publica"); se arregla en la tarea 204 (F2).
+- **Por qué importa**: un test de caracterización destapa lo que el código hace de verdad, no lo que crees que hace. Además, al arreglarlo el rival recibiría el `GameDataDTO` calculado para quien colocó los barcos: arreglar un bug destapa un fallo de seguridad.
+- **Concepto**: caracterizar lo observado, errores explícitos en APIs asíncronas, eventos públicos vs. estado privado.
+
+### Mockito: matchers no son valores (prioridad media)
+- **Antes**: `MatchServiceTest.java:47,65`: `Authentication authMock = any(...)` y `thenReturn(any(GamePlayer.class))`; el test no afirmaba nada.
+- **Problema**: `any()` solo vale dentro de `when(...)`/`verify(...)`; fuera devuelve null y el test pasa sin probar nada.
+- **Después**: `mock()` para dobles, stubs con valores reales y `verify` + asserts (3 casos).
+- **Concepto**: un test que no puede fallar no protege nada.
+
+### Probar por el contrato público, no por los internos (prioridad media)
+- **Antes**: `MatchControllerIntegrationTest` firmaba el JWT con `ENV_VARIABLES.ALGORITHM`.
+- **Problema**: el test dependía del secreto; al moverlo a configuración (F2) se habría roto.
+- **Después**: `AuthHelper` obtiene el token llamando al login real.
+- **Concepto**: acoplar tests a la interfaz pública, no a la implementación.
+
+### Mensajes de error que mienten (prioridad media)
+- `GameValidation.containsThePlayer` responde 409 "Player Already in Game" cuando el jugador NO está en la partida. Un nombre o mensaje falso cuesta horas de depuración. → F4.
+
+### Build reproducible
+- **Antes**: `./mvnw` no funcionaba (faltaba `.mvn/wrapper/`) y Lombok 1.18.22 no compilaba en JDK 21.
+- **Después**: wrapper commiteado y `<lombok.version>1.18.36</lombok.version>` en `pom.xml:17`, que sobrescribe la versión que gestiona el BOM de Boot.
+- **Concepto**: build reproducible; sobrescribir versiones del BOM con propiedades.
 
 ## F2 · Limpieza
 

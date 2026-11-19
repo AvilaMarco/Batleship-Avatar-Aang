@@ -1,5 +1,5 @@
 # 103 · qa · Caracterización REST de games y match
-Estado: pendiente
+Estado: hecha
 Fase: F1
 Depende de: 102 (usa `AuthHelper`)
 
@@ -26,3 +26,4 @@ Criterios de aceptación:
 - `git diff --stat -- src/main` → vacío.
 
 ## Resultado
+Creado `MatchFlowIntegrationTest` (9 tests). Valores observados: `GET /api/games` sin token 403, con token 200 {player, games}; crear 201 {game_id, game_player_id}; misma location 409; unirse B 200, C a partida llena 409 "Game Is Full"; A a su propia partida con hueco 200 (bug conocido); `/api/match/{id}` y `/status` como participante 200 (status: data + status{game,host,client}); como no participante 409 "Player Already in Game" (mensaje enganoso); id inexistente 404 "Game Not Found Exception". Nation en la URL va en mayusculas (FIRE). `./mvnw test` x3: 27 tests, 0 fallos, BUILD SUCCESS las 3 veces; no se vio el fallo intermitente de AuthIntegrationTest. `git diff --stat -- src/main` vacio.

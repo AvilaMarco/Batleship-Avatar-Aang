@@ -1,5 +1,5 @@
 # 104 · qa · Caracterización WebSocket STOMP: colocar barcos
-Estado: pendiente
+Estado: hecha
 Fase: F1
 Depende de: 102 (usa `AuthHelper`)
 
@@ -26,3 +26,10 @@ Criterios de aceptación:
 - `git diff --stat -- src/main` → vacío.
 
 ## Resultado
+Se creo `GameplayWebSocketTest` (3 tests, SockJS + JWT en CONNECT; suscripcion sincronizada con `SimpUserRegistry`, sin sleep). Suite completa: 30 tests, BUILD SUCCESS, 3 corridas seguidas sin fallos.
+Hallazgos (fijados con `// bug conocido`, tarea backend-dev 204):
+- Enviar barcos validos los guarda (REST status host -> WITH_SHIPS) pero NO se publica nada en el topic (ni A ni el rival): `LazyInitializationException` en `GameplayService.createShips` -> `statusGame` (sin sesion en el hilo STOMP). Los casos 1 y 3 del plan quedan sin observar: el segundo envio tampoco publica por el mismo motivo.
+- Barcos invalidos (Z99, tamano, superpuestos) se aceptan y guardan.
+- El cliente debe enviar `content-type: application/json`; con text/plain falla la conversion a `List<ShipDTO>`.
+- CONNECT sin token: el servidor cierra la conexion (`ConnectionLostException`).
+- Seguridad: el topic `/topic/gameplay/{id}/ships` es compartido; al arreglar el bug el rival recibira el `GameDataDTO` calculado para A (con las posiciones de A). Ademas `GameService.getGameMatch` compara `Long != Long` por referencia (ids > 127 vaciarian los barcos de todos).
