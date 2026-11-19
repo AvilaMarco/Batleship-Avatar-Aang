@@ -1,5 +1,5 @@
 # 202 · backend-dev · Secreto y expiración JWT en configuración externa; perfiles dev/prod
-Estado: pendiente
+Estado: hecha
 Fase: F2
 Depende de: 201 (toca `JWTAuthorizationFilter` y `pom.xml`) · 102 (los tests ya no usan `ENV_VARIABLES`)
 
@@ -24,3 +24,15 @@ Criterios de aceptación:
 - Login (`POST /api/players/login`) en dev devuelve un token cuyo `exp` decodificado (jwt.io o `base64 -d` del payload) es unas 24 h después de ahora.
 
 ## Resultado
+Cambios: `JWTUtil` recibe secreto y expiración por constructor (`@Value`), valida >= 32 caracteres y guarda el `Algorithm` como campo; `ENV_VARIABLES` ya no tiene `SECRET_KEY`/`MINUTES_TOKEN_EXPIRATION`/`ALGORITHM`; `JWTAuthorizationFilter` y `WebSecurityConfig` usan `JWTUtil` inyectado; propiedades comunes + `application-dev.properties` + `application-prod.properties`.
+
+Verificación:
+- `./mvnw test` → 30 tests, 0 fallos, BUILD SUCCESS (perfil dev por defecto).
+- `grep SECRET_KEY|MINUTES_TOKEN_EXPIRATION|HMAC256 src/main/java` → solo `JWTUtil.java` (HMAC256).
+- `application-prod.properties` contiene exactamente `jwt.secret=${JWT_SECRET}`.
+- prod sin `JWT_SECRET` → no arranca: "Could not resolve placeholder 'JWT_SECRET'".
+- prod con secreto de prueba generado al vuelo (solo en variable de entorno del shell): `/h2-console/` → 404. Dev → 200.
+- Login en dev: `exp` del token = ahora + 24.0 h.
+- Desviación: el puerto 8080 estaba ocupado por otro proceso ajeno (`llama-swap.exe`), que no se tocó; las pruebas de arranque se hicieron con `--server.port=8081`. No cambia lo verificado.
+- No quedan procesos java levantados por mí.
+- Pendiente fuera de alcance: en prod real hay que definir un `JWT_SECRET` nuevo (el viejo se considera comprometido).
