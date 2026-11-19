@@ -37,6 +37,10 @@ Formato de entrada:
 - `ENV_VARIABLES.java`: interfaz de constantes implementada por 3 clases → F2. Concepto: antipatrón *Constant Interface*.
 - `GameValidation.containsThePlayer` lanza `PlayerAlreadyInGameException` cuando el jugador NO está; `PlayerService.getPlayerAuthenticated` ignora su parámetro y lee `SecurityContextHolder` → F4. Concepto: nombres honestos, dependencias explícitas.
 - `service/MatchService.java:58`: validación "ya está en la partida" comentada → un jugador se puede unir dos veces a su partida → F4.
+- `controller/GameplayController.java:32-36` + `service/GameplayService.createShips`: `@SendTo` a un `/topic` compartido de una vista armada para quien colocó los barcos → probablemente el rival recibe tus posiciones (a confirmar en 104) → F4. Concepto: eventos públicos (`/topic`) vs. estado privado (`/user/queue`).
+- Contrato REST inconsistente: datos en la ruta (`/api/match/games/{nation}/{location}`), acciones en la URL (`/nation/{nation}`, `/emote/{id}/{emote}`), `GamePlayer` interno expuesto (`/gp/{id}`), dos prefijos para games, `Map<String,Object>` como respuesta, misma acción por REST y por WS → F4. Concepto: REST orientado a recursos, contrato tipado, no filtrar el modelo interno.
+- WebSocket sin `@MessageExceptionHandler`: los errores se pierden en silencio → F4. Concepto: formato de error único también en APIs asíncronas.
+- Probar contra H2 cuando producción es Postgres: los tests pueden pasar y producción fallar → F3. Concepto: paridad dev/prod (12-factor), Testcontainers.
 - `static/web/js/games-mjs/player.js:14`: llama a `/api/logout` pero el backend expone `/api/players/logout` → F5. Concepto: contrato de API compartido.
 
 ## F1 · Red de seguridad
