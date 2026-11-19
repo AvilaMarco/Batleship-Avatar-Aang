@@ -1,5 +1,5 @@
 # 101 · backend-dev · Build reproducible con el wrapper y JDK 21
-Estado: pendiente
+Estado: hecha
 Fase: F1
 Depende de: —
 
@@ -24,3 +24,4 @@ Criterios de aceptación:
 - `git diff pom.xml` muestra solo la línea de `lombok.version`.
 
 ## Resultado
+Wrapper generado (Maven 3.9.16, regeneró mvnw/mvnw.cmd) y `lombok.version=1.18.36` en pom.xml. `./mvnw -v` OK con Java 21; `./mvnw test` BUILD SUCCESS, 3 tests, 0 fallos.
