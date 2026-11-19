@@ -32,7 +32,7 @@ Formato de entrada:
 - Código muerto (`static/web/js/game-mjs/sobras.js`, `static/web/delete/`) → F2.
 - Build no reproducible: falta `.mvn/wrapper/` y Lombok no compila en JDK 21 → F1 (101). Concepto: build reproducible.
 - `service/validations/ShipValidation.java`: métodos `void` que calculan un booleano y lo descartan; nadie los inyecta → el servidor acepta cualquier barco → F2/F4. Concepto: validar en el límite de confianza, fail fast.
-- `models/Game.java:82`: parecía `Long == Long`, pero `Player.id` es `long` primitivo y el test (F1/105) demostró que NO falla. Corrección de una nota mía: verificar antes de afirmar. `SalvoController.java:96` y `GameService.java:41` (`gp.getId() != gamePlayerId`) sí comparan `Long` por referencia → F2/F4. Concepto: identidad vs. igualdad.
+- `models/Game.java:82`: parecía `Long == Long`, pero `Player.id` es `long` primitivo y el test (F1/105) demostró que NO falla. Corrección de una nota mía: verificar antes de afirmar. `GameService.java:41` (`gp.getId() != gamePlayerId`) tampoco es bug (long contra Long desempaqueta; `.equals` ni compila). Lección repetida: verificar la premisa de un bug antes de arreglarlo. Concepto: identidad vs. igualdad.
 - `security/JWTAuthorizationFilter.java:47`: atrapa excepciones de jjwt pero verifica con auth0, y duplica `JWTUtil` → F2. Concepto: DRY, una librería por responsabilidad.
 - `ENV_VARIABLES.java`: interfaz de constantes implementada por 3 clases → F2. Concepto: antipatrón *Constant Interface*.
 - `GameValidation.containsThePlayer` lanza `PlayerAlreadyInGameException` cuando el jugador NO está; `PlayerService.getPlayerAuthenticated` ignora su parámetro y lee `SecurityContextHolder` → F4. Concepto: nombres honestos, dependencias explícitas.
@@ -73,6 +73,28 @@ Formato de entrada:
 - **Concepto**: build reproducible; sobrescribir versiones del BOM con propiedades.
 
 ## F2 · Limpieza
+
+### Secreto en el código y una interfaz de constantes (prioridad alta)
+- **Antes**: `config/ENV_VARIABLES.java`: secreto JWT en una constante, expiración de ~700.000 años, `ALGORITHM` estático; `JWTAuthorizationFilter` duplicaba la lógica de `JWTUtil` con `new` a mano.
+- **Problema**: el secreto quedó en el historial de git (comprometido para siempre); no se podía cambiar por entorno; dos implementaciones de lo mismo.
+- **Después**: `application-{dev,prod}.properties` con `jwt.secret=${JWT_SECRET}` (sin valor por defecto en prod), `JWTUtil` recibe secreto y expiración por constructor (`@Value`), valida al arrancar (≥32 caracteres) y se inyecta en el filtro.
+- **Por qué es mejor**: prod no arranca sin secreto (fail-fast), el secreto vive fuera del repo, hay un único punto de verdad para firmar y verificar.
+- **Concepto**: Twelve-Factor (config en el entorno), fail-fast, DRY, inyección de dependencias, perfiles de Spring.
+
+### Código muerto que parece funcionalidad (prioridad media)
+- **Antes**: `SalvoController` con ~250 líneas de stubs que siempre devolvían 401/403, lógica vieja comentada y `@Autowired` sin usar; `ShipValidation` con métodos `void` que calculaban un booleano y lo descartaban, nadie lo inyectaba.
+- **Problema**: ruido, superficie de ataque sin sentido, y la falsa sensación de que los barcos se validaban (no se validaban).
+- **Después**: un controller de ~20 líneas; `ShipValidation` borrado (la validación real se diseña en el dominio en F4).
+- **Concepto**: YAGNI; git ya guarda el código viejo, no hace falta dejarlo comentado. Borrar con evidencia (`grep`) antes de tocar.
+
+### El límite transaccional va en el servicio (prioridad media)
+- **Antes**: `GameplayService.createShips` sin transacción: en el hilo STOMP no hay sesión de Hibernate → `LazyInitializationException` y el mensaje nunca salía.
+- **Después**: `@Transactional` en el método del servicio.
+- **Por qué es mejor**: la sesión vive durante la operación completa sin cambiar el tipo de fetch ni activar `open-in-view` globalmente.
+- **Concepto**: unidad de trabajo / límite transaccional en la capa de servicio.
+
+### Dos premisas de bugs resultaron falsas (prioridad media)
+- Las notas sobre `Long ==` (`Game.java:82`, `GameService.java:41`) eran erróneas: los ids son `long` primitivo. La verificación con un test y con el compilador lo mostró dos veces. **Antes de arreglar, comprueba que el bug existe.**
 
 ## F3 · Upgrade
 
