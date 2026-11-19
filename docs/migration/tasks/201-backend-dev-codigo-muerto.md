@@ -1,5 +1,5 @@
 # 201 · backend-dev · Borrar código muerto del backend y dependencias sobrantes
-Estado: pendiente
+Estado: hecha
 Fase: F2
 Depende de: 102, 103, 104, 105 (F1 en verde)
 
@@ -22,3 +22,5 @@ Criterios de aceptación:
 - `./mvnw spring-boot:run` levanta y `GET http://localhost:8080/web/games.html` → 200.
 
 ## Resultado
+Borrado todo lo indicado (puntos 1-6). `./mvnw test`: 30 tests, 0 fallos, BUILD SUCCESS. Greps de aceptación sin resultados; devtools = 1 ocurrencia.
+No verificado: `spring-boot:run` + GET games.html (los tests @SpringBootTest cargan el contexto).

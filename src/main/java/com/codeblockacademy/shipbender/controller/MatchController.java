@@ -29,7 +29,6 @@ public class MatchController {
 
     @GetMapping("/{game_id}")
     public GameMatchDTO dataGame ( @PathVariable Long game_id, Authentication authentication ) {
-        System.out.println(matchService.getGame(authentication, game_id));
         return matchService.getGame(authentication, game_id);
     }
 

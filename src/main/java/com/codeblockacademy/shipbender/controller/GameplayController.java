@@ -1,6 +1,5 @@
 package com.codeblockacademy.shipbender.controller;
 
-import com.codeblockacademy.shipbender.dto.error.ErrorDTO;
 import com.codeblockacademy.shipbender.dto.request.websocket.ShipDTO;
 import com.codeblockacademy.shipbender.dto.response.GameDataDTO;
 import com.codeblockacademy.shipbender.dto.response.UserEmoteDTO;
@@ -40,24 +39,6 @@ public class GameplayController {
     @SendTo("/topic/gameplay/{gameId}/emotes") // salida
     public UserEmoteDTO matchEmotes ( @DestinationVariable Long gameId, @RequestBody String emote ) {
         return gameplayService.sendEmote(gameId, emote);
-    }
-
-    // enviar disparos
-    @MessageMapping("/{gameId}/salvos")
-    @SendTo("/topic/gameplay/{gameId}/salvos")
-    public ErrorDTO matchSalvos ( Authentication authentication, @DestinationVariable Long gameId, @DestinationVariable Long userId ) {
-        System.out.println(gameId);
-        ErrorDTO a = new ErrorDTO("emotes", "creating emotes");
-        return a;
-    }
-
-    // rematch
-    @MessageMapping("/{gameId}/rematch")
-    @SendTo("/topic/gameplay/{gameId}/rematch")
-    public ErrorDTO reMatch ( Authentication authentication, @DestinationVariable Long gameId, @DestinationVariable Long userId ) {
-        System.out.println(gameId);
-        ErrorDTO a = new ErrorDTO("emotes", "creating emotes");
-        return a;
     }
 
 }

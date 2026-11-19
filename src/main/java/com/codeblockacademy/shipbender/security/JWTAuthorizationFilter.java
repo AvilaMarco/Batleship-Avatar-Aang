@@ -5,9 +5,6 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.codeblockacademy.shipbender.config.ENV_VARIABLES;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.UnsupportedJwtException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,20 +31,14 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter implements ENV_
      */
     @Override
     protected void doFilterInternal ( HttpServletRequest request, HttpServletResponse response, FilterChain chain ) throws ServletException, IOException {
-        try {
+        if (!this.existeJWTToken(request)) SecurityContextHolder.clearContext();
+        else {
+            DecodedJWT decodedJWT = this.decodedValidJWT(request);
 
-            if (!this.existeJWTToken(request)) SecurityContextHolder.clearContext();
-            else {
-                DecodedJWT decodedJWT = this.decodedValidJWT(request);
-
-                if (decodedJWT == null) SecurityContextHolder.clearContext();
-                else this.setUpSpringAuthentication(decodedJWT);
-            }
-            chain.doFilter(request, response);
-        } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException e) {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            response.sendError(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
+            if (decodedJWT == null) SecurityContextHolder.clearContext();
+            else this.setUpSpringAuthentication(decodedJWT);
         }
+        chain.doFilter(request, response);
     }
 
     /**
