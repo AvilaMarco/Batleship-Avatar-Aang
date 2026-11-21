@@ -1,31 +1,31 @@
 package dev.racnar.shipbender.player;
 
-import dev.racnar.shipbender.player.dto.PlayerDTO;
-import dev.racnar.shipbender.player.dto.PlayerStatsDTO;
-import dev.racnar.shipbender.player.dto.ScoreStatsDTO;
-import dev.racnar.shipbender.player.dto.SignInPlayerDTO;
-import dev.racnar.shipbender.shared.error.conflict.EmailAlreadyUseException;
+import dev.racnar.shipbender.player.domain.Player;
+import dev.racnar.shipbender.player.domain.PlayerStats;
+import dev.racnar.shipbender.player.domain.Rol;
+import dev.racnar.shipbender.player.dto.*;
+import dev.racnar.shipbender.shared.NationType;
+import dev.racnar.shipbender.shared.error.ErrorCode;
+import dev.racnar.shipbender.shared.error.ShipbenderException;
 import dev.racnar.shipbender.shared.error.not_found.PlayerNotFoundException;
 import dev.racnar.shipbender.shared.error.unauthorized.PlayerNotLoginException;
-import dev.racnar.shipbender.player.domain.Player;
-import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class PlayerService {
 
-    PlayerRepository playerRepository;
-    ModelMapper      mapper;
+    private final PlayerRepository playerRepository;
+    private final PasswordEncoder  encoder;
 
-    public PlayerService ( PlayerRepository playerRepository, ModelMapper mapper ) {
+    public PlayerService ( PlayerRepository playerRepository, PasswordEncoder encoder ) {
         this.playerRepository = playerRepository;
-        this.mapper           = mapper;
+        this.encoder          = encoder;
     }
 
     public Player getPlayer ( String email ) {
@@ -33,71 +33,53 @@ public class PlayerService {
           .orElseThrow(() -> new PlayerNotFoundException(email));
     }
 
-    public PlayerStatsDTO getAnyPlayer ( Authentication authentication ) {
-        Authentication auth = SecurityContextHolder.getContext()
-          .getAuthentication();
-        if (isGuest(auth)) return new PlayerStatsDTO("Guess");
-        Player    player    = getPlayer(auth.getName());
-        PlayerDTO playerDTO = mapper.map(player, PlayerDTO.class);
-        return new PlayerStatsDTO(playerDTO, getStatsByPlayer(player.getScores()));
+    public PlayerProfile register ( RegisterRequest request ) {
+        if (playerRepository.existsPlayer(request.email()).isPresent())
+            throw new ShipbenderException(ErrorCode.EMAIL_IN_USE, "El email " + request.email() + " ya esta registrado");
+        Player player = new Player(request.name(), request.email(), encoder.encode(request.password()), null);
+        player.addRol(Rol.PLAYER);
+        return PlayerProfile.from(playerRepository.save(player));
     }
 
+    public PlayerProfile me ( String email ) {
+        return PlayerProfile.from(getPlayer(email));
+    }
+
+    public PlayerProfile updateNation ( String email, NationType nation ) {
+        Player player = getPlayer(email);
+        player.setNation(nation);
+        return PlayerProfile.from(playerRepository.save(player));
+    }
+
+    public List<RankingEntry> ranking () {
+        return playerRepository.rankedPlayer().stream()
+          .map(RankingEntry::from)
+          .sorted(Comparator.comparingInt((RankingEntry e) -> e.stats().score()).reversed())
+          .toList();
+    }
+
+    // v1 (hasta la 407): los servicios de game aun pasan Authentication
     public Player getPlayerAuthenticated ( Authentication authentication ) {
-        Authentication auth = SecurityContextHolder.getContext()
-          .getAuthentication();
-        if (isGuest(auth)) throw new PlayerNotLoginException();
-        else return getPlayer(auth.getName());
+        if (authentication == null || authentication instanceof AnonymousAuthenticationToken)
+            throw new PlayerNotLoginException();
+        return getPlayer(authentication.getName());
     }
 
-    public List<PlayerDTO> getPlayers () {
-        List<Player> players = playerRepository.findAll();
-        return players.stream()
-          .map(p -> mapper.map(p, PlayerDTO.class))
-          .collect(Collectors.toList());
+    // v1 (hasta la 407), lo usa SalvoService.getInfoGames
+    public PlayerStatsDTO getAnyPlayer ( Authentication authentication ) {
+        if (authentication == null || authentication instanceof AnonymousAuthenticationToken)
+            return new PlayerStatsDTO("Guess");
+        return toV1(getPlayer(authentication.getName()));
     }
 
+    // v1 (hasta la 407)
     public List<PlayerStatsDTO> getPlayersScore () {
-        return playerRepository.rankedPlayer()
-          .stream()
-          .map(p -> new PlayerStatsDTO(
-              mapper.map(p, PlayerDTO.class),
-              getStatsByPlayer(p.getScores())
-            )
-          )
-          .collect(Collectors.toList());
+        return playerRepository.rankedPlayer().stream().map(this::toV1).toList();
     }
 
-    public PlayerDTO save ( Player player ) {
-        return mapper.map(playerRepository.save(player), PlayerDTO.class);
-    }
-
-    public void validated ( Player player ) {
-
-    }
-
-    public void isNotRegister ( SignInPlayerDTO player ) {
-        String email = player.getEmail();
-        if (playerRepository.existsPlayer(email)
-          .isPresent())
-            throw new EmailAlreadyUseException(email);
-    }
-
-    private ScoreStatsDTO getStatsByPlayer ( List<Integer> scores ) {
-        ScoreStatsDTO stats = new ScoreStatsDTO(0, 0, 0, 0, 0D);
-        if (scores.isEmpty()) return stats;
-        scores.forEach(score -> {
-            stats.plusScore(score);
-            if (score == 3) stats.plusWon();
-            else if (score == 1) stats.plusTied();
-            else if (score == 0) stats.plusLost();
-        });
-        Double winRate = (double) ( stats.getWon() / scores.size() ) * 100D;
-        stats.setWinRate(winRate);
-        return stats;
-    }
-
-    // TODO: New service for save this methods
-    private boolean isGuest ( Authentication authentication ) {
-        return authentication == null || authentication instanceof AnonymousAuthenticationToken;
+    private PlayerStatsDTO toV1 ( Player p ) {
+        PlayerStats s = PlayerStats.of(p.getScores());
+        return new PlayerStatsDTO(new PlayerDTO(p.getId(), p.getName(), p.getEmail(), p.getNation()),
+          new ScoreStatsDTO(s.score(), s.won(), s.tied(), s.lost(), s.winRate()));
     }
 }

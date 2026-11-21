@@ -15,27 +15,24 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class JWTUtil implements ENV_VARIABLES {
+public class JwtService {
+
+    static final String HEADER = "Authorization";
+    static final String PREFIX = "Bearer ";
+    private static final String CLAIMS = "AUTHORITIES";
 
     private final Algorithm algorithm;
     private final long expirationMinutes;
 
-    public JWTUtil ( @Value("${jwt.secret}") String secret,
-                     @Value("${jwt.expiration-minutes}") long expirationMinutes ) {
+    public JwtService ( @Value("${jwt.secret}") String secret,
+                        @Value("${jwt.expiration-minutes}") long expirationMinutes ) {
         if (secret == null || secret.length() < 32)
             throw new IllegalStateException("jwt.secret debe tener al menos 32 caracteres");
         this.algorithm = Algorithm.HMAC256(secret);
         this.expirationMinutes = expirationMinutes;
     }
 
-    /**
-     * Genera un token para un usuario específico, válido por 10'
-     *
-     * @param username - user to login
-     * @param roles    - collection of user's roles
-     * @return String
-     */
-    /* lista de roles */
+    /** Genera un token (con prefijo "Bearer ") para el usuario y sus roles. */
     public String getJWTToken ( String username, List<String> roles ) {
 
         LocalDateTime expired = LocalDateTime.now()
@@ -52,12 +49,7 @@ public class JWTUtil implements ENV_VARIABLES {
         return PREFIX + token;
     }
 
-    /**
-     * Decodifica un token para poder obtener los componentes que contiene el mismo
-     *
-     * @param token tokenJWT
-     * @return Claims
-     */
+    /** Verifica firma y vencimiento; lanza JWTVerificationException si el token no es valido. */
     public DecodedJWT decodedValidJWT ( String token ) {
         JWTVerifier verifier = JWT.require(algorithm)
           .build();

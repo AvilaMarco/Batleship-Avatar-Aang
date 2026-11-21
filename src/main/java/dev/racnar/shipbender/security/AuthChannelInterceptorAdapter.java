@@ -15,10 +15,10 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class AuthChannelInterceptorAdapter implements ChannelInterceptor, ENV_VARIABLES {
+public class AuthChannelInterceptorAdapter implements ChannelInterceptor {
 
     @Autowired
-    JWTUtil jwtUtil;
+    JwtService jwtService;
 
     @Override
     public Message<?> preSend ( final Message<?> message, final MessageChannel channel ) {
@@ -26,9 +26,9 @@ public class AuthChannelInterceptorAdapter implements ChannelInterceptor, ENV_VA
 
         if (accessor != null && StompCommand.CONNECT == accessor.getCommand()) {
 
-            String token = accessor.getFirstNativeHeader(HEADER);
-            if (jwtUtil.existeJWTToken(token)) {
-                DecodedJWT                          decodedJWT = jwtUtil.decodedValidJWT(token);
+            String token = accessor.getFirstNativeHeader(JwtService.HEADER);
+            if (jwtService.existeJWTToken(token)) {
+                DecodedJWT                          decodedJWT = jwtService.decodedValidJWT(token);
                 UsernamePasswordAuthenticationToken userAuth   = this.getUserByToken(decodedJWT);
 
                 accessor.setUser(userAuth);
@@ -39,7 +39,7 @@ public class AuthChannelInterceptorAdapter implements ChannelInterceptor, ENV_VA
 
     private UsernamePasswordAuthenticationToken getUserByToken ( DecodedJWT decodedJWT ) {
         String                       user        = decodedJWT.getSubject();
-        List<SimpleGrantedAuthority> authorities = jwtUtil.getAuthorities(decodedJWT);
+        List<SimpleGrantedAuthority> authorities = jwtService.getAuthorities(decodedJWT);
         return new UsernamePasswordAuthenticationToken(user, null, authorities);
     }
 }

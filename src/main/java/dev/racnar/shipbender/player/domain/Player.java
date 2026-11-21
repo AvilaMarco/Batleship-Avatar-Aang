@@ -36,7 +36,7 @@ public class Player {
 
     // Relations
     @OneToMany(mappedBy = "player", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<GamePlayer> gamePlayers;
+    private List<GamePlayer> gamePlayers = new ArrayList<>();
 
     public Player ( String name, String email, String password, NationType nation ) {
         this.nation   = nation;

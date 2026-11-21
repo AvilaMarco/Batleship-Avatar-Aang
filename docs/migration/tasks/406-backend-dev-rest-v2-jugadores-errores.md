@@ -1,5 +1,5 @@
 # 406 · backend-dev · REST v2: auth, jugadores y formato de error único
-Estado: pendiente
+Estado: hecha
 Fase: F4
 Depende de: 403, 405
 Paralelizable: sí con 404 (qa, `src/test/unit`); no con 407 (comparten `WebSecurityConfig` y `shared/error`)
@@ -26,3 +26,8 @@ Criterios de aceptación:
 - Commit `feat: REST v2 de auth y jugadores con ProblemDetail (tarea 406)`.
 
 ## Resultado
+Antes: 70 tests, 31 rojos (Auth 10, Security 5, WS heartbeat 1, GameRest 15). Despues: 70 tests, 14 rojos, todos de `GameRestIntegrationTest` (esperado hasta la 407); verdes Auth 10/10, Security 9/9, WS 2/2, dominio 34/34 y `listGames_withoutToken_isUnauthorized`.
+Los 14 rojos fallan con 405 (falta `POST /api/games` v2) o sin `$.code` (404/`GAME_NOT_FOUND` aun v1).
+Desviaciones: (1) `/api/**` -> `hasAuthority` daba 404 en `/api/inventado`; el test y el ADR (FORBIDDEN para ruta no listada) exigen 403, asi que se listan `/api/players/**`, `/api/games/**`, `/api/match/**` (match v1, la 407 lo quita). (2) `Player.gamePlayers` inicializado a lista vacia (NPE en jugador recien registrado). (3) `PlayerService` conserva `getPlayerAuthenticated/getAnyPlayer/getPlayersScore` v1 (con el `Authentication` recibido, sin `SecurityContextHolder`) para game y `SalvoService` hasta la 407. (4) Borrados `ErrorDTO`, `LoginException`, `EmailAlreadyUseException` y DTOs v1 de login/registro.
+Verificacion: curl en 4704 -> 401 `INVALID_CREDENTIALS` y `/api/players/me` sin token -> 401; grep de criterios solo muestra `SecurityContextHolder` en el filtro JWT. Sin procesos java residuales.
+Riesgo: registro concurrente con el mismo email cae en 500 por el unique (sin captura de DataIntegrityViolation).

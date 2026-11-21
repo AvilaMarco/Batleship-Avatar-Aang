@@ -1,43 +1,44 @@
 package dev.racnar.shipbender.player;
 
-import dev.racnar.shipbender.player.dto.PlayerDTO;
-import dev.racnar.shipbender.player.dto.LoginPlayerDTO;
-import dev.racnar.shipbender.player.dto.SignInPlayerDTO;
-import dev.racnar.shipbender.player.dto.UserTokenDTO;
+import dev.racnar.shipbender.player.dto.PlayerProfile;
+import dev.racnar.shipbender.player.dto.RankingEntry;
+import dev.racnar.shipbender.player.dto.RegisterRequest;
+import dev.racnar.shipbender.player.dto.UpdatePlayerRequest;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.validation.Valid;
-import java.security.KeyStoreException;
+import java.security.Principal;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/players")
 public class PlayerController {
 
-    SalvoService   salvoService;
-    SessionService sessionService;
+    private final PlayerService playerService;
 
-    public PlayerController ( SalvoService salvoService, SessionService sessionService ) {
-        this.salvoService   = salvoService;
-        this.sessionService = sessionService;
+    public PlayerController ( PlayerService playerService ) {
+        this.playerService = playerService;
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<UserTokenDTO> login ( @Valid @RequestBody LoginPlayerDTO playerDTO ) throws KeyStoreException {
-        return ResponseEntity.ok(sessionService.login(playerDTO.getEmail(), playerDTO.getPassword()));
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public PlayerProfile register ( @Valid @RequestBody RegisterRequest request ) {
+        return playerService.register(request);
     }
 
-    @PostMapping(path = "")
-    public ResponseEntity<PlayerDTO> register ( @Valid @RequestBody SignInPlayerDTO playerDTO ) {
-        return ResponseEntity
-          .status(HttpStatus.CREATED)
-          .body(salvoService.registerPlayer(playerDTO));
+    @GetMapping("/me")
+    public PlayerProfile me ( Principal principal ) {
+        return playerService.me(principal.getName());
     }
 
-    @PostMapping(path = "/nation/{nation}")
-    public PlayerDTO setnacion ( Authentication authentication, @PathVariable String nation ) {
-        return salvoService.setNationPlayer(authentication, nation);
+    @PatchMapping("/me")
+    public PlayerProfile updateNation ( Principal principal, @Valid @RequestBody UpdatePlayerRequest request ) {
+        return playerService.updateNation(principal.getName(), request.nation());
+    }
+
+    @GetMapping("/ranking")
+    public List<RankingEntry> ranking () {
+        return playerService.ranking();
     }
 }
