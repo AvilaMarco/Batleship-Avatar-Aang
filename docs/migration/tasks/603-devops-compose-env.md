@@ -1,5 +1,5 @@
 # 603 · devops · docker-compose.yml y .env.example (sin túnel real)
-Estado: pendiente
+Estado: hecha
 Fase: F6
 Depende de: 601, 602
 Paralelizable: no (necesita la imagen con 602). Usa la Docker Desktop compartida: no correr a la vez que `./mvnw test`.
@@ -27,3 +27,14 @@ Criterios de aceptación:
 - Commit `build: docker compose de producción y .env.example (tarea 603)`.
 
 ## Resultado
+
+Archivos: `docker-compose.yml` (Anexo B del ADR tal cual) y `.env.example` (Anexo C, con comentarios y `BACKUP_DIR` como ruta absoluta del servidor).
+Decisión: `cloudflare/cloudflared:2026.11.1` (última estable a 2026-11-21: Docker Hub y GitHub releases, `prerelease: false`, publicada 2026-11-17). Subir de versión a propósito, nunca `latest`.
+Verificado (proyecto `shipbender-test`, `.env` de prueba con secretos generados y `TUNNEL_TOKEN=dummy`, ya borrado):
+- `config --quiet` OK; `grep ports:` sin salida. Sin `.env` falla con `falta JWT_SECRET en .env` (y `POSTGRES_PASSWORD`). `COMPOSE_PROJECT_NAME` prevalece sobre `name:` (el proyecto fue `shipbender-test`).
+- `up -d --build db app`: ambos `healthy` en menos de 1 min; solo `8080/tcp` y `5432/tcp` expuestos en la imagen, nada publicado.
+- Log: `The following 1 profile is active: "prod"`, 0 menciones de `DevDataSeeder`; `select count(*) from player` = 0.
+- Desde `edge`: `/swagger` 404, `/docs` 404, handshake con Origin del dominio 101, con `evil.example` 403.
+- `db` sin Internet: `wget: bad address 'example.com'`.
+- No verificado: servicios `tunnel` (token dummy) y `backup` (falta `scripts/backup.sh`, tarea 604); `docker compose config` con `BACKUP_DIR` de otra máquina.
+Limpieza: `down -v` con el proyecto de prueba, `.env` borrado, imágenes `shipbender:latest` y `curlimages/curl` borradas.
