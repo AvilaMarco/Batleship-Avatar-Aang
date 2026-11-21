@@ -1,5 +1,5 @@
 # 508 · frontend-dev · Retirar el front viejo
-Estado: pendiente
+Estado: hecha
 Fase: F5
 Depende de: 501 (assets ya copiados a `frontend/public/assets`)
 Paralelizable: sí, con 502-507 (no comparte archivos)
@@ -19,3 +19,5 @@ Criterios de aceptación:
 - Commit `chore: retirar front viejo de static/ (tarea 508)`.
 
 ## Resultado
+
+Borrado ejecutado por el chat central con `git rm -r -q src/main/resources/static` (autorizado por el usuario, que no pudo hacerlo). 172 archivos eliminados; `ls frontend/public/assets/...` confirma los assets; `./mvnw test` → 99 tests, 0 fallos (los `publicPaths` no fallaron porque la regla de seguridad aún lista rutas del front viejo; la 509/510 las reemplazan).
