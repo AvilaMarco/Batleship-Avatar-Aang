@@ -1,10 +1,11 @@
 package com.codeblockacademy.shipbender.integration;
 
 import com.codeblockacademy.shipbender.integration.support.AuthHelper;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -29,7 +30,7 @@ class MatchFlowIntegrationTest {
         String body = mvc.perform(post("/api/match/games/FIRE/{loc}", location).header("Authorization", token))
           .andExpect(status().isCreated())
           .andReturn().getResponse().getContentAsString();
-        return new ObjectMapper().readTree(body).get("game_id").asLong();
+        return new JsonMapper().readTree(body).get("game_id").asLong();
     }
 
     @Test

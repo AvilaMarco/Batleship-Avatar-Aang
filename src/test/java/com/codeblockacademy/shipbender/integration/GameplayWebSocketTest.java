@@ -1,12 +1,13 @@
 package com.codeblockacademy.shipbender.integration;
 
 import com.codeblockacademy.shipbender.integration.support.AuthHelper;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.messaging.converter.StringMessageConverter;
@@ -37,7 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class GameplayWebSocketTest {
 
-    static final ObjectMapper JSON = new ObjectMapper();
+    static final ObjectMapper JSON = new JsonMapper();
     static final String FIVE_SHIPS = """
       [{"type":"CARRIER","locations":["A1","A2","A3","A4","A5"]},
        {"type":"BATTLESHIP","locations":["B1","B2","B3","B4"]},
@@ -63,7 +64,7 @@ class GameplayWebSocketTest {
         clients.add(client);
         StompHeaders headers = new StompHeaders();
         if (token != null) headers.add("Authorization", token);
-        return client.connect("ws://localhost:" + port + "/the-last-shipbender", new WebSocketHttpHeaders(), headers,
+        return client.connectAsync("ws://localhost:" + port + "/the-last-shipbender", new WebSocketHttpHeaders(), headers,
           new StompSessionHandlerAdapter() {
               @Override public void handleException ( StompSession s, StompCommand c, StompHeaders h, byte[] p, Throwable e ) { events.add("EXCEPTION " + e); }
               @Override public void handleTransportError ( StompSession s, Throwable e ) { events.add("TRANSPORT_ERROR " + e); }
@@ -111,7 +112,7 @@ class GameplayWebSocketTest {
 
     static Set<String> keys ( JsonNode n ) {
         Set<String> s = new HashSet<>();
-        n.fieldNames().forEachRemaining(s::add);
+        n.propertyNames().iterator().forEachRemaining(s::add);
         return s;
     }
 
@@ -119,7 +120,7 @@ class GameplayWebSocketTest {
     String hostStatus ( String token, long id ) throws Exception {
         String body = mvc.perform(get("/api/match/{id}/status", id).header("Authorization", token))
           .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
-        return JSON.readTree(body).at("/status/host").asText();
+        return JSON.readTree(body).at("/status/host").asString();
     }
 
     @Test

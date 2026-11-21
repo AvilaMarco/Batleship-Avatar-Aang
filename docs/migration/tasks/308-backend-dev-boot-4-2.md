@@ -1,5 +1,5 @@
 # 308 · backend-dev · Salto a Spring Boot 4.2.0 (starters modulares, Jackson 3, Security 7, Hibernate 7)
-Estado: pendiente
+Estado: parcial
 Fase: F3
 Depende de: 307
 
@@ -27,3 +27,16 @@ Criterios de aceptación:
 - Prueba manual de la 307 (dos ventanas, crear/unirse/colocar barcos) OK. Detén el proceso.
 
 ## Resultado
+Estado: parcial. Todo verificado por comando salvo la prueba manual de dos ventanas (pendiente de verificar; la hace el chat central con el navegador).
+
+- Versiones verificadas en Maven Central (maven-metadata): Boot 4.2.0, springdoc 3.2.1, java-jwt 4.6.2, modelmapper 3.2.8.
+- La receta dejo Boot 4.0.10 y springdoc 3.0.3: se corrigieron a mano. Del diff de OpenRewrite se descartaron: reindentado del `pom.xml`, `maven-compiler-plugin` con `annotationProcessorPaths` de Lombok (redundante) y el cambio de imports a `mockito.*` en `GameValidationTest`. Se aceptaron: starters `webmvc`, `webmvc-test`, `security-test`, imports `tools.jackson` y `asString()`/`propertyNames()` en tests.
+- Cambios a mano: `webjars-locator-lite` y `sockjs-client` borrados del pom (la tarea decia `-core`; lo que habia era `-lite`; `-lite` sigue llegando transitivo desde springdoc, es correcto). `Player.id` -> `IDENTITY`. Se borro `dto/ShipsDTO.java` (archivo 100% comentado que hacia fallar el grep de `GenericGenerator`).
+- Causa raiz de un fallo real: Hibernate 7 rechaza JPQL sin `SELECT` con JOIN (`PlayerRepository.rankedPlayer`). Fix: `SELECT p FROM Player p JOIN ...` (mismo resultado, incluye duplicados por join como antes).
+- Test (mecanico, sin tocar aserciones): `WebSocketStompClient.connect(String,...)` fue eliminado en Spring 7 -> `connectAsync(...)` (misma firma y retorno).
+- No hizo falta `spring.jackson.use-jackson2-defaults=true`: los 30 tests pasan con los defaults de Jackson 3. Ojo: `INDENT_OUTPUT`/`date-format`/`SNAKE_CASE` de application.properties siguen funcionando (login devuelve JSON indentado).
+- `./mvnw clean test`: 30 tests, 0 fallos (7+3+1+9+7+3).
+- dependency:tree: `spring-boot:jar:4.2.0`, `springdoc-openapi-starter-webmvc-ui:jar:3.2.1`, sin sockjs.
+- grep prohibido en `src/main/java`: sin resultados.
+- App en PORT=4704 (jar): `/swagger-ui/index.html` 200; `/webjars/stomp-websocket/2.3.4/stomp.min.js` 200; registro 201 y login 200 con token; login invalido 400. Proceso detenido (puerto cerrado, sin java).
+- Pendiente de verificar: prueba manual de la 307 (dos ventanas, crear/unirse/colocar barcos).
