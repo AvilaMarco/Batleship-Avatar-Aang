@@ -1,5 +1,5 @@
 # 307 · frontend-dev · Front viejo con WebSocket nativo y webjar de STOMP con versión
-Estado: pendiente
+Estado: parcial
 Fase: F3
 Depende de: 306
 
@@ -20,3 +20,9 @@ Criterios de aceptación:
 - Manual, dos ventanas (una en incógnito): login con dos usuarios, A crea una partida, B se une, ambos colocan barcos y envían; en la consola del navegador aparece `Connected` y en la pestaña Network el WebSocket `/the-last-shipbender` con estado 101 y frames `PING`/heartbeat cada ~10 s. Detén el proceso.
 
 ## Resultado
+Cambios: `game.html` (importmap sin `sockjs`, `stomp` -> `/webjars/stomp-websocket/2.3.4/stomp.min.js`) y `game.js` (sin `import "sockjs"`, `Stomp.client(ws|wss://host/the-last-shipbender)`).
+Verificado:
+- grep `sockjs|SockJS` en static/web (js/html): sin resultados. Único `webjars` en static/ y resources: el importmap de game.html.
+- `PORT=4704 ./mvnw spring-boot:run` + curl a `/webjars/stomp-websocket/2.3.4/stomp.min.js` -> 200 (devuelve stomp.js real). Proceso detenido por PID (puerto 4704 libre).
+- Nota: la ruta SIN versión `/webjars/stomp-websocket/stomp.min.js` también devolvió 200 en esta prueba, así que el curl no demuestra por sí solo que la versión sea obligatoria; la ruta versionada sí funciona.
+Pendiente de verificar (sin navegador): prueba manual de dos ventanas (`Connected` en consola, WebSocket 101 y heartbeats ~10 s).
