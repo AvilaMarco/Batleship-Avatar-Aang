@@ -1,5 +1,5 @@
 # 304 · backend-dev · Compilar con Java 21
-Estado: pendiente
+Estado: hecha
 Fase: F3
 Depende de: 303
 
@@ -16,3 +16,4 @@ Criterios de aceptación:
 - `PORT=4704 ./mvnw spring-boot:run` arranca. Detén el proceso.
 
 ## Resultado
+Compilado con `java.version=21` (JDK Temurin 21.0.13). `clean test`: 30 tests, 0 fallos, BUILD SUCCESS. `javap` major version 65. `spring-boot:run` en 4704 arrancó (HTTP 200 en /web/games.html) y se detuvo; 0 procesos java. Lombok y resto compilan sin cambios.
