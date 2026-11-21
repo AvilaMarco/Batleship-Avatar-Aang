@@ -1,5 +1,6 @@
 package dev.racnar.shipbender.security;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.Message;
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class AuthChannelInterceptorAdapter implements ChannelInterceptor {
+public class StompAuthInterceptor implements ChannelInterceptor {
 
     @Autowired
     JwtService jwtService;
@@ -28,10 +29,11 @@ public class AuthChannelInterceptorAdapter implements ChannelInterceptor {
 
             String token = accessor.getFirstNativeHeader(JwtService.HEADER);
             if (jwtService.existeJWTToken(token)) {
-                DecodedJWT                          decodedJWT = jwtService.decodedValidJWT(token);
-                UsernamePasswordAuthenticationToken userAuth   = this.getUserByToken(decodedJWT);
-
-                accessor.setUser(userAuth);
+                try {
+                    accessor.setUser(getUserByToken(jwtService.decodedValidJWT(token)));
+                } catch (JWTVerificationException ignored) {
+                    // sin usuario: la regla de autorización rechaza el CONNECT
+                }
             }
         }
         return message;

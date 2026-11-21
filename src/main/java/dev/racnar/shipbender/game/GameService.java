@@ -2,13 +2,17 @@ package dev.racnar.shipbender.game;
 
 import dev.racnar.shipbender.game.domain.Fleet;
 import dev.racnar.shipbender.game.domain.Game;
+import dev.racnar.shipbender.game.domain.GameStatus;
 import dev.racnar.shipbender.game.dto.GameSummary;
 import dev.racnar.shipbender.game.dto.GameView;
+import dev.racnar.shipbender.game.event.GameEvent;
+import dev.racnar.shipbender.player.dto.PlayerSummary;
 import dev.racnar.shipbender.player.PlayerService;
 import dev.racnar.shipbender.player.domain.Player;
 import dev.racnar.shipbender.shared.NationType;
 import dev.racnar.shipbender.shared.error.ErrorCode;
 import dev.racnar.shipbender.shared.error.ShipbenderException;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,10 +23,12 @@ public class GameService {
 
     private final GameRepository repository;
     private final PlayerService  playerService;
+    private final ApplicationEventPublisher events;
 
-    public GameService ( GameRepository repository, PlayerService playerService ) {
+    public GameService ( GameRepository repository, PlayerService playerService, ApplicationEventPublisher events ) {
         this.repository    = repository;
         this.playerService = playerService;
+        this.events        = events;
     }
 
     @Transactional(readOnly = true)
@@ -52,6 +58,7 @@ public class GameService {
         Player player = playerService.getPlayer(email);
         Game   game   = load(gameId);
         game.join(player);
+        events.publishEvent(new GameEvent.PlayerJoined(gameId, PlayerSummary.from(player)));
         return GameView.of(repository.save(game), player.getId());
     }
 
@@ -60,6 +67,10 @@ public class GameService {
         Player player = playerService.getPlayer(email);
         Game   game   = load(gameId);
         game.placeShips(player.getId(), fleet);
+        events.publishEvent(new GameEvent.ShipsPlaced(gameId, player.getId()));
+        if (game.status() == GameStatus.IN_GAME) {
+            events.publishEvent(new GameEvent.GameStarted(gameId, game.getTurn()));
+        }
         return GameView.of(repository.save(game), player.getId());
     }
 

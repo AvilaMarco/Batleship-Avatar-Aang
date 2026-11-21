@@ -15,11 +15,11 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @Configuration
 public class WebSocketSecurityConfig implements WebSocketMessageBrokerConfigurer {
 
-    private final AuthChannelInterceptorAdapter authChannelInterceptorAdapter;
+    private final StompAuthInterceptor stompAuthInterceptor;
     private final ApplicationContext context;
 
-    public WebSocketSecurityConfig ( AuthChannelInterceptorAdapter authChannelInterceptorAdapter, ApplicationContext context ) {
-        this.authChannelInterceptorAdapter = authChannelInterceptorAdapter;
+    public WebSocketSecurityConfig ( StompAuthInterceptor stompAuthInterceptor, ApplicationContext context ) {
+        this.stompAuthInterceptor = stompAuthInterceptor;
         this.context = context;
     }
 
@@ -27,14 +27,14 @@ public class WebSocketSecurityConfig implements WebSocketMessageBrokerConfigurer
     public void configureClientInboundChannel ( ChannelRegistration registration ) {
         AuthorizationManager<Message<?>> rules = MessageMatcherDelegatingAuthorizationManager.builder()
           .nullDestMatcher().authenticated()
-          .simpDestMatchers("/app/**").hasAuthority("PLAYER")
-          .simpSubscribeDestMatchers("/topic/**").hasAuthority("PLAYER")
+          .simpDestMatchers("/app/games/*/emotes").hasAuthority("PLAYER")
+          .simpSubscribeDestMatchers("/topic/games/*", "/user/queue/errors").hasAuthority("PLAYER")
           .anyMessage().denyAll()
           .build();
 
         AuthorizationChannelInterceptor authz = new AuthorizationChannelInterceptor(rules);
         authz.setAuthorizationEventPublisher(new SpringAuthorizationEventPublisher(context));
 
-        registration.interceptors(authChannelInterceptorAdapter, new SecurityContextChannelInterceptor(), authz);
+        registration.interceptors(stompAuthInterceptor, new SecurityContextChannelInterceptor(), authz);
     }
 }

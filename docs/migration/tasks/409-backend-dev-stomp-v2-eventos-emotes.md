@@ -1,5 +1,5 @@
 # 409 · backend-dev · STOMP v2: eventos after-commit, emotes y `/user/queue/errors`
-Estado: pendiente
+Estado: hecha
 Fase: F4
 Depende de: 408
 Paralelizable: no
@@ -26,3 +26,7 @@ Criterios de aceptación:
 - Commit `feat: eventos STOMP v2, emotes y errores por usuario (tarea 409)`.
 
 ## Resultado
+
+Implementado ADR 004 Anexo B/C: `GameEvent` sellado + `GameEventStompPublisher` (AFTER_COMMIT, unico `convertAndSend`), `GameService` publica `PlayerJoined`/`ShipsPlaced`/`GameStarted`, `EmoteController` + `ChatService` (no persiste), `StompExceptionHandler` (`/user/queue/errors`), broker `/topic`+`/queue`, reglas SUBSCRIBE restringidas a `/topic/games/*` y `/user/queue/errors`, `StompAuthInterceptor` (JWT invalido no lanza). Se eliminaron `EmoteDTO`/`UserEmoteDTO` (v1 sin uso). Chat de texto (D3) no se implementa en F4 por decision del usuario.
+
+Verificacion: `./mvnw test` x3 -> exit 0, 78 tests, 0 fallos. Greps de aceptacion OK. Prueba en vivo (puerto 4704, WebSocket nativo): PLAYER_JOINED y SHIPS_PLACED recibidos sin celdas ni email; proceso detenido por PID.
