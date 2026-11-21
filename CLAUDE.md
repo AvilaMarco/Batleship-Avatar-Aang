@@ -16,13 +16,14 @@ Proyecto en migración: ver `docs/migration/PLAN.md` (estado de todo) antes de e
 
 ## Glosario del dominio
 - **Player**: usuario registrado (rol GUEST / PLAYER / ADMIN), elige una **Nation** (agua, tierra, fuego, aire).
-- **Game**: partida; estados `CREATED` → `IN_GAME` → `FINISH`. Tiene una ubicación en el mapa.
+- **Game**: partida; estado derivado `CREATED` → `IN_GAME` → `FINISH`. Ubicación en el mapa, grilla 10×10, turnos simultáneos de 5 disparos.
 - **GamePlayer**: participación de un Player en un Game (une ambos). Tiene ships y salvos.
-- **Ship**: barco colocado en la grilla (tipo, celdas). **Salvo**: ronda de disparos de un turno.
+- **Ship**: barco (flota 5-4-3-3-2). **Salvo**: los 5 disparos de un jugador en un turno.
 - **Emote**: reacción enviada en tiempo real al rival.
 
-## Estructura backend (`com.codeblockacademy.shipbender`)
-config · controller · dto · enums · exception · models · repository · security · service (+ intereface, model, validations)
+## Estructura backend (`dev.racnar.shipbender`, por feature)
+- `player` (registro, perfil, ranking), `game` (partidas, barcos, salvos; `domain/` = reglas en Java puro, `event/` = eventos STOMP), `chat` (emotes), `security` (JWT, STOMP), `config`, `shared/error` (`ShipbenderException` + `ErrorCode`, `ProblemDetail`).
+- Contrato: `docs/adr/004-contrato-api-v2.md` (REST + STOMP). Arquitectura: `docs/adr/005-arquitectura-backend.md`.
 
 ## Reglas de trabajo con IA
 - Roles en `.claude/agents/`. Cada rol ejecuta solo tareas con su nombre en `docs/migration/tasks/`.
