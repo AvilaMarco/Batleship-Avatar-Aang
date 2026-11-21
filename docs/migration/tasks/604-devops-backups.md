@@ -1,5 +1,5 @@
 # 604 · devops · Backups de Postgres: backup.sh, restore.sh y prueba de restauración
-Estado: pendiente
+Estado: hecha
 Fase: F6
 Depende de: 603
 Paralelizable: no (usa el stack de prueba de 603)
@@ -22,3 +22,17 @@ Criterios de aceptación:
 - Commit `build: backups programados de Postgres y script de restauración (tarea 604)`.
 
 ## Resultado
+Scripts en `scripts/backup.sh` y `scripts/restore.sh` (LF, `git ls-files --eol` → `w/lf`). Verificado en el proyecto aislado `shipbender-test` con `BACKUP_DIR` temporal fuera del repo (ya borrado, igual que el `.env` de prueba, el stack con `down -v` y la imagen):
+- Dump al arrancar: `shipbender-*.dump` creado y `backup ok: /backups/...` en `docker compose logs backup`.
+- Retención: `shipbender-20000101-000000.dump` con fecha 2000-01-01 desapareció tras `exec backup sh /scripts/backup.sh`.
+- Restauración: 1 jugador → dump → 2º jugador (count=2) → `restore.sh` + `si` → count=1 y `app` vuelve a `healthy`.
+- Archivo inexistente, nombre con `/`, dump ilegible o truncado → error antes de parar `app` (sigue `healthy`). Responder distinto de `si` → cancela, `app` sigue arriba.
+- Fallo a mitad (dump válido que no puede aplicarse: `DROP TABLE player` falla por FKs): se muestra el error, la transacción se revierte, count sigue en 2, `app` se arranca de nuevo y el mensaje indica el dump de seguridad.
+
+Correcciones al diseño del Anexo D (fallos reales detectados):
+1. Con `set -e`, si fallaba el dump de seguridad o `pg_restore`, `app` quedaba detenida sin aviso y con la BD posiblemente a medias. Ahora `pg_restore` va con `--single-transaction --exit-on-error` (todo o nada: la BD queda restaurada o intacta) y un `trap EXIT` arranca `app` siempre; el script dice claramente qué pasó y el nombre del dump de seguridad.
+2. El dump de seguridad ejecutaba la retención y podía borrar el propio archivo a restaurar si tenía más de 14 días (comprobado con fecha vieja). Ahora se llama con `RETENTION_DAYS=36500`.
+3. `docker compose exec -T` consumía el stdin y el `read` de confirmación recibía EOF (salía en silencio). `exec` ahora con `</dev/null`.
+4. Validación previa con `pg_restore -l` (dump corrupto se rechaza antes de parar `app`) y rechazo de nombres con `/` o `\`.
+5. `backup.sh` borra su `.tmp` si `pg_dump` falla (trap).
+Limitaciones: Ctrl-C en mitad de `restore.sh` puede dejar el `pg_restore` corriendo dentro del contenedor mientras `app` arranca (docker exec sin tty no propaga la señal); la transacción sigue siendo atómica pero no se probó. `BACKUP_DIR` en `.env` debe ser ruta absoluta del servidor (o `./backups`); los scripts no dependen de ninguna ruta.
