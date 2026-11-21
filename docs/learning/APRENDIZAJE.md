@@ -176,4 +176,37 @@ Formato de entrada:
 
 ## F5 · Front nuevo
 
+### De estado global y DOM a funciones puras tipadas (prioridad alta)
+- **Antes**: `game.js:37,99` y `update_html.js:93`: variables globales mutables (`HOST`, `CLIENT`, `GAME`, `HEADER.id` reasignado entre suscripciones), lógica de barcos mezclada con el DOM. Si el creador abría la partida sin rival, `CLIENT` era `undefined` y la pantalla reventaba antes de conectar el socket.
+- **Problema**: cualquier orden de eventos distinto al esperado rompía la pantalla, y nada obligaba a pensar en el caso "no hay rival todavía".
+- **Después**: `domain/` en TypeScript puro (`phase(view)`, `outcome(view)`, `enemyBoard`, `toggleTarget`, `shipCells`): funciones sin React ni red, 31 tests. La fase de la pantalla se **deriva** de los datos del servidor; `opponent` es `null` en el tipo y el compilador obliga a manejarlo.
+- **Por qué es mejor**: el estado no se guarda dos veces (no puede desincronizarse), la regla se prueba sin montar nada, y el tipo `T | null` convierte un crash en un caso explícito.
+- **Concepto**: funciones puras, estado derivado vs. almacenado, tipos que hacen explícitos los casos límite, separar lógica de presentación.
+
+### Una sola fuente de verdad: volver a pedir, no reconstruir (prioridad alta)
+- **Decisión** (ADR 006): ante cualquier evento STOMP salvo emote, la pantalla hace de nuevo `GET /api/games/{id}`. No se aplican los eventos a un estado local con un reducer.
+- **Por qué**: un reducer duplicaría en TypeScript las reglas del servidor (impactos, turnos) y divergiría. Los eventos son solo una señal de "algo cambió", y el servidor (que publica tras el commit) es la verdad.
+- **Concepto**: single source of truth, eventos como notificación y no como transporte de estado (*event notification* vs. *event-carried state transfer*).
+
+### Un único punto de acceso a un secreto (prioridad alta)
+- **Antes**: el token JWT en `localStorage` leído desde varios archivos, y un `HEADER` global.
+- **Después**: `api/auth.ts` es el único módulo que toca web storage (grep lo comprueba), `ApiError` solo lleva `status/code/detail` (el token no puede acabar en un mensaje), y el token nunca va en la URL ni en logs.
+- **Matiz de seguridad (revisión independiente)**: `sessionStorage` tampoco evita un XSS (solo acorta la vida del token a la pestaña); la defensa real es no renderizar HTML crudo y una **Content-Security-Policy**, que se añadió en la tarea 514. Se eligió `sessionStorage` en dev (jugar A contra B en dos pestañas) y `localStorage` en prod.
+- **Concepto**: encapsular el secreto, defensa en profundidad, no confiar en el tipo de almacenamiento sino en la ausencia de XSS.
+
+### Lista blanca en la frontera de confianza (prioridad media)
+- El backend acepta cualquier texto ≤32 como emote; armar `/assets/emotes/${texto}.png` con lo que envía el rival habría dejado cargar rutas arbitrarias. `isKnownEmote` filtra contra una lista cerrada y descarta el resto. El cliente no confía en datos del otro jugador.
+- **Concepto**: allowlist vs. denylist, validar en la frontera, nunca construir rutas con datos externos.
+
+### Probar lo que los mocks no ven (prioridad media)
+- Los tests de pantalla usan `api` y `stomp` simulados: no prueban el WebSocket real. La prueba manual en el navegador encontró (y cerró) lo que los tests no cubrían: sincronización en vivo a través del proxy de Vite, la CSP con el front servido por el jar, el token inválido. El E2E de Playwright automatiza después el guion completo (dos jugadores, 4 turnos, emote) con localizadores por rol y sin esperas fijas.
+- **Concepto**: pirámide de tests (unitarios rápidos, pocos E2E), sincronizar por estado observable y no por tiempo, mocks vs. integración real.
+
+### Revisión independiente de lo crítico (prioridad media)
+- El rol `reviewer` (solo lectura) revisó la tarea de JWT y rutas públicas y encontró lo que quien implementó no vio: el token caducado en reconexión STOMP (bucle de reintentos), la falta de CSP, `/favicon.svg` sin permitir y contraseñas sin tope. El implementador no puede revisar su propio trabajo con la misma mirada.
+- **Concepto**: revisión por pares para riesgo alto, defensa en profundidad.
+
+### Detalles de integración (prioridad baja)
+- Un perfil de Maven opcional (`frontend`) para lo que necesita red (descargar Node): `./mvnw test` sigue hermético. Un test de "rutas no listadas" que solo comprobaba `!= 403` pasaba en verde sin probar nada porque un anónimo recibe 401: había que descartar ambos.
+
 ## F6 · Deploy

@@ -1,5 +1,5 @@
 # 503 · frontend-dev · Cliente REST y STOMP tipado + manejo del token
-Estado: parcial
+Estado: hecha
 Fase: F5
 Depende de: 501
 Paralelizable: sí, con 502 y con 508-510
@@ -31,3 +31,5 @@ Hecho: `frontend/src/api/{types,auth,http,players,games,stomp}.ts` + `auth.test.
 Verificado: `npm test` exit 0 (9 archivos, 43 tests); `npm run build` exit 0; grep de web storage fuera de `src/api/auth.ts` sin salida; sin `console.*` en `src/api`; el token solo viaja en header `Authorization`.
 Decisiones: `ApiError` con `code` "UNKNOWN" si el error no es problem+json; `brokerURL` se deriva de `location` (ws/wss) y depende del proxy de Vite en dev; `fireSalvo` apunta al Anexo F (backend aún no lo implementa).
 NO VERIFICADO: conexión STOMP real contra el backend (handshake, headers, heartbeats, suscripciones); solo probado con `Client` mockeado. Pendiente en la tarea e2e/512.
+
+Verificación manual cerrada por el chat central (navegador, backend 4704 + Vite 4705 y después el front servido por el jar): ver Resultado F5 en PLAN.md. E2E de Playwright (tarea 511) cubre el flujo completo.

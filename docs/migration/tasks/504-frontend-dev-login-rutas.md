@@ -1,5 +1,5 @@
 # 504 · frontend-dev · Login, registro, sesión y rutas por hash
-Estado: parcial
+Estado: hecha
 Fase: F5
 Depende de: 503
 Paralelizable: no
@@ -28,3 +28,5 @@ Implementado: `router.ts` (parseRoute/navigate/useHashRoute), `auth/AuthContext.
 Verificado: `npm test` 49/49 exit 0, `npm run build` exit 0, grep `dangerouslySetInnerHTML` sin salida. Tests con `fireEvent` (no se añadió user-event).
 Pendiente de verificar: prueba manual con backend (registrarse, recargar, salir), la hace el chat central.
 Nota: el token solo se toca en `api/auth.ts`; `AuthContext` usa `getToken/clearToken` de ahí.
+
+Verificación manual cerrada por el chat central (navegador, backend 4704 + Vite 4705 y después el front servido por el jar): ver Resultado F5 en PLAN.md. E2E de Playwright (tarea 511) cubre el flujo completo.

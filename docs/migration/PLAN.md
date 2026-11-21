@@ -11,7 +11,7 @@ Lo edita solo el chat central. Cada fase se cierra con aprobación del usuario y
 | F2 · Limpieza | `migration/f2-limpieza` | **hecha** (mergeada a main) | F1 verde; sin código muerto ni secretos en el código |
 | F3 · Upgrade | `migration/f3-upgrade` | **hecha** (mergeada a main) | Boot 4.x + Java 21 + Postgres/Flyway + Testcontainers; F1 verde; app levanta |
 | F4 · Arquitectura backend | `migration/f4-arquitectura` | **hecha** (mergeada a main) | Paquete `dev.racnar.shipbender`; paquetes por feature; dominio testeado sin Spring; contrato API v2 (ADR 004) implementado |
-| F5 · Front nuevo | `migration/f5-frontend` | en curso (metodología v3) | Partida completa jugable en React + TS |
+| F5 · Front nuevo | `migration/f5-frontend` | **esperando aprobación del usuario** | Partida completa jugable en React + TS |
 | F6 · Deploy | `migration/f6-deploy` | pendiente | Juego en el dominio vía Cloudflare Tunnel, con WebSocket |
 
 Paralelismo permitido: F5 en paralelo con F4 una vez congelado el contrato de API; Dockerfile (F6) desde el fin de F3.
@@ -55,18 +55,20 @@ Detalle en `tasks/`. Terminadas se mueven a `tasks/done/`.
 | 411 | backend-dev | Dominio de salvos y turnos | F4 | hecha | 410 |
 | 412 | qa | Tests de salvos | F4 | hecha | 411 |
 | 413 | backend-dev | Salvos: REST y eventos | F4 | hecha | 412 |
-| 501 | frontend-dev | Esqueleto Vite + Vitest + proxy | F5 | pendiente | — |
-| 502 | frontend-dev | Dominio TS puro | F5 | pendiente | 501 |
-| 503 | frontend-dev | Cliente API REST/STOMP y token (riesgo alto) | F5 | pendiente | 501 |
-| 504 | frontend-dev | Login, registro y rutas (riesgo alto) | F5 | pendiente | 503 |
-| 505 | frontend-dev | Lobby: nación, mapa, crear/unirse, ranking | F5 | pendiente | 502, 504 |
-| 506 | frontend-dev | Partida: sincronización y barcos | F5 | pendiente | 505 |
-| 507 | frontend-dev | Partida: salvos, fin, emotes, errores | F5 | pendiente | 506 |
-| 508 | usuario | Retirar front viejo (`git rm`, lo hace el usuario) | F5 | pendiente | 501 |
-| 509 | qa | Tests de rutas públicas del SPA | F5 | pendiente | 508 |
-| 510 | backend-dev | Front dentro del jar (perfil Maven) + seguridad (riesgo alto) | F5 | pendiente | 509 |
-| 511 | qa | E2E Playwright: partida completa | F5 | pendiente | 507, 510 |
-| 512 | reviewer | Revisión de seguridad F5 | F5 | pendiente | 503, 504, 509, 510 |
+| 501 | frontend-dev | Esqueleto Vite + Vitest + proxy | F5 | hecha | — |
+| 502 | frontend-dev | Dominio TS puro | F5 | hecha | 501 |
+| 503 | frontend-dev | Cliente API REST/STOMP y token (riesgo alto) | F5 | hecha | 501 |
+| 504 | frontend-dev | Login, registro y rutas (riesgo alto) | F5 | hecha | 503 |
+| 505 | frontend-dev | Lobby: nación, mapa, crear/unirse, ranking | F5 | hecha | 502, 504 |
+| 506 | frontend-dev | Partida: sincronización y barcos | F5 | hecha | 505 |
+| 507 | frontend-dev | Partida: salvos, fin, emotes, errores | F5 | hecha | 506 |
+| 508 | central | Retirar front viejo (`git rm`; el usuario lo autorizó y lo ejecutó el central) | F5 | hecha | 501 |
+| 509 | qa | Tests de rutas públicas del SPA | F5 | hecha | 508 |
+| 510 | backend-dev | Front dentro del jar (perfil Maven) + seguridad (riesgo alto) | F5 | hecha | 509 |
+| 511 | qa | E2E Playwright: partida completa | F5 | hecha | 507, 510 |
+| 512 | reviewer | Revisión de seguridad F5 | F5 | hecha | 503, 504, 509, 510 |
+| 513 | frontend-dev | STOMP relee el token y corta si el CONNECT es rechazado | F5 | hecha | 512 |
+| 514 | backend-dev | CSP, favicon.svg y límites de entrada (riesgo alto) | F5 | hecha | 512 |
 | 313 | frontend-dev | Corregir URL de logout del front viejo (`/api/players/logout`) | F3 | hecha | 311 |
 | 205 | qa | Arreglar test intermitente de firma JWT manipulada | F2 | hecha | — |
 | 203 | frontend-dev | Borrar código muerto front (sobras.js, delete/, TEST_DATA.js) | F2 | hecha | — |
@@ -128,3 +130,19 @@ Pendiente / no verificado:
 - Chat de texto: diseñado como v2.1 (ADR 004 Anexo F), sin implementar (decisión D3).
 - Dev: el seeder puede no haber terminado cuando llega el primer login tras arrancar.
 - Menores: `GamePlayerRepository.findByPlayerIdAndGameId` con parámetros en orden invertido (sin uso); `V1` aún admite `NONAME` en el check de `ship.type`.
+
+## Resultado F5
+
+Front nuevo en `/frontend` (React 19 + TypeScript + Vite + Vitest), empaquetable en el jar con `./mvnw -Pfrontend package`. 70 tests de front, 106 de backend, 1 E2E de Playwright (partida completa entre dos jugadores, 3 corridas verdes sobre un backend limpio). Front viejo (`static/`, 172 archivos) retirado.
+- Estructura: `domain/` (reglas del juego en TS puro, 31 tests), `api/` (cliente REST/STOMP tipado, único módulo que toca el token), `auth/`, `screens/` (login, lobby, partida), `components/`. Sin librería de estado ni de rutas (rutas por hash).
+- Verificado a mano por el central en el navegador: login/errores, sesión tras recarga, lobby (mapa, ranking sin emails), crear partida, **sincronización en vivo por WebSocket a través del proxy de Vite** (rival se une, flota completa → fase de disparo), partida completa de 4 turnos hasta "Ganaste", emote del rival (burbuja de ~3 s), token inválido → limpia y vuelve a login, y el front servido por el backend con la CSP activa (sin violaciones, WebSocket funcionando).
+- Seguridad (tarea 512, reviewer): aprobado con menores, sin bloqueantes. Cerrados: STOMP con token caducado (513), CSP, favicon.svg y tope de longitud de contraseña/nombre (514).
+Pendiente / no verificado:
+- Token en `localStorage` en producción (decisión del usuario): mitigado por la CSP y la ausencia de HTML crudo; considerar bajar `JWT_EXPIRATION_MINUTES` en prod (24 h, sin revocación).
+- `@Size(max=72)` cuenta caracteres, no bytes: una contraseña con muchos caracteres no ASCII puede superar los 72 bytes de bcrypt (esquina).
+- `/v3/api-docs` da 401 (la regla pública es `/docs/**`): Swagger UI de dev probablemente no carga la spec; ya ocurría antes.
+- Reconexión STOMP con token caducado: cubierta por tests con `Client` simulado, no probada con el WebSocket real.
+- Los dos tableros comparten aria-labels de celda ("A1"...); se distinguen por el grupo. Mejorable para lectores de pantalla.
+- **Sin diseño visual**: interfaz funcional con CSS mínimo (símbolos ▣ X • ?). El diseño visual real (skill `diseno-ui`) queda como trabajo aparte.
+- Registro de usuario nuevo y "Unirse" desde la UI: cubiertos por el E2E, no a mano.
+- Nota de entorno: si se cambia la versión de Node con `frontend/node/` instalado, hay que borrar esa carpeta.

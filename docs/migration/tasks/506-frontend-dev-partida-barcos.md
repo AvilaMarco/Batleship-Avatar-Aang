@@ -1,5 +1,5 @@
 # 506 · frontend-dev · Pantalla de partida (1/2): sincronización y colocación de barcos
-Estado: parcial
+Estado: hecha
 Fase: F5
 Depende de: 505
 Paralelizable: no
@@ -29,3 +29,5 @@ Criterios de aceptación (tests primero; `api/games` y `api/stomp` mockeados con
 - `cd frontend && npm test && npm run build`: 61 tests OK, build OK (exit 0).
 - Sin estilos CSS para clases `ship/hit/miss/pending` (celdas sin color aún): pendiente para 507/estilos.
 - Manual en 4705 con dos pestañas: **pendiente de verificar** (no se levantó backend/Vite). Por eso Estado parcial.
+
+Verificación manual cerrada por el chat central (navegador, backend 4704 + Vite 4705 y después el front servido por el jar): ver Resultado F5 en PLAN.md. E2E de Playwright (tarea 511) cubre el flujo completo.
