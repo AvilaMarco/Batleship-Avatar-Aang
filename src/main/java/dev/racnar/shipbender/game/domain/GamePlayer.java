@@ -10,6 +10,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -55,5 +56,26 @@ public class GamePlayer {
 
     public boolean hasShips () {
         return !ships.isEmpty();
+    }
+
+    public boolean firedIn ( int turn ) {
+        return salvos.stream().anyMatch(s -> s.getTurn() == turn);
+    }
+
+    public Salvo salvoOf ( int turn ) {
+        return salvos.stream().filter(s -> s.getTurn() == turn).findFirst().orElseThrow();
+    }
+
+    public Set<String> firedCells () {
+        return salvos.stream().flatMap(s -> s.getLocations().stream()).collect(Collectors.toSet());
+    }
+
+    public boolean hasShipAt ( String cell ) {
+        return ships.stream().anyMatch(s -> s.getLocations().contains(cell));
+    }
+
+    /** Todas mis celdas de barco están entre los disparos del rival. */
+    public boolean allSunk ( GamePlayer rival ) {
+        return rival.firedCells().containsAll(ships.stream().flatMap(s -> s.getLocations().stream()).toList());
     }
 }

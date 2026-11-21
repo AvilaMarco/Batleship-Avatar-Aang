@@ -1,5 +1,5 @@
 # 411 · backend-dev · Dominio de salvos, turnos y fin de partida (CONDICIONAL)
-Estado: pendiente
+Estado: hecha
 Fase: F4
 Depende de: 410
 Paralelizable: no
@@ -20,3 +20,4 @@ Criterios de aceptación:
 - Commit `feat: salvos, turnos y fin de partida en el dominio (tarea 411)`.
 
 ## Resultado
+`Game.fire` + `TurnResult` implementados; `Salvo` pasa de `@Data` a `@Getter/@Setter` (sin ciclo en equals/hashCode/toString) y no tenía `@JsonIgnore`. `GamePlayer` ganó helpers (`firedIn`, `salvoOf`, `firedCells`, `hasShipAt`, `allSunk`). Decisiones donde el Anexo F es ambiguo: (1) la victoria solo se evalúa al resolver el turno (cuando ambos dispararon); si uno ya hundió todo pero el rival no disparó, la partida sigue abierta y el rival aún puede disparar (y empatar). (2) `sunk` en `PlayerTurn` = barcos hundidos por ese jugador en este turno, no acumulado; `hits`/`misses` solo del salvo del turno. (3) Orden de guardas: participante, IN_GAME, ya disparó, INVALID_SALVO. Verificado: grep sin salida; `./mvnw test` x3 exit 0 (78 tests); chequeo temporal fuera del repo: hundimiento, avance de turno, empate 1/1, victoria 3/0, disparo tras FINISH.
