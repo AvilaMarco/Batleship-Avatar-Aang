@@ -1,5 +1,5 @@
 # 702 · backend-dev · Registro: contraseña de 8 a 72 caracteres
-Estado: pendiente
+Estado: hecha
 Fase: F7
 Depende de: 701
 Paralelizable: no
@@ -18,3 +18,4 @@ Criterios de aceptación:
 - Commit `feat(seguridad): contraseña mínima de 8 caracteres al registrarse (tarea 702)`.
 
 ## Resultado
+`@Size(min = 8, max = 72)` en `RegisterRequest.password`; login intacto. Comprobado con el encoder real (DelegatingPasswordEncoder, Spring Security actual): 40 x "é" (80 bytes) lanza `IllegalArgumentException: password cannot be more than 72 bytes` (daría 500). Por eso se añadió `@AssertTrue isPasswordWithin72Bytes()` (con `@JsonIgnore`) en el record, validando UTF-8 <= 72 bytes. Test pedido a qa: tarea 704. `./mvnw clean test` x2: 111 tests, 0 fallos.
