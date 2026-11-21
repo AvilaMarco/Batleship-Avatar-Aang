@@ -1,5 +1,5 @@
 # 405 · qa · Tests de integración del contrato REST v2 (test primero)
-Estado: pendiente
+Estado: hecha
 Fase: F4
 Depende de: 403 (y ADR 004 aprobada)
 Paralelizable: sí, con 404 (archivos distintos)
@@ -22,3 +22,20 @@ Criterios de aceptación:
 - Commit `test: contrato REST v2 (tarea 405, rojo hasta 407)`.
 
 ## Resultado
+
+`./mvnw test`: 70 tests, 31 en rojo a propósito (todos por "endpoint/contrato v2 aún no existe": 403 en vez de 200/401, o falta `$.code`). En verde: `CellTest`, `FleetTest`, `GameTest`, `PlayerStatsTest`, `SecurityRulesIntegrationTest.publicPaths_*` (4), `GameplayWebSocketTest.connectWithoutToken_...`. `grep` de criterio: sin salida. Se borró `MatchControllerIntegrationTest`; `MatchFlowIntegrationTest` -> `GameRestIntegrationTest`.
+
+Desviación del criterio: `GameplayWebSocketTest.connectWithClientHeartbeat_...` también está en rojo porque usa `AuthHelper.registerAndLogin`, que ahora loguea en `/api/auth/login` (hasta 406). Pasa a verde con 406 sin tocar el test.
+
+Importante para backend-dev: casi todos los tests de abajo hacen primero `registerAndLogin` y hoy mueren ahí (403 en login), así que sus aserciones posteriores NO se han ejecutado nunca; pueden aparecer rojos nuevos al poner verde el login. Solo `register_...` y los `protectedPaths` sin token fallan por su propia aserción.
+
+### Rojos que debe poner en verde 406 (auth / jugadores / errores / seguridad)
+`AuthIntegrationTest` (10): `login_withSeedUser_returnsEmailAndBearerToken`, `login_withWrongPassword_returns401InvalidCredentials`, `login_withMalformedEmail_returns400ValidationFailedWithEmailError`, `register_newEmail_returnsCreated_andSameEmailAgainIs409EmailInUse` (falta `code=EMAIL_IN_USE`), `patchMe_withValidNation_returnsProfileWithNation`, `patchMe_withUnknownNation_returns400MalformedRequest`, `getMe_returnsOwnProfileWithEmailAndWinRate`, `getMe_withoutAuthorizationHeader_returns401Unauthenticated`, `getMe_withTamperedSignature_returns401Unauthenticated`, `ranking_isArrayWithoutEmailAndWithoutRepeatedPlayers`.
+`SecurityRulesIntegrationTest` (5): `protectedPaths_withoutToken_are401` x3 (`GET /api/games`, `GET /api/games/1`, `PATCH /api/players/me`: hoy 403, debe ser 401), `unlistedPaths_areForbidden_evenWithPlayerToken` x2 (`/api/inventado`, `/h2-console/`; caen por el login).
+`GameplayWebSocketTest.connectWithClientHeartbeat_serverRepliesWithConfiguredHeartbeat` (por el login).
+
+### Rojos que debe poner en verde 407 (partidas y barcos; todos `GameRestIntegrationTest`, 15)
+`listGames_withoutToken_isUnauthorized`, `listGames_withPlayerToken_returnsSummariesWithoutEmail`, `createGame_returnsCreatedWithLocationAndOwnView`, `createGame_sameLocationTwice_is409LocationTaken`, `joinGame_secondPlayerJoins_thirdGets409GameFull`, `joinGame_ownGame_is409AlreadyInGame`, `joinGame_unknownId_is404GameNotFound`, `getGame_asParticipant_returnsViewRelativeToCaller`, `getGame_asNonParticipant_is403NotAParticipant`, `getGame_unknownId_is404GameNotFound`, `placeShips_validFleet_returnsCreatedWithFiveOwnShips`, `placeShips_secondTime_is409ShipsAlreadyPlaced`, `placeShips_invalidFleet_is400InvalidFleet_andNothingIsSaved`, `placeShips_asNonParticipant_is403`, `placeShips_bothPlayers_startsGame_ownShipsSurvive_rivalShipsNeverExposed` (verifica la sospecha de `GameService.java:39-46`).
+(`listGames_withoutToken` falla hoy con 403 en vez de 401: lo arregla 406, listado aquí por archivo.)
+
+Dudas de forma: `createGame` lee `$.id` de la respuesta (ADR A.3); `placeShips_asNonParticipant` exige además `code=NOT_A_PARTICIPANT` (el ADR dice solo "403"); `ranking` y `listGames` usan `$[*].player.email`/`players[*].email` `doesNotExist` (pasa también con listas vacías).

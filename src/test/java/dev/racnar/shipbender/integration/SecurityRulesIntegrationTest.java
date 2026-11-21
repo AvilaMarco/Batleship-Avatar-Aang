@@ -33,10 +33,10 @@ class SecurityRulesIntegrationTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"GET /api/games", "GET /api/match/1", "POST /api/players/nation/FIRE"})
-    void protectedPaths_withoutToken_areForbidden ( String route ) throws Exception {
+    @ValueSource(strings = {"GET /api/games", "GET /api/games/1", "PATCH /api/players/me"})
+    void protectedPaths_withoutToken_are401 ( String route ) throws Exception {
         String[] r = route.split(" ");
-        mvc.perform(request(HttpMethod.valueOf(r[0]), r[1])).andExpect(status().isForbidden());
+        mvc.perform(request(HttpMethod.valueOf(r[0]), r[1])).andExpect(status().isUnauthorized());
     }
 
     @ParameterizedTest

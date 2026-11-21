@@ -18,7 +18,7 @@ public final class AuthHelper {
 
     /** Devuelve el token ya con prefijo "Bearer ". */
     public static String loginToken ( MockMvc mvc, String email, String password ) throws Exception {
-        String body = mvc.perform(post("/api/players/login").contentType(MediaType.APPLICATION_JSON)
+        String body = mvc.perform(post("/api/auth/login").contentType(MediaType.APPLICATION_JSON)
             .content(JSON.writeValueAsString(new Creds(email, password))))
           .andExpect(status().isOk())
           .andReturn().getResponse().getContentAsString();
@@ -33,6 +33,22 @@ public final class AuthHelper {
             .content(JSON.writeValueAsString(new Creds(email, "pw123", "Tester"))))
           .andExpect(status().isCreated());
         return loginToken(mvc, email, "pw123");
+    }
+
+    /** Crea una partida FIRE con location unica y devuelve su id (POST /api/games). */
+    public static long createGame ( MockMvc mvc, String token ) throws Exception {
+        String body = "{\"nation\":\"FIRE\",\"location\":\"T" + UUID.randomUUID().toString().substring(0, 8) + "\"}";
+        String res = mvc.perform(post("/api/games").header("Authorization", token)
+            .contentType(MediaType.APPLICATION_JSON).content(body))
+          .andExpect(status().isCreated())
+          .andReturn().getResponse().getContentAsString();
+        return JSON.readTree(res).get("id").asLong();
+    }
+
+    /** El jugador del token se une a la partida (POST /api/games/{id}/players). */
+    public static void join ( MockMvc mvc, String token, long id ) throws Exception {
+        mvc.perform(post("/api/games/{id}/players", id).header("Authorization", token))
+          .andExpect(status().isCreated());
     }
 
     public record Creds(String email, String password, String name) {

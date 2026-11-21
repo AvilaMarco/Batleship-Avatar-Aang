@@ -1,7 +1,5 @@
 package dev.racnar.shipbender.integration;
 
-import dev.racnar.shipbender.game.dto.ShipDTO;
-
 import dev.racnar.shipbender.TestcontainersConfiguration;
 import org.springframework.context.annotation.Import;
 import dev.racnar.shipbender.integration.support.AuthHelper;
@@ -37,20 +35,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-/** Caracterizacion de /app/{id}/ships -> /topic/gameplay/{id}/ships con JWT en el CONNECT de STOMP. */
+/** Conexion STOMP con JWT en el CONNECT (los eventos v2 se prueban en 408). */
 @Import(TestcontainersConfiguration.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 class GameplayWebSocketTest {
 
     static final ObjectMapper JSON = new JsonMapper();
-    static final String FIVE_SHIPS = """
-      [{"type":"CARRIER","locations":["A1","A2","A3","A4","A5"]},
-       {"type":"BATTLESHIP","locations":["B1","B2","B3","B4"]},
-       {"type":"SUBMARINE","locations":["C1","C2","C3"]},
-       {"type":"DESTROYER","locations":["D1","D2","D3"]},
-       {"type":"PATROL_BOAT","locations":["E1","E2"]}]""";
-
     @LocalServerPort int port;
     @Autowired MockMvc mvc;
     @Autowired org.springframework.messaging.simp.user.SimpUserRegistry userRegistry;
@@ -107,63 +98,9 @@ class GameplayWebSocketTest {
     }
 
     long createAndJoin ( String a, String b ) throws Exception {
-        String loc = "W" + UUID.randomUUID().toString().substring(0, 8);
-        String body = mvc.perform(post("/api/match/games/FIRE/{l}", loc).header("Authorization", a))
-          .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString();
-        long id = JSON.readTree(body).get("game_id").asLong();
-        mvc.perform(post("/api/match/games/{id}", id).header("Authorization", b)).andExpect(status().isOk());
+        long id = AuthHelper.createGame(mvc, a);
+        AuthHelper.join(mvc, b, id);
         return id;
-    }
-
-    static Set<String> keys ( JsonNode n ) {
-        Set<String> s = new HashSet<>();
-        n.propertyNames().iterator().forEachRemaining(s::add);
-        return s;
-    }
-
-    /** Estado del host segun REST (ShipDTO persistidos o no). */
-    String hostStatus ( String token, long id ) throws Exception {
-        String body = mvc.perform(get("/api/match/{id}/status", id).header("Authorization", token))
-          .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
-        return JSON.readTree(body).at("/status/host").asString();
-    }
-
-    @Test
-    void sendShips_validShips_arePersistedAndBroadcast_toHostAndRival () throws Exception {
-        String a = AuthHelper.registerAndLogin(mvc), b = AuthHelper.registerAndLogin(mvc);
-        long id = createAndJoin(a, b);
-        assertEquals("WITHOUT_SHIPS", hostStatus(a, id));
-        BlockingQueue<String> evA = new LinkedBlockingQueue<>(), evB = new LinkedBlockingQueue<>();
-        StompSession sa = connect(a, evA), sb = connect(b, evB);
-        String topic = "/topic/gameplay/" + id + "/ships";
-        BlockingQueue<String> qa = subscribe(sa, topic), qb = subscribe(sb, topic);
-
-        sendJson(sa, "/app/" + id + "/ships", FIVE_SHIPS);
-
-        assertNotNull(qa.poll(5, TimeUnit.SECONDS), "A recibe el mensaje");
-        // bug conocido: se arregla en F4 (ADR 003) - el topic es compartido y el rival recibe el GameDataDTO de A
-        assertNotNull(qb.poll(5, TimeUnit.SECONDS), "el rival tambien (fuga)");
-        assertEquals("WITH_SHIPS", hostStatus(a, id));
-    }
-
-    @Test
-    void sendShips_invalidShips_areAcceptedAndPersisted_knownBug () throws Exception {
-        // bug conocido: ShipValidation no se usa; Z99, tamano incorrecto y superpuestos se guardan igual
-        String a = AuthHelper.registerAndLogin(mvc), b = AuthHelper.registerAndLogin(mvc);
-        long id = createAndJoin(a, b);
-        StompSession sa = connect(a, new LinkedBlockingQueue<>());
-
-        sendJson(sa, "/app/" + id + "/ships", """
-          [{"type":"CARRIER","locations":["Z99"]},
-           {"type":"PATROL_BOAT","locations":["A1","A2","A3","A4"]},
-           {"type":"SUBMARINE","locations":["A1","A2","A3"]}]""");
-
-        // sin broadcast que esperar: se sondea el estado REST con deadline
-        long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(5);
-        String host;
-        while ("WITHOUT_SHIPS".equals(host = hostStatus(a, id)) && System.nanoTime() < deadline)
-            java.util.concurrent.locks.LockSupport.parkNanos(TimeUnit.MILLISECONDS.toNanos(20));
-        assertEquals("WITH_SHIPS", host);
     }
 
     @Test
