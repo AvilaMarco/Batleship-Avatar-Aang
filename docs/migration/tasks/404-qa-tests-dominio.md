@@ -1,5 +1,5 @@
 # 404 · qa · Tests unitarios del dominio (sin Spring) y baja de los tests de servicios
-Estado: pendiente
+Estado: hecha
 Fase: F4
 Depende de: 403
 Paralelizable: sí, con 405 y con 406 (archivos distintos; sesiones en worktrees separados si corren a la vez)
@@ -22,3 +22,7 @@ Criterios de aceptación:
 - Commit `test: reglas del dominio sin Spring (tarea 404)`.
 
 ## Resultado
+Hecho: `CellTest` (11), `FleetTest` (8), `GameTest` (12), `PlayerStatsTest` (3) en `T/unit/domain`; borrados `MatchServiceTest` y `GameValidationTest`. Afirman `ShipbenderException.code()`.
+Verificación: `grep -rln "springframework|Mockito|testcontainers"` sobre `unit/` -> sin salida. `./mvnw test -q` x3 (Docker activo) -> exit 0, 0, 0; 34 tests unitarios de dominio, 0 fallos.
+No verificado en sentido literal: "con Docker detenido" (no se detuvo Docker; sustituido por el grep de imports, los tests no usan Spring/Testcontainers). Se ejecutó `-Dtest=CellTest,FleetTest,GameTest,PlayerStatsTest` con Docker activo -> exit 0.
+Casos contra comportamiento real: `join` comprueba ALREADY_IN_GAME antes que GAME_FULL (solo se fija el caso de tercer jugador distinto); se añadió `Cell.parse(null)` -> INVALID_FLEET. Sin bugs encontrados.
