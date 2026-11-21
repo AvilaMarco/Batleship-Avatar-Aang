@@ -93,6 +93,12 @@ Formato de entrada:
 - **Por qué es mejor**: la sesión vive durante la operación completa sin cambiar el tipo de fetch ni activar `open-in-view` globalmente.
 - **Concepto**: unidad de trabajo / límite transaccional en la capa de servicio.
 
+### Un test intermitente se arregla buscando la causa, no repitiendo (prioridad alta)
+- **Antes**: `AuthIntegrationTest.java:75-76`: el test alteraba el último carácter del token para romper la firma.
+- **Problema**: la firma HMAC-SHA256 (32 bytes) en base64url deja en el último carácter solo 4 bits útiles; si el cambio cae en los 2 bits de relleno, la firma decodificada es idéntica y el token sigue válido. El test fallaba ~1 de 4 corridas.
+- **Después**: se altera el primer carácter de la firma (6 bits útiles); 12 corridas seguidas en verde.
+- **Concepto**: tests deterministas; un test que manipula datos codificados debe cambiar un bit que importe. Un fallo intermitente casi siempre tiene una causa concreta: caza el fallo con un bucle y captura el mensaje.
+
 ### Dos premisas de bugs resultaron falsas (prioridad media)
 - Las notas sobre `Long ==` (`Game.java:82`, `GameService.java:41`) eran erróneas: los ids son `long` primitivo. La verificación con un test y con el compilador lo mostró dos veces. **Antes de arreglar, comprueba que el bug existe.**
 

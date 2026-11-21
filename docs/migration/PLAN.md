@@ -30,7 +30,8 @@ Detalle en `tasks/`. Terminadas se mueven a `tasks/done/`.
 | 201 | backend-dev | Borrar código muerto backend (stubs, ShipValidation, jjwt, devtools duplicado) | F2 | hecha | F1 |
 | 202 | backend-dev | Secreto/expiración JWT a config externa, perfiles dev/prod, h2-console off en prod | F2 | hecha | 201, 102 |
 | 204 | backend-dev | Arreglar `LazyInitializationException` en `createShips` (`@Transactional`); lo de `Long !=` no era bug | F2 | hecha | 201 |
-| 203 | frontend-dev | Borrar código muerto front (sobras.js, delete/, TEST_DATA.js) | F2 | parcial: faltan borrados (los hace el usuario) | — |
+| 205 | qa | Arreglar test intermitente de firma JWT manipulada | F2 | hecha | — |
+| 203 | frontend-dev | Borrar código muerto front (sobras.js, delete/, TEST_DATA.js) | F2 | hecha | — |
 
 Orden de ejecución F1: 101 → (102 ∥ 105) → (103 ∥ 104). F2: (201 ∥ 203) → 202.
 
@@ -56,6 +57,6 @@ Bugs fijados como "conocidos" en tests: unirse a la propia partida (`MatchServic
 ## Resultado F2
 
 30 tests en verde. Secreto JWT fuera del código (config por perfil, prod falla si falta `JWT_SECRET`), expiración 24 h, h2-console solo en dev, jjwt y stubs de `SalvoController` borrados, WebSocket de barcos publica el mensaje.
-Pendiente del usuario: `git rm -r src/main/resources/static/web/delete src/main/resources/static/web/js/game-mjs/sobras.js src/main/resources/static/web/js/game-mjs/TEST_DATA.js` (denegado a los agentes por permisos) y poner la tarea 203 en `hecha`.
+Borrados del front hechos por el usuario (denegados a los agentes por permisos). `.gitignore` ampliado. Puertos de desarrollo: 4703 (main) / 4704-4705 (pruebas), ver `CLAUDE.md`. Test intermitente de firma JWT arreglado (tarea 205; causa: el último carácter base64url solo aporta 4 bits).
 Pendiente para prod (F6): definir un `JWT_SECRET` nuevo; el viejo está en el historial de git y se considera comprometido.
 Conocido para F4: el rival recibe los barcos de A por el topic compartido; sin validación de barcos; sin `@MessageExceptionHandler`.
