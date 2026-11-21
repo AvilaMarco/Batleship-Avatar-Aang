@@ -1,5 +1,5 @@
 # 203 · frontend-dev · Borrar código muerto del front actual
-Estado: pendiente
+Estado: hecha
 Fase: F2
 Depende de: — (se puede hacer en paralelo con la 201; mergear las dos juntas)
 
@@ -23,3 +23,8 @@ Criterios de aceptación:
 - `./mvnw spring-boot:run`, login en `http://localhost:8080/`, abrir `web/games.html`, entrar a una partida (`web/game.html?...`): la consola del navegador no muestra errores de import/404 de JS y los barcos se pueden enviar (llega el mensaje de `/topic/gameplay/{id}/ships`).
 
 ## Resultado
+Hecho: punto 3 (comentario en `game.js`) y punto 4 completo (url_send, sends, url_topics, topics, handler_websocket). El grep de aceptación no da resultados.
+Pendiente (bloqueado: el sistema denegó el comando `rm`, solo lo puede aprobar una persona): borrar `web/js/game-mjs/sobras.js`, `web/js/game-mjs/TEST_DATA.js` y la carpeta `web/delete/`. Comando: `git rm -r src/main/resources/static/web/delete src/main/resources/static/web/js/game-mjs/sobras.js src/main/resources/static/web/js/game-mjs/TEST_DATA.js`.
+No se probó en navegador.
+
+Borrados finales ejecutados por el usuario (`git rm` de `web/delete/`, `sobras.js`, `TEST_DATA.js`) por permisos denegados al agente.

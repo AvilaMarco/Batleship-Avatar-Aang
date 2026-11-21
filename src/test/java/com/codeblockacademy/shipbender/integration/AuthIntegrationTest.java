@@ -72,8 +72,10 @@ class AuthIntegrationTest {
     @Test
     void setNation_withTamperedSignature_throwsInsteadOfResponding () throws Exception {
         String token = AuthHelper.registerAndLogin(mvc);
-        char last = token.charAt(token.length() - 1);
-        String bad = token.substring(0, token.length() - 1) + (last == 'A' ? 'B' : 'A');
+        // primer caracter de la firma: aporta 6 bits utiles (el ultimo solo 4, y cambiarlo puede dejar la firma intacta)
+        int i = token.lastIndexOf('.') + 1;
+        char c = token.charAt(i);
+        String bad = token.substring(0, i) + (c == 'A' ? 'B' : 'A') + token.substring(i + 1);
         org.junit.jupiter.api.Assertions.assertThrows(Exception.class,
           () -> mvc.perform(post("/api/players/nation/FIRE").header("Authorization", bad)));
     }

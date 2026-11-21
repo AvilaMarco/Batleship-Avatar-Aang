@@ -2,6 +2,7 @@ package com.codeblockacademy.shipbender.config;
 
 
 import com.codeblockacademy.shipbender.security.JWTAuthorizationFilter;
+import com.codeblockacademy.shipbender.security.JWTUtil;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -12,11 +13,17 @@ import org.springframework.security.web.authentication.logout.HttpStatusReturnin
 @Configuration
 @EnableWebSecurity
 class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+    private final JWTUtil jwtUtil;
+
+    WebSecurityConfig ( JWTUtil jwtUtil ) {
+        this.jwtUtil = jwtUtil;
+    }
+
     @Override
     protected void configure ( HttpSecurity http ) throws Exception {
         http.csrf()
           .disable()
-          .addFilterAfter(new JWTAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
+          .addFilterAfter(new JWTAuthorizationFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
           .authorizeRequests()
 
           .antMatchers(

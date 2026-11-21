@@ -289,5 +289,43 @@ prepros.config
 
 # End of https://www.toptal.com/developers/gitignore/api/intellij,intellij+iml,intellij+all,java,maven,sass,prepros
 ### Proyecto ###
+# Secretos y entorno (solo .env.example se versiona)
 .env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.jks
+
+# Editores (la config compartida del equipo va en .idea/codeStyles)
+.vscode/
+*.swp
+*~
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Claude Code (config local; .claude/agents sí se versiona)
 .claude/settings.local.json
+.claude/worktrees/
+
+# Front nuevo (F5)
+node_modules/
+frontend/dist/
+frontend/.vite/
+*.tsbuildinfo
+coverage/
+
+# Docker / datos locales (F6)
+docker-compose.override.yml
+pgdata/
+backups/
+*.sql.gz
+
+# Logs y temporales
+logs/
+*.log
+*.tmp

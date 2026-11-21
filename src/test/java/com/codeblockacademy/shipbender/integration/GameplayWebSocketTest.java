@@ -126,11 +126,7 @@ class GameplayWebSocketTest {
     }
 
     @Test
-    void sendShips_validShips_arePersistedButNothingIsBroadcast_toHostNorRival_knownBug () throws Exception {
-        // bug conocido: tras guardar, GameplayService.createShips llama a statusGame fuera de sesion Hibernate
-        // (en el hilo STOMP no hay open-in-view) y lanza LazyInitializationException (Ship.salvosImpacted):
-        // el @SendTo nunca se ejecuta. El topic es compartido, asi que cuando se arregle el rival recibira
-        // el GameDataDTO calculado para A (hallazgo de seguridad a revisar en F3).
+    void sendShips_validShips_arePersistedAndBroadcast_toHostAndRival () throws Exception {
         String a = AuthHelper.registerAndLogin(mvc), b = AuthHelper.registerAndLogin(mvc);
         long id = createAndJoin(a, b);
         assertEquals("WITHOUT_SHIPS", hostStatus(a, id));
@@ -141,9 +137,10 @@ class GameplayWebSocketTest {
 
         sendJson(sa, "/app/" + id + "/ships", FIVE_SHIPS);
 
-        assertNull(qa.poll(2, TimeUnit.SECONDS), "A no deberia recibir nada hoy");
-        assertNull(qb.poll(100, TimeUnit.MILLISECONDS), "el rival tampoco");
-        assertEquals("WITH_SHIPS", hostStatus(a, id)); // los barcos si se guardaron
+        assertNotNull(qa.poll(5, TimeUnit.SECONDS), "A recibe el mensaje");
+        // bug conocido: se arregla en F4 (ADR 003) - el topic es compartido y el rival recibe el GameDataDTO de A
+        assertNotNull(qb.poll(5, TimeUnit.SECONDS), "el rival tambien (fuga)");
+        assertEquals("WITH_SHIPS", hostStatus(a, id));
     }
 
     @Test

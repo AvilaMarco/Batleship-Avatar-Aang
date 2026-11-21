@@ -2,8 +2,10 @@ package com.codeblockacademy.shipbender.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.codeblockacademy.shipbender.config.ENV_VARIABLES;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +18,17 @@ import java.util.stream.Collectors;
 @Component
 public class JWTUtil implements ENV_VARIABLES {
 
+    private final Algorithm algorithm;
+    private final long expirationMinutes;
+
+    public JWTUtil ( @Value("${jwt.secret}") String secret,
+                     @Value("${jwt.expiration-minutes}") long expirationMinutes ) {
+        if (secret == null || secret.length() < 32)
+            throw new IllegalStateException("jwt.secret debe tener al menos 32 caracteres");
+        this.algorithm = Algorithm.HMAC256(secret);
+        this.expirationMinutes = expirationMinutes;
+    }
+
     /**
      * Genera un token para un usuario específico, válido por 10'
      *
@@ -27,7 +40,7 @@ public class JWTUtil implements ENV_VARIABLES {
     public String getJWTToken ( String username, List<String> roles ) {
 
         LocalDateTime expired = LocalDateTime.now()
-          .plusMinutes(MINUTES_TOKEN_EXPIRATION);
+          .plusMinutes(expirationMinutes);
         Date expiredTime = Date.from(expired.atZone(ZoneId.systemDefault())
           .toInstant());
 
@@ -35,7 +48,7 @@ public class JWTUtil implements ENV_VARIABLES {
           .withSubject(username)
           .withExpiresAt(expiredTime)
           .withClaim(CLAIMS, roles)
-          .sign(ALGORITHM);
+          .sign(algorithm);
 
         return PREFIX + token;
     }
@@ -47,7 +60,7 @@ public class JWTUtil implements ENV_VARIABLES {
      * @return Claims
      */
     public DecodedJWT decodedValidJWT ( String token ) {
-        JWTVerifier verifier = JWT.require(ALGORITHM)
+        JWTVerifier verifier = JWT.require(algorithm)
           .build();
         return verifier.verify(token.replace(PREFIX, ""));
     }
