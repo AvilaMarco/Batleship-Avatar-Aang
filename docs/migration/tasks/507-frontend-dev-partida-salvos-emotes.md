@@ -1,5 +1,5 @@
 # 507 · frontend-dev · Pantalla de partida (2/2): salvos, resultado, emotes y errores
-Estado: pendiente
+Estado: parcial
 Fase: F5
 Depende de: 506
 Paralelizable: no
@@ -23,3 +23,6 @@ Criterios de aceptación (tests primero; api y stomp mockeados):
 - Commit `feat(front): salvos, fin de partida y emotes (tarea 507)`.
 
 ## Resultado
+Hecho: fases FIRE/WAITING_OPPONENT_SALVO/FINISHED en GameScreen (tablero propio y rival, Disparar n/5, turno, hundidos, Ganaste/Perdiste/Empate con link al lobby), EmoteBar con lista cerrada `EMOTES` (burbuja 3 s, ignora los propios), avisos role=alert (ApiError y /user/queue/errors). Estilos de celda en `index.css` con símbolos (▣ X • ? +) y `title`; `CellState` suma `selected`; `Board` acepta `label`.
+Verificación: rojo real (6 tests fallando) y luego `npm test` 67/67 y `npm run build` exit 0.
+Pendiente de verificar: prueba manual en 4705 con dos pestañas (partida completa y emotes en ambos sentidos); no se levantó backend/Vite.

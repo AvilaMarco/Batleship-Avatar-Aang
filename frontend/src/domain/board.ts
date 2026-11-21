@@ -1,7 +1,7 @@
 import type { GameView, SalvoRecord } from "../api/types";
 import type { CellId } from "./cell";
 
-export type CellState = "empty" | "ship" | "hit" | "miss" | "pending";
+export type CellState = "empty" | "ship" | "hit" | "miss" | "pending" | "selected";
 type Board = Record<CellId, CellState>;
 
 // Un salvo del turno actual está sin resolver (el turno avanza al resolverse), salvo en FINISH.
