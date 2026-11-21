@@ -1,5 +1,5 @@
 # 502 · frontend-dev · Dominio del juego en TS puro
-Estado: pendiente
+Estado: hecha
 Fase: F5
 Depende de: 501
 Paralelizable: sí, con 503 y con 508-510 (archivos distintos; commits separados)
@@ -23,3 +23,7 @@ Criterios de aceptación (tests primero):
 - Commit `feat(front): dominio del juego en TS puro (tarea 502)`.
 
 ## Resultado
+
+- `frontend/src/domain/{cell,fleet,salvo,board,phase,map-locations}.ts` + tests (+ `fixtures.ts` de apoyo a los tests). Usa los tipos de `api/types.ts` creado por 503.
+- Decisiones: salvo sin resolver = `s.turn === view.turn` y status != FINISH (el turno avanza al resolverse); en FINISH todo salvo cuenta resuelto. `myBoard` no pinta los salvos sin resolver del rival. `outcome` devuelve `null` en FINISH si ninguna flota está hundida (seed). `phase`: FINISH tiene prioridad sobre `opponent null`.
+- `npm test` exit 0 (43 tests); grep de pureza sin salida. `npm run build` falla solo por `src/api/http.test.ts:45-46` (TS18046, de 503), no por el dominio.
