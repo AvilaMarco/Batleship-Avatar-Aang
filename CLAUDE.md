@@ -12,7 +12,7 @@ Proyecto en migración: ver `docs/migration/PLAN.md` (estado de todo) antes de e
 
 ## Comandos
 - Tests: `./mvnw test`
-- Levantar: `./mvnw spring-boot:run` → http://localhost:8080/web/games.html · Swagger en `/swagger`
+- Levantar: `./mvnw spring-boot:run` → http://localhost:4703/web/games.html · Swagger en `/swagger`
 
 ## Glosario del dominio
 - **Player**: usuario registrado (rol GUEST / PLAYER / ADMIN), elige una **Nation** (agua, tierra, fuego, aire).
@@ -34,3 +34,12 @@ config · controller · dto · enums · exception · models · repository · sec
 - Commits: Conventional Commits (`docs/conventional_commits.md`), uno por tarea, en la rama de la fase.
 - Ramas: `main` es la principal; cada fase en `migration/fN-<nombre>`; merge a `main` solo con aprobación del usuario.
 - Nunca subir secretos: van en `.env` (ignorado por git).
+
+## Puertos de desarrollo
+- Principal (rama `main`): 4703
+- Pruebas (cualquier otra rama): 4704 o 4705
+Reglas:
+- Todo script/servidor que necesite puerto usa uno de estos 3 y fija el puerto con `--port <p> --strictPort` (o equivalente); nunca dejar que elija otro.
+- En `main` usar siempre 4703. En otra rama usar 4704; si está ocupado por otra sesión de esta app, 4705.
+- Si el puerto elegido está ocupado: identificar el proceso (`Get-NetTCPConnection -LocalPort <p> -State Listen`), y si es de esta app (o un servidor de desarrollo huérfano) detenerlo con `Stop-Process -Id <pid>` y reintentar en el mismo puerto. Si es de otra cosa, probar el siguiente de los 3; si ninguno sirve, avisar al usuario.
+- Spring Boot: `server.port=${PORT:4703}` (falla si el puerto está ocupado, no salta a otro). En ramas de prueba: `PORT=4704 ./mvnw spring-boot:run`. Postgres/cloudflared dentro de Docker no usan estos puertos.
