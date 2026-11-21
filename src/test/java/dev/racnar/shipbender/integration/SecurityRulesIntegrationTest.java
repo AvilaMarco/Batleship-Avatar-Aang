@@ -26,10 +26,26 @@ class SecurityRulesIntegrationTest {
     @Autowired MockMvc mvc;
 
     @ParameterizedTest
-    @ValueSource(strings = {"/", "/web/games.html", "/webjars/stomp-websocket/2.3.4/stomp.min.js", "/swagger-ui/index.html"})
+    @ValueSource(strings = {"/", "/index.html", "/assets/index-abc.js", "/favicon.ico", "/swagger-ui/index.html"})
     void publicPaths_withoutToken_areNotForbidden ( String path ) throws Exception {
         int s = mvc.perform(request(HttpMethod.GET, path)).andReturn().getResponse().getStatus();
+        // sin token, una ruta no permitida responde 401 (anonimo), no 403: se descartan ambos
+        assertNotEquals(401, s, path);
         assertNotEquals(403, s, path);
+    }
+
+    @org.junit.jupiter.api.Test
+    void faviconSvg_withoutToken_isNotForbidden () throws Exception {
+        int s = mvc.perform(request(HttpMethod.GET, "/favicon.svg")).andReturn().getResponse().getStatus();
+        assertNotEquals(401, s);
+        assertNotEquals(403, s);
+    }
+
+    @org.junit.jupiter.api.Test
+    void root_carriesContentSecurityPolicy () throws Exception {
+        mvc.perform(request(HttpMethod.GET, "/"))
+          .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.header()
+            .string("Content-Security-Policy", org.hamcrest.Matchers.containsString("default-src 'self'")));
     }
 
     @ParameterizedTest
@@ -40,7 +56,8 @@ class SecurityRulesIntegrationTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"/api/inventado", "/h2-console/"})
+    @ValueSource(strings = {"/api/inventado", "/h2-console/", "/web/games.html",
+        "/webjars/stomp-websocket/2.3.4/stomp.min.js", "/libraries/x.js"})
     void unlistedPaths_areForbidden_evenWithPlayerToken ( String path ) throws Exception {
         String token = AuthHelper.registerAndLogin(mvc);
         mvc.perform(request(HttpMethod.GET, path).header("Authorization", token)).andExpect(status().isForbidden());

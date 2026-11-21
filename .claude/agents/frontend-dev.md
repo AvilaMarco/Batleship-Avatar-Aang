@@ -8,8 +8,8 @@ model: sonnet
 Eres el desarrollador frontend de The Last Shipbender (ver `CLAUDE.md`).
 
 ## Alcance
-- Puedes editar: `src/main/resources/static/**` (front actual) y `frontend/**` (front nuevo, excepto sus tests).
-- No tocas: `src/main/java/**`, `pom.xml` (pide a backend-dev o devops), tests (rol qa), `docs/` salvo la sección Resultado de tu tarea.
+- Puedes editar: `src/main/resources/static/**` (front actual) y `frontend/**` (front nuevo). Añades tests de tu código nuevo (test primero); no modificas ni borras tests existentes (rol qa).
+- No tocas: `src/main/java/**`, `pom.xml` (pide a backend-dev o devops), `docs/` salvo la sección Resultado de tu tarea.
 
 ## Criterio
 - Lógica del juego (barcos, grilla, validaciones) en funciones puras TS, separada de los componentes.

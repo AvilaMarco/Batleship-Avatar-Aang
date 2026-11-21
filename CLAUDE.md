@@ -5,14 +5,16 @@ Proyecto en migración: ver `docs/migration/PLAN.md` (estado de todo) antes de e
 
 ## Stack actual → objetivo
 - Backend: Spring Boot 4.2 / Java 21 (migrado en F3)
-- Front: JS vanilla en `src/main/resources/static/web` → React + TS + Vite en `/frontend`
+- Front: React + TypeScript + Vite en `/frontend` (migrado en F5; se empaqueta en el jar con `-Pfrontend`)
 - BD: Postgres 17 + Flyway (`db/migration`); H2 eliminado
 - Tiempo real: STOMP sobre WebSocket (`/the-last-shipbender`, prefijos `/app` y `/topic`)
 - Deploy: Docker Compose (app + Postgres + cloudflared) en servidor local con Cloudflare Tunnel
 
 ## Comandos
 - Tests: `./mvnw test` (requiere Docker corriendo: Testcontainers)
-- Levantar (requiere Docker: Postgres en contenedor): `PORT=4704 ./mvnw spring-boot:test-run` → http://localhost:<puerto>/web/games.html · Swagger en `/swagger`
+- Backend (requiere Docker: Postgres en contenedor): `PORT=4704 ./mvnw spring-boot:test-run` · Swagger en `/swagger`
+- Front: `cd frontend && npm run dev` (Vite en 4705, proxy al backend 4704) · `npm test` (Vitest) · `npm run e2e` (Playwright; backend en 4704)
+- Jar con front dentro: `./mvnw -Pfrontend -DskipTests package` (descarga Node 22; `./mvnw test` no lo necesita)
 
 ## Glosario del dominio
 - **Player**: usuario registrado (rol GUEST / PLAYER / ADMIN), elige una **Nation** (agua, tierra, fuego, aire).
@@ -25,8 +27,21 @@ Proyecto en migración: ver `docs/migration/PLAN.md` (estado de todo) antes de e
 - `player` (registro, perfil, ranking), `game` (partidas, barcos, salvos; `domain/` = reglas en Java puro, `event/` = eventos STOMP), `chat` (emotes), `security` (JWT, STOMP), `config`, `shared/error` (`ShipbenderException` + `ErrorCode`, `ProblemDetail`).
 - Contrato: `docs/adr/004-contrato-api-v2.md` (REST + STOMP). Arquitectura: `docs/adr/005-arquitectura-backend.md`.
 
+## Estructura front (`frontend/src`)
+- `domain/` reglas del juego en TS puro (sin React/red) · `api/` cliente REST+STOMP tipado y único acceso al token (`auth.ts`) · `auth/` contexto de sesión · `screens/` login, lobby, partida · `components/`. Rutas por hash (`#/login`, `#/`, `#/games/{id}`). Decisiones: `docs/adr/006-frontend-react.md`.
+
+## Flujo por petición (chat central · metodología `proyecto-ia` v3)
+- Preguntas/revisiones: solo lectura. Premisa de un bug: verificarla antes de arreglar.
+- Pequeño (se retoma con la petición + `git diff`): en línea, sin tarea. Grande: tareas en `docs/migration/tasks/`. Riesgo alto (seguridad, migraciones Flyway, datos): tarea de `reviewer` antes del merge.
+- Test primero. Verificar por cuenta propia lo que reporta cada rol (git log, tests; repetir si hay intermitencia → causa raíz).
+- No verificable por el rol (navegador, Docker, permiso denegado) = `parcial`; lo cubre el central o el usuario. Nunca saltar permisos.
+- Paralelizar solo tareas sin archivos ni build/puertos/Docker en común.
+- Cierre de fase: aprendizajes explicados + aprobación del usuario antes del merge (skill `proyecto-ia`).
+
 ## Reglas de trabajo con IA
-- Roles en `.claude/agents/`. Cada rol ejecuta solo tareas con su nombre en `docs/migration/tasks/`.
+- Tareas: campos `Origen` (frase literal del usuario, tarea o ADR) y `Riesgo`; diff ≤~400 líneas o se parte.
+- Tests: los devs añaden tests de su código nuevo (TDD); solo `qa` modifica o borra tests existentes.
+- Roles en `.claude/agents/` (`reviewer` es global, solo lee). Cada rol ejecuta solo tareas con su nombre en `docs/migration/tasks/`.
 - Si necesitas algo de otro rol: crea `docs/migration/tasks/NNN-<rol>-<tema>.md` (estado `pendiente`), no lo hagas tú.
 - `PLAN.md` y `docs/learning/APRENDIZAJE.md` los edita solo el chat central.
 - Lee solo lo necesario: este archivo, tu tarea y los archivos que ella nombra.

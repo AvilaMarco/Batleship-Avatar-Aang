@@ -329,3 +329,9 @@ backups/
 logs/
 *.log
 *.tmp
+
+# frontend-maven-plugin
+frontend/node/
+
+frontend/test-results/
+frontend/playwright-report/

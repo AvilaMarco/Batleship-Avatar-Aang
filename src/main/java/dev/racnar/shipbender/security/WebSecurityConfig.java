@@ -29,14 +29,16 @@ public class WebSecurityConfig {
 
     @Bean SecurityFilterChain filterChain ( HttpSecurity http ) throws Exception {
         http.csrf(csrf -> csrf.disable())
+          // protege el JWT de localStorage ante XSS; style 'unsafe-inline' por estilos en línea de React
+          .headers(h -> h.contentSecurityPolicy(csp -> csp.policyDirectives(
+            "default-src 'self'; connect-src 'self' ws: wss:; img-src 'self' data:; style-src 'self' 'unsafe-inline'; frame-ancestors 'none'; base-uri 'self'")))
           .addFilterAfter(new JwtAuthenticationFilter(jwtService), UsernamePasswordAuthenticationFilter.class)
           .authorizeHttpRequests(auth -> auth
             .requestMatchers(HttpMethod.POST, "/api/auth/login", "/api/players").permitAll()
             // rutas listadas, no "/api/**": una ruta inexistente debe dar 403 (deny-by-default), no 404
             .requestMatchers("/api/players/**", "/api/games/**").hasAuthority("PLAYER")
-            // front viejo: el JWT está en localStorage, al navegar no se manda header
-            .requestMatchers("/", "/index.html", "/favicon.ico", "/main.ogg", "/code/**", "/img/**",
-              "/libraries/**", "/web/**", "/webjars/**").permitAll()
+            // front SPA (hash routing): el JWT está en localStorage, al navegar no se manda header
+            .requestMatchers("/", "/index.html", "/favicon.ico", "/favicon.svg", "/assets/**").permitAll()
             // la autenticación del WebSocket se hace en el CONNECT de STOMP, no en el handshake
             .requestMatchers("/the-last-shipbender/**").permitAll()
             .requestMatchers("/swagger", "/swagger-ui/**", "/docs/**").permitAll()
