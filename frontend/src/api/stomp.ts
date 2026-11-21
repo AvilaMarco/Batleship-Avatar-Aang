@@ -1,5 +1,6 @@
 import { Client } from "@stomp/stompjs";
-import { getToken } from "./auth";
+import { navigate } from "../router";
+import { clearToken, getToken } from "./auth";
 import type { GameEvent, ProblemDetail } from "./types";
 
 export interface GameHandlers {
@@ -13,6 +14,16 @@ export function connectGame(gameId: number, h: GameHandlers) {
   const client = new Client({
     brokerURL: `${proto}://${location.host}/the-last-shipbender`,
     connectHeaders: { Authorization: getToken() ?? "" },
+    // relee el token en cada intento (puede haber cambiado desde el primer CONNECT)
+    beforeConnect: () => {
+      client.connectHeaders = { Authorization: getToken() ?? "" };
+    },
+    // CONNECT rechazado (token caducado): no reintentar, volver al login. Una caída de red no pasa por aquí.
+    onStompError: () => {
+      void client.deactivate();
+      clearToken();
+      navigate("#/login");
+    },
     heartbeatIncoming: 10000,
     heartbeatOutgoing: 10000,
     reconnectDelay: 5000,

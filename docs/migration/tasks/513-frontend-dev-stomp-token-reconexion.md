@@ -1,5 +1,5 @@
 # 513 · frontend-dev · STOMP: releer el token al reconectar y cortar si el CONNECT es rechazado
-Estado: pendiente
+Estado: hecha
 Fase: F5
 Depende de: 512
 Paralelizable: sí (solo `frontend/src/api/stomp.ts` y su test)
@@ -21,3 +21,6 @@ Criterios de aceptación (tests primero, `Client` mockeado):
 - Commit `fix(front): STOMP relee el token y corta si el CONNECT es rechazado (tarea 513)`.
 
 ## Resultado
+`stomp.ts`: `beforeConnect` relee `getToken()` en cada intento; `onStompError` hace `deactivate()`, `clearToken()` y `navigate("#/login")` (el deactivate ya impide el reintento tras el cierre que sigue al ERROR, por eso no hay handler de `onWebSocketClose`: una caída de red sigue reintentando cada 5 s). Token nunca en logs.
+Verificación: tests en rojo ejecutados (2 fallos) y luego `npm test` exit 0 (70 tests), `npm run build` exit 0, grep console.* sin salida.
+No verificado: comportamiento real del WebSocket con token caducado (lo verifica el chat central). No se ejecutó e2e ni se levantó nada.

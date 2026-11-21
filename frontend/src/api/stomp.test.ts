@@ -1,10 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const h = vi.hoisted(() => ({ cfg: null as any, subscribe: vi.fn(), publish: vi.fn(), deactivate: vi.fn() }));
+const h = vi.hoisted(() => ({ cfg: null as any, client: null as any, subscribe: vi.fn(), publish: vi.fn(), deactivate: vi.fn() }));
 vi.mock("@stomp/stompjs", () => ({
   Client: class {
     constructor(cfg: any) {
       h.cfg = cfg;
+      h.client = this;
+      Object.assign(this, cfg); // como el Client real: cfg pasa a ser propiedades
     }
     subscribe = h.subscribe;
     publish = h.publish;
@@ -13,7 +15,7 @@ vi.mock("@stomp/stompjs", () => ({
   },
 }));
 
-import { setToken } from "./auth";
+import { getToken, setToken } from "./auth";
 import { connectGame } from "./stomp";
 
 beforeEach(() => {
@@ -49,6 +51,29 @@ describe("connectGame", () => {
     h.subscribe.mock.calls[1][1]({ body: '{"code":"FORBIDDEN","status":403}' });
     expect(onEvent).toHaveBeenCalledWith({ type: "GAME_STARTED", game_id: 7, turn: 1 });
     expect(onError).toHaveBeenCalledWith(expect.objectContaining({ code: "FORBIDDEN" }));
+  });
+
+  it("beforeConnect relee el token en cada intento", () => {
+    connectGame(7, { onEvent: vi.fn(), onError: vi.fn(), onConnect: vi.fn() });
+    setToken("Bearer nuevo");
+    h.cfg.beforeConnect();
+    expect(h.client.connectHeaders.Authorization).toBe("Bearer nuevo");
+  });
+
+  it("onStompError limpia el token, desactiva y va a login", () => {
+    location.hash = "#/games/7";
+    connectGame(7, { onEvent: vi.fn(), onError: vi.fn(), onConnect: vi.fn() });
+    h.cfg.onStompError({ headers: { message: "x" }, body: "" });
+    expect(getToken()).toBeNull();
+    expect(h.deactivate).toHaveBeenCalled();
+    expect(location.hash).toBe("#/login");
+  });
+
+  it("un cierre sin ERROR no limpia nada", () => {
+    connectGame(7, { onEvent: vi.fn(), onError: vi.fn(), onConnect: vi.fn() });
+    h.cfg.onWebSocketClose?.();
+    expect(getToken()).toBe("Bearer tok");
+    expect(h.deactivate).not.toHaveBeenCalled();
   });
 
   it("sendEmote publica JSON y disconnect desactiva", () => {
