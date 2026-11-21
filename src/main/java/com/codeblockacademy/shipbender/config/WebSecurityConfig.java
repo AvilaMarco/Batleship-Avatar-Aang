@@ -29,7 +29,7 @@ class WebSecurityConfig {
             .hasAnyAuthority("PLAYER")
             .requestMatchers("/api/games/**").hasAnyAuthority("GUEST", "PLAYER")
             .requestMatchers("/api/players/login", "/docs", "/configuration/ui", "/swagger-resources/**",
-              "/configuration/security", "/swagger-ui.html", "/webjars/**", "/h2-console/**")
+              "/configuration/security", "/swagger-ui.html", "/webjars/**")
             .permitAll()
             .anyRequest().permitAll())
           // if logout is successful, just send a success response

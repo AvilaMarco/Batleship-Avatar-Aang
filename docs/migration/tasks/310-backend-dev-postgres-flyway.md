@@ -1,5 +1,5 @@
 # 310 · backend-dev · Postgres + Flyway (V1 desde las entidades) y borrar H2
-Estado: pendiente
+Estado: parcial
 Fase: F3
 Depende de: 309
 
@@ -25,3 +25,10 @@ Criterios de aceptación:
 - `PORT=4704 ./mvnw spring-boot:run` (sin contenedor ni variables) → no arranca, el error menciona la datasource/URL.
 
 ## Resultado
+
+- V1__init.sql generado desde las entidades (9 tablas, 8 FK, checks de enum). Revisado a mano: las entidades no declaran unicidad ni nullable, por eso no hay `unique`/`not null` extra; `validate` pasa.
+- pom: flyway starter + flyway-database-postgresql, postgresql a runtime, h2 fuera. Properties sin datasource/H2 y `ddl-auto=validate`; `initData` con `@Profile("dev")`; `/h2-console/**` fuera; bean `ddl()` y DynamicPropertyRegistrar borrados.
+- Ajuste extra en `TestcontainersConfiguration`: el contenedor deja de ser static (uno por contexto). Con Flyway un contenedor compartido conservaba los datos de `initData` entre contextos y `MatchControllerIntegrationTest` fallaba con 2 resultados.
+- Verificado: `./mvnw clean test` BUILD SUCCESS, 30 tests, 0 fallos, `Successfully applied 1 migration`. `grep ddl-auto src` solo `validate`. `grep -i h2` solo coincide con `<h2>` HTML y imagenes en static (no es H2 DB).
+- `PORT=4704 ./mvnw spring-boot:run` sin variables: "Failed to configure a DataSource: 'url' attribute is not specified".
+- Pendiente de verificar (chat central): `spring-boot:test-run` en 4704 y prueba manual de dos ventanas.
