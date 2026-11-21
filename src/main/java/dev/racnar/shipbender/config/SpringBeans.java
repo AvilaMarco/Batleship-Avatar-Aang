@@ -11,7 +11,6 @@ import dev.racnar.shipbender.player.domain.Player;
 import dev.racnar.shipbender.game.GamePlayerRepository;
 import dev.racnar.shipbender.game.GameRepository;
 import dev.racnar.shipbender.player.PlayerRepository;
-import org.modelmapper.ModelMapper;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,15 +24,6 @@ import java.util.List;
 
 @Configuration
 public class SpringBeans {
-
-    @Bean
-    public ModelMapper getModelMapper () {
-        /*        modelMapper.getConfiguration()
-                .setFieldMatchingEnabled(true)
-                *//*.setFieldAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PRIVATE)*//*
-                .setSourceNamingConvention(NamingConventions.JAVABEANS_MUTATOR);*/
-        return new ModelMapper();
-    }
 
     @Bean
     public PasswordEncoder passwordEncoder () {

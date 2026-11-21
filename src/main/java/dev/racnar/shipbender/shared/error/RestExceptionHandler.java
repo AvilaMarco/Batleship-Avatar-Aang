@@ -30,14 +30,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return problem(ex.code(), ex.getMessage());
     }
 
-    // v1 (hasta la 407, que borra AirbenderException)
-    @ExceptionHandler(AirbenderException.class)
-    ResponseEntity<ProblemDetail> airbender ( AirbenderException ex ) {
-        ProblemDetail pd = ProblemDetail.forStatusAndDetail(ex.getStatus(), ex.getMessage());
-        pd.setProperty("code", ErrorCode.INTERNAL_ERROR.name());
-        return ResponseEntity.status(ex.getStatus()).body(pd);
-    }
-
     @ExceptionHandler(Exception.class)
     ResponseEntity<ProblemDetail> unexpected ( Exception ex ) {
         log.error("Error no esperado", ex);

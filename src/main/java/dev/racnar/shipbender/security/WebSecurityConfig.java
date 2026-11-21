@@ -33,7 +33,7 @@ public class WebSecurityConfig {
           .authorizeHttpRequests(auth -> auth
             .requestMatchers(HttpMethod.POST, "/api/auth/login", "/api/players").permitAll()
             // rutas listadas, no "/api/**": una ruta inexistente debe dar 403 (deny-by-default), no 404
-            .requestMatchers("/api/players/**", "/api/games/**", "/api/match/**").hasAuthority("PLAYER")
+            .requestMatchers("/api/players/**", "/api/games/**").hasAuthority("PLAYER")
             // front viejo: el JWT está en localStorage, al navegar no se manda header
             .requestMatchers("/", "/index.html", "/favicon.ico", "/main.ogg", "/code/**", "/img/**",
               "/libraries/**", "/web/**", "/webjars/**").permitAll()

@@ -1,6 +1,5 @@
 package dev.racnar.shipbender.game.domain;
 
-import dev.racnar.shipbender.game.dto.StatusGameDTO;
 import dev.racnar.shipbender.player.domain.Player;
 import dev.racnar.shipbender.shared.NationType;
 import dev.racnar.shipbender.shared.error.ErrorCode;
@@ -93,33 +92,6 @@ public class Game {
         return GameStatus.IN_GAME;
     }
 
-    public void updateStatusGpOf ( StatusGameDTO.StatusGameDTOBuilder builder ) {
-        if (!this.isGameWaitingPlayer()) {
-            if (this.isClientHasShips()) {
-                builder.client(PlayerStatus.WITH_SHIPS);
-            } else {
-                builder.client(PlayerStatus.WITHOUT_SHIPS);
-            }
-        } else {
-            builder.client(PlayerStatus.WAITING);
-        }
-        if (this.isHostHasShips()) {
-            builder.host(PlayerStatus.WITH_SHIPS);
-        } else {
-            builder.host(PlayerStatus.WITHOUT_SHIPS);
-        }
-    }
-
-    public void updateStatusGameOf ( StatusGameDTO.StatusGameDTOBuilder builder ) {
-        if (this.isGameWaitingPlayer() || this.isGameWaitingShips()) {
-            builder.game(GameStatus.CREATED);
-        } else if (this.isGameFinish()) {
-            builder.game(GameStatus.FINISH);
-        } else {
-            builder.game(GameStatus.IN_GAME);
-        }
-    }
-
     public void finishDate () {
         this.finishDate = LocalDateTime.now();
     }
@@ -137,25 +109,5 @@ public class Game {
 
     public boolean isFullGame () {
         return gamePlayers.size() == 2;
-    }
-
-    /* UTILS */
-    private boolean isGameWaitingPlayer () {
-        return gamePlayers.size() == 1;
-    }
-
-    private boolean isGameWaitingShips () {
-        return !gamePlayers.stream()
-          .allMatch(GamePlayer::hasShips);
-    }
-
-    private boolean isClientHasShips () {
-        return gamePlayers.get(1)
-          .hasShips();
-    }
-
-    private boolean isHostHasShips () {
-        return gamePlayers.get(0)
-          .hasShips();
     }
 }

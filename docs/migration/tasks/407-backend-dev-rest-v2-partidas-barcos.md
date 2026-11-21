@@ -1,5 +1,5 @@
 # 407 · backend-dev · REST v2: partidas y barcos con el dominio conectado
-Estado: pendiente
+Estado: hecha
 Fase: F4
 Depende de: 406
 Paralelizable: no
@@ -24,3 +24,9 @@ Criterios de aceptación:
 - Commit `feat: REST v2 de partidas y barcos con reglas del dominio (tarea 407)`.
 
 ## Resultado
+
+- `GameController` + `GameService` (comandos `@Transactional`) + records `GameView`/`GameSummary`/`CreateGameRequest`/`PlaceShipsRequest`. `GameView.of` solo lee entidades (sin `emptyShips`): el test `placeShips_bothPlayers_...` confirma que A conserva sus 5 barcos y el rival nunca expone `ships`.
+- Borrados: servicios/controllers v1 de match, gameplay y salvo, DTOs v1, `AirbenderException` y subclases, `PlayerStatus`, `Game.updateStatus*`, `GamePlayer.emptyShips`, v1 de `PlayerService`, DTOs v1 de player, bean y dependencia ModelMapper. `PlayerNotFoundException` -> `ShipbenderException(UNAUTHENTICATED)`.
+- Extra: registro concurrente con el mismo email ahora da 409 `EMAIL_IN_USE` (`saveAndFlush` + captura de `DataIntegrityViolationException`).
+- `GamePlayerRepository` se conserva: el seed `dev` de `SpringBeans` lo usa.
+- Verificacion: `./mvnw test` x3 -> exit 0, 70 tests, 0 fallos. Swagger (`/docs`, puerto 4704): 10 rutas = Anexo A; proceso detenido por PID.

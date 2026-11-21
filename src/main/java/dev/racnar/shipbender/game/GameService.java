@@ -1,70 +1,70 @@
 package dev.racnar.shipbender.game;
 
-import dev.racnar.shipbender.game.dto.GameMapDTO;
-import dev.racnar.shipbender.game.dto.GameMatchDTO;
-import dev.racnar.shipbender.game.dto.StatusGameDTO;
-import dev.racnar.shipbender.shared.error.not_found.GameNotFoundException;
+import dev.racnar.shipbender.game.domain.Fleet;
 import dev.racnar.shipbender.game.domain.Game;
-import dev.racnar.shipbender.game.domain.GamePlayer;
-import org.modelmapper.ModelMapper;
+import dev.racnar.shipbender.game.dto.GameSummary;
+import dev.racnar.shipbender.game.dto.GameView;
+import dev.racnar.shipbender.player.PlayerService;
+import dev.racnar.shipbender.player.domain.Player;
+import dev.racnar.shipbender.shared.NationType;
+import dev.racnar.shipbender.shared.error.ErrorCode;
+import dev.racnar.shipbender.shared.error.ShipbenderException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class GameService {
 
-    GameRepository repository;
-    ModelMapper    mapper;
+    private final GameRepository repository;
+    private final PlayerService  playerService;
 
-    public GameService ( GameRepository repository, ModelMapper mapper ) {
-        this.repository = repository;
-        this.mapper     = mapper;
+    public GameService ( GameRepository repository, PlayerService playerService ) {
+        this.repository    = repository;
+        this.playerService = playerService;
     }
 
-    public Game getGame ( Long id ) {
+    @Transactional(readOnly = true)
+    public List<GameSummary> list () {
+        return repository.findAllByFinishDateIsNull().stream().map(GameSummary::of).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public GameView get ( String email, long gameId ) {
+        Player player = playerService.getPlayer(email);
+        return GameView.of(load(gameId), player.getId());
+    }
+
+    @Transactional
+    public GameView create ( String email, NationType nation, String location ) {
+        Player player = playerService.getPlayer(email);
+        if (repository.existsByLocationAndFinishDateIsNull(location)) {
+            throw new ShipbenderException(ErrorCode.LOCATION_TAKEN, "La ubicación " + location + " ya está ocupada");
+        }
+        Game game = new Game(nation, location);
+        game.join(player);
+        return GameView.of(repository.save(game), player.getId());
+    }
+
+    @Transactional
+    public GameView join ( String email, long gameId ) {
+        Player player = playerService.getPlayer(email);
+        Game   game   = load(gameId);
+        game.join(player);
+        return GameView.of(repository.save(game), player.getId());
+    }
+
+    @Transactional
+    public GameView placeShips ( String email, long gameId, Fleet fleet ) {
+        Player player = playerService.getPlayer(email);
+        Game   game   = load(gameId);
+        game.placeShips(player.getId(), fleet);
+        return GameView.of(repository.save(game), player.getId());
+    }
+
+    private Game load ( long id ) {
         return repository.findById(id)
-          .orElseThrow(() -> new GameNotFoundException(id));
-    }
-
-    public GameMatchDTO getGameMatch ( Long id, Long gamePlayerId ) {
-        Game game = repository.findById(id)
-          .orElseThrow(() -> new GameNotFoundException(id));
-        /*ToDo: is this correct?, are you deleting the ships?*/
-        List<GamePlayer> gpsOnlyWithCorrectShips = game.getGamePlayers()
-          .stream()
-          .peek(gp -> {
-              if (gp.getId() != gamePlayerId) gp.emptyShips();
-          })
-          .distinct()
-          .collect(Collectors.toList());
-        game.setGamePlayers(gpsOnlyWithCorrectShips);
-        /*ToDo: add correct scores*/
-        return mapper.map(game, GameMatchDTO.class);
-    }
-
-    public List<GameMapDTO> getGames () {
-        return repository.findAllByFinishDateIsNull()
-          .stream()
-          .map(g -> mapper.map(g, GameMapDTO.class))
-          .collect(Collectors.toList());
-    }
-
-    public GameMapDTO save ( Game game ) {
-        return mapper.map(repository.saveAndFlush(game), GameMapDTO.class);
-    }
-
-    public StatusGameDTO statusGame ( Long gameId ) {
-        Game game = getGame(gameId);
-        // ToDo: create new throw Exception
-        if (game.isGameFinish()) return null;
-
-        StatusGameDTO.StatusGameDTOBuilder builder = StatusGameDTO.builder();
-
-        game.updateStatusGpOf(builder);
-        game.updateStatusGameOf(builder);
-
-        return builder.build();
+          .orElseThrow(() -> new ShipbenderException(ErrorCode.GAME_NOT_FOUND, "No existe la partida " + id));
     }
 }
