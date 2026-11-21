@@ -1,5 +1,5 @@
 # 311 · backend-dev · Seguridad HTTP deny-by-default
-Estado: pendiente
+Estado: parcial
 Fase: F3
 Depende de: 310
 
@@ -28,3 +28,9 @@ Criterios de aceptación:
 - La prueba manual de la 307 sigue funcionando. Detén el proceso.
 
 ## Resultado
+Hecho: `WebSecurityConfig` con las 8 reglas, `anyRequest().denyAll()`; `application-prod.properties` con springdoc deshabilitado.
+- `./mvnw test`: 30 tests, 0 fallos, 0 errores.
+- curl (PORT=4704, test-run, detenido por PID): /web/games.html 200, / 200, /swagger-ui/index.html 200, webjars stomp 200, /api/games 403, /api/inventado 403, /the-last-shipbender 400 (no 403), /swagger 302, /error 500, POST /api/players/login `{}` 400.
+- Revisión del front (fetch en static): /api/match/**, /api/players/nation/, /api/players, /api/players/login, /api/games, todas permitidas. Estáticos (code/, img/, libraries/, web/**) permitidos.
+- Ruta del front en denyAll: `fetch("/api/logout")` en `web/js/games-mjs/player.js:14` (la ruta real es `/api/players/logout`) -> 403; antes era permitAll (404). El front igual hace `location.assign("/")` en el `.then`, que NO corre si el fetch rechaza, pero 403 no rechaza, así que sigue funcionando. Pendiente decidir: tarea para frontend-dev.
+- Pendiente de verificar: prueba manual en navegador (307), la hace el chat central.
