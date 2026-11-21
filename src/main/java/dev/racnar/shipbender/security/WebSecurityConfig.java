@@ -31,7 +31,7 @@ public class WebSecurityConfig {
         http.csrf(csrf -> csrf.disable())
           // protege el JWT de localStorage ante XSS; style 'unsafe-inline' por estilos en línea de React
           .headers(h -> h.contentSecurityPolicy(csp -> csp.policyDirectives(
-            "default-src 'self'; connect-src 'self' ws: wss:; img-src 'self' data:; style-src 'self' 'unsafe-inline'; frame-ancestors 'none'; base-uri 'self'")))
+            "default-src 'self'; connect-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; frame-ancestors 'none'; base-uri 'self'")))
           .addFilterAfter(new JwtAuthenticationFilter(jwtService), UsernamePasswordAuthenticationFilter.class)
           .authorizeHttpRequests(auth -> auth
             .requestMatchers(HttpMethod.POST, "/api/auth/login", "/api/players").permitAll()

@@ -1,5 +1,5 @@
 # 602 · backend-dev · Cabeceras de proxy para el WebSocket y CSP `connect-src 'self'`
-Estado: pendiente
+Estado: hecha
 Fase: F6
 Depende de: —
 Paralelizable: sí, con 601 (no comparten archivos). No con otra tarea que ejecute Maven.
@@ -25,3 +25,11 @@ Criterios de aceptación:
 - Commit `fix(seguridad): forward headers para WebSocket tras proxy y CSP connect-src 'self' (tarea 602)`.
 
 ## Resultado
+- `application.properties`: `server.forward-headers-strategy=native` (+ comentario). `WebSecurityConfig.java:34`: `connect-src 'self'`. Sin cambios en `WebSocketConfig`.
+- Tests nuevos: `WebSocketOriginBehindProxyTest` (2) y `csp_connectSrcIsSelfOnly` en `SecurityRulesIntegrationTest`.
+- Rojo: CSP -> assert falla (contenia `ws: wss:`); handshake https mismo origen -> 403 "did not permit the HTTP upgrade". Origen ajeno -> 403 ya antes (es guarda, no rojo). Con `-Dserver.forward-headers-strategy=none` el test de conexion vuelve a 403.
+- Causa raiz a tener en cuenta: con `X-Forwarded-Proto: https` el RemoteIpValve de Tomcat fija el puerto 443, asi que el Origin debe ir sin puerto (como el de cloudflared, `https://dominio`). Un Origin `https://localhost:<puerto>` da 403. `native` funcionó en test (el cliente es 127.0.0.1/::1, proxy interno); no hizo falta el plan B.
+- Verde: `./mvnw clean test` x2 -> 109 tests, 0 fallos, BUILD SUCCESS ambas.
+- En vivo (puerto 4704, `spring-boot:test-run` sin `-Pfrontend`, detenido por PID): CSP de `/` con `connect-src 'self';`; handshake curl con Host racnar.test + Origin https://racnar.test + XFP https -> 101; Origin https://evil.example -> 403.
+- Pendiente de verificar (chat central): consola del navegador sin violaciones de CSP y WebSocket 101 en una partida real.
+- Riesgo anotado: Safari < 15.4 puede no tratar `'self'` como ws/wss; no se añadió `ws:/wss:`. Si cloudflared llegara desde una IP no privada (otro contenedor en red publica), `native` no confiaria en la cabecera: en compose la IP es privada.
