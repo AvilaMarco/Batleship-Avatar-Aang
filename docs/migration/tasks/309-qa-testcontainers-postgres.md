@@ -1,5 +1,5 @@
 # 309 · qa · Tests de integración con Testcontainers (Postgres)
-Estado: pendiente
+Estado: parcial
 Fase: F3
 Depende de: 308
 
@@ -22,3 +22,9 @@ Criterios de aceptación:
 - `PORT=4704 ./mvnw spring-boot:test-run` arranca la app contra Postgres en contenedor; login de la 303 → `200`. Detén el proceso.
 
 ## Resultado
+- `./mvnw test` con Docker: BUILD SUCCESS, 30 tests, 0 fallos. `postgres:17-alpine started` 1 vez (más el de ryuk), `grep -c jdbc:h2` = 0.
+- `PORT=4704 ./mvnw spring-boot:test-run`: arrancó contra Postgres en contenedor (`jdbc:postgresql://localhost:63098/test`); `POST /api/players/login` con marco@admin.com / 123 -> 200 (el seed corre sobre Postgres). Proceso detenido, ryuk limpió los contenedores; `docker ps` vacío, sin java.
+- Desvíos del diseño (ambos solo en `TestcontainersConfiguration`):
+  1. `application.properties` fija `spring.jpa.database-platform=H2Dialect`, lo que generaba DDL de H2 (`tinyint`, `enum`) y rompía 20 tests en Postgres. El `DynamicPropertyRegistrar` temporal también pisa el dialecto con `PostgreSQLDialect`. Se va con la 310 (conviene que la 310 borre esa línea de producción).
+  2. El contenedor como bean no basta: `GameplayWebSocketTest` (RANDOM_PORT) crea otro contexto y arrancaba un segundo Postgres. El contenedor es ahora un `static final` compartido -> un solo contenedor por corrida.
+- NO VERIFICADO: criterio "con Docker detenido" (no se detuvo Docker Desktop por indicación); el texto del error queda para que lo confirme el usuario.

@@ -1,5 +1,7 @@
 package com.codeblockacademy.shipbender.integration;
 
+import com.codeblockacademy.shipbender.TestcontainersConfiguration;
+import org.springframework.context.annotation.Import;
 import com.codeblockacademy.shipbender.integration.support.AuthHelper;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
@@ -34,6 +36,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /** Caracterizacion de /app/{id}/ships -> /topic/gameplay/{id}/ships con JWT en el CONNECT de STOMP. */
+@Import(TestcontainersConfiguration.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 class GameplayWebSocketTest {

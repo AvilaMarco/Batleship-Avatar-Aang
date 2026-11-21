@@ -1,5 +1,7 @@
 package com.codeblockacademy.shipbender.integration;
 
+import com.codeblockacademy.shipbender.TestcontainersConfiguration;
+import org.springframework.context.annotation.Import;
 import com.codeblockacademy.shipbender.integration.support.AuthHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,6 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Import(TestcontainersConfiguration.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 public class MatchControllerIntegrationTest {
