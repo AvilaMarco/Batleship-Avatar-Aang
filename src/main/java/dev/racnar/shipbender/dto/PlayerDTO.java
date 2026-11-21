@@ -1,0 +1,26 @@
+package dev.racnar.shipbender.dto;
+
+import dev.racnar.shipbender.enums.NationType;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class PlayerDTO {
+
+    Long   id;
+    String name;
+    String email;
+
+    @Enumerated(EnumType.STRING)
+    NationType nation;
+
+    public PlayerDTO ( String name ) {
+        this.name = name;
+    }
+}

@@ -1,5 +1,5 @@
 # 401 · backend-dev · Renombrar paquete a `dev.racnar.shipbender`
-Estado: pendiente
+Estado: hecha
 Fase: F4
 Depende de: — (ADR 004 y 005 aprobadas)
 Paralelizable: no (toca todos los archivos Java)
@@ -24,3 +24,7 @@ Criterios de aceptación:
 - Commit `refactor: paquete base dev.racnar.shipbender (tarea 401)`.
 
 ## Resultado
+Paquete base y groupId renombrados a `dev.racnar`; `SalvoApplication` -> `ShipbenderApplication` (+ `TestShipbenderApplication`). 93 archivos, 303+/303-.
+- `grep -rn codeblockacademy src pom.xml`: sin salida; groupId `dev.racnar`: 1.
+- `git diff --cached -M --stat`: todos renombres salvo `IGameService.java` (archivo de 11 lineas, similitud <50%, git lo muestra como delete+add; el contenido cambia solo en `package`/`import`). Resto de cambios: solo `package`/`import`, groupId y clase de arranque.
+- `./mvnw test` x2: 40 tests, 0 fallos, 0 errores, BUILD SUCCESS.
