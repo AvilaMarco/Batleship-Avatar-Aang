@@ -21,51 +21,20 @@ class WebSecurityConfig {
     }
 
     @Bean SecurityFilterChain filterChain ( HttpSecurity http ) throws Exception {
-        http.csrf()
-          .disable()
+        http.csrf(csrf -> csrf.disable())
           .addFilterAfter(new JWTAuthorizationFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
-          .authorizeRequests()
-
-          .antMatchers(
-            "/users/admin"
-          )
-          .hasAnyAuthority("ADMIN")
-
-          .antMatchers(
-            "/api/players/nation/**",
-            "/api/match/**",
-            "/topic/**",
-            "/app/**",
-            "/web/games"
-          )
-          .hasAnyAuthority("PLAYER")
-
-          .antMatchers(
-            "/api/games/**"
-          )
-          .hasAnyAuthority("GUEST", "PLAYER")
-
-          .antMatchers(
-            "/api/players/login",
-            "/docs",
-            "/configuration/ui",
-            "/swagger-resources/**",
-            "/configuration/security",
-            "/swagger-ui.html",
-            "/webjars/**",
-            "/h2-console/**"
-          )
-          .permitAll()
-          .anyRequest()
-          .permitAll()
-        ;
-
-        http.logout()
-          .logoutUrl("/api/players/logout");
-
-        // if logout is successful, just send a success response
-        http.logout()
-          .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler());
+          .authorizeHttpRequests(auth -> auth
+            .requestMatchers("/users/admin").hasAnyAuthority("ADMIN")
+            .requestMatchers("/api/players/nation/**", "/api/match/**", "/topic/**", "/app/**", "/web/games")
+            .hasAnyAuthority("PLAYER")
+            .requestMatchers("/api/games/**").hasAnyAuthority("GUEST", "PLAYER")
+            .requestMatchers("/api/players/login", "/docs", "/configuration/ui", "/swagger-resources/**",
+              "/configuration/security", "/swagger-ui.html", "/webjars/**", "/h2-console/**")
+            .permitAll()
+            .anyRequest().permitAll())
+          // if logout is successful, just send a success response
+          .logout(l -> l.logoutUrl("/api/players/logout")
+            .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler()));
         return http.build();
     }
 

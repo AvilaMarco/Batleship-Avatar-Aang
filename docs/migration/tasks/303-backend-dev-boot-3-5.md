@@ -1,5 +1,5 @@
 # 303 · backend-dev · Salto a Spring Boot 3.5.16 (jakarta, Security 6, Hibernate 6)
-Estado: pendiente
+Estado: hecha
 Fase: F3
 Depende de: 302
 
@@ -28,3 +28,10 @@ Criterios de aceptación:
 - Prueba manual en el navegador (`http://localhost:4704/`): login, crear partida y unirse con otro usuario en otra ventana; se ve la partida (WebSocket con SockJS sigue funcionando). Anota el resultado.
 
 ## Resultado
+
+- Receta OpenRewrite aplicada y limpiada. Descartado: reindentado del `pom.xml`, `jakarta.servlet-api` explícito (lo trae el starter web), `maven-compiler-plugin` con Lombok fijado (contradice borrar `lombok.version`), cambio de imports en `GameValidationTest` (cosmético). Se conservó `webjars-locator-lite` (reemplaza a `-core`).
+- `WebSecurityConfig` reescrito a mano en lambda DSL (mismas reglas). No apareció el error de patrones MVC/H2 (paso 3 no necesario). `LocalServerPort` ya tenía el import nuevo.
+- `./mvnw test`: 30 tests, 0 fallos (7+3+1+9+7+3). Greps de aceptación: limpios (solo un comentario `//import javax.persistence` en `ShipsDTO`).
+- `PORT=4704 spring-boot:run`: `/swagger-ui/index.html` 200; login `marco@admin.com`/`123` -> 200 con token. Proceso detenido.
+- Deprecaciones (`-Xlint:deprecation`): `@GenericGenerator` (Player.java:26, sale en Hibernate 7, tarea 308); `AbstractSecurityWebSocketMessageBrokerConfigurer` y `MessageSecurityMetadataSourceRegistry` en `WebSocketSecurityConfig` (tarea 305). Aviso Lombok `@EqualsAndHashCode(callSuper)` en `SignInPlayerDTO`. Hibernate: `hibernate.dialect` H2 explícito innecesario; `open-in-view` activo por defecto.
+- NO verificado: prueba manual en navegador (login/crear/unirse con SockJS); la cubren los tests de WebSocket pero no se hizo a mano.
