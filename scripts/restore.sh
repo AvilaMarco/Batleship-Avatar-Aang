@@ -13,7 +13,7 @@ bk backup pg_restore -l "/backups/$file" >/dev/null || { echo "error: $file esta
 read -r -p "Se reemplaza la BD por $file. Escribe 'si' para seguir: " ok
 [ "$ok" = "si" ] || { echo "cancelado"; exit 1; }
 docker compose stop app
-trap 'docker compose start app >/dev/null; echo "app arrancada de nuevo"' EXIT   # la BD esta restaurada o intacta, nunca a medias
+trap 'if [ -n "$(docker compose ps -aq app)" ] && docker compose start app >/dev/null 2>&1; then echo "app arrancada de nuevo"; else echo "AVISO: app NO se arranco (si aun no existe: docker compose up -d app)"; fi' EXIT   # la BD esta restaurada o intacta, nunca a medias
 # RETENTION_DAYS=36500: el dump de seguridad no debe borrar por antiguedad el archivo que vamos a restaurar
 out=$(bk -e RETENTION_DAYS=36500 backup sh /scripts/backup.sh) || { echo "error: fallo el dump de seguridad. BD intacta."; exit 1; }
 safety="${out##*/}"

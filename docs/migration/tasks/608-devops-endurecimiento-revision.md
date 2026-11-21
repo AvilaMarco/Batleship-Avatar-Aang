@@ -1,5 +1,5 @@
 # 608 · devops · Endurecimiento tras la revisión 606
-Estado: pendiente
+Estado: hecha
 Fase: F6
 Depende de: 605 (el runbook debe estar terminado: esta tarea también lo edita), 606
 Paralelizable: no (toca el runbook)
@@ -25,3 +25,8 @@ Criterios de aceptación:
 - Commit `build: endurecimiento tras la revisión de seguridad de F6 (tarea 608)`.
 
 ## Resultado
+
+- `backup.sh`: `umask 077`; dump verificado con `-rw-------` en `/backups`.
+- `restore.sh`: el trap solo dice "app arrancada de nuevo" si `app` existe (`ps -aq`) y `start` tuvo exito; si no, avisa de `docker compose up -d app`. Hallazgo: `docker compose start app` devuelve 0 aunque `app` no exista, por eso hace falta el `ps -aq`. Probado en `shipbender-test`: app inexistente -> AVISO; app existente (imagen dummy via override fuera del repo) -> arrancada y `running`. Logica de transaccion/trap/dump de seguridad intacta.
+- `.env.example` (BACKUP_DIR de ejemplo + comentario), `.dockerignore` (`**/.env*`), runbook (secciones a-e; rate limiting pasa de opcional a obligatorio; aviso de la maquina nueva actualizado). `grep` del runbook: solo nombres de variables.
+- Limpieza hecha: `down -v` del proyecto de prueba, `.env`, override y carpeta temporal borrados.

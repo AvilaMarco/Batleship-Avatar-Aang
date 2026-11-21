@@ -1,6 +1,7 @@
 #!/bin/sh
 # Un dump de la BD en /backups y borra los de más de RETENTION_DAYS días.
 set -eu
+umask 077   # los dumps contienen hashes de contrase�a
 f="/backups/shipbender-$(date +%Y%m%d-%H%M%S).dump"
 trap 'rm -f "$f.tmp"' EXIT   # un pg_dump fallido no deja basura en BACKUP_DIR
 pg_dump -Fc -f "$f.tmp"

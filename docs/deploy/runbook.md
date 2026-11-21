@@ -24,7 +24,7 @@ Requisitos: Docker con Compose v2, git, `openssl`. Antes, una sola vez, en el pa
 1. Zero Trust → *Networks → Tunnels → Create a tunnel* → *Cloudflared* → nombre `shipbender` → copiar el **token** (no ejecutar el comando de instalación que ofrece).
 2. En el túnel → *Public Hostname*: subdominio `shipbender`, dominio `racnar.dev`, tipo `HTTP`, URL `app:8080`, sin *HTTP Host Header*.
 3. Dashboard de `racnar.dev`: *SSL/TLS → Edge Certificates → Always Use HTTPS* activado; *Network → WebSockets* activado.
-4. (Opcional) *Security → WAF → Rate limiting rules*: 1 regla para `POST` a `/api/auth/login` y `/api/players`.
+4. (Obligatorio) *Security → WAF → Rate limiting rules*: 1 regla para `POST` a `/api/auth/login` y `/api/players`.
 
 En el servidor:
 
@@ -104,15 +104,27 @@ scripts/restore.sh shipbender-AAAAMMDD-HHMMSS.dump   # solo el nombre; el archiv
 ```bash
 docker compose up -d db backup          # BD vacía
 # copia el dump a BACKUP_DIR
-scripts/restore.sh <dump>               # "app arrancada de nuevo" es engañoso aquí: app aún no existe
+scripts/restore.sh <dump>               # avisará que app NO se arrancó: aún no existe, es normal
 docker compose up -d --build            # crea app y tunnel
 ```
+
+### Carpeta, vigilancia y pruebas
+
+- **Carpeta privada**: `BACKUP_DIR` debe ser privada, fuera del repo y en otro disco. Los dumps contienen hashes de contraseña: no la pongas en OneDrive u otra nube sin cifrar.
+- **Saber si falla**: `docker compose logs backup` debe mostrar `backup ok: ...` cada 24 h; revísalo de vez en cuando.
+- **Prueba de restauración**: cada cierto tiempo restaura un dump en una máquina o proyecto de prueba (`COMPOSE_PROJECT_NAME` distinto); un backup sin probar no es un backup.
 
 ## 6. Rotar secretos
 
 - **`JWT_SECRET`** (cierra todas las sesiones): genera uno con `openssl rand -base64 48`, edítalo en `.env`, `docker compose up -d app`.
-- **Token del túnel**: obtén el nuevo en el panel de Cloudflare, edítalo en `.env`, `docker compose up -d tunnel`.
+- **Token del túnel**: en Zero Trust, Networks → Tunnels → tu túnel → Refresh token; edita `TUNNEL_TOKEN` en `.env`, `docker compose up -d tunnel`.
+- **`.env`**: que solo lo lea tu usuario (Linux: `chmod 600 .env`; Windows: quita permisos a otros usuarios).
 - **`POSTGRES_PASSWORD`**: no basta con editar `.env` (Postgres conserva la contraseña vieja en `pgdata`). No está cubierto por este runbook.
+
+## Reglas de seguridad obligatorias
+
+- **No arranques contenedores sueltos con `docker run`** de la imagen sin `SPRING_PROFILES_ACTIVE=prod`: el perfil por defecto es dev.
+- **La regla de rate limiting de Cloudflare es obligatoria** (ver sección 1, paso 4); créala antes de abrir el juego.
 
 ## 7. Parar y arrancar
 

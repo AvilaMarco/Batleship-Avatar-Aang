@@ -3,6 +3,7 @@
 .claude
 .env
 .env.*
+**/.env*
 target
 docs
 backups
