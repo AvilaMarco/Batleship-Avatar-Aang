@@ -1,5 +1,5 @@
 # 312 · qa · Tests de reglas de acceso HTTP y heartbeat STOMP
-Estado: pendiente
+Estado: hecha
 Fase: F3
 Depende de: 311
 
@@ -19,3 +19,8 @@ Criterios de aceptación:
 - Mutación manual (no se commitea): con `anyRequest().permitAll()` en `WebSecurityConfig` falla el grupo "no listadas"; sin `setHeartbeatValue` falla el test de heartbeat. Revierte y anótalo en el Resultado.
 
 ## Resultado
+- `SecurityRulesIntegrationTest` (9 casos parametrizados: 4 publicas, 3 protegidas, 2 no listadas) y 1 test de heartbeat en `GameplayWebSocketTest`. Total 40 tests, 0 fallos.
+- El heartbeat se lee del CONNECTED via `StompSessionHandler.afterConnected(session, connectedHeaders)` (`StompHeaders.getHeartbeat()`), no hizo falta frame crudo.
+- Mutacion 1: `anyRequest().permitAll()` -> fallan los 2 casos de "no listadas" (404 en vez de 403). Revertida.
+- Mutacion 2: quitar solo `setHeartbeatValue` NO falla el test: con `TaskScheduler` Spring ya usa 10000,10000 por defecto. Lo que si lo rompe es quitar `setTaskScheduler` y fijar `{0,0}` (llega 0,0). Revertida. El test protege el heartbeat efectivo, no la llamada literal.
+- `./mvnw test -q` x3 seguidas: exit codes 0, 0, 0.

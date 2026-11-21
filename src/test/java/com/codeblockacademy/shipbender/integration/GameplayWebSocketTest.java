@@ -170,4 +170,25 @@ class GameplayWebSocketTest {
         ExecutionException e = assertThrows(ExecutionException.class, () -> connect(null, new LinkedBlockingQueue<>()));
         assertInstanceOf(ConnectionLostException.class, e.getCause());
     }
+
+    @Test
+    void connectWithClientHeartbeat_serverRepliesWithConfiguredHeartbeat () throws Exception {
+        String a = AuthHelper.registerAndLogin(mvc);
+        WebSocketStompClient client = new WebSocketStompClient(new StandardWebSocketClient());
+        org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler scheduler = new org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler();
+        scheduler.initialize();
+        client.setTaskScheduler(scheduler);
+        client.setDefaultHeartbeat(new long[]{10000, 10000});
+        clients.add(client);
+        StompHeaders headers = new StompHeaders();
+        headers.add("Authorization", a);
+        java.util.concurrent.CompletableFuture<StompHeaders> connected = new java.util.concurrent.CompletableFuture<>();
+        client.connectAsync("ws://localhost:" + port + "/the-last-shipbender", new WebSocketHttpHeaders(), headers,
+          new StompSessionHandlerAdapter() {
+              @Override public void afterConnected ( StompSession s, StompHeaders h ) { connected.complete(h); }
+          }).get(5, TimeUnit.SECONDS);
+
+        assertArrayEquals(new long[]{10000, 10000}, connected.get(5, TimeUnit.SECONDS).getHeartbeat());
+        scheduler.shutdown();
+    }
 }
