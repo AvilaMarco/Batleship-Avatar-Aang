@@ -1,5 +1,5 @@
 # 402 · backend-dev · Reorganizar por feature y borrar las interfaces `I*Service`
-Estado: pendiente
+Estado: hecha
 Fase: F4
 Depende de: 401
 Paralelizable: no (mueve casi todos los archivos)
@@ -36,3 +36,8 @@ Criterios de aceptación:
 - Commit `refactor: paquetes por feature y sin interfaces I*Service (tarea 402)`.
 
 ## Resultado
+- Movidos con `git mv` los 65 archivos de la tabla; borradas las 8 interfaces (`service/intereface/*` x7 + `IGameValidation`), con `implements`/`@Override` quitados y campos/constructores tipados con la clase concreta. `GameplayService` importaba `intereface.*` (comodin): eliminado.
+- `WebSecurityConfig` pasó a `public` (el test `SecurityRulesIntegrationTest` la importa desde otro paquete; no compilaba).
+- Tests: solo imports (y tipos `@Mock` en `MatchServiceTest`); aserciones intactas.
+- Ambigüedad resuelta por la tabla: `dto/error/ErrorDTO` cayó en `game/dto/` (regla "resto de dto/**"); la 407 lo borra. `config/WebSocketConfig` y `SpringBeans` en `config/`.
+- Verificación: raíz = `ShipbenderApplication.java config game player security shared`; sin `interface I*Service/Validation`; `./mvnw test` x2 → 40 tests, 0 fallos, BUILD SUCCESS.

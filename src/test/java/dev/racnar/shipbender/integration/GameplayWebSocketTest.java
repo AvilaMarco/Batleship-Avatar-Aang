@@ -1,5 +1,7 @@
 package dev.racnar.shipbender.integration;
 
+import dev.racnar.shipbender.game.dto.ShipDTO;
+
 import dev.racnar.shipbender.TestcontainersConfiguration;
 import org.springframework.context.annotation.Import;
 import dev.racnar.shipbender.integration.support.AuthHelper;

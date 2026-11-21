@@ -2,7 +2,6 @@ package dev.racnar.shipbender.security;
 
 
 import com.auth0.jwt.interfaces.DecodedJWT;
-import dev.racnar.shipbender.config.ENV_VARIABLES;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;

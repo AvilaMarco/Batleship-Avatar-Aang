@@ -1,15 +1,15 @@
 package dev.racnar.shipbender.unit.service;
 
-import dev.racnar.shipbender.enums.NationType;
-import dev.racnar.shipbender.exception.conflict.GameAlreadyExistsException;
-import dev.racnar.shipbender.exception.conflict.GameIsFullException;
-import dev.racnar.shipbender.exception.conflict.PlayerAlreadyInGameException;
-import dev.racnar.shipbender.exception.not_found.GameNotFoundException;
-import dev.racnar.shipbender.models.Game;
-import dev.racnar.shipbender.models.GamePlayer;
-import dev.racnar.shipbender.models.Player;
-import dev.racnar.shipbender.repository.GameRepository;
-import dev.racnar.shipbender.service.validations.GameValidation;
+import dev.racnar.shipbender.shared.NationType;
+import dev.racnar.shipbender.shared.error.conflict.GameAlreadyExistsException;
+import dev.racnar.shipbender.shared.error.conflict.GameIsFullException;
+import dev.racnar.shipbender.shared.error.conflict.PlayerAlreadyInGameException;
+import dev.racnar.shipbender.shared.error.not_found.GameNotFoundException;
+import dev.racnar.shipbender.game.domain.Game;
+import dev.racnar.shipbender.game.domain.GamePlayer;
+import dev.racnar.shipbender.player.domain.Player;
+import dev.racnar.shipbender.game.GameRepository;
+import dev.racnar.shipbender.game.GameValidation;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 

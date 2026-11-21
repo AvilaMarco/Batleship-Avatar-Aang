@@ -1,18 +1,19 @@
 package dev.racnar.shipbender.unit.service;
 
-import dev.racnar.shipbender.dto.GameMapDTO;
-import dev.racnar.shipbender.dto.response.GameCreatedDTO;
-import dev.racnar.shipbender.enums.NationType;
-import dev.racnar.shipbender.exception.conflict.GameAlreadyExistsException;
-import dev.racnar.shipbender.exception.conflict.GameIsFullException;
-import dev.racnar.shipbender.models.Game;
-import dev.racnar.shipbender.models.GamePlayer;
-import dev.racnar.shipbender.models.Player;
-import dev.racnar.shipbender.service.MatchService;
-import dev.racnar.shipbender.service.intereface.IGamePlayerService;
-import dev.racnar.shipbender.service.intereface.IGameService;
-import dev.racnar.shipbender.service.intereface.IPlayerService;
-import dev.racnar.shipbender.service.validations.IGameValidation;
+import dev.racnar.shipbender.game.GamePlayerService;
+import dev.racnar.shipbender.game.GameService;
+import dev.racnar.shipbender.game.GameValidation;
+import dev.racnar.shipbender.player.PlayerService;
+
+import dev.racnar.shipbender.game.dto.GameMapDTO;
+import dev.racnar.shipbender.game.dto.GameCreatedDTO;
+import dev.racnar.shipbender.shared.NationType;
+import dev.racnar.shipbender.shared.error.conflict.GameAlreadyExistsException;
+import dev.racnar.shipbender.shared.error.conflict.GameIsFullException;
+import dev.racnar.shipbender.game.domain.Game;
+import dev.racnar.shipbender.game.domain.GamePlayer;
+import dev.racnar.shipbender.player.domain.Player;
+import dev.racnar.shipbender.game.MatchService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -29,13 +30,13 @@ import static org.mockito.Mockito.*;
 class MatchServiceTest {
 
     @Mock
-    IPlayerService playerService;
+    PlayerService playerService;
     @Mock
-    IGameService gameService;
+    GameService gameService;
     @Mock
-    IGamePlayerService gamePlayerService;
+    GamePlayerService gamePlayerService;
     @Mock
-    IGameValidation gameValidation;
+    GameValidation gameValidation;
 
     @InjectMocks
     MatchService matchService;

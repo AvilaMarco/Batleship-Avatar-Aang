@@ -1,13 +1,16 @@
 package dev.racnar.shipbender.config;
 
-import dev.racnar.shipbender.enums.NationType;
-import dev.racnar.shipbender.enums.Rol;
-import dev.racnar.shipbender.models.Game;
-import dev.racnar.shipbender.models.GamePlayer;
-import dev.racnar.shipbender.models.Player;
-import dev.racnar.shipbender.repository.GamePlayerRepository;
-import dev.racnar.shipbender.repository.GameRepository;
-import dev.racnar.shipbender.repository.PlayerRepository;
+import dev.racnar.shipbender.game.domain.Salvo;
+import dev.racnar.shipbender.game.domain.Ship;
+
+import dev.racnar.shipbender.shared.NationType;
+import dev.racnar.shipbender.player.domain.Rol;
+import dev.racnar.shipbender.game.domain.Game;
+import dev.racnar.shipbender.game.domain.GamePlayer;
+import dev.racnar.shipbender.player.domain.Player;
+import dev.racnar.shipbender.game.GamePlayerRepository;
+import dev.racnar.shipbender.game.GameRepository;
+import dev.racnar.shipbender.player.PlayerRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;

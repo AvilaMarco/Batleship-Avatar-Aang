@@ -1,7 +1,6 @@
 package dev.racnar.shipbender.security;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
-import dev.racnar.shipbender.config.ENV_VARIABLES;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;

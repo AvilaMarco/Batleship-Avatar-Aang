@@ -1,5 +1,7 @@
 package dev.racnar.shipbender.integration;
 
+import dev.racnar.shipbender.security.WebSecurityConfig;
+
 import dev.racnar.shipbender.TestcontainersConfiguration;
 import dev.racnar.shipbender.integration.support.AuthHelper;
 import org.junit.jupiter.params.ParameterizedTest;
