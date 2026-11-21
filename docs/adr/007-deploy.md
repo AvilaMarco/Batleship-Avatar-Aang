@@ -1,6 +1,6 @@
 # ADR 007 — Deploy: Docker Compose + Cloudflare Tunnel (F6)
 
-Estado: propuesta · 2026-11-21 · Implementa ADR 001 punto 5. Front dentro del jar (ADR 006 punto 7), Postgres + Flyway (ADR 003 punto 4).
+Estado: **aprobada con decisiones del usuario (2026-11-21)** · Implementa ADR 001 punto 5. Front dentro del jar (ADR 006 punto 7), Postgres + Flyway (ADR 003 punto 4).
 
 ## Contexto
 Una sola persona opera el juego en un PC con Windows 11 + Docker Desktop, que también se usa para desarrollar (Testcontainers, puertos 4703-4705). El dominio `racnar.dev` ya está en Cloudflare. No hay datos que conservar. Hoy: `spring.profiles.default=dev` (`application.properties:23`), el perfil prod solo exige `JWT_SECRET` y apaga springdoc, el WebSocket usa la comprobación de mismo origen implícita de Spring y la CSP permite `ws: wss:` hacia cualquier host.
@@ -35,7 +35,12 @@ Una sola persona opera el juego en un PC con Windows 11 + Docker Desktop, que ta
 - Prod y tests comparten Docker Desktop: un `./mvnw test` durante el juego consume RAM de la misma VM de WSL2. No chocan puertos (prod no publica ninguno).
 - Para escalar a más de una instancia hace falta un broker externo (ADR 001): fuera de alcance.
 
-## Decisiones del usuario (recomendación entre paréntesis)
+## Decisiones tomadas por el usuario (2026-11-21)
+- **U1** hostname: `shipbender.racnar.dev`. **U5** expiración del JWT en prod: 480 min (8 h). **U4** backups en otro disco físico o carpeta sincronizada, fuera del repo (ruta: la da el usuario en 607).
+- **U2** servidor: **OTRA MÁQUINA** (no esta). Consecuencias: (a) las tareas 601-606 se desarrollan y prueban aquí con `COMPOSE_PROJECT_NAME=shipbender-test` (el compose es independiente del host); (b) la 607 y los pasos manuales se adaptan al sistema operativo de esa máquina, **que el usuario aún no ha indicado** (pendiente: SO, Docker/Compose instalados, RAM, disco para backups); (c) el repo se clona allí (rama `main`), no se usa `T:\Shipbender`; (d) el arranque automático tras reinicio depende de ese SO (en Linux, `systemctl enable docker` + `restart: unless-stopped`; en Windows, el paso de Docker Desktop del ADR).
+- **Aplican las recomendaciones del arquitecto** salvo aviso en contra: U3 sin Cloudflare Access (rate limiting en login/registro), U6 registro abierto, U7 arranque con el sistema según el SO.
+
+## Decisiones propuestas originalmente (recomendación entre paréntesis)
 U1 hostname público (`shipbender.racnar.dev`: deja el apex libre) · U2 servidor (esta misma máquina, pero desde un clon aparte, p. ej. `C:\srv\shipbender`, en `main`) · U3 Cloudflare Access (no: juego público; en su lugar una regla de rate limiting en Cloudflare para `POST /api/auth/login` y `POST /api/players`, el plan Free permite 1) · U4 destino de backups (`BACKUP_DIR` en otro disco físico o en una carpeta sincronizada con la nube, p. ej. OneDrive; no dentro del clon) · U5 expiración del JWT (480 min) · U6 registro abierto en prod (sí) · U7 arranque tras reinicio (Docker Desktop al iniciar sesión + no suspender. Inicio de sesión automático solo si el PC está físicamente seguro; si no, se acepta la caída hasta que alguien entre).
 
 ## Pasos manuales del usuario (en orden)

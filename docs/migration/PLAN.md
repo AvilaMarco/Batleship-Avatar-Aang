@@ -146,3 +146,18 @@ Pendiente / no verificado:
 - **Sin diseño visual**: interfaz funcional con CSS mínimo (símbolos ▣ X • ?). El diseño visual real (skill `diseno-ui`) queda como trabajo aparte.
 - Registro de usuario nuevo y "Unirse" desde la UI: cubiertos por el E2E, no a mano.
 - Nota de entorno: si se cambia la versión de Node con `frontend/node/` instalado, hay que borrar esa carpeta.
+
+## Tareas F6
+
+Decisiones: ADR 007 (U1 shipbender.racnar.dev · U2 otra máquina · U4 backups fuera del repo · U5 JWT 480 min).
+Orden: (601 ∥ 602) → 603 → 604 → (605 ∥ 606) → 607.
+
+| # | Rol | Tarea | Fase | Estado | Depende de |
+|---|---|---|---|---|---|
+| 601 | devops | Dockerfile multi-stage, `.dockerignore`, `.gitattributes` (LF) | F6 | pendiente | — |
+| 602 | backend-dev | Cabeceras de proxy (`forward-headers-strategy`) y CSP `connect-src 'self'` (riesgo alto) | F6 | pendiente | — |
+| 603 | devops | docker-compose (app, db, tunnel, backup) y `.env.example` (riesgo alto) | F6 | pendiente | 601, 602 |
+| 604 | devops | Backups de Postgres y prueba de restauración (riesgo alto) | F6 | pendiente | 603 |
+| 605 | devops | Runbook `docs/deploy/runbook.md` | F6 | pendiente | 604 |
+| 606 | reviewer | Revisión de secretos, red y backups (riesgo alto) | F6 | pendiente | 601-604 |
+| 607 | central + usuario | Puesta en marcha en la otra máquina y verificación | F6 | pendiente | 605, 606 |
