@@ -1,5 +1,5 @@
 # 413 · backend-dev · Endpoint de salvos y eventos de turno (CONDICIONAL)
-Estado: pendiente
+Estado: hecha
 Fase: F4
 Depende de: 412
 Paralelizable: no
@@ -19,3 +19,5 @@ Criterios de aceptación:
 - Commit `feat: salvos v2.1 por REST con eventos de turno (tarea 413)`.
 
 ## Resultado
+`POST /api/games/{id}/salvos` -> `GameService.fire` (traduce el codigo de `Cell.parse` a `INVALID_SALVO`; `Cell.parse` y la 403 intactos). Eventos `SALVO_FIRED`, `TURN_RESOLVED`, `GAME_FINISHED` por el publicador after-commit de la 409. `GameView`: `salvos` y `sunk` en `me` y `opponent`; los `hits` de un salvo solo se revelan cuando el rival tambien disparo ese turno, y el rival nunca ve `ships`.
+Verificacion: `./mvnw test` x3 -> 99 tests, 0 fallos, exit 0; prueba en vivo en el puerto 4704 (turno completo, eventos recibidos, proceso detenido). Decision: `sunk` de un jugador = sus barcos hundidos por salvos ya resueltos.

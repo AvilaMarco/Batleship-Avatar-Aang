@@ -4,6 +4,7 @@ import dev.racnar.shipbender.game.dto.CreateGameRequest;
 import dev.racnar.shipbender.game.dto.GameSummary;
 import dev.racnar.shipbender.game.dto.GameView;
 import dev.racnar.shipbender.game.dto.PlaceShipsRequest;
+import dev.racnar.shipbender.game.dto.SalvoRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,5 +50,11 @@ public class GameController {
     @ResponseStatus(HttpStatus.CREATED)
     public GameView placeShips ( Principal principal, @PathVariable long id, @Valid @RequestBody PlaceShipsRequest request ) {
         return service.placeShips(principal.getName(), id, request.toFleet());
+    }
+
+    @PostMapping("/{id}/salvos")
+    @ResponseStatus(HttpStatus.CREATED)
+    public GameView fire ( Principal principal, @PathVariable long id, @Valid @RequestBody SalvoRequest request ) {
+        return service.fire(principal.getName(), id, request.cells());
     }
 }

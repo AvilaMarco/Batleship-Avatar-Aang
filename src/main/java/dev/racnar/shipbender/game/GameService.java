@@ -16,7 +16,13 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import dev.racnar.shipbender.game.domain.Cell;
+import dev.racnar.shipbender.game.domain.TurnResult;
+
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class GameService {
@@ -71,6 +77,31 @@ public class GameService {
         if (game.status() == GameStatus.IN_GAME) {
             events.publishEvent(new GameEvent.GameStarted(gameId, game.getTurn()));
         }
+        return GameView.of(repository.save(game), player.getId());
+    }
+
+    @Transactional
+    public GameView fire ( String email, long gameId, List<String> cells ) {
+        Player player = playerService.getPlayer(email);
+        Game   game   = load(gameId);
+        List<Cell> parsed;
+        try {
+            parsed = cells.stream().map(Cell::parse).toList();
+        } catch (ShipbenderException e) {
+            throw new ShipbenderException(ErrorCode.INVALID_SALVO, e.getMessage());
+        }
+        Optional<TurnResult> resolved = game.fire(player.getId(), parsed);
+        events.publishEvent(new GameEvent.SalvoFired(gameId, player.getId(), resolved.map(TurnResult::turn).orElse(game.getTurn())));
+        resolved.ifPresent(r -> {
+            events.publishEvent(new GameEvent.TurnResolved(gameId, r.turn(), r.results().stream()
+              .map(t -> new GameEvent.PlayerResult(t.playerId(), t.hits().stream().map(Cell::toString).toList(),
+                t.misses().stream().map(Cell::toString).toList(), t.sunk())).toList()));
+            if (r.finished()) {
+                Map<String, Integer> scores = new LinkedHashMap<>();
+                game.getGamePlayers().forEach(gp -> scores.put(String.valueOf(gp.getPlayer().getId()), gp.getScore()));
+                events.publishEvent(new GameEvent.GameFinished(gameId, r.winnerId(), scores));
+            }
+        });
         return GameView.of(repository.save(game), player.getId());
     }
 
