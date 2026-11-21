@@ -1,5 +1,5 @@
 # 701 · qa · Tests: contraseña mínima de 8 caracteres al registrarse (test primero)
-Estado: pendiente
+Estado: hecha
 Fase: F7
 Depende de: —
 Paralelizable: no (todos los tests de integración y el E2E usan contraseñas)
@@ -22,3 +22,7 @@ Criterios de aceptación:
 - Commit `test: contraseña mínima de 8 caracteres al registrarse (tarea 701, rojo hasta 702)`.
 
 ## Resultado
+Tests (AuthIntegrationTest): nuevos `register_withPasswordUnder8Chars_returns400ValidationFailed` (7 chars) y `register_withExactly8CharPassword_returnsCreated` (8 chars); el de 73 ya existía.
+Contraseñas de registro `pw123` -> `pw12345678` en AuthHelper y AuthIntegrationTest. Logins del seed (`123`) intactos (solo AuthIntegrationTest, login). El E2E ya usaba `secreto123` (10): sin cambios, no ejecutado. Front: ningún test registra con contraseña corta, sin cambios.
+`./mvnw clean test`: 111 tests, 1 fallo (el esperado): `AuthIntegrationTest.register_withPasswordUnder8Chars_returns400ValidationFailed:83 expected 400 but was 201`. Resto verde.
+`npm test`: 70/70 verde.

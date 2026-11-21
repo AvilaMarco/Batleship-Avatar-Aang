@@ -30,9 +30,9 @@ public final class AuthHelper {
         // el email admite max 30 caracteres
         String email = "u" + UUID.randomUUID().toString().substring(0, 8) + "@t.com";
         mvc.perform(post("/api/players").contentType(MediaType.APPLICATION_JSON)
-            .content(JSON.writeValueAsString(new Creds(email, "pw123", "Tester"))))
+            .content(JSON.writeValueAsString(new Creds(email, "pw12345678", "Tester"))))
           .andExpect(status().isCreated());
-        return loginToken(mvc, email, "pw123");
+        return loginToken(mvc, email, "pw12345678");
     }
 
     /** Crea una partida FIRE con location unica y devuelve su id (POST /api/games). */
