@@ -210,3 +210,28 @@ Formato de entrada:
 - Un perfil de Maven opcional (`frontend`) para lo que necesita red (descargar Node): `./mvnw test` sigue hermético. Un test de "rutas no listadas" que solo comprobaba `!= 403` pasaba en verde sin probar nada porque un anónimo recibe 401: había que descartar ambos.
 
 ## F6 · Deploy
+
+### Probar la operación destructiva en un entorno aislado (prioridad alta)
+- **Antes** (en el diseño): `restore.sh` asumía que todo saldría bien; con `set -e` un `pg_restore` fallido dejaba `app` detenida y la base a medias, sin aviso. Además la retención podía borrar el propio dump de seguridad, y `docker exec` se comía la entrada estándar, así que la confirmación "sí" nunca se leía.
+- **Después**: validación previa (`pg_restore -l`) antes de parar nada, dump de seguridad con retención casi infinita, restauración en **una sola transacción** (`--single-transaction --exit-on-error`) y un `trap` que arranca `app` siempre, nombrando el dump de seguridad. Se probó un fallo real a mitad: la transacción se revirtió y el recuento no cambió.
+- **Por qué es mejor**: una restauración o funciona entera o no cambia nada. Los cinco fallos aparecieron solo **al ejecutarla**, no al leerla.
+- **Concepto**: operaciones destructivas atómicas, copia de seguridad previa, probar el camino de fallo y no solo el feliz.
+
+### Seguro por defecto: el perfil `dev` falla abierto (prioridad alta)
+- `application.properties:23` (`spring.profiles.default=dev`): si en producción falta el perfil, arrancarían el seeder (admin con contraseña `123`) y el secreto de dev. Se mitiga fijando `SPRING_PROFILES_ACTIVE=prod` en la imagen y exigiendo el secreto con `${VAR:?}` en el compose. Principio: *secure by default*: "sin perfil = no arranca" es mejor que "sin perfil = dev".
+
+### La frontera de confianza detrás de un proxy (prioridad alta)
+- Detrás de cloudflared el TLS termina fuera: Tomcat ve `http` y la comprobación de mismo origen del WebSocket fallaba (403). La solución es `server.forward-headers-strategy=native` (solo confía en `X-Forwarded-*` de IPs privadas), sin declarar `allowedOrigins`. Detalle que solo se ve probando: con `X-Forwarded-Proto: https` Tomcat fija el puerto 443, así que el `Origin` debe ir **sin puerto**, como el que envía cloudflared.
+- La CSP pasó de `connect-src 'self' ws: wss:` (que permitía sacar el token por WebSocket a cualquier servidor) a `connect-src 'self'`. Principio: mínimo privilegio, hacer explícita la frontera de confianza.
+
+### Aislar lo que no es red de Internet y fijar versiones (prioridad media)
+- `internal: true` en la red de `db` y `backup` impide su salida a Internet, pero solo aísla a quienes no están además en otra red (`app` sí tiene salida). Ningún servicio publica puertos: el único camino de entrada es el túnel saliente de cloudflared. Las imágenes van por etiqueta de versión (`cloudflared:2026.11.1`, no `latest`): un `pull` no cambia el túnel sin aviso.
+- **Concepto**: superficie de ataque mínima, red por capas, infraestructura reproducible.
+
+### Docker: capas, caché y fin de línea (prioridad media)
+- Copiar los manifiestos antes del código y usar *cache mounts* hace que un cambio en Java no reinstale Node ni baje dependencias de Maven. Un script con CRLF falla dentro de Linux (`sh: no such file`), por eso `.gitattributes` fuerza LF en `mvnw` y `*.sh`. Una imagen multi-etapa deja fuera de la imagen final el JDK, Node y las fuentes.
+- **Concepto**: orden de capas, builds multi-etapa, mínimo en producción.
+
+### Un runbook solo es fiable si cada comando se ejecutó (prioridad media)
+- Al ejecutar cada comando contra el proyecto aislado aparecieron hallazgos que ninguna lectura habría dado: en Git Bash una ruta `/tmp/...` se monta en la VM de Docker y el dump no aparece en el host; `docker compose start` devuelve 0 aunque el servicio no exista, así que el código de salida no basta para decir "app arrancada".
+- **Concepto**: documentación verificable, no confiar en el código de salida de un comando, probar en entorno aislado.

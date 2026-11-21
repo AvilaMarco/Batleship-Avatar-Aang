@@ -62,4 +62,11 @@ class SecurityRulesIntegrationTest {
         String token = AuthHelper.registerAndLogin(mvc);
         mvc.perform(request(HttpMethod.GET, path).header("Authorization", token)).andExpect(status().isForbidden());
     }
+
+    @org.junit.jupiter.api.Test
+    void csp_connectSrcIsSelfOnly () throws Exception {
+        String csp = mvc.perform(request(HttpMethod.GET, "/")).andReturn().getResponse().getHeader("Content-Security-Policy");
+        org.junit.jupiter.api.Assertions.assertTrue(csp.contains("connect-src 'self';"), csp);
+        org.junit.jupiter.api.Assertions.assertFalse(csp.contains("ws:"), csp);
+    }
 }

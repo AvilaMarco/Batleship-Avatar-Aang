@@ -1,0 +1,82 @@
+name: shipbender
+
+x-logging: &logging
+  driver: json-file
+  options: { max-size: "10m", max-file: "3" }
+
+x-db-env: &db-env
+  POSTGRES_DB: ${POSTGRES_DB:-shipbender}
+  POSTGRES_USER: ${POSTGRES_USER:-shipbender}
+  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?falta POSTGRES_PASSWORD en .env}
+
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment: *db-env
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks: [backend]
+    mem_limit: 512m
+    logging: *logging
+
+  app:
+    build: .
+    image: shipbender:${APP_TAG:-latest}
+    restart: unless-stopped
+    depends_on: { db: { condition: service_healthy } }
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${POSTGRES_DB:-shipbender}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-shipbender}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:?falta POSTGRES_PASSWORD en .env}
+      JWT_SECRET: ${JWT_SECRET:?falta JWT_SECRET en .env}
+      JWT_EXPIRATION_MINUTES: ${JWT_EXPIRATION_MINUTES:-480}
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/"]
+      interval: 30s
+      timeout: 5s
+      start_period: 60s
+      retries: 3
+    networks: [backend, edge]
+    mem_limit: 768m
+    logging: *logging
+
+  tunnel:
+    image: cloudflare/cloudflared:2026.11.1   # estable a 2026-11-21 (Docker Hub + GitHub releases); subir de versión a propósito
+    command: tunnel --no-autoupdate run
+    restart: unless-stopped
+    environment:
+      TUNNEL_TOKEN: ${TUNNEL_TOKEN:?falta TUNNEL_TOKEN en .env}
+    depends_on: { app: { condition: service_healthy } }
+    networks: [edge]
+    mem_limit: 128m
+    logging: *logging
+
+  backup:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    depends_on: { db: { condition: service_healthy } }
+    environment:
+      PGHOST: db
+      PGDATABASE: ${POSTGRES_DB:-shipbender}
+      PGUSER: ${POSTGRES_USER:-shipbender}
+      PGPASSWORD: ${POSTGRES_PASSWORD:?falta POSTGRES_PASSWORD en .env}
+      RETENTION_DAYS: ${RETENTION_DAYS:-14}
+    volumes:
+      - ${BACKUP_DIR:-./backups}:/backups
+      - ./scripts:/scripts:ro
+    entrypoint: ["sh", "-c", "while true; do sh /scripts/backup.sh; sleep 86400; done"]
+    networks: [backend]
+    mem_limit: 128m
+    logging: *logging
+
+networks:
+  backend: { internal: true }
+  edge: {}
+
+volumes:
+  pgdata:

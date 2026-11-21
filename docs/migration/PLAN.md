@@ -11,8 +11,8 @@ Lo edita solo el chat central. Cada fase se cierra con aprobación del usuario y
 | F2 · Limpieza | `migration/f2-limpieza` | **hecha** (mergeada a main) | F1 verde; sin código muerto ni secretos en el código |
 | F3 · Upgrade | `migration/f3-upgrade` | **hecha** (mergeada a main) | Boot 4.x + Java 21 + Postgres/Flyway + Testcontainers; F1 verde; app levanta |
 | F4 · Arquitectura backend | `migration/f4-arquitectura` | **hecha** (mergeada a main) | Paquete `dev.racnar.shipbender`; paquetes por feature; dominio testeado sin Spring; contrato API v2 (ADR 004) implementado |
-| F5 · Front nuevo | `migration/f5-frontend` | **esperando aprobación del usuario** | Partida completa jugable en React + TS |
-| F6 · Deploy | `migration/f6-deploy` | pendiente | Juego en el dominio vía Cloudflare Tunnel, con WebSocket |
+| F5 · Front nuevo | `migration/f5-frontend` | **hecha** (mergeada a main) | Partida completa jugable en React + TS |
+| F6 · Deploy | `migration/f6-deploy` | **construido; falta la puesta en marcha (607) por el usuario** | Juego en el dominio vía Cloudflare Tunnel, con WebSocket |
 
 Paralelismo permitido: F5 en paralelo con F4 una vez congelado el contrato de API; Dockerfile (F6) desde el fin de F3.
 
@@ -146,3 +146,31 @@ Pendiente / no verificado:
 - **Sin diseño visual**: interfaz funcional con CSS mínimo (símbolos ▣ X • ?). El diseño visual real (skill `diseno-ui`) queda como trabajo aparte.
 - Registro de usuario nuevo y "Unirse" desde la UI: cubiertos por el E2E, no a mano.
 - Nota de entorno: si se cambia la versión de Node con `frontend/node/` instalado, hay que borrar esa carpeta.
+
+## Tareas F6
+
+Decisiones: ADR 007 (U1 shipbender.racnar.dev · U2 otra máquina · U4 backups fuera del repo · U5 JWT 480 min).
+Orden: (601 ∥ 602) → 603 → 604 → (605 ∥ 606) → 608 → 607.
+
+| # | Rol | Tarea | Fase | Estado | Depende de |
+|---|---|---|---|---|---|
+| 601 | devops | Dockerfile multi-stage, `.dockerignore`, `.gitattributes` (LF) | F6 | hecha | — |
+| 602 | backend-dev | Cabeceras de proxy (`forward-headers-strategy`) y CSP `connect-src 'self'` (riesgo alto) | F6 | hecha | — |
+| 603 | devops | docker-compose (app, db, tunnel, backup) y `.env.example` (riesgo alto) | F6 | hecha | 601, 602 |
+| 604 | devops | Backups de Postgres y prueba de restauración (riesgo alto) | F6 | hecha | 603 |
+| 605 | devops | Runbook `docs/deploy/runbook.md` | F6 | hecha | 604 |
+| 606 | reviewer | Revisión de secretos, red y backups (riesgo alto) | F6 | hecha | 601-604 |
+| 608 | devops | Endurecimiento tras la revisión 606 (umask, .env.example, dockerignore, runbook) | F6 | hecha | 605, 606 |
+| 607 | central + usuario | Puesta en marcha en la otra máquina y verificación | F6 | pendiente | 605, 606 |
+
+## Resultado F6 (hasta la 607)
+
+Hecho y verificado en un proyecto Docker aislado (`shipbender-test`) en esta máquina: Dockerfile de tres etapas (no root, perfil `prod` fijado, sin devtools), `docker-compose.yml` (db, app, tunnel, backup; sin ningún `ports:`; db y backup en red interna; `cloudflared:2026.11.1` fijado), `.env.example` sin secretos, backups con retención (14 días) y `restore.sh` atómico con validación previa y dump de seguridad, runbook `docs/deploy/runbook.md` con cada comando probado (incluido actualizar → rollback), cabeceras de proxy para el WebSocket y CSP `connect-src 'self'` (probada en el navegador). 109 tests de backend verdes.
+Revisión de seguridad (606): aprobado con condiciones, sin bloqueantes; los menores cerrados en la 608.
+**Falta (607, la hace el usuario con el central):**
+- Decir el SO de la otra máquina (+ Docker/Compose, RAM, disco para backups) para completar el bloque por SO del runbook.
+- Crear el túnel y el hostname `shipbender.racnar.dev` → `http://app:8080` en Cloudflare, Always Use HTTPS + Full (strict) + WebSockets, y la **regla de rate limiting obligatoria** (login y registro).
+- En el servidor: clonar `main`, rellenar `.env` con secretos nuevos (`openssl rand -base64 48`; JWT_SECRET nuevo, el antiguo está en el historial de git), `docker compose up -d --build`.
+- Verificar desde fuera (criterios de la tarea 607), incluido el reinicio de la máquina.
+No verificado: el túnel real, el rollback con una migración de Flyway nueva, Ctrl-C a mitad de `restore.sh`, Linux/systemd.
+Backlog: contraseña mínima de 8 caracteres (hoy acepta 1; rompe tests y seed: hacerlo con qa), perfil por defecto `dev` falla abierto si se usa `docker run` suelto, fusionar `master`→`main` en GitHub.
