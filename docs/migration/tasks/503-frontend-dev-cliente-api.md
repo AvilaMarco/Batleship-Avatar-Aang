@@ -1,5 +1,5 @@
 # 503 · frontend-dev · Cliente REST y STOMP tipado + manejo del token
-Estado: pendiente
+Estado: parcial
 Fase: F5
 Depende de: 501
 Paralelizable: sí, con 502 y con 508-510
@@ -25,3 +25,9 @@ Criterios de aceptación (tests primero, `fetch` con `vi.stubGlobal`):
 - Commit `feat(front): cliente REST y STOMP tipado según ADR 004 (tarea 503)`.
 
 ## Resultado
+Estado final: parcial (todo hecho salvo la verificación del WebSocket real).
+
+Hecho: `frontend/src/api/{types,auth,http,players,games,stomp}.ts` + `auth.test.ts`, `http.test.ts`, `stomp.test.ts`; dependencia `@stomp/stompjs`. Tests escritos primero (rojo: módulos inexistentes) y luego verdes.
+Verificado: `npm test` exit 0 (9 archivos, 43 tests); `npm run build` exit 0; grep de web storage fuera de `src/api/auth.ts` sin salida; sin `console.*` en `src/api`; el token solo viaja en header `Authorization`.
+Decisiones: `ApiError` con `code` "UNKNOWN" si el error no es problem+json; `brokerURL` se deriva de `location` (ws/wss) y depende del proxy de Vite en dev; `fireSalvo` apunta al Anexo F (backend aún no lo implementa).
+NO VERIFICADO: conexión STOMP real contra el backend (handshake, headers, heartbeats, suscripciones); solo probado con `Client` mockeado. Pendiente en la tarea e2e/512.
