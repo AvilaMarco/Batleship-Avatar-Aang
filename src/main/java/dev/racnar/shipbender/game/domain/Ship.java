@@ -24,6 +24,11 @@ public class Ship {
     @Enumerated(EnumType.STRING)
     private ShipType type;
 
+    public Ship ( ShipType type, List<String> locations ) {
+        this.type      = type;
+        this.locations = locations;
+    }
+
     // Relations
 //    @ManyToOne(fetch = FetchType.EAGER)
 //    @JoinColumn(name = "gamePlayer_id")

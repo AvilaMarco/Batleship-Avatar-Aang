@@ -1,5 +1,5 @@
 # 403 · backend-dev · Dominio: celdas, flota, reglas de partida, estadísticas y errores
-Estado: pendiente
+Estado: hecha
 Fase: F4
 Depende de: 402
 Paralelizable: no (la 404 y la 405 empiezan cuando esta termina)
@@ -28,3 +28,10 @@ Criterios de aceptación:
 - Commit `feat: reglas de flota y partida en el dominio (tarea 403)`.
 
 ## Resultado
+Hecho: `ErrorCode` (14 códigos, ADR 004 Anexo C), `ShipbenderException`, `Cell`, `ShipPlacement`, `Fleet`, `PlayerStats`; `ShipType` con `size()` y sin `NONAME`; `Game.join/placeShips/participant/opponentOf/status`; `GamePlayer.ships` inicializado; `Ship(ShipType, List<String>)` agregado. Sin conectar a servicios.
+Verificación: grep de Spring/Jackson en dominio y errores → sin salida; grep NONAME en `src/main/java` → sin salida; `./mvnw test` x2 → 40 tests, 0 fallos, BUILD SUCCESS.
+Notas para qa/404:
+- `Game.join` comprueba ALREADY_IN_GAME antes que GAME_FULL (quien ya está en una partida llena recibe ALREADY_IN_GAME).
+- `Fleet`: orden de guardas = nulo → tipo nulo/repetido/faltante → tamaño → línea recta → solapes. `detail` de tipo repetido: `"X repetido"`, faltante: `"falta X"`.
+- `Cell.parse(null)` → INVALID_FLEET `"celda inválida: null"`.
+- `V1__init.sql` aún permite `NONAME` en el check de `ship.type` (inofensivo; limpiar si se toca la migración).

@@ -1,7 +1,10 @@
 package dev.racnar.shipbender.game.domain;
 
 import dev.racnar.shipbender.game.dto.StatusGameDTO;
+import dev.racnar.shipbender.player.domain.Player;
 import dev.racnar.shipbender.shared.NationType;
+import dev.racnar.shipbender.shared.error.ErrorCode;
+import dev.racnar.shipbender.shared.error.ShipbenderException;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,6 +14,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Getter
 @Setter
@@ -42,6 +46,52 @@ public class Game {
     }
 
     /* PUBLIC METHODS */
+
+    public GamePlayer join ( Player player ) {
+        if (containsPlayer(player.getId())) {
+            throw new ShipbenderException(ErrorCode.ALREADY_IN_GAME, "ya estás en la partida " + id);
+        }
+        if (isFullGame()) {
+            throw new ShipbenderException(ErrorCode.GAME_FULL, "La partida " + id + " está completa");
+        }
+        GamePlayer gp = new GamePlayer(player, this);
+        gamePlayers.add(gp);
+        return gp;
+    }
+
+    public void placeShips ( long playerId, Fleet fleet ) {
+        GamePlayer gp = participant(playerId);
+        if (gp.hasShips()) {
+            throw new ShipbenderException(ErrorCode.SHIPS_ALREADY_PLACED, "ya colocaste tus barcos");
+        }
+        for (ShipPlacement p : fleet.ships()) {
+            Ship ship = new Ship(p.type(), p.cells().stream().map(Cell::toString).toList());
+            gp.getShips().add(ship);
+        }
+    }
+
+    public GamePlayer participant ( long playerId ) {
+        return gamePlayers.stream()
+          .filter(gp -> gp.getPlayer().getId() == playerId)
+          .findFirst()
+          .orElseThrow(() -> new ShipbenderException(ErrorCode.NOT_A_PARTICIPANT, "no participas en la partida " + id));
+    }
+
+    public Optional<GamePlayer> opponentOf ( long playerId ) {
+        return gamePlayers.stream()
+          .filter(gp -> gp.getPlayer().getId() != playerId)
+          .findFirst();
+    }
+
+    public GameStatus status () {
+        if (finishDate != null) {
+            return GameStatus.FINISH;
+        }
+        if (gamePlayers.size() < 2 || !gamePlayers.stream().allMatch(GamePlayer::hasShips)) {
+            return GameStatus.CREATED;
+        }
+        return GameStatus.IN_GAME;
+    }
 
     public void updateStatusGpOf ( StatusGameDTO.StatusGameDTOBuilder builder ) {
         if (!this.isGameWaitingPlayer()) {
