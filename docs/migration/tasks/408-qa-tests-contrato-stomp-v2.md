@@ -1,5 +1,5 @@
 # 408 · qa · Tests del contrato STOMP v2: eventos sin barcos, emotes y errores (test primero)
-Estado: pendiente
+Estado: hecha
 Fase: F4
 Depende de: 407
 Paralelizable: no (la 409 se valida contra estos tests)
@@ -26,3 +26,13 @@ Criterios de aceptación:
 - Commit `test: contrato STOMP v2 (tarea 408, rojo hasta 409)`.
 
 ## Resultado
+Renombrado `GameplayWebSocketTest` a `GameEventsWebSocketTest` (10 tests; chat D3 no incluido por decision del usuario). `./mvnw test`: 78 tests, 71 verdes, 7 rojos (todos en `GameEventsWebSocketTest`). REST, unitarios y los 2 de conexion (sin token, heartbeat) en verde.
+
+Rojos a proposito hasta la 409 (el evento/destino v2 aun no existe, salvo la ultima fila):
+- `playerJoins_hostReceivesPlayerJoinedWithoutEmail`: no llega PLAYER_JOINED.
+- `shipsPlaced_rivalReceivesShipsPlacedWithoutAnyCell`: no llega SHIPS_PLACED.
+- `bothPlaceShips_bothReceiveShipsPlacedThenGameStartedWithTurn1`: no llega ningun evento.
+- `emote_participantSends_bothReceiveEmoteWithSenderId`: no llega EMOTE.
+- `emote_fromNonParticipant_errorQueueGetsNotAParticipant_andHostGetsNothing` y `emote_blank_errorQueueGetsValidationFailed`: rojos en `subscribe` a `/user/queue/errors` (hoy `anyMessage().denyAll()` lo rechaza). Riesgo: el helper `countSubs` asume que el registro reescribe `/user/queue/errors` a `/queue/errors-user...`; no verificable hasta la 409.
+- `subscribeToV1ShipsTopic_isDenied`: rojo por hallazgo real, no por evento faltante: hoy `/topic/**` esta permitido para PLAYER, asi que la suscripcion v1 NO se deniega. La 409 debe restringir los SUBSCRIBE a `/topic/games/*` y `/user/queue/errors`.
+En verde ya (sin cambios): `invalidFleet_is400AndNoEventIsPublished` (aun no se publica nada).
