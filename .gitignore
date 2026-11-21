@@ -329,3 +329,6 @@ backups/
 logs/
 *.log
 *.tmp
+
+# frontend-maven-plugin
+frontend/node/

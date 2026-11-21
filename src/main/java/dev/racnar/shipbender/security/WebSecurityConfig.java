@@ -34,9 +34,8 @@ public class WebSecurityConfig {
             .requestMatchers(HttpMethod.POST, "/api/auth/login", "/api/players").permitAll()
             // rutas listadas, no "/api/**": una ruta inexistente debe dar 403 (deny-by-default), no 404
             .requestMatchers("/api/players/**", "/api/games/**").hasAuthority("PLAYER")
-            // front viejo: el JWT está en localStorage, al navegar no se manda header
-            .requestMatchers("/", "/index.html", "/favicon.ico", "/main.ogg", "/code/**", "/img/**",
-              "/libraries/**", "/web/**", "/webjars/**").permitAll()
+            // front SPA (hash routing): el JWT está en localStorage, al navegar no se manda header
+            .requestMatchers("/", "/index.html", "/favicon.ico", "/assets/**").permitAll()
             // la autenticación del WebSocket se hace en el CONNECT de STOMP, no en el handshake
             .requestMatchers("/the-last-shipbender/**").permitAll()
             .requestMatchers("/swagger", "/swagger-ui/**", "/docs/**").permitAll()

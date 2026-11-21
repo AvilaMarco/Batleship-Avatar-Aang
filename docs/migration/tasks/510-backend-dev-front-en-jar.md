@@ -1,5 +1,5 @@
 # 510 · backend-dev · Front empaquetado en el jar y rutas públicas nuevas
-Estado: pendiente
+Estado: hecha
 Fase: F5
 Depende de: 509
 Paralelizable: sí, con 502-507 (solo pom y `security/`; no usa puertos)
@@ -23,3 +23,9 @@ Criterios de aceptación:
 - Commit `build: empaquetar el front en el jar con perfil frontend (tarea 510)`.
 
 ## Resultado
+- `pom.xml`: perfil `frontend` (inactivo por defecto) con frontend-maven-plugin 2.0.2 (Central: release 2.0.2), Node v22.22.2 (22.12 dejaba EBADENGINE con las deps de vite), `npm ci` + `npm run build` en `generate-resources`, y resource `frontend/dist` -> `static/`. Eliminada `org.webjars:stomp-websocket` (queda `webjars-locator-lite` transitivo de springdoc; `grep webjars pom.xml src/main/java` vacío).
+- `WebSecurityConfig`: públicas `"/", "/index.html", "/favicon.ico", "/assets/**"`. `.gitignore`: `frontend/node/`.
+- `/docs/**` se deja: es el path del OpenAPI JSON (`springdoc.api-docs.path=/docs`) que el Swagger UI de dev necesita; en prod springdoc está desactivado por perfil (404).
+- SPA con rutas por hash: no hace falta forward a index.html.
+- Verificación: `./mvnw clean test` verde x2 (103 tests, 0 fallos); sin Node instalado en `frontend/node` tras test; `-Pfrontend -DskipTests package` -> jar con `static/index.html` y `static/assets/index-*.js`; en vivo (test-run :4704): `/` 200, `/assets/*.js` y `.css` 200, `/web/games.html` 401, `/api/games` 401, `/swagger` 302.
+- Nota: cambiar la versión de Node con `frontend/node/` ya instalado deja npm roto (mezcla de versiones): borrar `frontend/node/`.
