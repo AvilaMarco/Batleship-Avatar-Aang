@@ -239,6 +239,103 @@ class GameEventsWebSocketTest {
         assertEquals("VALIDATION_FAILED", next(errors).path("code").asString());
     }
 
+    // ---- salvos (ADR 004 Anexo F, v2.1; rojos hasta la tarea 413) ----
+
+    static final String[] SINK_ALL = {
+      "[\"A1\",\"A2\",\"A3\",\"A4\",\"A5\"]", "[\"B1\",\"B2\",\"B3\",\"B4\",\"C1\"]",
+      "[\"C2\",\"C3\",\"D1\",\"D2\",\"D3\"]", "[\"E1\",\"E2\",\"F1\",\"F2\",\"F3\"]"};
+    static final String[] ALL_MISSES = {
+      "[\"G1\",\"G2\",\"G3\",\"G4\",\"G5\"]", "[\"G6\",\"G7\",\"G8\",\"G9\",\"G10\"]",
+      "[\"H1\",\"H2\",\"H3\",\"H4\",\"H5\"]", "[\"H6\",\"H7\",\"H8\",\"H9\",\"H10\"]"};
+
+    void fire ( String token, long id, String cellsJson ) throws Exception {
+        mvc.perform(post("/api/games/{id}/salvos", id).header("Authorization", token)
+            .contentType(org.springframework.http.MediaType.APPLICATION_JSON).content("{\"cells\":" + cellsJson + "}"))
+          .andExpect(status().isCreated());
+    }
+
+    /** Partida IN_GAME; el GAME_STARTED ya paso antes de que el test se suscriba. */
+    long startedGame ( String a, String b ) throws Exception {
+        long id = createAndJoin(a, b);
+        placeShips(a, id, FLEET, 201);
+        placeShips(b, id, FLEET, 201);
+        return id;
+    }
+
+    /** Salta eventos hasta el tipo pedido (max 20); rojo "el evento no llego" si no aparece. */
+    JsonNode nextOfType ( BlockingQueue<String> q, String type ) throws Exception {
+        for (int i = 0; i < 20; i++) {
+            JsonNode e = next(q);
+            if (type.equals(e.path("type").asString())) return e;
+        }
+        return fail("no llego el evento " + type);
+    }
+
+    @Test
+    void firstSalvo_rivalReceivesSalvoFiredWithoutCells () throws Exception {
+        String a = AuthHelper.registerAndLogin(mvc), b = AuthHelper.registerAndLogin(mvc);
+        long id = startedGame(a, b);
+        BlockingQueue<String> rival = subscribe(connect(b, new LinkedBlockingQueue<>()), "/topic/games/" + id);
+
+        fire(a, id, ALL_MISSES[0]);
+
+        String raw = rival.poll(3, TimeUnit.SECONDS);
+        assertNotNull(raw, "no llego SALVO_FIRED");
+        JsonNode e = JSON.readTree(raw);
+        assertEquals("SALVO_FIRED", e.path("type").asString());
+        assertEquals(playerId(a), e.path("player_id").asLong());
+        assertEquals(1, e.path("turn").asInt());
+        assertFalse(raw.contains("G1") || raw.contains("cells"), "SALVO_FIRED no lleva celdas");
+    }
+
+    @Test
+    void secondSalvo_bothReceiveTurnResolvedWithHitsMissesAndSunk () throws Exception {
+        String a = AuthHelper.registerAndLogin(mvc), b = AuthHelper.registerAndLogin(mvc);
+        long id = startedGame(a, b);
+        BlockingQueue<String> qa = subscribe(connect(a, new LinkedBlockingQueue<>()), "/topic/games/" + id);
+        BlockingQueue<String> qb = subscribe(connect(b, new LinkedBlockingQueue<>()), "/topic/games/" + id);
+
+        fire(a, id, SINK_ALL[0]);
+        fire(b, id, ALL_MISSES[0]);
+
+        long idA = playerId(a);
+        for (BlockingQueue<String> q : List.of(qa, qb)) {
+            JsonNode e = nextOfType(q, "TURN_RESOLVED");
+            assertEquals(1, e.path("turn").asInt());
+            assertEquals(2, e.path("results").size());
+            JsonNode mine = e.path("results").get(0).path("player_id").asLong() == idA
+              ? e.path("results").get(0) : e.path("results").get(1);
+            assertEquals(5, mine.path("hits").size());
+            assertEquals(0, mine.path("misses").size());
+            assertEquals("CARRIER", mine.path("sunk").get(0).asString());
+        }
+    }
+
+    @Test
+    void sinkingWholeFleet_bothReceiveGameFinishedWithScores_andProfileReflectsPoints () throws Exception {
+        String a = AuthHelper.registerAndLogin(mvc), b = AuthHelper.registerAndLogin(mvc);
+        long id = startedGame(a, b);
+        BlockingQueue<String> qa = subscribe(connect(a, new LinkedBlockingQueue<>()), "/topic/games/" + id);
+        BlockingQueue<String> qb = subscribe(connect(b, new LinkedBlockingQueue<>()), "/topic/games/" + id);
+
+        for (int t = 0; t < 4; t++) {
+            fire(a, id, SINK_ALL[t]);
+            fire(b, id, ALL_MISSES[t]);
+        }
+
+        long idA = playerId(a), idB = playerId(b);
+        for (BlockingQueue<String> q : List.of(qa, qb)) {
+            JsonNode e = nextOfType(q, "GAME_FINISHED");
+            assertEquals(idA, e.path("winner_id").asLong());
+            assertEquals(3, e.path("scores").path(String.valueOf(idA)).asInt());
+            assertEquals(0, e.path("scores").path(String.valueOf(idB)).asInt());
+        }
+        mvc.perform(get("/api/players/me").header("Authorization", a))
+          .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.stats.score").value(3));
+        mvc.perform(get("/api/players/me").header("Authorization", b))
+          .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.stats.score").value(0));
+    }
+
     @Test
     void subscribeToV1ShipsTopic_isDenied () throws Exception {
         String a = AuthHelper.registerAndLogin(mvc), b = AuthHelper.registerAndLogin(mvc);

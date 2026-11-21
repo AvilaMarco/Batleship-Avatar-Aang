@@ -1,5 +1,5 @@
 # 412 · qa · Tests de salvos: dominio y contrato v2.1 (CONDICIONAL, test primero)
-Estado: pendiente
+Estado: hecha
 Fase: F4
 Depende de: 411
 Paralelizable: no
@@ -19,3 +19,10 @@ Criterios de aceptación:
 - Commit `test: salvos v2.1 (tarea 412, rojo hasta 413)`.
 
 ## Resultado
+
+- `T/unit/domain/SalvoRulesTest.java`: 11 tests en VERDE, sin Spring ni Docker (ejecutado con `DOCKER_HOST=tcp://127.0.0.1:1`: BUILD OK). Cubren los 7 casos de la tarea mas: 4 y 6 celdas, repetidas y ya disparadas por separado, y "una flota hundida pero el rival no disparo: la partida sigue abierta" (decision de la 411); `sunk` por turno (no acumulado).
+- `GameRestIntegrationTest` (+7) y `GameEventsWebSocketTest` (+3): contrato v2.1.
+- `./mvnw test`: 99 tests, 89 verdes (los 78 previos + 11 unitarios), 10 rojos. Todos los rojos son "endpoint aun no existe" (`POST /api/games/{id}/salvos` -> 404, `Status expected:<201> but was:<404>`); ninguno es error del test:
+  - REST: `fire_validSalvo_returnsCreatedWithOwnSalvoInView`, `fire_beforeGameStarts_is409GameNotInProgress`, `fire_twiceInSameTurn_is409SalvoAlreadyFired`, `fire_withFourCells_is400InvalidSalvo`, `fire_withCellOutsideGrid_is400InvalidSalvo`, `fire_asNonParticipant_is403NotAParticipant`, `getGame_rivalView_showsMySalvosButNeverMyShips`.
+  - STOMP: `firstSalvo_rivalReceivesSalvoFiredWithoutCells`, `secondSalvo_bothReceiveTurnResolvedWithHitsMissesAndSunk`, `sinkingWholeFleet_bothReceiveGameFinishedWithScores_andProfileReflectsPoints`.
+- Nota para 413: `fire_withCellOutsideGrid` exige 400 `INVALID_SALVO` (Anexo F), pero `Cell.parse` lanza `INVALID_FLEET`; la 413 debe traducir el codigo en el servicio/controlador. Los eventos GAME_FINISHED se esperan con `winner_id` y `scores` por id de jugador; el perfil se lee en `$.stats.score`.

@@ -198,4 +198,91 @@ class GameRestIntegrationTest {
           .andExpect(jsonPath("$.opponent.ships_placed").value(true))
           .andExpect(jsonPath("$.opponent.ships").doesNotExist());
     }
+
+    // ---- salvos (ADR 004 Anexo F, v2.1; rojos hasta la tarea 413) ----
+
+    static final String MISSES_1 = "{\"cells\":[\"G1\",\"G2\",\"G3\",\"G4\",\"G5\"]}";
+
+    ResultActions fire ( String token, long id, String body ) throws Exception {
+        return mvc.perform(post("/api/games/{id}/salvos", id).header("Authorization", token)
+          .contentType(MediaType.APPLICATION_JSON).content(body));
+    }
+
+    /** Partida IN_GAME con la flota estandar de ambos; devuelve su id. */
+    long startedGame ( String a, String b ) throws Exception {
+        long id = AuthHelper.createGame(mvc, a);
+        AuthHelper.join(mvc, b, id);
+        placeShips(a, id, VALID_FLEET).andExpect(status().isCreated());
+        placeShips(b, id, VALID_FLEET).andExpect(status().isCreated());
+        return id;
+    }
+
+    @Test
+    void fire_validSalvo_returnsCreatedWithOwnSalvoInView () throws Exception {
+        String a = AuthHelper.registerAndLogin(mvc), b = AuthHelper.registerAndLogin(mvc);
+        long id = startedGame(a, b);
+
+        fire(a, id, "{\"cells\":[\"A1\",\"A2\",\"G1\",\"G2\",\"G3\"]}").andExpect(status().isCreated())
+          .andExpect(jsonPath("$.me.salvos", hasSize(1)))
+          .andExpect(jsonPath("$.me.salvos[0].turn").value(1))
+          .andExpect(jsonPath("$.me.salvos[0].cells", hasSize(5)));
+    }
+
+    @Test
+    void fire_beforeGameStarts_is409GameNotInProgress () throws Exception {
+        String a = AuthHelper.registerAndLogin(mvc), b = AuthHelper.registerAndLogin(mvc);
+        long id = AuthHelper.createGame(mvc, a);
+        AuthHelper.join(mvc, b, id);
+
+        fire(a, id, MISSES_1).andExpect(status().isConflict())
+          .andExpect(jsonPath("$.code").value("GAME_NOT_IN_PROGRESS"));
+    }
+
+    @Test
+    void fire_twiceInSameTurn_is409SalvoAlreadyFired () throws Exception {
+        String a = AuthHelper.registerAndLogin(mvc), b = AuthHelper.registerAndLogin(mvc);
+        long id = startedGame(a, b);
+        fire(a, id, MISSES_1).andExpect(status().isCreated());
+
+        fire(a, id, "{\"cells\":[\"H1\",\"H2\",\"H3\",\"H4\",\"H5\"]}").andExpect(status().isConflict())
+          .andExpect(jsonPath("$.code").value("SALVO_ALREADY_FIRED"));
+    }
+
+    @Test
+    void fire_withFourCells_is400InvalidSalvo () throws Exception {
+        String a = AuthHelper.registerAndLogin(mvc), b = AuthHelper.registerAndLogin(mvc);
+        long id = startedGame(a, b);
+
+        fire(a, id, "{\"cells\":[\"G1\",\"G2\",\"G3\",\"G4\"]}").andExpect(status().isBadRequest())
+          .andExpect(jsonPath("$.code").value("INVALID_SALVO"));
+    }
+
+    @Test
+    void fire_withCellOutsideGrid_is400InvalidSalvo () throws Exception {
+        String a = AuthHelper.registerAndLogin(mvc), b = AuthHelper.registerAndLogin(mvc);
+        long id = startedGame(a, b);
+
+        fire(a, id, "{\"cells\":[\"G1\",\"G2\",\"G3\",\"G4\",\"Z99\"]}").andExpect(status().isBadRequest())
+          .andExpect(jsonPath("$.code").value("INVALID_SALVO"));
+    }
+
+    @Test
+    void fire_asNonParticipant_is403NotAParticipant () throws Exception {
+        String a = AuthHelper.registerAndLogin(mvc), b = AuthHelper.registerAndLogin(mvc), c = AuthHelper.registerAndLogin(mvc);
+        long id = startedGame(a, b);
+
+        fire(c, id, MISSES_1).andExpect(status().isForbidden())
+          .andExpect(jsonPath("$.code").value("NOT_A_PARTICIPANT"));
+    }
+
+    @Test
+    void getGame_rivalView_showsMySalvosButNeverMyShips () throws Exception {
+        String a = AuthHelper.registerAndLogin(mvc), b = AuthHelper.registerAndLogin(mvc);
+        long id = startedGame(a, b);
+        fire(a, id, "{\"cells\":[\"A1\",\"A2\",\"G1\",\"G2\",\"G3\"]}").andExpect(status().isCreated());
+
+        getGame(b, id).andExpect(status().isOk())
+          .andExpect(jsonPath("$.opponent.salvos", hasSize(1)))
+          .andExpect(jsonPath("$.opponent.ships").doesNotExist());
+    }
 }
