@@ -1,22 +1,23 @@
 package com.codeblockacademy.shipbender.integration;
 
+import com.codeblockacademy.shipbender.TestcontainersConfiguration;
+import org.springframework.context.annotation.Import;
 import com.codeblockacademy.shipbender.integration.support.AuthHelper;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.messaging.converter.StringMessageConverter;
 import org.springframework.messaging.simp.stomp.*;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.socket.WebSocketHttpHeaders;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
-import org.springframework.web.socket.sockjs.client.SockJsClient;
-import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -35,11 +36,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /** Caracterizacion de /app/{id}/ships -> /topic/gameplay/{id}/ships con JWT en el CONNECT de STOMP. */
+@Import(TestcontainersConfiguration.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 class GameplayWebSocketTest {
 
-    static final ObjectMapper JSON = new ObjectMapper();
+    static final ObjectMapper JSON = new JsonMapper();
     static final String FIVE_SHIPS = """
       [{"type":"CARRIER","locations":["A1","A2","A3","A4","A5"]},
        {"type":"BATTLESHIP","locations":["B1","B2","B3","B4"]},
@@ -55,10 +57,9 @@ class GameplayWebSocketTest {
     @AfterEach
     void stopClients () { clients.forEach(WebSocketStompClient::stop); }
 
-    /** Conecta por SockJS; token null = sin header Authorization. */
+    /** Conecta por WebSocket nativo; token null = sin header Authorization. */
     StompSession connect ( String token, BlockingQueue<String> events ) throws Exception {
-        WebSocketStompClient client = new WebSocketStompClient(
-          new SockJsClient(List.of(new WebSocketTransport(new StandardWebSocketClient()))));
+        WebSocketStompClient client = new WebSocketStompClient(new StandardWebSocketClient());
         // acepta cualquier content-type (el cliente envia application/json como String)
         client.setMessageConverter(new StringMessageConverter() {
             @Override protected boolean supportsMimeType ( org.springframework.messaging.MessageHeaders h ) { return true; }
@@ -66,7 +67,7 @@ class GameplayWebSocketTest {
         clients.add(client);
         StompHeaders headers = new StompHeaders();
         if (token != null) headers.add("Authorization", token);
-        return client.connect("ws://localhost:" + port + "/the-last-shipbender", new WebSocketHttpHeaders(), headers,
+        return client.connectAsync("ws://localhost:" + port + "/the-last-shipbender", new WebSocketHttpHeaders(), headers,
           new StompSessionHandlerAdapter() {
               @Override public void handleException ( StompSession s, StompCommand c, StompHeaders h, byte[] p, Throwable e ) { events.add("EXCEPTION " + e); }
               @Override public void handleTransportError ( StompSession s, Throwable e ) { events.add("TRANSPORT_ERROR " + e); }
@@ -114,7 +115,7 @@ class GameplayWebSocketTest {
 
     static Set<String> keys ( JsonNode n ) {
         Set<String> s = new HashSet<>();
-        n.fieldNames().forEachRemaining(s::add);
+        n.propertyNames().iterator().forEachRemaining(s::add);
         return s;
     }
 
@@ -122,7 +123,7 @@ class GameplayWebSocketTest {
     String hostStatus ( String token, long id ) throws Exception {
         String body = mvc.perform(get("/api/match/{id}/status", id).header("Authorization", token))
           .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
-        return JSON.readTree(body).at("/status/host").asText();
+        return JSON.readTree(body).at("/status/host").asString();
     }
 
     @Test
@@ -168,5 +169,26 @@ class GameplayWebSocketTest {
         // WebSocketSecurityConfig deniega todo a no-PLAYER: el CONNECT sin JWT termina en conexion cerrada
         ExecutionException e = assertThrows(ExecutionException.class, () -> connect(null, new LinkedBlockingQueue<>()));
         assertInstanceOf(ConnectionLostException.class, e.getCause());
+    }
+
+    @Test
+    void connectWithClientHeartbeat_serverRepliesWithConfiguredHeartbeat () throws Exception {
+        String a = AuthHelper.registerAndLogin(mvc);
+        WebSocketStompClient client = new WebSocketStompClient(new StandardWebSocketClient());
+        org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler scheduler = new org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler();
+        scheduler.initialize();
+        client.setTaskScheduler(scheduler);
+        client.setDefaultHeartbeat(new long[]{10000, 10000});
+        clients.add(client);
+        StompHeaders headers = new StompHeaders();
+        headers.add("Authorization", a);
+        java.util.concurrent.CompletableFuture<StompHeaders> connected = new java.util.concurrent.CompletableFuture<>();
+        client.connectAsync("ws://localhost:" + port + "/the-last-shipbender", new WebSocketHttpHeaders(), headers,
+          new StompSessionHandlerAdapter() {
+              @Override public void afterConnected ( StompSession s, StompHeaders h ) { connected.complete(h); }
+          }).get(5, TimeUnit.SECONDS);
+
+        assertArrayEquals(new long[]{10000, 10000}, connected.get(5, TimeUnit.SECONDS).getHeartbeat());
+        scheduler.shutdown();
     }
 }

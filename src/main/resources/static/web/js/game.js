@@ -1,4 +1,3 @@
-import "sockjs"; // ejecuta codigo de sockJS y permite usar el objeto SockJS
 import "stomp"; // ejecuta codigo de stompJS y permite usar el objeto Stomp
 import {createGrid} from "./game-mjs/grid.js";
 import {getHTML} from "./utils/utils.js";
@@ -66,8 +65,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 /* WEB SOCKET*/
 async function connectClientSocket({game, client}) {
-  const socket = new SockJS("/the-last-shipbender");
-  stomp = Stomp.over(socket);
+  stomp = Stomp.client(`${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/the-last-shipbender`);
   const frame = await AsyncStomp(HEADER);
 
   console.log("Connected: " + frame);

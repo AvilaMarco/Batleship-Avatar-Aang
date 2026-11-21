@@ -104,6 +104,39 @@ Formato de entrada:
 
 ## F3 · Upgrade
 
+### Migrar por saltos pequeños, con una red de tests entre cada uno (prioridad alta)
+- **Antes**: Spring Boot 2.6.6 sin soporte, Java 17, H2.
+- **Después**: 2.7 → 3.5 → Java 21 → 4.2, con los tests de F1 en verde tras cada salto (una tarea y un commit por salto).
+- **Por qué es mejor**: cuando algo se rompe sabes exactamente qué salto lo causó. Con un solo salto 2.6 → 4.2 habría una mezcla imposible de separar (jakarta, Hibernate 7, Jackson 3...). Java 21 va después de Boot 3.5 porque Boot 2.7 no leía clases de Java 21: el **orden** de los saltos importa.
+- **Concepto**: cambios incrementales, red de seguridad de tests, una sola variable por paso.
+
+### Una receta automática es un PR ajeno (prioridad media)
+- OpenRewrite dejó Boot 4.0 en lugar de 4.2, reindentó el `pom.xml`, añadió dependencias redundantes y fijó Lombok a mano contra la gestión de versiones de Boot. Se revisó el diff y se quedó solo lo que cambia comportamiento. **Revisa siempre lo que genera una herramienta como si lo hubiera escrito otra persona.**
+
+### Deny-by-default: lo que antes fallaba en silencio ahora se ve (prioridad alta)
+- **Antes**: `WebSecurityConfig`: `anyRequest().permitAll()` y matchers que no eran rutas HTTP (`/topic/**`, `/app/**`) ni existían (`/users/admin`).
+- **Después**: lista cerrada de rutas públicas y `anyRequest().denyAll()`. Los destinos STOMP se protegen en su capa (interceptores de mensajería), no en la HTTP.
+- **Por qué es mejor**: el error pasa de "expuesto" a "403 visible". Sacó a la luz que el front llamaba a `/api/logout` (no existe; la real es `/api/players/logout`): antes daba 404 y nadie lo notó.
+- **Concepto**: mínimo privilegio, deny-by-default, separar capas de seguridad (HTTP vs. mensajería).
+
+### El esquema vive en el repo: migraciones con Flyway (prioridad alta)
+- **Antes**: `ddl-auto=create-drop` sobre H2 en memoria: el esquema lo inventaba Hibernate en cada arranque y los tests no probaban el motor de producción.
+- **Después**: `V1__init.sql` versionado, `ddl-auto=validate` (Hibernate solo comprueba), Postgres real en los tests con Testcontainers.
+- **Por qué es mejor**: paridad dev/test/prod; el esquema es código revisable y se puede evolucionar sin perder datos. H2 ocultaba errores reales (dialecto distinto: el DDL de H2 rompió 20 tests sobre Postgres).
+- **Concepto**: *schema as code* (database migrations), paridad de entornos, aislamiento de estado entre tests (un contenedor por contexto para que los datos de `initData` no se dupliquen).
+
+### Probar la mutación que de verdad cambia el comportamiento (prioridad media)
+- La tarea pedía quitar `setHeartbeatValue(10000,10000)` para ver fallar el test; no falló porque ese valor coincide con el default de Spring cuando hay scheduler. Un test solo protege algo si falla ante el defecto que dice proteger.
+
+### Hallazgo confirmado en vivo: el rival recibe tus barcos (prioridad alta, se arregla en F4)
+- **Antes**: `GameplayController` envía con `@SendTo("/topic/gameplay/{id}/ships")` el `GameDataDTO` calculado para quien colocó los barcos.
+- **Problema**: el topic lo reciben todos los suscriptores. En la prueba en el navegador, A recibió las posiciones exactas de los 5 barcos de B. En un juego de batalla naval es hacer trampa por diseño. Estaba oculto porque el mensaje ni se publicaba (`LazyInitializationException`, F2): al arreglar un bug apareció otro.
+- **Después (F4)**: eventos públicos en `/topic` (sin posiciones) y estado privado por usuario en `/user/queue`.
+- **Concepto**: información privada vs. pública en el canal; lo que el servidor *puede* enviar no es lo que *debe* enviar a cada cliente.
+
+### Dos fallos del front original, para F5
+- `game.js:99`: al abrir el creador su partida sin rival, `CLIENT` es `undefined` y revienta antes de conectar el socket. `update_html.js:93`: `createShipGrid` revienta al recibir los barcos del rival. Ambos ya existían; los tapaba el estado global y la ausencia de tipos. Con TypeScript, `find()` devuelve `T | undefined` y el compilador te obliga a manejar ese caso.
+
 ## F4 · Arquitectura backend
 
 ## F5 · Front nuevo

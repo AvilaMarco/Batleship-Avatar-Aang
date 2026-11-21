@@ -1,7 +1,8 @@
 package com.codeblockacademy.shipbender.integration.support;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -11,7 +12,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public final class AuthHelper {
-    private static final ObjectMapper JSON = new ObjectMapper();
+    private static final ObjectMapper JSON = new JsonMapper();
 
     private AuthHelper () {}
 
@@ -22,7 +23,7 @@ public final class AuthHelper {
           .andExpect(status().isOk())
           .andReturn().getResponse().getContentAsString();
         JsonNode node = JSON.readTree(body);
-        return node.get("token").asText();
+        return node.get("token").asString();
     }
 
     public static String registerAndLogin ( MockMvc mvc ) throws Exception {

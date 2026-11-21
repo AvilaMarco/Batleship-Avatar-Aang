@@ -4,15 +4,15 @@ Batalla naval online 1 vs 1 por turnos, temática Avatar. Chat/emotes en tiempo 
 Proyecto en migración: ver `docs/migration/PLAN.md` (estado de todo) antes de empezar.
 
 ## Stack actual → objetivo
-- Backend: Spring Boot 2.6 / Java 17 → Spring Boot 4.x / Java 21
+- Backend: Spring Boot 4.2 / Java 21 (migrado en F3)
 - Front: JS vanilla en `src/main/resources/static/web` → React + TS + Vite en `/frontend`
-- BD: H2 en memoria → Postgres + Flyway (no hay datos que conservar)
+- BD: Postgres 17 + Flyway (`db/migration`); H2 eliminado
 - Tiempo real: STOMP sobre WebSocket (`/the-last-shipbender`, prefijos `/app` y `/topic`)
 - Deploy: Docker Compose (app + Postgres + cloudflared) en servidor local con Cloudflare Tunnel
 
 ## Comandos
-- Tests: `./mvnw test`
-- Levantar: `./mvnw spring-boot:run` → http://localhost:4703/web/games.html · Swagger en `/swagger`
+- Tests: `./mvnw test` (requiere Docker corriendo: Testcontainers)
+- Levantar (requiere Docker: Postgres en contenedor): `PORT=4704 ./mvnw spring-boot:test-run` → http://localhost:<puerto>/web/games.html · Swagger en `/swagger`
 
 ## Glosario del dominio
 - **Player**: usuario registrado (rol GUEST / PLAYER / ADMIN), elige una **Nation** (agua, tierra, fuego, aire).
