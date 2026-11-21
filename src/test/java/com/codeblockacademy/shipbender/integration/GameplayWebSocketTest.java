@@ -15,8 +15,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.socket.WebSocketHttpHeaders;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
-import org.springframework.web.socket.sockjs.client.SockJsClient;
-import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -55,10 +53,9 @@ class GameplayWebSocketTest {
     @AfterEach
     void stopClients () { clients.forEach(WebSocketStompClient::stop); }
 
-    /** Conecta por SockJS; token null = sin header Authorization. */
+    /** Conecta por WebSocket nativo; token null = sin header Authorization. */
     StompSession connect ( String token, BlockingQueue<String> events ) throws Exception {
-        WebSocketStompClient client = new WebSocketStompClient(
-          new SockJsClient(List.of(new WebSocketTransport(new StandardWebSocketClient()))));
+        WebSocketStompClient client = new WebSocketStompClient(new StandardWebSocketClient());
         // acepta cualquier content-type (el cliente envia application/json como String)
         client.setMessageConverter(new StringMessageConverter() {
             @Override protected boolean supportsMimeType ( org.springframework.messaging.MessageHeaders h ) { return true; }

@@ -1,5 +1,5 @@
 # 306 · backend-dev · WebSocket nativo (sin SockJS) y heartbeats STOMP
-Estado: pendiente
+Estado: hecha
 Fase: F3
 Depende de: 305
 
@@ -20,3 +20,6 @@ Criterios de aceptación:
 - Con `PORT=4704 ./mvnw spring-boot:run`: `curl -s -o /dev/null -w "%{http_code}" http://localhost:4704/the-last-shipbender/info` → distinto de `200` (el endpoint `/info` de SockJS ya no existe). Detén el proceso.
 
 ## Resultado
+Endpoint nativo sin SockJS y broker con heartbeats 10 s/10 s (scheduler de Spring inyectado con `@Lazy`). Test: solo cambia el transporte de `connect(...)`.
+- `./mvnw test`: 30 tests, 0 fallos. grep SockJS en main/test: sin resultados. `setHeartbeatValue`: 1 linea.
+- `PORT=4704 spring-boot:run`: `/info` -> 404. Cliente WebSocket nativo (node) con JWT: `CONNECTED version:1.2 heart-beat:10000,10000`. Proceso detenido.
