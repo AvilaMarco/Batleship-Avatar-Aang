@@ -1,5 +1,5 @@
 # 505 · frontend-dev · Lobby: nación, mapa de partidas, crear/unirse, ranking
-Estado: pendiente
+Estado: parcial
 Fase: F5
 Depende de: 502, 504
 Paralelizable: no
@@ -25,3 +25,6 @@ Criterios de aceptación (tests primero, `fetch` stubbeado):
 - Commit `feat(front): lobby con mapa, partidas y ranking (tarea 505)`.
 
 ## Resultado
+Hecho: `LobbyScreen`, `NationPicker`, `GameMap` (puntos en % sobre 1395x950), `Ranking`; `App.tsx` renderiza el lobby en `#/`. Tests (6 nuevos, `useAuth` mockeado y `fetch` stubbeado): selector->PATCH, Unirse->`#/games/7`, Volver, Crear (POST con nation/location), LOCATION_TAKEN con alert y recarga, ranking y Salir. `npm test` (55 pasan) y `npm run build` -> exit 0. Diff ~330 líneas: no hace falta 505b.
+Notas: partida con 2 jugadores ajenos queda como botón deshabilitado "Partida llena". El botón "Salir" ahora vive solo en el lobby (el placeholder de partida no lo tiene hasta 506).
+Pendiente de verificar: prueba manual en el navegador con backend (A crea, B se une).
