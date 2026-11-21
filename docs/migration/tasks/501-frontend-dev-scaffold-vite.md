@@ -1,5 +1,5 @@
 # 501 · frontend-dev · Esqueleto de `/frontend` (Vite + React + TS + Vitest + proxy)
-Estado: pendiente
+Estado: hecha
 Fase: F5
 Depende de: —
 Paralelizable: no (todo F5 depende de esta)
@@ -25,3 +25,4 @@ Criterios de aceptación:
 - Commit `build: esqueleto del front React + TS con Vite y Vitest (tarea 501)`.
 
 ## Resultado
+Creado `frontend/` (Vite 8, React 19, TS strict, Vitest+jsdom+Testing Library, lint oxlint del template), proxy y Origin según Anexo C, assets copiados (emotes, img, ships, icons). Verificado: `npm ci && npm run build && npm test` ok (1 test verde); `git check-ignore` ignora node_modules y dist; con backend en 4704 y Vite en 4705, login por proxy → 401. Ambos procesos detenidos. Nota: el template actual trae oxlint (no ESLint) y se dejó tal cual.
