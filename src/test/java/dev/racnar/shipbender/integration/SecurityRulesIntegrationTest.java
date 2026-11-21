@@ -34,6 +34,20 @@ class SecurityRulesIntegrationTest {
         assertNotEquals(403, s, path);
     }
 
+    @org.junit.jupiter.api.Test
+    void faviconSvg_withoutToken_isNotForbidden () throws Exception {
+        int s = mvc.perform(request(HttpMethod.GET, "/favicon.svg")).andReturn().getResponse().getStatus();
+        assertNotEquals(401, s);
+        assertNotEquals(403, s);
+    }
+
+    @org.junit.jupiter.api.Test
+    void root_carriesContentSecurityPolicy () throws Exception {
+        mvc.perform(request(HttpMethod.GET, "/"))
+          .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.header()
+            .string("Content-Security-Policy", org.hamcrest.Matchers.containsString("default-src 'self'")));
+    }
+
     @ParameterizedTest
     @ValueSource(strings = {"GET /api/games", "GET /api/games/1", "PATCH /api/players/me"})
     void protectedPaths_withoutToken_are401 ( String route ) throws Exception {

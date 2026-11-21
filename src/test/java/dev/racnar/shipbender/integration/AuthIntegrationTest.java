@@ -70,6 +70,14 @@ class AuthIntegrationTest {
     }
 
     @Test
+    void register_withPasswordOver72Chars_returns400ValidationFailed () throws Exception {
+        postJson("/api/players", creds("long@t.com", "x".repeat(73)))
+          .andExpect(status().isBadRequest())
+          .andExpect(jsonPath("$.code").value("VALIDATION_FAILED"))
+          .andExpect(jsonPath("$.errors.password").exists());
+    }
+
+    @Test
     void register_newEmail_returnsCreated_andSameEmailAgainIs409EmailInUse () throws Exception {
         String body = creds("r" + UUID.randomUUID().toString().substring(0, 8) + "@t.com", "pw123");
         postJson("/api/players", body).andExpect(status().isCreated());

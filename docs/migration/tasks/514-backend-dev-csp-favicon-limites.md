@@ -1,5 +1,5 @@
 # 514 · backend-dev · CSP, favicon.svg y límites de longitud
-Estado: pendiente
+Estado: hecha
 Fase: F5
 Depende de: 512
 Paralelizable: sí con 513 (solo backend); no con otra tarea que ejecute Maven
@@ -22,3 +22,7 @@ Criterios de aceptación:
 - Commit `feat(seguridad): CSP, favicon.svg y límites de entrada (tarea 514)`.
 
 ## Resultado
+- CSP añadida en `WebSecurityConfig` (política del diseño, sin excepción para Swagger: sus scripts son externos y no la rompen). `/favicon.svg` pública. `@Size(max=72)` en password (Register y Login) y `@Size(max=50)` en name.
+- Tests: 3 nuevos en rojo (500 por bcrypt, 401 favicon, sin CSP) y luego verdes. `./mvnw clean test` x2: 106 tests, 0 fallos.
+- En vivo (puerto 4704, detenido por PID): GET `/` 200 con `Content-Security-Policy`; assets js/css y `/favicon.svg` 200; `/swagger-ui/index.html` 200 con scripts externos. Nota: `curl -sI` (HEAD) no muestra CSP, GET sí.
+- No verificado en navegador: `/v3/api-docs` da 401 (no está en la lista pública; preexistente), así que Swagger UI puede no cargar la spec; y `ws:`/`wss:` para STOMP. Que el chat central lo pruebe.
