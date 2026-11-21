@@ -150,7 +150,7 @@ Pendiente / no verificado:
 ## Tareas F6
 
 Decisiones: ADR 007 (U1 shipbender.racnar.dev · U2 otra máquina · U4 backups fuera del repo · U5 JWT 480 min).
-Orden: (601 ∥ 602) → 603 → 604 → (605 ∥ 606) → 607.
+Orden: (601 ∥ 602) → 603 → 604 → (605 ∥ 606) → 608 → 607.
 
 | # | Rol | Tarea | Fase | Estado | Depende de |
 |---|---|---|---|---|---|
@@ -160,4 +160,5 @@ Orden: (601 ∥ 602) → 603 → 604 → (605 ∥ 606) → 607.
 | 604 | devops | Backups de Postgres y prueba de restauración (riesgo alto) | F6 | pendiente | 603 |
 | 605 | devops | Runbook `docs/deploy/runbook.md` | F6 | pendiente | 604 |
 | 606 | reviewer | Revisión de secretos, red y backups (riesgo alto) | F6 | pendiente | 601-604 |
+| 608 | devops | Endurecimiento tras la revisión 606 (umask, .env.example, dockerignore, runbook) | F6 | pendiente | 605, 606 |
 | 607 | central + usuario | Puesta en marcha en la otra máquina y verificación | F6 | pendiente | 605, 606 |
