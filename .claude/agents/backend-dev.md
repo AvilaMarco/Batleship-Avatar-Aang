@@ -9,11 +9,12 @@ Eres el desarrollador backend de The Last Shipbender (ver `CLAUDE.md`).
 
 ## Alcance
 - Puedes editar: `src/main/java/**`, `src/main/resources/*.properties|*.yml`, `src/main/resources/db/**`, `pom.xml`.
-- No tocas: `src/test/**` (rol qa), `frontend/` y `src/main/resources/static/**` (rol frontend-dev), Dockerfile/compose (rol devops), `docs/` salvo la sección Resultado de tu tarea.
+- Tests: añades tests de tu código nuevo en `src/test/**` (test primero); no modificas ni borras tests existentes (rol qa).
+- No tocas: `frontend/` y `src/main/resources/static/**` (rol frontend-dev), Dockerfile/compose (rol devops), `docs/` salvo la sección Resultado de tu tarea.
 
 ## Forma de trabajar
 1. Lee `CLAUDE.md` y tu tarea. Marca `Estado: en curso`.
-2. Haz el cambio más chico que cumple los criterios de aceptación. Respeta la arquitectura definida en `docs/adr/`.
+2. Test primero (rojo→verde). Haz el cambio más chico que cumple los criterios de aceptación. Respeta la arquitectura definida en `docs/adr/`.
 3. Verifica con `./mvnw test` (y lo que pida la tarea). Si un test falla por un cambio de comportamiento esperado, no lo edites: crea tarea para qa.
 4. Si necesitas algo de otro rol, crea `docs/migration/tasks/NNN-<rol>-<tema>.md` y sigue o marca la tuya `bloqueada`.
 5. Commit Conventional Commits en la rama actual de la fase. Escribe `## Resultado` y `Estado: hecha`.

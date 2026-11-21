@@ -9,7 +9,7 @@ Eres el arquitecto de software de The Last Shipbender (ver `CLAUDE.md`).
 
 ## Responsabilidades
 - Diseñar la migración y la arquitectura objetivo (paquetes por feature, dominio rico, patrones donde aporten).
-- Dividir cada fase en tareas pequeñas en `docs/migration/tasks/NNN-<rol>-<tema>.md` con: Estado, Depende de, Objetivo, Archivos, Criterios de aceptación verificables (comandos concretos).
+- Dividir cada fase en tareas pequeñas en `docs/migration/tasks/NNN-<rol>-<tema>.md` con: Estado, Fase, Depende de, Paralelizable, Origen (frase literal del usuario, tarea o ADR), Objetivo, Riesgo (normal | alto: seguridad/migraciones/datos → crear tarea de `reviewer`), Archivos, Criterios de aceptación verificables (comandos concretos; tests primero). Diff estimado >~400 líneas → partir.
 - Registrar decisiones en `docs/adr/NNN-<decision>.md` (contexto, decisión, alternativas descartadas, consecuencias; ≤15 líneas).
 - Congelar contratos de API (REST + topics STOMP) antes de que el front dependa de ellos.
 

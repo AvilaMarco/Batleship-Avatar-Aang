@@ -25,8 +25,18 @@ Proyecto en migración: ver `docs/migration/PLAN.md` (estado de todo) antes de e
 - `player` (registro, perfil, ranking), `game` (partidas, barcos, salvos; `domain/` = reglas en Java puro, `event/` = eventos STOMP), `chat` (emotes), `security` (JWT, STOMP), `config`, `shared/error` (`ShipbenderException` + `ErrorCode`, `ProblemDetail`).
 - Contrato: `docs/adr/004-contrato-api-v2.md` (REST + STOMP). Arquitectura: `docs/adr/005-arquitectura-backend.md`.
 
+## Flujo por petición (chat central · metodología `proyecto-ia` v3)
+- Preguntas/revisiones: solo lectura. Premisa de un bug: verificarla antes de arreglar.
+- Pequeño (se retoma con la petición + `git diff`): en línea, sin tarea. Grande: tareas en `docs/migration/tasks/`. Riesgo alto (seguridad, migraciones Flyway, datos): tarea de `reviewer` antes del merge.
+- Test primero. Verificar por cuenta propia lo que reporta cada rol (git log, tests; repetir si hay intermitencia → causa raíz).
+- No verificable por el rol (navegador, Docker, permiso denegado) = `parcial`; lo cubre el central o el usuario. Nunca saltar permisos.
+- Paralelizar solo tareas sin archivos ni build/puertos/Docker en común.
+- Cierre de fase: aprendizajes explicados + aprobación del usuario antes del merge (skill `proyecto-ia`).
+
 ## Reglas de trabajo con IA
-- Roles en `.claude/agents/`. Cada rol ejecuta solo tareas con su nombre en `docs/migration/tasks/`.
+- Tareas: campos `Origen` (frase literal del usuario, tarea o ADR) y `Riesgo`; diff ≤~400 líneas o se parte.
+- Tests: los devs añaden tests de su código nuevo (TDD); solo `qa` modifica o borra tests existentes.
+- Roles en `.claude/agents/` (`reviewer` es global, solo lee). Cada rol ejecuta solo tareas con su nombre en `docs/migration/tasks/`.
 - Si necesitas algo de otro rol: crea `docs/migration/tasks/NNN-<rol>-<tema>.md` (estado `pendiente`), no lo hagas tú.
 - `PLAN.md` y `docs/learning/APRENDIZAJE.md` los edita solo el chat central.
 - Lee solo lo necesario: este archivo, tu tarea y los archivos que ella nombra.

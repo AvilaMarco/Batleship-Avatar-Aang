@@ -10,8 +10,8 @@ Lo edita solo el chat central. Cada fase se cierra con aprobación del usuario y
 | F1 · Red de seguridad | `migration/f1-tests` | **hecha** (mergeada a main) | `./mvnw test` verde sobre Boot 2.6 sin tocar código de producción |
 | F2 · Limpieza | `migration/f2-limpieza` | **hecha** (mergeada a main) | F1 verde; sin código muerto ni secretos en el código |
 | F3 · Upgrade | `migration/f3-upgrade` | **hecha** (mergeada a main) | Boot 4.x + Java 21 + Postgres/Flyway + Testcontainers; F1 verde; app levanta |
-| F4 · Arquitectura backend | `migration/f4-arquitectura` | **esperando aprobación del usuario** | Paquete `dev.racnar.shipbender`; paquetes por feature; dominio testeado sin Spring; contrato API v2 (ADR 004) implementado |
-| F5 · Front nuevo | `migration/f5-frontend` | pendiente | Partida completa jugable en React + TS |
+| F4 · Arquitectura backend | `migration/f4-arquitectura` | **hecha** (mergeada a main) | Paquete `dev.racnar.shipbender`; paquetes por feature; dominio testeado sin Spring; contrato API v2 (ADR 004) implementado |
+| F5 · Front nuevo | `migration/f5-frontend` | en curso (metodología v3) | Partida completa jugable en React + TS |
 | F6 · Deploy | `migration/f6-deploy` | pendiente | Juego en el dominio vía Cloudflare Tunnel, con WebSocket |
 
 Paralelismo permitido: F5 en paralelo con F4 una vez congelado el contrato de API; Dockerfile (F6) desde el fin de F3.
