@@ -1,5 +1,5 @@
 # 504 · frontend-dev · Login, registro, sesión y rutas por hash
-Estado: pendiente
+Estado: parcial
 Fase: F5
 Depende de: 503
 Paralelizable: no
@@ -24,3 +24,7 @@ Criterios de aceptación (tests primero):
 - Commit `feat(front): login, registro y rutas (tarea 504)`.
 
 ## Resultado
+Implementado: `router.ts` (parseRoute/navigate/useHashRoute), `auth/AuthContext.tsx` (AuthProvider, useAuth, `ready` mientras se valida el token), `screens/LoginScreen.tsx` (errores en `role="alert"`, texto React), `App.tsx` (guardas de ruta; lobby/game placeholders).
+Verificado: `npm test` 49/49 exit 0, `npm run build` exit 0, grep `dangerouslySetInnerHTML` sin salida. Tests con `fireEvent` (no se añadió user-event).
+Pendiente de verificar: prueba manual con backend (registrarse, recargar, salir), la hace el chat central.
+Nota: el token solo se toca en `api/auth.ts`; `AuthContext` usa `getToken/clearToken` de ahí.
