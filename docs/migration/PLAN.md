@@ -174,3 +174,13 @@ Revisión de seguridad (606): aprobado con condiciones, sin bloqueantes; los men
 - Verificar desde fuera (criterios de la tarea 607), incluido el reinicio de la máquina.
 No verificado: el túnel real, el rollback con una migración de Flyway nueva, Ctrl-C a mitad de `restore.sh`, Linux/systemd.
 Backlog: contraseña mínima de 8 caracteres (hoy acepta 1; rompe tests y seed: hacerlo con qa), perfil por defecto `dev` falla abierto si se usa `docker run` suelto, fusionar `master`→`main` en GitHub.
+
+## Fase F7 · Endurecimiento y diseño (en curso)
+
+Rama `migration/f7-endurecimiento`. Parte 1 (esta): contraseña mínima de 8 caracteres al registrarse (hallazgo de la revisión 606). Parte 2: diseño visual del front (skill `diseno-ui`), se planifica al terminar la parte 1.
+
+| # | Rol | Tarea | Fase | Estado | Depende de |
+|---|---|---|---|---|---|
+| 701 | qa | Tests: contraseña mínima de 8 caracteres (rojo hasta 702) | F7 | pendiente | — |
+| 702 | backend-dev | Registro: `@Size(min=8, max=72)` (y bytes si hace falta) | F7 | pendiente | 701 |
+| 703 | frontend-dev | Registro: ayuda y `minLength` en el formulario | F7 | pendiente | 702 |
