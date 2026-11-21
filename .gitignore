@@ -332,3 +332,6 @@ logs/
 
 # frontend-maven-plugin
 frontend/node/
+
+frontend/test-results/
+frontend/playwright-report/

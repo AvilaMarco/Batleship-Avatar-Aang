@@ -1,5 +1,5 @@
 # 511 · qa · E2E: partida completa entre dos jugadores (Playwright)
-Estado: pendiente
+Estado: hecha
 Fase: F5
 Depende de: 507, 510
 Paralelizable: no (usa los puertos 4704 y 4705)
@@ -23,3 +23,6 @@ Criterios de aceptación:
 - Commit `test: e2e de partida completa con Playwright (tarea 511)`.
 
 ## Resultado
+Creado `frontend/e2e/full-game.spec.ts` + `playwright.config.ts`, script `e2e`, devDependency `@playwright/test`, exclusión de `e2e/` en Vitest (`vite.config.ts`) e ignorados en `.gitignore`.
+Flujo: registro + nación Agua (obligatoria antes del mapa) → A crea → B se une → flotas fijas → emote visible para B → 4 turnos (el salvo exige 5 celdas: el último lleva 2 impactos + 3 agua) → "Ganaste"/"Perdiste".
+Verificado: `npm run e2e` verde 2 veces seguidas con backend en 4704; `npm test` verde. Sin bugs de producto; los tableros se distinguen por su aria-label de grupo ("Tablero rival").

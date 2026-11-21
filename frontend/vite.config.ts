@@ -19,5 +19,5 @@ export default defineConfig({
       "/the-last-shipbender": { target: backend, ws: true, changeOrigin: true, configure: rewriteOrigin },
     },
   },
-  test: { environment: "jsdom" },
+  test: { environment: "jsdom", exclude: ["e2e/**", "node_modules/**"] },
 });
