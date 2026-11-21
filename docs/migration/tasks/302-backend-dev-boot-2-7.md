@@ -1,5 +1,5 @@
 # 302 · backend-dev · Salto a Spring Boot 2.7.18 + SecurityFilterChain
-Estado: pendiente
+Estado: hecha
 Fase: F3
 Depende de: 301
 
@@ -22,3 +22,9 @@ Criterios de aceptación:
 - `PORT=4704 ./mvnw spring-boot:run` arranca y `/swagger-ui/index.html` → `200`. Detén el proceso.
 
 ## Resultado
+Boot 2.7.18 y springdoc 1.8.0. `WebSecurityConfig` ahora expone `@Bean SecurityFilterChain` (mismas reglas, filtro JWT y logout; sigue con `antMatchers`).
+- Receta OpenRewrite corrió sin errores. Descarté su cambio de `Mockito.*` en `GameValidationTest` (cosmético) y su dependencia `javax.validation:validation-api` (redundante: ya viene con `starter-validation`).
+- Único cambio en `src/test` (import mecánico): `LocalServerPort` → `org.springframework.boot.test.web.server` en `GameplayWebSocketTest`.
+- `./mvnw test` → BUILD SUCCESS, 30 tests, 0 fallos. `grep WebSecurityConfigurerAdapter` → vacío. pom: 2 líneas de versión.
+- Deprecaciones: `compile` no imprime ninguna (javac sin `-Xlint:deprecation` solo avisa con "Note:", y no hubo). Para la 303 queda pendiente confirmarlo con `-Xlint`; no lo verifiqué.
+- Arranque en 4704: `/swagger-ui/index.html` → 200. Proceso detenido (puerto libre).
