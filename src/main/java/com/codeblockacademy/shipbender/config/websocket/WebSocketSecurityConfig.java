@@ -1,33 +1,41 @@
 package com.codeblockacademy.shipbender.config.websocket;
 
+import com.codeblockacademy.shipbender.security.AuthChannelInterceptorAdapter;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.messaging.MessageSecurityMetadataSourceRegistry;
-import org.springframework.security.config.annotation.web.socket.AbstractSecurityWebSocketMessageBrokerConfigurer;
+import org.springframework.messaging.simp.config.ChannelRegistration;
+import org.springframework.security.authorization.AuthorizationManager;
+import org.springframework.security.authorization.SpringAuthorizationEventPublisher;
+import org.springframework.security.messaging.access.intercept.AuthorizationChannelInterceptor;
+import org.springframework.security.messaging.access.intercept.MessageMatcherDelegatingAuthorizationManager;
+import org.springframework.security.messaging.context.SecurityContextChannelInterceptor;
+import org.springframework.messaging.Message;
+import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
+// Manual config (not @EnableWebSocketSecurity): it forces CSRF on CONNECT; auth here is a JWT STOMP header.
 @Configuration
-@EnableWebSecurity
-public class WebSocketSecurityConfig
-  extends AbstractSecurityWebSocketMessageBrokerConfigurer {
+public class WebSocketSecurityConfig implements WebSocketMessageBrokerConfigurer {
 
-    @Override
-    protected void configureInbound ( MessageSecurityMetadataSourceRegistry messages ) {
-        messages
-          .nullDestMatcher()
-          .authenticated()
+    private final AuthChannelInterceptorAdapter authChannelInterceptorAdapter;
+    private final ApplicationContext context;
 
-          .simpDestMatchers("/app/**")
-          .hasAnyAuthority("PLAYER")
-
-          .simpSubscribeDestMatchers("/topic/**")
-          .hasAnyAuthority("PLAYER")
-
-          .anyMessage()
-          .denyAll();
+    public WebSocketSecurityConfig ( AuthChannelInterceptorAdapter authChannelInterceptorAdapter, ApplicationContext context ) {
+        this.authChannelInterceptorAdapter = authChannelInterceptorAdapter;
+        this.context = context;
     }
 
     @Override
-    protected boolean sameOriginDisabled () {
-        return true;
+    public void configureClientInboundChannel ( ChannelRegistration registration ) {
+        AuthorizationManager<Message<?>> rules = MessageMatcherDelegatingAuthorizationManager.builder()
+          .nullDestMatcher().authenticated()
+          .simpDestMatchers("/app/**").hasAuthority("PLAYER")
+          .simpSubscribeDestMatchers("/topic/**").hasAuthority("PLAYER")
+          .anyMessage().denyAll()
+          .build();
+
+        AuthorizationChannelInterceptor authz = new AuthorizationChannelInterceptor(rules);
+        authz.setAuthorizationEventPublisher(new SpringAuthorizationEventPublisher(context));
+
+        registration.interceptors(authChannelInterceptorAdapter, new SecurityContextChannelInterceptor(), authz);
     }
 }

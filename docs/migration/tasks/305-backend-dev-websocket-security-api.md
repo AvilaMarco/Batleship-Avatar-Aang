@@ -1,5 +1,5 @@
 # 305 · backend-dev · Seguridad WebSocket con la API de Security 6 (sin la clase base deprecada)
-Estado: pendiente
+Estado: hecha
 Fase: F3
 Depende de: 304
 
@@ -22,3 +22,6 @@ Criterios de aceptación:
 - `grep -rn "@EnableWebSecurity" src/main/java` → solo `WebSecurityConfig.java`.
 
 ## Resultado
+La API `MessageMatcherDelegatingAuthorizationManager.builder()` de Security 6.5.11 compila tal cual el diseño (nullDestMatcher/simpDestMatchers/simpSubscribeDestMatchers/anyMessage + `.build()`), sin adaptaciones.
+`WebSocketSecurityConfig` ahora implementa `WebSocketMessageBrokerConfigurer` con los 3 interceptores en orden explícito; `WebSocketAuthenticationSecurityConfig` borrada.
+Verificado: `./mvnw test` → 30 tests, 0 fallos (GameplayWebSocketTest 3/3); los dos greps de criterios sin resultados salvo `@EnableWebSecurity` solo en WebSecurityConfig; sin procesos java.
