@@ -26,9 +26,11 @@ class SecurityRulesIntegrationTest {
     @Autowired MockMvc mvc;
 
     @ParameterizedTest
-    @ValueSource(strings = {"/", "/web/games.html", "/webjars/stomp-websocket/2.3.4/stomp.min.js", "/swagger-ui/index.html"})
+    @ValueSource(strings = {"/", "/index.html", "/assets/index-abc.js", "/favicon.ico", "/swagger-ui/index.html"})
     void publicPaths_withoutToken_areNotForbidden ( String path ) throws Exception {
         int s = mvc.perform(request(HttpMethod.GET, path)).andReturn().getResponse().getStatus();
+        // sin token, una ruta no permitida responde 401 (anonimo), no 403: se descartan ambos
+        assertNotEquals(401, s, path);
         assertNotEquals(403, s, path);
     }
 
@@ -40,7 +42,8 @@ class SecurityRulesIntegrationTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"/api/inventado", "/h2-console/"})
+    @ValueSource(strings = {"/api/inventado", "/h2-console/", "/web/games.html",
+        "/webjars/stomp-websocket/2.3.4/stomp.min.js", "/libraries/x.js"})
     void unlistedPaths_areForbidden_evenWithPlayerToken ( String path ) throws Exception {
         String token = AuthHelper.registerAndLogin(mvc);
         mvc.perform(request(HttpMethod.GET, path).header("Authorization", token)).andExpect(status().isForbidden());
