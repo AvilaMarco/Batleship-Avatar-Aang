@@ -8,10 +8,11 @@ Riesgo: normal
 
 Objetivo: cerrar los menores baratos de la revisión antes de la puesta en marcha.
 
-Archivos: `scripts/backup.sh`, `.env.example`, `.dockerignore`, `docs/deploy/runbook.md`.
+Archivos: `scripts/backup.sh`, `scripts/restore.sh`, `.env.example`, `.dockerignore`, `docs/deploy/runbook.md`.
 
 Diseño (cerrado):
 - `backup.sh`: `umask 077` al principio (los dumps contienen hashes de contraseña).
+- `restore.sh` (hallazgo de la 605): imprime "app arrancada de nuevo" aunque `app` no exista (máquina nueva) porque oculta la salida de `start`. Que el mensaje solo diga que arrancó si `docker compose start app` terminó con éxito y avise claramente si `app` no existe (`docker compose up -d app`). Probarlo en el proyecto aislado con `app` sin crear y con `app` existente.
 - `.env.example`: `BACKUP_DIR=/ruta/absoluta/en/OTRO/disco/shipbender-backups` como ejemplo (sin ruta real de ninguna máquina) con un comentario "carpeta privada, fuera del repo, otro disco; no una carpeta de nube compartida sin cifrar".
 - `.dockerignore`: `**/.env*` además de `.env` y `.env.*`.
 - Runbook: secciones breves sobre (a) la carpeta de backups privada (y el riesgo de OneDrive/nube sin cifrar), (b) cómo saber si el backup falla (`docker compose logs backup`) y probar una restauración cada cierto tiempo, (c) rotar el token del túnel en Zero Trust (Tunnels → Refresh token) y `.env` legible solo por tu usuario, (d) no arrancar contenedores sueltos con `docker run` sin `SPRING_PROFILES_ACTIVE=prod` (el perfil por defecto es dev), (e) la regla de rate limiting de Cloudflare es obligatoria.
