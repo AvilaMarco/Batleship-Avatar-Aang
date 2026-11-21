@@ -55,10 +55,23 @@ Detalle en `tasks/`. Terminadas se mueven a `tasks/done/`.
 | 411 | backend-dev | Dominio de salvos y turnos | F4 | hecha | 410 |
 | 412 | qa | Tests de salvos | F4 | hecha | 411 |
 | 413 | backend-dev | Salvos: REST y eventos | F4 | hecha | 412 |
+| 501 | frontend-dev | Esqueleto Vite + Vitest + proxy | F5 | pendiente | — |
+| 502 | frontend-dev | Dominio TS puro | F5 | pendiente | 501 |
+| 503 | frontend-dev | Cliente API REST/STOMP y token (riesgo alto) | F5 | pendiente | 501 |
+| 504 | frontend-dev | Login, registro y rutas (riesgo alto) | F5 | pendiente | 503 |
+| 505 | frontend-dev | Lobby: nación, mapa, crear/unirse, ranking | F5 | pendiente | 502, 504 |
+| 506 | frontend-dev | Partida: sincronización y barcos | F5 | pendiente | 505 |
+| 507 | frontend-dev | Partida: salvos, fin, emotes, errores | F5 | pendiente | 506 |
+| 508 | usuario | Retirar front viejo (`git rm`, lo hace el usuario) | F5 | pendiente | 501 |
+| 509 | qa | Tests de rutas públicas del SPA | F5 | pendiente | 508 |
+| 510 | backend-dev | Front dentro del jar (perfil Maven) + seguridad (riesgo alto) | F5 | pendiente | 509 |
+| 511 | qa | E2E Playwright: partida completa | F5 | pendiente | 507, 510 |
+| 512 | reviewer | Revisión de seguridad F5 | F5 | pendiente | 503, 504, 509, 510 |
 | 313 | frontend-dev | Corregir URL de logout del front viejo (`/api/players/logout`) | F3 | hecha | 311 |
 | 205 | qa | Arreglar test intermitente de firma JWT manipulada | F2 | hecha | — |
 | 203 | frontend-dev | Borrar código muerto front (sobras.js, delete/, TEST_DATA.js) | F2 | hecha | — |
 
+Orden F5: 501 → (502 ∥ 503) → 504 → 505 → 506 → 507; en paralelo 508 → 509 → 510; luego 511 ∥ 512.
 Orden de ejecución F1: 101 → (102 ∥ 105) → (103 ∥ 104). F2: (201 ∥ 203) → 202.
 
 Línea base (F0): `./mvnw test` no ejecuta (falta `.mvn/wrapper/`; Lombok 1.18.22 no compila en JDK 21). Con Lombok 1.18.36: 3 tests triviales en verde.
@@ -67,6 +80,7 @@ Línea base (F0): `./mvnw test` no ejecuta (falta `.mvn/wrapper/`; Lombok 1.18.2
 
 - [ADR 001 — Decisiones base de la migración](../adr/001-decisiones-base.md)
 - [ADR 004 — Contrato API v2 (REST + STOMP), aprobado](../adr/004-contrato-api-v2.md)
+- [ADR 006 — Front React + TS + Vite](../adr/006-frontend-react.md)
 - [ADR 005 — Arquitectura backend por feature con dominio rico](../adr/005-arquitectura-backend.md)
 - [ADR 003 — Upgrade de Spring Boot (ruta 2.6→2.7→3.5→Java 21→4.2)](../adr/003-upgrade-spring-boot.md)
 - [ADR 002 — Paquete base, Testcontainers, estilo de arquitectura y contrato v2](../adr/002-paquete-tests-arquitectura-contrato.md)
