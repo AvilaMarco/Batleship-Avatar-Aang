@@ -19,7 +19,6 @@ Criterios de aceptación:
 - `PORT=4704 ./mvnw spring-boot:run` → arranca; `curl -s -o /dev/null -w "%{http_code}" http://localhost:4704/swagger-ui/index.html` → `200`. Detén el proceso al terminar.
 
 ## Resultado
-Estado: hecha
 
 Se borraron del `pom.xml` el conector MySQL, el plugin `springdoc-openapi-maven-plugin` y, en `spring-boot-maven-plugin`, la versión 2.6.7 y el bloque `<executions>`.
 - `./mvnw test`: BUILD SUCCESS, 30 tests, 0 fallos.
