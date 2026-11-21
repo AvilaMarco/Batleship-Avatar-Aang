@@ -1,5 +1,5 @@
 # 506 · frontend-dev · Pantalla de partida (1/2): sincronización y colocación de barcos
-Estado: pendiente
+Estado: parcial
 Fase: F5
 Depende de: 505
 Paralelizable: no
@@ -23,3 +23,9 @@ Criterios de aceptación (tests primero; `api/games` y `api/stomp` mockeados con
 - Commit `feat(front): partida, sincronización y colocación de barcos (tarea 506)`.
 
 ## Resultado
+
+- `GameScreen` (+ `Board`, `ShipPicker`) cableada en `App.tsx` para `#/games/{id}`: GET, STOMP (todo evento salvo EMOTE recarga), disconnect al desmontar, 403/404 con link al lobby, colocación por clic con rotar/quitar, envío con `INVALID_FLEET` en `role="alert"`. FIRE/WAITING_OPPONENT_SALVO/FINISHED: solo `myBoard` (507).
+- TDD: fase roja ejecutada de verdad (suite falló por módulo `GameScreen` inexistente), luego verde. 6 tests nuevos.
+- `cd frontend && npm test && npm run build`: 61 tests OK, build OK (exit 0).
+- Sin estilos CSS para clases `ship/hit/miss/pending` (celdas sin color aún): pendiente para 507/estilos.
+- Manual en 4705 con dos pestañas: **pendiente de verificar** (no se levantó backend/Vite). Por eso Estado parcial.

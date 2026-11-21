@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { AuthProvider, useAuth } from "./auth/AuthContext";
 import { navigate, useHashRoute } from "./router";
 import LobbyScreen from "./screens/LobbyScreen";
+import GameScreen from "./screens/GameScreen";
 import LoginScreen from "./screens/LoginScreen";
 
 function Routes() {
@@ -15,8 +16,7 @@ function Routes() {
 
   if (!ready || needsLogin) return <p>Cargando…</p>;
   if (route.name === "login") return profile ? <p>Ya has iniciado sesión.</p> : <LoginScreen />;
-  // placeholder de partida hasta 506
-  return route.name === "lobby" ? <LobbyScreen /> : <p>Partida {route.id}</p>;
+  return route.name === "lobby" ? <LobbyScreen /> : <GameScreen key={route.id} id={route.id} />;
 }
 
 export default function App() {
