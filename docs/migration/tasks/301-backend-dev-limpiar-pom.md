@@ -1,5 +1,5 @@
 # 301 · backend-dev · Limpiar pom.xml antes de los saltos
-Estado: pendiente
+Estado: hecha
 Fase: F3
 Depende de: — (F2 mergeada)
 
@@ -19,3 +19,10 @@ Criterios de aceptación:
 - `PORT=4704 ./mvnw spring-boot:run` → arranca; `curl -s -o /dev/null -w "%{http_code}" http://localhost:4704/swagger-ui/index.html` → `200`. Detén el proceso al terminar.
 
 ## Resultado
+Estado: hecha
+
+Se borraron del `pom.xml` el conector MySQL, el plugin `springdoc-openapi-maven-plugin` y, en `spring-boot-maven-plugin`, la versión 2.6.7 y el bloque `<executions>`.
+- `./mvnw test`: BUILD SUCCESS, 30 tests, 0 fallos.
+- El grep del criterio no devuelve resultados.
+- `./mvnw -q -DskipTests verify`: sin errores (salida vacía en modo -q, así que no hay banner de Spring).
+- `PORT=4704 ./mvnw spring-boot:run`: swagger-ui/index.html devolvió 200. El proceso se detuvo y el puerto 4704 quedó libre, sin java corriendo.
