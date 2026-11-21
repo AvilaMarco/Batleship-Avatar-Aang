@@ -29,6 +29,7 @@ public class Player {
     private NationType nation;
 
     @ElementCollection
+    @Enumerated(EnumType.STRING)
     private List<Rol> roles;
     private String    name;
     private String    email;

@@ -30,7 +30,7 @@ public class PlayerService {
     }
 
     public PlayerProfile register ( RegisterRequest request ) {
-        if (playerRepository.existsPlayer(request.email()).isPresent())
+        if (playerRepository.existsByEmail(request.email()))
             throw new ShipbenderException(ErrorCode.EMAIL_IN_USE, "El email " + request.email() + " ya esta registrado");
         Player player = new Player(request.name(), request.email(), encoder.encode(request.password()), null);
         player.addRol(Rol.PLAYER);

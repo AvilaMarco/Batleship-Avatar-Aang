@@ -1,5 +1,5 @@
 # 410 · backend-dev · Limpieza final de F4
-Estado: pendiente
+Estado: hecha
 Fase: F4
 Depende de: 409
 Paralelizable: no (toca entidades y config que usan las tareas de salvos)
@@ -24,3 +24,5 @@ Criterios de aceptación:
 - Commit `refactor: limpieza final de F4 (tarea 410)`.
 
 ## Resultado
+SpringBeans partido en `PasswordConfig` + `DevDataSeeder` (CommandLineRunner @Profile dev, con `game.join`; los jugadores se guardan antes porque `join` necesita ids). ModelMapper ya no existía (407). Borrados `ShipRepository`, `SalvoRepository`, `findByEmailAndPassword`, `existsPlayer` (-> `existsByEmail`, usado en `PlayerService.register`). Quitados `GamePlayer.emote`/`setShips`/bloque comentado, `Ship.salvosImpacted`, `Salvo.goodShoot`/`shipsDead`. `Player.roles` ahora `EnumType.STRING`. V3 aplicada; el check de V1 se llama `player_roles_roles_check` (confirmado: Flyway/validate pasan). Para la 411: no hay choque, `Ship.locations` y `Salvo(turn, locations)` siguen; `Salvo` conserva `@Data` con `gamePlayer` (ojo con toString/hashCode circular).
+Verificación: `./mvnw test` x3 BUILD SUCCESS (78 tests, 0 fallos); test-run en 4704: Flyway V1-V3, login marco@admin.com 200, GET /api/games 200 con 3 partidas; proceso detenido por PID.

@@ -10,10 +10,7 @@ import java.util.Optional;
 public interface PlayerRepository extends JpaRepository<Player, Long> {
     Optional<Player> findByEmail ( String name );
 
-    Optional<Player> findByEmailAndPassword ( String email, String password );
-
-    @Query("FROM Player p WHERE p.email = :email")
-    Optional<Player> existsPlayer ( String email );
+    boolean existsByEmail ( String email );
 
     @Query("SELECT DISTINCT p FROM Player p JOIN p.gamePlayers gp WHERE gp.score IS NOT NULL")
     List<Player> rankedPlayer ();

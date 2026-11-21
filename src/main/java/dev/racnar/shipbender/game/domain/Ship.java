@@ -18,9 +18,6 @@ public class Ship {
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> locations;
 
-    @ElementCollection
-    private List<String> salvosImpacted;
-
     @Enumerated(EnumType.STRING)
     private ShipType type;
 
@@ -28,10 +25,5 @@ public class Ship {
         this.type      = type;
         this.locations = locations;
     }
-
-    // Relations
-//    @ManyToOne(fetch = FetchType.EAGER)
-//    @JoinColumn(name = "gamePlayer_id")
-//    private GamePlayer gamePlayer;
 
 }
