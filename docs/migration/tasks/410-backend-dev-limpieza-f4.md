@@ -1,5 +1,5 @@
 # 410 · backend-dev · Limpieza final de F4
-Estado: borrador
+Estado: pendiente
 Fase: F4
 Depende de: 409
 Paralelizable: no (toca entidades y config que usan las tareas de salvos)

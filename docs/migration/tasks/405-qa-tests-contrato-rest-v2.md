@@ -1,5 +1,5 @@
 # 405 · qa · Tests de integración del contrato REST v2 (test primero)
-Estado: borrador
+Estado: pendiente
 Fase: F4
 Depende de: 403 (y ADR 004 aprobada)
 Paralelizable: sí, con 404 (archivos distintos)

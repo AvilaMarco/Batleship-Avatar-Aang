@@ -1,5 +1,5 @@
 # 407 · backend-dev · REST v2: partidas y barcos con el dominio conectado
-Estado: borrador
+Estado: pendiente
 Fase: F4
 Depende de: 406
 Paralelizable: no

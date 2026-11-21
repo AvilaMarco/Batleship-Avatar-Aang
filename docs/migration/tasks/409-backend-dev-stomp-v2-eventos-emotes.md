@@ -1,5 +1,5 @@
 # 409 · backend-dev · STOMP v2: eventos after-commit, emotes y `/user/queue/errors`
-Estado: borrador
+Estado: pendiente
 Fase: F4
 Depende de: 408
 Paralelizable: no

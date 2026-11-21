@@ -1,5 +1,5 @@
 # 412 · qa · Tests de salvos: dominio y contrato v2.1 (CONDICIONAL, test primero)
-Estado: borrador · condicional: solo si el usuario aprueba D2
+Estado: pendiente
 Fase: F4
 Depende de: 411
 Paralelizable: no

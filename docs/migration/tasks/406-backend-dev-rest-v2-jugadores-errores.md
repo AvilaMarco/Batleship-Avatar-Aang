@@ -1,5 +1,5 @@
 # 406 · backend-dev · REST v2: auth, jugadores y formato de error único
-Estado: borrador
+Estado: pendiente
 Fase: F4
 Depende de: 403, 405
 Paralelizable: sí con 404 (qa, `src/test/unit`); no con 407 (comparten `WebSecurityConfig` y `shared/error`)

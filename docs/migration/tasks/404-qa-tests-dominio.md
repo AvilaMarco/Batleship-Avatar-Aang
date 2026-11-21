@@ -1,5 +1,5 @@
 # 404 · qa · Tests unitarios del dominio (sin Spring) y baja de los tests de servicios
-Estado: borrador
+Estado: pendiente
 Fase: F4
 Depende de: 403
 Paralelizable: sí, con 405 y con 406 (archivos distintos; sesiones en worktrees separados si corren a la vez)

@@ -10,7 +10,7 @@ Lo edita solo el chat central. Cada fase se cierra con aprobación del usuario y
 | F1 · Red de seguridad | `migration/f1-tests` | **hecha** (mergeada a main) | `./mvnw test` verde sobre Boot 2.6 sin tocar código de producción |
 | F2 · Limpieza | `migration/f2-limpieza` | **hecha** (mergeada a main) | F1 verde; sin código muerto ni secretos en el código |
 | F3 · Upgrade | `migration/f3-upgrade` | **hecha** (mergeada a main) | Boot 4.x + Java 21 + Postgres/Flyway + Testcontainers; F1 verde; app levanta |
-| F4 · Arquitectura backend | `migration/f4-arquitectura` | pendiente | Paquete `dev.racnar.shipbender`; paquetes por feature; dominio testeado sin Spring; contrato API v2 (ADR 004) implementado |
+| F4 · Arquitectura backend | `migration/f4-arquitectura` | en curso | Paquete `dev.racnar.shipbender`; paquetes por feature; dominio testeado sin Spring; contrato API v2 (ADR 004) implementado |
 | F5 · Front nuevo | `migration/f5-frontend` | pendiente | Partida completa jugable en React + TS |
 | F6 · Deploy | `migration/f6-deploy` | pendiente | Juego en el dominio vía Cloudflare Tunnel, con WebSocket |
 
@@ -42,6 +42,19 @@ Detalle en `tasks/`. Terminadas se mueven a `tasks/done/`.
 | 310 | backend-dev | Flyway V1, `ddl-auto=validate`, borrar H2, seed solo en dev | F3 | hecha | 309 |
 | 311 | backend-dev | Deny-by-default con lista cerrada de rutas públicas | F3 | hecha | 310 |
 | 312 | qa | Tests de reglas de acceso y heartbeat | F3 | hecha | 311 |
+| 401 | backend-dev | Renombre de paquete a `dev.racnar.shipbender` | F4 | pendiente | — |
+| 402 | backend-dev | Paquetes por feature + borrar `I*Service` | F4 | pendiente | 401 |
+| 403 | backend-dev | Dominio de flota y partida (Java puro) | F4 | pendiente | 402 |
+| 404 | qa | Tests del dominio sin Spring | F4 | pendiente | 403 |
+| 405 | qa | Tests REST v2 (quedan en rojo hasta 406-407) | F4 | pendiente | 403 |
+| 406 | backend-dev | REST v2: auth, jugadores, formato de error | F4 | pendiente | 405 |
+| 407 | backend-dev | REST v2: partidas y barcos | F4 | pendiente | 406 |
+| 408 | qa | Tests STOMP v2 (quedan en rojo hasta 409) | F4 | pendiente | 407 |
+| 409 | backend-dev | STOMP v2: eventos, emotes y errores | F4 | pendiente | 408 |
+| 410 | backend-dev | Limpieza final (V3 roles, etc.) | F4 | pendiente | 409 |
+| 411 | backend-dev | Dominio de salvos y turnos | F4 | pendiente | 410 |
+| 412 | qa | Tests de salvos | F4 | pendiente | 411 |
+| 413 | backend-dev | Salvos: REST y eventos | F4 | pendiente | 412 |
 | 313 | frontend-dev | Corregir URL de logout del front viejo (`/api/players/logout`) | F3 | hecha | 311 |
 | 205 | qa | Arreglar test intermitente de firma JWT manipulada | F2 | hecha | — |
 | 203 | frontend-dev | Borrar código muerto front (sobras.js, delete/, TEST_DATA.js) | F2 | hecha | — |
@@ -53,6 +66,8 @@ Línea base (F0): `./mvnw test` no ejecuta (falta `.mvn/wrapper/`; Lombok 1.18.2
 ## Decisiones
 
 - [ADR 001 — Decisiones base de la migración](../adr/001-decisiones-base.md)
+- [ADR 004 — Contrato API v2 (REST + STOMP), aprobado](../adr/004-contrato-api-v2.md)
+- [ADR 005 — Arquitectura backend por feature con dominio rico](../adr/005-arquitectura-backend.md)
 - [ADR 003 — Upgrade de Spring Boot (ruta 2.6→2.7→3.5→Java 21→4.2)](../adr/003-upgrade-spring-boot.md)
 - [ADR 002 — Paquete base, Testcontainers, estilo de arquitectura y contrato v2](../adr/002-paquete-tests-arquitectura-contrato.md)
 

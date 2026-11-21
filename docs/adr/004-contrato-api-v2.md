@@ -1,6 +1,6 @@
 # ADR 004 — Contrato API v2 (REST + STOMP)
 
-Estado: propuesta · 2026-11-21 · Se congela al aprobarla el usuario; desde ahí F5 puede empezar en paralelo.
+Estado: **aprobada y congelada** · 2026-11-21 · F5 puede empezar en paralelo. Decisiones del usuario: D1 = 10×10 y 5-4-3-3-2; D2 = salvos en F4 (tareas 411-413); D3 = chat de texto diseñado como v2.1, se hace después.
 
 ## Contexto
 El contrato v1 mezcla datos en la ruta (`/api/match/games/{nation}/{location}`), expone `GamePlayer`, responde `Map`/DTOs genéricos, coloca barcos por un `/topic` compartido (el rival recibe tus posiciones, confirmado en F3) y pierde los errores del WebSocket. Lineamientos: ADR 002 punto 4.
@@ -11,10 +11,10 @@ El contrato v1 mezcla datos en la ruta (`/api/match/games/{nation}/{location}`),
 3. **Un topic público por partida**, `/topic/games/{id}`, con eventos tipados por `type` y **sin posiciones de barcos**. El estado privado (tus barcos) solo sale por `GET /api/games/{id}` a su dueño. `/user/queue/errors` lleva los errores de STOMP.
 4. **Errores RFC 9457** (`ProblemDetail` de Spring) en REST y en `/user/queue/errors`, con `code` estable (Anexo C).
 5. JSON en snake_case (ya configurado en Jackson), DTOs `record`, enums en MAYÚSCULAS. Auth: `Authorization: Bearer <jwt>` en HTTP y en el CONNECT de STOMP.
-6. Grilla 10×10 (filas A–J, columnas 1–10), flota clásica de 5 barcos (Anexo A.4). Ver decisión abierta D1.
+6. Grilla 10×10 (filas A–J, columnas 1–10), flota clásica de 5 barcos (Anexo A.4). Ver D1 (resuelta).
 7. Salvos, fin de partida y chat de texto **no existen hoy**: quedan diseñados como v2.1 (Anexo F), sin implementar salvo decisión del usuario.
 
-## Decisiones abiertas (las resuelve el usuario al aprobar)
+## Decisiones (resueltas por el usuario el 2026-11-21)
 - **D1 · Grilla y flota.** Propuesta: 10×10 y 5-4-3-3-2 (el seed comentado usa `J1..J5` y `J10`, `SpringBeans.java:67,85`; los tests usan un CARRIER de 5). Alternativa: 8×8 y 4-4-3-3-2, que es lo que dibuja el front viejo (`grid.js` itera `1..GRID_SIZE-1` con `GRID_SIZE = 9`; `ships.js:132` comentado). Cambiarlo es tocar `Cell` y `ShipType`.
 - **D2 · ¿Salvos/turnos/fin de partida en F4?** Hoy no existen (Anexo F). Costo: 3 tareas más (411-413). Beneficio: el criterio de cierre de F5 ("partida completa jugable") los necesita; si no van en F4, hay que hacerlos durante F5. Recomendación: sí, con 5 disparos fijos por turno.
 - **D3 · ¿Chat de texto en F4?** Hoy solo hay emotes. Costo: ~1 caso de test y ~3 clases chicas, dentro de 408/409. Beneficio bajo para F5. Recomendación: dejarlo diseñado (Anexo F) y hacerlo después.

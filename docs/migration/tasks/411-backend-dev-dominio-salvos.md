@@ -1,5 +1,5 @@
 # 411 · backend-dev · Dominio de salvos, turnos y fin de partida (CONDICIONAL)
-Estado: borrador · condicional: solo si el usuario aprueba la decisión abierta D2 (implementar v2.1 en F4)
+Estado: pendiente
 Fase: F4
 Depende de: 410
 Paralelizable: no

@@ -1,5 +1,5 @@
 # 408 · qa · Tests del contrato STOMP v2: eventos sin barcos, emotes y errores (test primero)
-Estado: borrador
+Estado: pendiente
 Fase: F4
 Depende de: 407
 Paralelizable: no (la 409 se valida contra estos tests)

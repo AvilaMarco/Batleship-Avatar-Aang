@@ -1,5 +1,5 @@
 # 403 · backend-dev · Dominio: celdas, flota, reglas de partida, estadísticas y errores
-Estado: borrador
+Estado: pendiente
 Fase: F4
 Depende de: 402
 Paralelizable: no (la 404 y la 405 empiezan cuando esta termina)

@@ -1,5 +1,5 @@
 # 402 · backend-dev · Reorganizar por feature y borrar las interfaces `I*Service`
-Estado: borrador
+Estado: pendiente
 Fase: F4
 Depende de: 401
 Paralelizable: no (mueve casi todos los archivos)

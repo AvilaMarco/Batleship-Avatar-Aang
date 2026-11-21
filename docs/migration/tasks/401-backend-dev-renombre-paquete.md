@@ -1,7 +1,7 @@
 # 401 · backend-dev · Renombrar paquete a `dev.racnar.shipbender`
-Estado: borrador
+Estado: pendiente
 Fase: F4
-Depende de: aprobación de ADR 004 y 005
+Depende de: — (ADR 004 y 005 aprobadas)
 Paralelizable: no (toca todos los archivos Java)
 
 Objetivo: cambio puramente mecánico de paquete base y `groupId` (ADR 002 punto 1), sin cambios de lógica, para que el diff de la 402 sea solo de estructura.

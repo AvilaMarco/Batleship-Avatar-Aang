@@ -1,5 +1,5 @@
 # 413 · backend-dev · Endpoint de salvos y eventos de turno (CONDICIONAL)
-Estado: borrador · condicional: solo si el usuario aprueba D2
+Estado: pendiente
 Fase: F4
 Depende de: 412
 Paralelizable: no
