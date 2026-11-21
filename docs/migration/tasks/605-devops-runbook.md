@@ -1,5 +1,5 @@
 # 605 · devops · Runbook de operación
-Estado: pendiente
+Estado: hecha
 Fase: F6
 Depende de: 604
 Paralelizable: sí, con 606 (solo escribe un doc)
@@ -19,3 +19,12 @@ Criterios de aceptación:
 - Commit `docs: runbook de operación del deploy (tarea 605)`.
 
 ## Resultado
+`docs/deploy/runbook.md` con: advertencia `down -v`, sección de SO (pendiente de confirmar el SO), primera instalación, estado/logs, actualizar, rollback, backups/restauración, rotar secretos, parar/arrancar, problemas conocidos. Hostname `shipbender.racnar.dev`, JWT 480 min, `BACKUP_DIR` fuera del repo.
+
+Probado contra `COMPOSE_PROJECT_NAME=shipbender-test` (`.env` de prueba, `BACKUP_DIR` temporal fuera del repo; todo borrado al final):
+- Probados: `docker compose config -q`, `up -d --build` (db/app/backup y luego completo), `ps`, `logs` (con `-f`, `--tail`, varios servicios), `exec app wget` (home), `docker image ls shipbender`, ciclo actualizar (backup previo + `sed` de `APP_TAG` con `git rev-parse --short HEAD` + `up -d --build app`) -> rollback (`APP_TAG=test1`, `up -d app`) con dos tags distintos, `backup.sh` a mano, `exec backup ls`, `restore.sh` (BD 2 jugadores -> 1; y con app no creada, caso "máquina nueva"), rotar `JWT_SECRET` y `TUNNEL_TOKEN` (`up -d app` / `up -d tunnel`; el túnel falla con token falso, como se documenta), `down` + `up -d db backup` conservando datos, `openssl rand -base64 48`.
+- No probados: `git clone`/`git pull`, `cp .env.example .env` (trivial), paso a paso de Cloudflare, conexión real del túnel y WebSocket 403 (es la tarea 607), reinicio del servidor, Linux/systemd, rollback con migración Flyway nueva.
+- Hallazgo: en Git Bash un `BACKUP_DIR=/tmp/...` crea el bind en la VM de Docker Desktop y el dump no aparece en el host; hay que usar ruta de Windows (`C:/...`). Documentado.
+- Hallazgo menor (script, no tocado): `restore.sh` imprime "app arrancada de nuevo" aunque `app` no exista (máquina nueva); documentado en el runbook.
+- grep `secret|token|password`: solo nombres de variables y texto.
+
