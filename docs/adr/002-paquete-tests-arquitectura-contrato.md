@@ -6,7 +6,7 @@ Estado: aceptada · 2026-11-19
 1. **Paquete base `dev.racnar.shipbender`**, `groupId` `dev.racnar` (dominio propio `racnar.dev` invertido). Se hace al inicio de F4, en una tarea solo de renombre (sin cambios de lógica), antes de reorganizar por feature.
 2. **Testcontainers con Postgres** para tests de integración desde F3 (`@ServiceConnection`). H2 se elimina cuando ya no lo use ningún test. Los tests unitarios del dominio no usan BD.
 3. **Arquitectura: monolito modular por feature con dominio rico** ("Clean Architecture pragmática"). Se cumple la regla de dependencias para las reglas del juego (Java puro, sin Spring). Se aceptan conscientemente: anotaciones JPA en las entidades y uso directo de repositorios Spring Data (sin puertos/adaptadores).
-4. **Contrato API v2** (REST + STOMP) diseñado por el arquitecto al inicio de F4 en `docs/adr/003-contrato-api-v2.md` (REST estilo OpenAPI, STOMP estilo AsyncAPI). Lineamientos: recursos en la URL y datos en el body; no exponer `GamePlayer`; DTOs tipados; una sola vía por acción (REST o WS); eventos públicos en `/topic`, estado privado y errores en `/user/queue`; `@Payload` en `@MessageMapping`.
+4. **Contrato API v2** (REST + STOMP) diseñado por el arquitecto al inicio de F4 en `docs/adr/004-contrato-api-v2.md` (REST estilo OpenAPI, STOMP estilo AsyncAPI). Lineamientos: recursos en la URL y datos en el body; no exponer `GamePlayer`; DTOs tipados; una sola vía por acción (REST o WS); eventos públicos en `/topic`, estado privado y errores en `/user/queue`; `@Payload` en `@MessageMapping`.
 
 ## Alternativas descartadas
 - Hexagonal completo (modelo de dominio + entidad JPA + mappers + puertos): duplica código para proteger de cambios de BD/framework que no se prevén.
