@@ -1,5 +1,5 @@
 # 205 · qa · Arreglar test intermitente de firma manipulada
-Estado: pendiente
+Estado: hecha
 Fase: F2
 Depende de: —
 
@@ -15,3 +15,4 @@ Criterios de aceptación:
 - `git diff --stat -- src/main` vacío.
 
 ## Resultado
+Test ahora altera el primer caracter de la firma (tras el ultimo `.`), no el ultimo. 12 corridas de `./mvnw test`: 12 exit 0 (BUILD SUCCESS), 0 fallos. `git diff --stat -- src/main` vacio.
