@@ -11,7 +11,7 @@ function setNationPlayer(event, token) {
 }
 
 function logoutFunction(token) {
-  fetch("/api/logout", postToken(token)).then(() => location.assign("/"));
+  fetch("/api/players/logout", postToken(token)).then(() => location.assign("/"));
 }
 
 export { setNationPlayer, logoutFunction };

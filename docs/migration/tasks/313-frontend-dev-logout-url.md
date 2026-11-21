@@ -1,5 +1,5 @@
 # 313 · frontend-dev · Corregir la URL de logout del front viejo
-Estado: pendiente
+Estado: hecha
 Fase: F3
 Depende de: 311
 
@@ -14,3 +14,4 @@ Criterios de aceptación:
 - `grep -rn "/api/players/logout" src/main/resources/static` → 1 línea.
 
 ## Resultado
+Cambiada la URL en `player.js:14` a `/api/players/logout`. Los dos grep de los criterios dan lo esperado (0 y 1 línea). No se probó en navegador.
