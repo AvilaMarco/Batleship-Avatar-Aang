@@ -8,7 +8,7 @@
         <version>4.2.0</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.codeblockacademy</groupId>
+    <groupId>dev.racnar</groupId>
     <artifactId>shipbender</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>The Last Shipbender</name>
@@ -129,12 +129,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Model Mapper -->
-        <dependency>
-            <groupId>org.modelmapper</groupId>
-            <artifactId>modelmapper</artifactId>
-            <version>3.2.8</version>
-        </dependency>
     </dependencies>
 
     <build>

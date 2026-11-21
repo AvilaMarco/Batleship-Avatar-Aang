@@ -139,6 +139,41 @@ Formato de entrada:
 
 ## F4 · Arquitectura backend
 
+### Reglas del juego en el dominio, no en servicios ni controllers (prioridad alta)
+- **Antes**: `GameService.java:39-46` mutaba entidades al armar una respuesta de lectura (`emptyShips()`); `GameplayService.java:44-47` copiaba los barcos del cliente sin validar (`NONAME`, celdas inventadas); `ShipValidation` existía pero nadie la llamaba; el estado de la partida se calculaba con índices 0/1 de una lista sin orden garantizado (`Game.java:104-112`); y la entidad `Game` recibía un DTO builder (`Game.java:48-73`).
+- **Problema**: las reglas estaban repartidas o ausentes; no se podían probar sin Spring ni base de datos; una *lectura* podía destruir datos; el dominio dependía de la capa web.
+- **Después**: `Fleet` valida en su constructor (una flota que existe ya es válida: *parse, don't validate*); `Game.join/placeShips/fire/status()` concentran las reglas (raíz del agregado); `GameView.of` es una proyección que solo lee. 45 tests de dominio corren en milisegundos, sin Docker.
+- **Por qué es mejor**: la regla vive en un solo sitio, se prueba aislada y el servicio solo orquesta (cargar, llamar al dominio, guardar).
+- **Concepto**: modelo de dominio rico vs. anémico, aggregate root, SRP, regla de dependencias (el dominio no conoce la web), hacer ilegales los estados inválidos.
+
+### Eventos de dominio publicados después del commit (prioridad alta)
+- **Antes**: `@SendTo` en el controller empujaba el mensaje a STOMP durante la petición: un rollback posterior habría dejado un evento fantasma ya enviado, y el mensaje llevaba datos del emisor.
+- **Después**: el servicio publica un evento (`PlayerJoined`, `ShipsPlaced`, `SalvoFired`...) y un único `@TransactionalEventListener(AFTER_COMMIT)` lo envía a `/topic/games/{id}`. Los eventos públicos nunca llevan celdas.
+- **Por qué es mejor**: el servicio no conoce STOMP; solo se anuncia lo que ya está confirmado en la base; la privacidad es una propiedad del evento.
+- **Concepto**: domain events, patrón Observer, adaptador de salida único, separar eventos públicos (`/topic`) de estado privado (`/user/queue`).
+
+### Contrato de API consistente (prioridad alta)
+- **Antes**: datos en la ruta (`/games/{nation}/{location}`), verbos (`/nation/{n}`), `GamePlayer` expuesto, respuestas `Map<String,Object>`, errores con formas distintas, 404 por login fallido, el error "Player Already in Game" para un no participante.
+- **Después**: recursos y verbos HTTP (`POST /api/games`, `PATCH /api/players/me`), vistas relativas al que pregunta (`me`/`opponent`), un solo formato de error `ProblemDetail` con `code` estable (REST y STOMP), 401/403/409 con significado. Documentado en un ADR antes de implementar.
+- **Concepto**: REST orientado a recursos, contrato antes que código, RFC 9457, errores como parte de la API, mínima exposición (un ranking sin emails).
+
+### Test primero: el rojo es la especificación (prioridad alta)
+- qa escribió los tests del contrato v2 *antes* de que backend-dev implementara (31 rojos, luego 14, luego 0; después 7 a 0 y 10 a 0). Los tests "bug conocido" de F1-F3 pasaron a afirmar el comportamiento correcto. Un test que fijaba la fuga de barcos pasó a prohibirla.
+- **Por qué es mejor**: quien implementa tiene un criterio objetivo ("ponlo en verde") y quien escribe el test no es quien escribe el código. **Coste**: la rama queda en rojo entre pares de tareas.
+- **Concepto**: TDD (rojo, verde, refactor), tests como especificación ejecutable.
+
+### Abstracciones que no pagaban (prioridad media)
+- 8 interfaces `I*Service` de una sola implementación, `ModelMapper`, una jerarquía de excepciones con `HttpStatus` dentro (el dominio dependía de la web), `ENV_VARIABLES` como interfaz de constantes. Se borraron. Quedó una `ShipbenderException` con un `ErrorCode`.
+- **Concepto**: YAGNI; abstraer cuando hay una segunda implementación, no antes. Las abstracciones valen donde protegen algo que cambia (aquí, las reglas del juego).
+
+### Detalles que costaban caro (prioridad media)
+- `PlayerService.java:104` dividía enteros: el `win_rate` solo daba 0 o 100. Ahora `won * 100.0 / total` (`PlayerStats`).
+- `Player.roles` se guardaba como ordinal: reordenar el enum habría cambiado los roles de todos. Ahora `EnumType.STRING` (V3).
+- Registro: un `exists` antes del `insert` deja pasar la carrera (500). La unicidad la decide la base (`unique`) y se traduce a 409.
+- `Salvo` con `@Data` y relación bidireccional: `equals/hashCode/toString` ciclan. En entidades JPA, `@Getter/@Setter`.
+- Seguridad: con `/api/**` abierto a PLAYER, una ruta inexistente daba 404 (revela qué existe); deny-by-default real lista las rutas permitidas.
+- El token con firma manipulada pasó de excepción sin respuesta a `401 UNAUTHENTICATED`: la autenticación solo establece identidad; la autorización decide después.
+
 ## F5 · Front nuevo
 
 ## F6 · Deploy

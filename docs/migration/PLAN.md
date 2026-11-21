@@ -9,8 +9,8 @@ Lo edita solo el chat central. Cada fase se cierra con aprobación del usuario y
 | F0 · Preparación | `migration/f0-preparacion` | **hecha** (mergeada a main) | Usuario aprueba plan y tareas de F1–F2 |
 | F1 · Red de seguridad | `migration/f1-tests` | **hecha** (mergeada a main) | `./mvnw test` verde sobre Boot 2.6 sin tocar código de producción |
 | F2 · Limpieza | `migration/f2-limpieza` | **hecha** (mergeada a main) | F1 verde; sin código muerto ni secretos en el código |
-| F3 · Upgrade | `migration/f3-upgrade` | **esperando aprobación del usuario** | Boot 4.x + Java 21 + Postgres/Flyway + Testcontainers; F1 verde; app levanta |
-| F4 · Arquitectura backend | `migration/f4-arquitectura` | pendiente | Paquete `dev.racnar.shipbender`; paquetes por feature; dominio testeado sin Spring; contrato API v2 (ADR 004) implementado |
+| F3 · Upgrade | `migration/f3-upgrade` | **hecha** (mergeada a main) | Boot 4.x + Java 21 + Postgres/Flyway + Testcontainers; F1 verde; app levanta |
+| F4 · Arquitectura backend | `migration/f4-arquitectura` | **esperando aprobación del usuario** | Paquete `dev.racnar.shipbender`; paquetes por feature; dominio testeado sin Spring; contrato API v2 (ADR 004) implementado |
 | F5 · Front nuevo | `migration/f5-frontend` | pendiente | Partida completa jugable en React + TS |
 | F6 · Deploy | `migration/f6-deploy` | pendiente | Juego en el dominio vía Cloudflare Tunnel, con WebSocket |
 
@@ -42,6 +42,19 @@ Detalle en `tasks/`. Terminadas se mueven a `tasks/done/`.
 | 310 | backend-dev | Flyway V1, `ddl-auto=validate`, borrar H2, seed solo en dev | F3 | hecha | 309 |
 | 311 | backend-dev | Deny-by-default con lista cerrada de rutas públicas | F3 | hecha | 310 |
 | 312 | qa | Tests de reglas de acceso y heartbeat | F3 | hecha | 311 |
+| 401 | backend-dev | Renombre de paquete a `dev.racnar.shipbender` | F4 | hecha | — |
+| 402 | backend-dev | Paquetes por feature + borrar `I*Service` | F4 | hecha | 401 |
+| 403 | backend-dev | Dominio de flota y partida (Java puro) | F4 | hecha | 402 |
+| 404 | qa | Tests del dominio sin Spring | F4 | hecha | 403 |
+| 405 | qa | Tests REST v2 (quedan en rojo hasta 406-407) | F4 | hecha | 403 |
+| 406 | backend-dev | REST v2: auth, jugadores, formato de error | F4 | hecha | 405 |
+| 407 | backend-dev | REST v2: partidas y barcos | F4 | hecha | 406 |
+| 408 | qa | Tests STOMP v2 (quedan en rojo hasta 409) | F4 | hecha | 407 |
+| 409 | backend-dev | STOMP v2: eventos, emotes y errores | F4 | hecha | 408 |
+| 410 | backend-dev | Limpieza final (V3 roles, etc.) | F4 | hecha | 409 |
+| 411 | backend-dev | Dominio de salvos y turnos | F4 | hecha | 410 |
+| 412 | qa | Tests de salvos | F4 | hecha | 411 |
+| 413 | backend-dev | Salvos: REST y eventos | F4 | hecha | 412 |
 | 313 | frontend-dev | Corregir URL de logout del front viejo (`/api/players/logout`) | F3 | hecha | 311 |
 | 205 | qa | Arreglar test intermitente de firma JWT manipulada | F2 | hecha | — |
 | 203 | frontend-dev | Borrar código muerto front (sobras.js, delete/, TEST_DATA.js) | F2 | hecha | — |
@@ -53,6 +66,8 @@ Línea base (F0): `./mvnw test` no ejecuta (falta `.mvn/wrapper/`; Lombok 1.18.2
 ## Decisiones
 
 - [ADR 001 — Decisiones base de la migración](../adr/001-decisiones-base.md)
+- [ADR 004 — Contrato API v2 (REST + STOMP), aprobado](../adr/004-contrato-api-v2.md)
+- [ADR 005 — Arquitectura backend por feature con dominio rico](../adr/005-arquitectura-backend.md)
 - [ADR 003 — Upgrade de Spring Boot (ruta 2.6→2.7→3.5→Java 21→4.2)](../adr/003-upgrade-spring-boot.md)
 - [ADR 002 — Paquete base, Testcontainers, estilo de arquitectura y contrato v2](../adr/002-paquete-tests-arquitectura-contrato.md)
 
@@ -83,3 +98,19 @@ Hallazgos para fases siguientes (ver APRENDIZAJE.md):
 - **F4 (seguridad, confirmado en vivo):** el topic `/topic/gameplay/{id}/ships` es compartido: el jugador A recibió en su navegador las posiciones de los barcos del rival B.
 - **F5 (front, ya existente en el original):** `game.js:99` `updataHostAndClientData` revienta si el creador abre la partida antes de que haya rival (`CLIENT` undefined) y el socket ni se conecta; `handlerShips` → `createShipGrid` revienta con los barcos del rival (`update_html.js:93`).
 - No verificado: arranque sin Docker (mensaje de error de Testcontainers); `spring-boot:run` contra una BD real (F6); `JWT_SECRET` de prod (F6).
+
+## Resultado F4
+
+99 tests en verde (34 de dominio sin Spring/Docker + 11 de salvos sin Docker + integración REST/STOMP). Código: 81 → 54 archivos Java.
+- Paquete `dev.racnar.shipbender` por feature (`player`, `game`, `chat`, `security`, `config`, `shared`); 8 interfaces `I*Service`, ModelMapper y la jerarquía `AirbenderException` borrados.
+- Dominio rico en Java puro: `Cell`, `Fleet` (flota válida por construcción), `Game.join/placeShips/status/fire`, `PlayerStats`, `TurnResult`.
+- Contrato v2 (ADR 004) implementado: REST con `ProblemDetail` (RFC 9457, `code` estable), STOMP con un topic público `/topic/games/{id}` sin posiciones de barcos, errores por usuario en `/user/queue/errors`, eventos de dominio publicados tras el commit.
+- **Funcionalidad nueva (no existía en el original):** salvos, turnos simultáneos de 5 disparos y fin de partida (3/1/0, empate).
+- Verificado en vivo (puerto 4704): eventos STOMP sin celdas, turno completo con dos jugadores, Swagger con las rutas del Anexo A (más salvos).
+- Esquema: V2 (email único) y V3 (roles por nombre, limpieza).
+Pendiente / no verificado:
+- **El front viejo ya NO funciona** contra el contrato v2 (esperado; se reescribe en F5).
+- `GAME_FINISHED` solo verificado por test de integración, no en vivo; rollback forzado tras publicar evento: razonado, no probado.
+- Chat de texto: diseñado como v2.1 (ADR 004 Anexo F), sin implementar (decisión D3).
+- Dev: el seeder puede no haber terminado cuando llega el primer login tras arrancar.
+- Menores: `GamePlayerRepository.findByPlayerIdAndGameId` con parámetros en orden invertido (sin uso); `V1` aún admite `NONAME` en el check de `ship.type`.
