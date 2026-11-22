@@ -61,6 +61,7 @@ El runner del administrador vuelve a la imagen anterior (conserva 3 versiones) s
   ```
 
   Comprueba antes qué hace la versión anterior con `nation` nulo. Si no es válido, la alternativa es restaurar el backup.
+- Flyway no falla al volver a una imagen que solo conoce V1-V3 sobre un esquema ya en V4: el default `ignoreMigrationPatterns=*:future` ignora migraciones aplicadas más nuevas (solo avisa en el log). Verificado con `FlywayRollbackTest` (tarea 819); no hace falta configuración extra.
 - Si una migración nueva no es compatible hacia atrás, la vuelta atrás exige restaurar el dump previo al despliegue (paso 5). Se pierden los datos creados desde ese backup.
 
 Regla para los equipos: no se hace una migración destructiva (drop, renombrado, cambio de tipo) en el mismo despliegue que deja de usarse la versión anterior. Primero expand, luego contract, en despliegues distintos.

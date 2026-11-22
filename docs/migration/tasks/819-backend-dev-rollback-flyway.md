@@ -1,5 +1,5 @@
 # 819 · backend-dev · Probar que una imagen anterior arranca sobre un esquema con V4
-Estado: pendiente
+Estado: hecha
 Fase: F8
 Depende de: 809
 Paralelizable: sí (solo backend)
@@ -11,3 +11,4 @@ Objetivo: demostrar con un test (Testcontainers Postgres) que con la configuraci
 Criterios: `./mvnw test` exit 0 (Docker corriendo); el test falla antes de la config si hace falta (rojo) y pasa después; commit `test: rollback de imagen con esquema V4 (tarea 819)` (+ `fix:` si cambia la config), línea final Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>.
 
 ## Resultado
+Test `FlywayRollbackTest` (Testcontainers): migra a V4 y valida/migra con solo V1-V3; pasa a la primera (no hubo rojo) porque el default de Flyway es `*:future` y Spring Boot no lo cambia. Sin cambio de configuración; runbook sección 4 actualizada. `./mvnw -Dtest=FlywayRollbackTest test` exit 0.
