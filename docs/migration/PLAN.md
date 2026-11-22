@@ -226,10 +226,10 @@ Reparto (2026-11-22): la sesión principal hace lógica y funcionalidad; la sesi
 | 812, 813, 815-817 | frontend-dev / qa | Perfil (`#/profile`), selector de nación en el registro (se guarda con PATCH tras registrarse), `GameMap` con `map.svg` | hecha | 808 |
 | 814 | qa | e2e con las etiquetas en español del mapa | hecha | — |
 | 818 | diseño | El ranking ya no desborda en 390 px | hecha | — |
-| 819 | backend-dev | Probar que una imagen anterior arranca sobre un esquema con V4 | ver `## Resultado` de la tarea | 809 |
+| 819 | backend-dev | Probar que una imagen anterior arranca sobre un esquema con V4 (el default `*:future` de Flyway basta; test `FlywayRollbackTest`) | hecha | 809 |
 | 620-622 | devops / reviewer | Deploy al servidor: 621 pidió cambios; 622 los corrigió (sin `@sha256` en `db`, uid 10001, `deploy.sh` a `legacy/`, runbook) y quedó aprobada | hecha; falta el `recibir` real | — |
 
 Nota F8: el PLAN anterior decía que 804 se descartaba y que el refresco se limitaba a volver a primer plano o recuperar la conexión (el fallo no se reprodujo en 7 corridas). Las tareas 804/805 seguían como `pendiente` y se ejecutaron: el front ahora también refresca cada 15 s. Es inofensivo (una petición cada 15 s, sin solapes, nada con la partida terminada) pero contradice esa decisión; si se prefiere la versión mínima, basta quitar el `setInterval` de `GameScreen.tsx`.
 Verificado por el chat central: 134 tests de front y 116 de backend en verde, build, e2e en verde y revisión visual a 390, 844x390 y 1280 (el ranking desbordaba a 390 y se corrigió con la 818).
-Hallazgos cerrados: el "doble montaje del lobby tras el login" es `StrictMode` en desarrollo (no ocurre en producción); `kim_bauer` del seeder no tiene el rol `PLAYER` y por eso da 403 en `/api/players/me` (usar `marco@aaa.com` / `123`).
+Hallazgos cerrados: el rollback de imagen con V4 arranca sin tocar la configuración (819); el "doble montaje del lobby tras el login" es `StrictMode` en desarrollo (no ocurre en producción); `kim_bauer` del seeder no tiene el rol `PLAYER` y por eso da 403 en `/api/players/me` (usar `marco@aaa.com` / `123`).
 Sin hacer, por decisión: chat de texto (v2.1), flechas para mover el barco al colocarlo, icono PWA de más resolución, sprite `sunk` en el tablero rival (el rival no expone sus barcos).
