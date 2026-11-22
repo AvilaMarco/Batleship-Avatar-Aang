@@ -3,6 +3,8 @@
 Servidor: Docker Compose (db + app + backup; `tunnel` solo opcional) publicado en `https://shipbender.racnar.dev` detrás de Caddy y del túnel que ya tiene el servidor (sección 1).
 Todo se ejecuta **desde la raíz del clon de producción** (rama `main`, nunca la copia de desarrollo). Detalle y motivos: `docs/adr/007-deploy.md`.
 
+> **Pendiente de reescritura (tarea 620)**: el servidor real adoptó otro diseño (paquete por `recibir` + runner root, sin docker remoto, backups del servidor, puerto 3100). Hasta que 620 termine, las secciones 1 (Caddy/admin), 3 (`ssh-entry`/clave en grupo docker), 5 (servicio `backup`) y "Túnel propio" están **obsoletas para el servidor real**; vale lo de `docs/adr/007-deploy.md` (actualización 2026-11-22) y `docs/deploy/PRIMER-DESPLIEGUE.md`.
+
 > **ADVERTENCIA — pierdes todos los datos**
 > Nunca ejecutes `docker compose down -v`, `docker volume rm shipbender_pgdata`, `docker volume prune` ni `docker system prune --volumes`: borran el volumen `pgdata` (jugadores y partidas). `docker compose down` **sin** `-v` es seguro.
 
