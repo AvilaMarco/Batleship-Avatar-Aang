@@ -25,3 +25,7 @@ export const MAP_LOCATIONS: MapLocation[] = [
   { id: "A3", nation: "AIR", x: 802.5, y: 115, r: 30 },
   { id: "A4", nation: "AIR", x: 1230, y: 450, r: 30 },
 ];
+
+// tamaño natural de mapa-game-mobile.png; las coordenadas de MAP_LOCATIONS están en este espacio
+export const MAP_W = 1400;
+export const MAP_H = 800;

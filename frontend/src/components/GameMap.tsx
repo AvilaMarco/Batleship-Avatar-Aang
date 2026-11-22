@@ -1,4 +1,4 @@
-import type { GameSummary } from "../api/types";
+import type { GameSummary, Nation } from "../api/types";
 import { MAP_LOCATIONS, type MapLocation } from "../domain/map-locations";
 
 // tamaño natural de fondo-mapa.png; los puntos se posicionan en % para escalar en móvil
@@ -8,6 +8,7 @@ const H = 950;
 interface Props {
   games: GameSummary[];
   myId: number;
+  nation?: Nation | null; // se usa desde la 803
   onCreate: (loc: MapLocation) => void;
   onJoin: (gameId: number) => void;
   onOpen: (gameId: number) => void;
