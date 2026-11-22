@@ -14,17 +14,21 @@ async function register(page: Page, name: string) {
   await page.getByLabel("Email").fill(`${name}@e2e.test`);
   await page.getByLabel("Contraseña").fill("secreto123");
   await page.getByRole("button", { name: "Crear cuenta" }).click();
-  await page.getByRole("button", { name: "Agua" }).click();
+  // el lobby se monta dos veces al entrar: un clic previo al remontaje se pierde, así que se reintenta hasta que la nación queda elegida
+  await expect(async () => {
+    await page.getByRole("button", { name: "Agua" }).click({ timeout: 1000 });
+    await expect(page.getByRole("button", { name: "Actualizar" })).toBeVisible({ timeout: 1500 }); // solo existe con nación elegida
+  }).toPass();
 }
 
 async function placeFleet(page: Page, origins: string[], vertical: boolean) {
-  if (vertical) await page.getByRole("button", { name: /^Rotar/ }).click();
+  if (vertical) await page.getByRole("button", { name: /Rotar/ }).click();
   const board = page.getByRole("group", { name: "Tablero", exact: true });
   for (const [i, ship] of SHIPS.entries()) {
     await page.getByRole("button", { name: new RegExp(`^${ship}`) }).click();
     await board.getByRole("button", { name: origins[i], exact: true }).click();
   }
-  await page.getByRole("button", { name: "Enviar barcos" }).click();
+  await page.getByRole("button", { name: /^Listo/ }).click();
 }
 
 async function fire(page: Page, cells: string[]) {
@@ -40,13 +44,13 @@ test("partida completa: A hunde la flota de B en 4 turnos", async ({ browser }) 
 
   await register(a, `a${id}`);
   // dos pasos: pulsar la ubicación libre y luego "Crear partida en <id>"
-  const free = a.getByRole("button", { name: /: empty$/ }).first();
+  const free = a.getByRole("button", { name: /: libre$/ }).first();
   const loc = (await free.getAttribute("aria-label"))!.split(":")[0];
   await free.click();
   await a.getByRole("dialog").getByRole("button", { name: `Crear partida en ${loc}` }).click();
 
   await register(b, `b${id}`);
-  await b.getByRole("button", { name: `${loc}: join` }).click();
+  await b.getByRole("button", { name: `${loc}: con un jugador` }).click();
   await b.getByRole("dialog").getByRole("button", { name: `Unirse a la partida en ${loc}` }).click();
 
   await placeFleet(a, fleetA, false);

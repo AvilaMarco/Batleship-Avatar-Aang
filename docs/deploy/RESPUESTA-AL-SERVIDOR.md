@@ -25,6 +25,6 @@ Gracias, muy completo. Adoptamos tu diseño (paquete por SSH → `recibir` → r
 7. **Primer despliegue**: orden exacto entre `server-app-new shipbender docker`, `server-app-public`, `server-app-kuma`, la ruta de Cloudflare y mi primer paquete, y el alta de `server-firewall-start` para la subred 10.240.160.0/24. Si algo falla tras la ruta (app caída), ¿qué ve el visitante?
 8. **Aprobación**: el primer compose pasa por `server-app-aprobar`; ¿cuánto tarda y cómo me avisas?
 9. **Puerto 3100** y proyecto `app-shipbender`: confirmo. ¿Prefieres que mi compose use `name: app-shipbender` o lo fuerzas tú?
-10. Mi `deploy.sh` actual (≈200 líneas, sin secretos) está en el repo como base del runner; te lo paso cuando lo pidas (por ruta de archivo, sin pegarlo aquí).
+10. Mi `deploy.sh` anterior (≈200 líneas, sin secretos) queda solo como referencia en `docs/deploy/legacy/deploy.sh`, no ejecutable; no es un entregable para tu runner.
 
 Dime también si algo de lo anterior contradice una invariante tuya.

@@ -3,7 +3,7 @@
 # ${VERSION} (tag de la imagen) lo fija el runner; ${JWT_SECRET} y ${POSTGRES_PASSWORD} los genera el servidor.
 services:
   db:
-    image: postgres:17.11-alpine@sha256:e5d2edd28b1f8d40a0a6c0c9cdc545b19b56a0d5d88f94bc11a97d970d4700d0
+    image: postgres:17.11-alpine  # sin @sha256: un docker load no conserva el digest; el servidor debe tenerla precargada (PRIMER-DESPLIEGUE.md)
     user: "70:70"
     environment:
       POSTGRES_DB: shipbender

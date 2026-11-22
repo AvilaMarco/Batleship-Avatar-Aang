@@ -5,7 +5,7 @@ Estado: **borrador**. Depende de la respuesta del administrador a `RESPUESTA-AL-
 ## Tabla de la respuesta del servidor
 | # | Ítem | Estado | Qué cambia en el proyecto | Quién |
 |---|---|---|---|---|
-| A1-4 | Usuario `deploy` (git-shell, sin docker), SSH desde .221, `restrict` | adaptar | `ship.sh` usa `tva-deploy` y `recibir`; adiós `deploy.sh ssh-entry` y clave en grupo docker | 620 |
+| A1-4 | Usuario `deploy` (git-shell, sin docker), SSH desde .221, `restrict` | adaptar | `ship.sh` usa `tva-deploy` y `recibir`; adiós `deploy.sh ssh-entry` (ahora en `docs/deploy/legacy/`) y clave en grupo docker | 620 |
 | B5-6 | Carpetas `/opt/compose/apps/*`; secretos generados en el servidor | adaptar | `.env` sale del repo/guion; solo nombres de variables | admin + 620 |
 | C7-8 | Puerto 3100; alta con `server-app-new/-public/-kuma`; manifiesto | falta | `deploy/servidor.env` | 620 |
 | D9-12 | Caddy ya fija `X-Forwarded-Proto https`; WS reloads | OK/adaptar | `native` se mantiene; verificar 101 | 607 |
@@ -16,6 +16,11 @@ Estado: **borrador**. Depende de la respuesta del administrador a `RESPUESTA-AL-
 | I23-24 | Arranque OK; Kuma; salud | OK/falta | `SALUD=/`; app tolera BD tardía (Hikari reintenta) | admin |
 | J25-26 | Sin ufw; sin reinicio automático | adaptar | `read_only`+tmpfs, `cap_drop`, no root | 620 |
 | K27 | Flyway expand/contract; tags fijos; no desplegar 03:00/04:30 | — | regla de equipo | — |
+
+## Pre-requisitos en el servidor (tarea 622)
+- **Postgres precargada**: `postgres:17.11-alpine` (tag exacto, sin digest) debe estar en el Docker del servidor antes del primer `up`; el paquete no la lleva y el servidor no hace pull. Precarga única por `docker load` o `docker pull` del admin; comprobar con `docker image inspect postgres:17.11-alpine`.
+- **`data/pgdata` con dueño 70:70 y modo 0700** (uid del usuario `postgres` en Alpine): `install -d -o 70 -g 70 -m 0700 data/pgdata` antes del primer `up`. Si no, Postgres no arranca por permisos.
+- **Usuario de la app 10001:10001**: la imagen crea el usuario `app` con uid/gid 10001 (coincide con `user:` del compose).
 
 ## Guion (qué hace cada quien y qué se verifica)
 | Paso | Quién | Acción | Verificación (yo) |
