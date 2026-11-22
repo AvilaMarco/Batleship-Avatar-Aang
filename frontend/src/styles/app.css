@@ -37,11 +37,11 @@
   [role="status"] { text-align: center; }
 
   /* Selector de nación: 4 cartas */
-  section[aria-labelledby="nation-title"] { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-2); }
-  section[aria-labelledby="nation-title"] { max-width: 560px; }
+  section[aria-labelledby="nation-title"] { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--space-2); }
+  section[aria-labelledby="nation-title"] { max-width: 700px; }
   section[aria-labelledby="nation-title"] h2 { grid-column: 1 / -1; }
   section[aria-labelledby="nation-title"] button { padding: 0; overflow: hidden; border-radius: var(--radius-card); aspect-ratio: 500 / 650; }
-  section[aria-labelledby="nation-title"] img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  section[aria-labelledby="nation-title"] img, section[aria-labelledby="nation-title"] svg { width: 100%; height: 100%; object-fit: cover; display: block; }
 
   /* Ranking */
   table { width: 100%; border-collapse: collapse; background: var(--surface); border: var(--border-w) solid var(--line); border-radius: var(--radius-card); box-shadow: var(--shadow); font-variant-numeric: tabular-nums; }
