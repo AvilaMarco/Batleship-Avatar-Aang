@@ -215,8 +215,10 @@ Rama `migration/f8-logica`. Reparto (2026-11-22): esta sesión hace SOLO lógica
 
 | # | Rol | Tarea | Fase | Estado | Depende de |
 |---|---|---|---|---|---|
-| 801 | qa | Tests del mapa interactivo (rojo hasta 803) | F8 | pendiente | — |
-| 802 | frontend-dev | Lógica pura del mapa y constantes | F8 | pendiente | 801 |
-| 803 | frontend-dev | Mapa SVG con menú de acciones | F8 | pendiente | 802 |
-| 804 | qa | Tests del refresco de respaldo (rojo hasta 805) | F8 | pendiente | 803 |
-| 805 | frontend-dev | Refresco de respaldo de la partida | F8 | pendiente | 804 |
+| 801 | qa | Tests del mapa interactivo (rojo hasta 803) | F8 | hecha | — |
+| 802 | frontend-dev | Lógica pura del mapa y constantes | F8 | hecha | 801 |
+| 803 | frontend-dev | Mapa SVG con menú de acciones | F8 | hecha | 802 |
+| 804 | qa | Tests del refresco de respaldo | F8 | descartada (ver nota) | 803 |
+| 805 | frontend-dev | Refresco de respaldo de la partida | F8 | hecha en versión mínima | 804 |
+
+Nota F8: el refresco se redujo a recargar la partida al volver la pestaña a primer plano y al recuperar la conexión (sin intervalo de 15 s: el fallo no se reprodujo en 7 corridas). Arreglos del mapa tras la prueba manual: Escape cierra el menú desde cualquier foco, etiquetas accesibles en español, y tocar de nuevo una ubicación devuelve el foco al menú. Verificado: 92 tests de front, build, y E2E 3/3 contra el backend de desarrollo. Pendiente: aprobación del usuario para mergear `migration/f8-logica` a `main`.

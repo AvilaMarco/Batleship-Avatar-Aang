@@ -35,6 +35,14 @@ export default function GameMap({ games, myId, nation, onCreate, onJoin, onOpen 
     setSelected(null);
     if (id) spots.current.get(id)?.focus();
   };
+
+  // Escape cierra el menú aunque el foco esté en una ubicación
+  useEffect(() => {
+    if (!selected) return;
+    const esc = (e: KeyboardEvent) => { if (e.key === "Escape") close(); };
+    window.addEventListener("keydown", esc);
+    return () => window.removeEventListener("keydown", esc);
+  });
   const run = (fn: () => void) => { setSelected(null); fn(); };
 
   const info = selected ? locationState(selected.id, games, myId) : null;
@@ -46,7 +54,7 @@ export default function GameMap({ games, myId, nation, onCreate, onJoin, onOpen 
           <image href="/assets/img/mapa-game-mobile.png" width={MAP_W} height={MAP_H} />
           {MAP_LOCATIONS.map((loc) => {
             const { state } = locationState(loc.id, games, myId);
-            const open = () => setSelected(loc);
+            const open = () => { setSelected(loc); sheet.current?.focus(); };
             return (
               <g
                 key={loc.id}
@@ -55,7 +63,7 @@ export default function GameMap({ games, myId, nation, onCreate, onJoin, onOpen 
                 data-state={state}
                 role="button"
                 tabIndex={0}
-                aria-label={`${loc.id}: ${state}`}
+                aria-label={`${loc.id}: ${STATE_LABEL[state]}`}
                 onClick={open}
                 onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); } }}
               >
@@ -72,7 +80,6 @@ export default function GameMap({ games, myId, nation, onCreate, onJoin, onOpen 
           role="dialog"
           aria-label={`Ubicación ${selected.id}: ${STATE_LABEL[info.state]}`}
           tabIndex={-1}
-          onKeyDown={(e) => { if (e.key === "Escape") close(); }}
         >
           {info.state === "empty" && (
             <button type="button" onClick={() => run(() => onCreate(selected))}>Crear partida en {selected.id}</button>
