@@ -49,7 +49,7 @@ it("login correcto desde #/login termina en #/", async () => {
 it.each(["#/", "#/games/5"])("sin perfil y ruta %s sigue yendo a #/login", async (hash) => {
   location.hash = hash;
   render(<App />);
-  expect(await screen.findByRole("heading", { name: "Iniciar sesión" })).toBeInTheDocument();
+  expect(await screen.findByRole("form", { name: "Iniciar sesión" })).toBeInTheDocument();
   expect(location.hash).toBe("#/login");
 });
 
@@ -60,5 +60,5 @@ it("mientras ready es falso no redirige ni muestra el login", async () => {
   render(<App />);
   expect(screen.getByText("Cargando…")).toBeInTheDocument();
   expect(location.hash).toBe("#/games/5");
-  expect(screen.queryByRole("heading", { name: "Iniciar sesión" })).toBeNull();
+  expect(screen.queryByRole("form", { name: "Iniciar sesión" })).toBeNull();
 });
