@@ -335,3 +335,11 @@ frontend/node/
 
 frontend/test-results/
 frontend/playwright-report/
+
+# Despliegue (F7): config de ship.sh y estado de deploy.sh en el servidor
+.ship.env
+.current_tag
+.previous_tag
+.deploy.lock
+.deploy.log
+*.new
