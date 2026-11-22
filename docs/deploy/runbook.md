@@ -105,7 +105,9 @@ En la PC de desarrollo: `ssh-keygen -t ed25519 -f ~/.ssh/shipbender_deploy` (sol
 restrict,command="/ruta/al/clon/scripts/deploy.sh ssh-entry" ssh-ed25519 AAAA... deploy-shipbender
 ```
 
-`ssh-entry` solo acepta `load <tag>`, `up <tag>`, `rollback`, `status` e `infra` (el tag debe cumplir `^[0-9a-f]{7,12}$`); cualquier otra cosa se rechaza sin ejecutar nada. La clave privada no sale de tu PC. Nota: quien tenga esa clave puede desplegar código arbitrario (es el propósito), así que protégela como una credencial de producción.
+`ssh-entry` solo acepta `load <tag>`, `up <tag>`, `rollback`, `status` e `infra` (el tag debe cumplir `^[0-9a-f]{7,12}$`); cualquier otra cosa se rechaza sin ejecutar nada. La clave privada no sale de tu PC. **La clave de despliegue equivale a root del servidor**: el grupo `docker` es root, `infra` sustituye el compose y `load` acepta cualquier imagen. Por eso: clave solo para este fin, `from="IP-de-tu-PC"` delante de `restrict` en `authorized_keys` (`from="1.2.3.4",restrict,command="..." ssh-ed25519 ...`), y un usuario de despliegue sin sudo ni shell interactivo. Protégela como una credencial de producción.
+
+**Si se corta el SSH a mitad de un despliegue**: `up` y `rollback` siguen hasta el final (ignoran HUP/PIPE y escriben en `.deploy.log`, 0600, en la raíz del clon). Al reconectar mira `scripts/deploy.sh status` y `tail -n 30 .deploy.log`: ahí consta si llegó a healthy o si hizo rollback. Topes: `infra` 8 MiB y `load` 2 GiB (comprimido); `load` e `infra` también toman el lock.
 
 ## 4. Rollback
 
@@ -118,7 +120,7 @@ scripts/deploy.sh rollback    # intercambia actual y anterior (hace backup antes
 
 ## 5. Backups y restauración
 
-El servicio `backup` hace un dump al arrancar y cada 24 h en `BACKUP_DIR` (`shipbender-AAAAMMDD-HHMMSS.dump`) y borra los de más de `RETENTION_DAYS` (14) días.
+El servicio `backup` hace un dump al arrancar y cada 24 h en `BACKUP_DIR` (`shipbender-AAAAMMDD-HHMMSS.dump`) y borra los de más de `RETENTION_DAYS` (14) días. Además `deploy.sh up` hace un dump antes de cada despliegue: con muchos despliegues al día se acumulan hasta que los barre la retención. Los dumps son 0600 de root: el usuario de despliegue no puede leerlos (usa sudo/root del administrador para restaurar o copiarlos).
 
 ```bash
 docker compose exec backup sh /scripts/backup.sh     # backup a mano

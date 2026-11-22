@@ -1,5 +1,5 @@
 # 613 · devops · Endurecimiento del despliegue tras la revisión 612
-Estado: pendiente
+Estado: parcial
 Fase: F7
 Depende de: 612
 Paralelizable: no
@@ -28,3 +28,14 @@ Criterios de aceptación (proyecto aislado `COMPOSE_PROJECT_NAME=shipbender-test
 - Commit `fix(deploy): rollback ante corte de SSH, lock en load/infra, topes de tamaño y memswap (tarea 613)`.
 
 ## Resultado
+
+Reproducido ANTES: `deploy.sh up <tag-malo> 2>&1 | head -n 1` (imagen en crashloop) dejó `.current_tag`=versión mala, `app` con 9 reinicios y sin rollback. DESPUÉS (mismo caso, también vía `ssh-entry`): `.current_tag`=versión anterior, app healthy, `.deploy.log` con "ERROR... / volviendo automaticamente / rollback automatico ok".
+
+Cambios: `deploy.sh` (`detach()` en `up`/`rollback`: `trap '' HUP PIPE` y salida por `tee -a --output-error=warn-nopipe .deploy.log` + espera de `tee` en EXIT; lock en `load`/`infra`; tope 8 MiB en `infra` y 2 GiB en `load` con `head -c`; chequeo de líneas de `tar -tf`/`-tvf`/entradas), `backup.sh` (línea 55 a UTF-8; solo ese byte), `docker-compose.yml` (`memswap_limit` = `mem_limit` en los 4 servicios, verificado con `config`), `.gitignore` (`.deploy.log`), runbook (clave = root, `from=`, corte de SSH, topes, dumps 0600 de root y acumulación).
+
+Desviación del diseño: se usa `tee` siempre (no solo con terminal), porque `ship.sh` usa `ssh -T` (sin terminal) y con solo fichero el operador no vería la salida del despliegue.
+
+Verificado: `bash -n`, LF, UTF-8; 14 entradas hostiles por `ssh-entry` rechazadas con 126 sin archivo canario; `infra` válido OK, tar de 9 MiB rechazado, tar con nombre con salto de línea rechazado (por la lista blanca); `load` con flujo gzip real OK y con flujo truncado falla limpio; `rollback` con salida cortada OK; limpieza hecha.
+
+No verificado: `sshd` real, `flock` en Debian (Git Bash no lo tiene: `lock` es no-op), la rama `tee` con terminal real, el chequeo de recuento de líneas de `infra` de forma aislada (GNU tar escapa el salto de línea, así que la lista blanca ya lo rechaza antes), el tope de 2 GiB con un flujo real de ese tamaño, permisos 0600 de `.deploy.log` (Windows). Riesgo residual: si el cliente SSH queda colgado sin cerrar, la tubería puede llenarse y bloquear a `tee`/el script; un corte limpio (el caso probado) no.
+

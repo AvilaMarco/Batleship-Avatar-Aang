@@ -341,4 +341,5 @@ frontend/playwright-report/
 .current_tag
 .previous_tag
 .deploy.lock
+.deploy.log
 *.new

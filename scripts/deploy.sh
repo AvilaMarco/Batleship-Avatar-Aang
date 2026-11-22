@@ -5,10 +5,12 @@
 # Seguridad de datos: `up` hace backup antes (Flyway no se deshace) y vuelve solo a la version anterior si la nueva no llega a healthy.
 set -euo pipefail
 export LC_ALL=C MSYS_NO_PATHCONV=1
-trap '' HUP   # si se cae el ssh a mitad de un despliegue, este termina igual (nunca dejar app sin version)
+trap '' HUP PIPE   # si se cae el ssh a mitad de un despliegue, este termina igual (nunca dejar app sin version)
 cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.."
 
 TAG_RE='^[0-9a-f]{7,12}$'
+MAX_LOAD=$((2 * 1024 * 1024 * 1024))   # tope del flujo de `load` (comprimido): llenar el disco no es gratis
+MAX_INFRA=$((8 * 1024 * 1024))
 WAIT_S="${DEPLOY_WAIT:-180}"   # solo por entorno local: ssh no pasa variables
 [[ "$WAIT_S" =~ ^[0-9]{1,4}$ ]] || { echo "error: DEPLOY_WAIT invalido" >&2; exit 1; }
 
@@ -19,6 +21,15 @@ read_tag() { local t=""; [ ! -f "$1" ] || t=$(head -n1 "$1" | tr -d '\r'); [ -z 
 save_tags() {   # $1 = actual, $2 = anterior (puede ir vacio); escritura atomica
   printf '%s\n' "$1" > .current_tag.new && mv -f .current_tag.new .current_tag
   printf '%s\n' "$2" > .previous_tag.new && mv -f .previous_tag.new .previous_tag
+}
+# up/rollback: la salida va a .deploy.log (0600) y de ahi a la sesion. Si el ssh se corta, escribir en la tuberia rota
+# no puede matar al script (SIGPIPE/EPIPE) antes del rollback. Tras un corte: scripts/deploy.sh status y .deploy.log.
+detach() {
+  (umask 077; : >> .deploy.log)
+  # warn-nopipe: tee sigue escribiendo el log aunque la tuberia de la sesion este rota (PIPE ignorado, ver trap de arriba)
+  exec > >(tee -a --output-error=warn-nopipe .deploy.log) 2>&1
+  trap 'exec >&- 2>&-; wait' EXIT   # que tee vuelque las ultimas lineas antes de terminar
+  echo "== $(date -u +%FT%TZ) $* =="
 }
 lock() {   # shortcut: sin flock (p. ej. Git Bash) no hay exclusion; en el servidor Debian si
   command -v flock >/dev/null || return 0
@@ -64,18 +75,26 @@ up_and_wait() { docker compose up -d --no-build db app backup && wait_healthy; }
 
 cmd_load() {
   tag_ok "${1:-}"
-  gunzip | docker load
+  lock
+  # si se pasa del tope, head corta el gzip y gunzip falla (pipefail): no se carga nada a medias
+  head -c "$MAX_LOAD" | gunzip | docker load || die "fallo la carga (flujo corrupto o mayor de 2 GiB)"
   docker image inspect "shipbender:$1" >/dev/null 2>&1 || die "el flujo no contenia shipbender:$1"
 }
 
 # Recibe un tar (docker-compose.yml + scripts/) y lo valida entero ANTES de extraer: solo ficheros normales con nombre plano.
 cmd_infra() {
-  local f b   # d global: el trap EXIT corre cuando la funcion ya termino
+  local f b n   # d global: el trap EXIT corre cuando la funcion ya termino
+  lock
   d=$(mktemp -d "${TMPDIR:-/tmp}/shipbender-infra.XXXXXX")
   trap 'rm -rf "$d"' EXIT
-  cat > "$d/in.tar"
+  head -c $((MAX_INFRA + 1)) > "$d/in.tar"
+  [ "$(wc -c < "$d/in.tar")" -le "$MAX_INFRA" ] || die "el tar supera 8 MiB"
   tar -tf "$d/in.tar" > "$d/names"
-  tar -tvf "$d/in.tar" | cut -c1 > "$d/types"
+  tar -tvf "$d/in.tar" > "$d/long"
+  cut -c1 "$d/long" > "$d/types"
+  # un nombre con salto de linea parte una entrada en dos lineas: lineas de nombres, de listado largo y entradas reales deben coincidir
+  n=$(wc -l < "$d/names")
+  [ "$(wc -l < "$d/long")" = "$n" ] && [ "$(grep -cE '^[-d][-rwxsStT]{9} ' "$d/long")" = "$n" ] || die "el tar trae nombres con saltos de linea"
   grep -qx 'docker-compose.yml' "$d/names" || die "el tar no trae docker-compose.yml"
   ! grep -qvE '^(docker-compose\.yml|scripts/|scripts/[A-Za-z0-9][A-Za-z0-9._-]*)$' "$d/names" || die "el tar trae rutas no permitidas"
   ! grep -qvE '^[-d]$' "$d/types" || die "el tar trae enlaces u otros tipos no permitidos"
@@ -96,6 +115,7 @@ cmd_infra() {
 cmd_up() {
   local tag="${1:-}" cur prev
   tag_ok "$tag"
+  detach up "$tag"
   lock
   cur=$(read_tag .current_tag)
   prev=$(read_tag .previous_tag)
@@ -123,6 +143,7 @@ cmd_up() {
 
 cmd_rollback() {
   local tag cur
+  detach rollback
   lock
   tag=$(read_tag .previous_tag)
   cur=$(read_tag .current_tag)

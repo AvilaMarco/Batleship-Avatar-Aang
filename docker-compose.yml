@@ -23,6 +23,7 @@ services:
       retries: 6
     networks: [backend]
     mem_limit: 512m
+    memswap_limit: 512m   # sin swap del host
     logging: *logging
 
   app:
@@ -45,6 +46,7 @@ services:
     ports: ["127.0.0.1:${APP_PORT:?falta APP_PORT en .env (el administrador del servidor lo asigna)}:8080"]   # solo loopback; Caddy del host reparte
     networks: [backend, edge]
     mem_limit: 768m
+    memswap_limit: 768m   # sin swap del host
     logging: *logging
 
   tunnel:
@@ -57,6 +59,7 @@ services:
     depends_on: { app: { condition: service_healthy } }
     networks: [edge]
     mem_limit: 128m
+    memswap_limit: 128m   # sin swap del host
     logging: *logging
 
   backup:
@@ -75,6 +78,7 @@ services:
     entrypoint: ["sh", "-c", "while true; do sh /scripts/backup.sh; sleep 86400; done"]
     networks: [backend]
     mem_limit: 128m
+    memswap_limit: 128m   # sin swap del host
     logging: *logging
 
 networks:
