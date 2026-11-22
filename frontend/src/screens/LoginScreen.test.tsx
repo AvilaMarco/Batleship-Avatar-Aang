@@ -80,3 +80,37 @@ it("VALIDATION_FAILED muestra errores por campo", async () => {
   fireEvent.click(screen.getByRole("button", { name: "Crear cuenta" }));
   expect(await screen.findByRole("alert")).toHaveTextContent("demasiado corta");
 });
+
+it("registro indica el mínimo de 8 caracteres, enlazado al campo", () => {
+  setup();
+  fireEvent.click(screen.getByRole("button", { name: "Registrarse" }));
+  const input = screen.getByLabelText("Contraseña");
+  expect(input).toHaveAttribute("minlength", "8");
+  expect(input).toHaveAttribute("maxlength", "72");
+  expect(input).toHaveAccessibleDescription("Mínimo 8 caracteres");
+  expect(screen.getByText("Mínimo 8 caracteres")).toBeVisible();
+});
+
+it("entrar no impone mínimo ni muestra la ayuda", () => {
+  setup();
+  const input = screen.getByLabelText("Contraseña");
+  expect(input).not.toHaveAttribute("minlength");
+  expect(input).not.toHaveAttribute("aria-describedby");
+  expect(screen.queryByText("Mínimo 8 caracteres")).toBeNull();
+});
+
+it("error VALIDATION_FAILED de password se muestra con el nombre del campo en español", async () => {
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(() =>
+      json(400, { status: 400, code: "VALIDATION_FAILED", detail: "x", errors: { password: ["no puede superar 72 bytes"] } }),
+    ),
+  );
+  setup();
+  fireEvent.click(screen.getByRole("button", { name: "Registrarse" }));
+  fireEvent.change(screen.getByLabelText("Nombre"), { target: { value: "Aang" } });
+  fireEvent.change(screen.getByLabelText("Email"), { target: { value: "a@a.com" } });
+  fireEvent.change(screen.getByLabelText("Contraseña"), { target: { value: "ñ".repeat(40) } });
+  fireEvent.click(screen.getByRole("button", { name: "Crear cuenta" }));
+  expect(await screen.findByRole("alert")).toHaveTextContent("Contraseña: no puede superar 72 bytes");
+});

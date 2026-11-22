@@ -174,3 +174,18 @@ Revisión de seguridad (606): aprobado con condiciones, sin bloqueantes; los men
 - Verificar desde fuera (criterios de la tarea 607), incluido el reinicio de la máquina.
 No verificado: el túnel real, el rollback con una migración de Flyway nueva, Ctrl-C a mitad de `restore.sh`, Linux/systemd.
 Backlog: contraseña mínima de 8 caracteres (hoy acepta 1; rompe tests y seed: hacerlo con qa), perfil por defecto `dev` falla abierto si se usa `docker run` suelto, fusionar `master`→`main` en GitHub.
+
+## Fase F7 · Endurecimiento y diseño (en curso)
+
+Rama `migration/f7-endurecimiento`. Parte 1 (esta): contraseña mínima de 8 caracteres al registrarse (hallazgo de la revisión 606). Parte 2: diseño visual del front (skill `diseno-ui`), se planifica al terminar la parte 1.
+
+| # | Rol | Tarea | Fase | Estado | Depende de |
+|---|---|---|---|---|---|
+| 701 | qa | Tests: contraseña mínima de 8 caracteres (rojo hasta 702) | F7 | hecha | — |
+| 702 | backend-dev | Registro: `@Size(min=8, max=72)` y límite de 72 bytes | F7 | hecha | 701 |
+| 703 | frontend-dev | Registro: ayuda y `minLength` en el formulario | F7 | hecha | 702 |
+| 704 | qa | Test: contraseña de más de 72 bytes → 400 | F7 | hecha | 702 |
+| 705 | qa | Test: el error de bytes llega bajo la clave `password` (rojo hasta 706) | F7 | hecha | 704 |
+| 706 | backend-dev | Restricción propia `MaxUtf8Bytes` sobre el campo | F7 | hecha | 705 |
+
+Resultado F7 parte 1: registro exige contraseña de 8 a 72 caracteres y ≤ 72 bytes UTF-8 (restricción propia `@MaxUtf8Bytes` sobre el campo, mensaje en español bajo `errors.password`); el login no cambia (el seed `123` sigue entrando). 112 tests de backend y 73 de front verdes. Descubierto probando: con `@Size(max=72)` una contraseña de 40 caracteres de 2 bytes pasaba la validación y bcrypt lanzaba un 500. Pendiente: parte 2 (diseño visual del front); el error de contraseña se muestra en la alerta general, no junto al campo.
