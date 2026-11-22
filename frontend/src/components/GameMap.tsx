@@ -76,7 +76,7 @@ export default function GameMap({ games, myId, nation, onCreate, onJoin, onOpen 
         }}
         onPointerUp={() => { pan.current = null; }} onPointerLeave={() => { pan.current = null; }}>
         <svg viewBox={`0 0 ${MAP_W} ${MAP_H}`} width={MAP_W * scale} height={MAP_H * scale} style={{ display: "block", maxWidth: "none", "--s": 1 / scale } as React.CSSProperties}>
-          <image href="/assets/img/mapa-game-mobile.png" width={MAP_W} height={MAP_H} />
+          <image href="/assets/map.svg" width={MAP_W} height={MAP_H} />
           {MAP_LOCATIONS.map((loc) => {
             const { state } = locationState(loc.id, games, myId);
             const open = () => { setSelected(loc); sheet.current?.focus(); };

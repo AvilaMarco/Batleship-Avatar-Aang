@@ -3,6 +3,7 @@ import { AuthProvider, useAuth } from "./auth/AuthContext";
 import { navigate, useHashRoute } from "./router";
 import LobbyScreen from "./screens/LobbyScreen";
 import GameScreen from "./screens/GameScreen";
+import ProfileScreen from "./screens/ProfileScreen";
 import LoginScreen from "./screens/LoginScreen";
 
 function Routes() {
@@ -19,6 +20,7 @@ function Routes() {
 
   if (!ready || needsLogin || loggedAtLogin) return <p>Cargando…</p>;
   if (route.name === "login") return <LoginScreen />;
+  if (route.name === "profile") return <ProfileScreen />;
   return route.name === "lobby" ? <LobbyScreen /> : <GameScreen key={route.id} id={route.id} />;
 }
 

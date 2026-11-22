@@ -22,7 +22,7 @@ it("dibuja un svg 1400x800 con el mapa de fondo", () => {
   const { container } = setup();
   const svg = container.querySelector("svg")!;
   expect(svg).toHaveAttribute("viewBox", "0 0 1400 800");
-  expect(svg.querySelector("image")?.getAttribute("href")).toBe("/assets/img/mapa-game-mobile.png");
+  expect(svg.querySelector("image")?.getAttribute("href")).toBe("/assets/map.svg");
 });
 
 it("hay un control por ubicación con su data-state", () => {

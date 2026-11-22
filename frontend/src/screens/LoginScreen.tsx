@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { ApiError } from "../api/http";
+import type { Nation } from "../api/types";
 import { useAuth } from "../auth/AuthContext";
 
 // Orden = cues de intro.vtt (agua, tierra, fuego, aire); mobileN.png = silueta de cada nación
@@ -8,6 +9,12 @@ const NATIONS = [
   { key: "earth", label: "Tierra", img: "/assets/login/mobile2.png" },
   { key: "fire", label: "Fuego", img: "/assets/login/mobile3.png" },
   { key: "air", label: "Aire", img: "/assets/login/mobile4.png" },
+];
+// Selector del registro: incluye Loto Blanco (la silueta del login solo tiene 4)
+const CHOICES: { id: Nation; key: string; label: string }[] = [
+  { id: "WATER", key: "water", label: "Agua" }, { id: "EARTH", key: "earth", label: "Tierra" },
+  { id: "FIRE", key: "fire", label: "Fuego" }, { id: "AIR", key: "air", label: "Aire" },
+  { id: "LOTUS", key: "lotus", label: "Loto Blanco" },
 ];
 
 const FIELDS: Record<string, string> = { password: "Contraseña", email: "Email", name: "Nombre" };
@@ -28,6 +35,7 @@ export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState<string[]>([]);
+  const [chosen, setChosen] = useState<Nation | null>(null);
   const [busy, setBusy] = useState(false);
   const [active, setActive] = useState(0);
   const [muted, setMuted] = useState(false);
@@ -52,7 +60,7 @@ export default function LoginScreen() {
     setErrors([]);
     setBusy(true);
     try {
-      await (registering ? register(name, email, password) : login(email, password));
+      await (registering ? register(name, email, password, chosen ?? undefined) : login(email, password));
     } catch (e) {
       setErrors(messages(e));
     } finally {
@@ -75,6 +83,15 @@ export default function LoginScreen() {
           <label htmlFor="name">Nombre</label>
           <input id="name" value={name} onChange={(e) => setName(e.target.value)} required autoComplete="nickname" />
         </p>
+      )}
+      {registering && (
+        <div className="nation-choice">
+          {CHOICES.map((n) => (
+            <button key={n.id} type="button" aria-label={n.label} aria-pressed={chosen === n.id} onClick={() => setChosen(n.id)}>
+              <svg viewBox="0 0 48 48" aria-hidden="true"><use href={`/assets/sprite.svg#emb-${n.key}`} /></svg>
+            </button>
+          ))}
+        </div>
       )}
       <p>
         <label htmlFor="email">Email</label>

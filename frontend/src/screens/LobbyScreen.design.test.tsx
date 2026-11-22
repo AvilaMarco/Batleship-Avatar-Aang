@@ -30,3 +30,9 @@ it("el menú flotante se oculta con la ficha (aria-expanded) y se recuerda en lo
   render(<LobbyScreen />);
   expect(toggle()).toHaveAttribute("aria-expanded", "false");
 });
+
+// Contrato inventado (tarea 815): el menú del lobby enlaza al perfil.
+it("el menú del lobby tiene un enlace al perfil (#/profile)", () => {
+  render(<LobbyScreen />);
+  expect(screen.getByRole("link", { name: /perfil/i })).toHaveAttribute("href", "#/profile");
+});

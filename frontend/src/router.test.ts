@@ -12,3 +12,7 @@ it("una ruta inválida cae en lobby", () => {
   expect(parseRoute("#/games/abc")).toEqual({ name: "lobby" });
   expect(parseRoute("")).toEqual({ name: "lobby" });
 });
+
+it("#/profile es la ruta del perfil (contrato tarea 815)", () => {
+  expect(parseRoute("#/profile")).toEqual({ name: "profile" });
+});
