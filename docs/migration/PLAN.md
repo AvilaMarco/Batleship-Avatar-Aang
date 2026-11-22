@@ -13,6 +13,8 @@ Lo edita solo el chat central. Cada fase se cierra con aprobación del usuario y
 | F4 · Arquitectura backend | `migration/f4-arquitectura` | **hecha** (mergeada a main) | Paquete `dev.racnar.shipbender`; paquetes por feature; dominio testeado sin Spring; contrato API v2 (ADR 004) implementado |
 | F5 · Front nuevo | `migration/f5-frontend` | **hecha** (mergeada a main) | Partida completa jugable en React + TS |
 | F6 · Deploy | `migration/f6-deploy` | **construido; falta la puesta en marcha (607) por el usuario** | Juego en el dominio vía Cloudflare Tunnel, con WebSocket |
+| F7 · Endurecimiento y ajustes de deploy | `migration/f7-*` | **hecha y mergeada** (falta el `recibir` real del servidor) | Contraseñas, deploy adaptado al servidor, revisión 621 corregida en 622 |
+| F8 · Mapa, diseño conectado, pantallas | `migration/f8-*` | **hecha y mergeada** | Mapa SVG, refresco, LOTUS, perfil, registro, PWA |
 
 Paralelismo permitido: F5 en paralelo con F4 una vez congelado el contrato de API; Dockerfile (F6) desde el fin de F3.
 
@@ -209,16 +211,25 @@ Medido (Docker Desktop, 6 CPU, 8 GB): imagen 425 MB (jar 68 MB), `docker save` c
 No verificado: envío real por SSH y `restrict,command=` en `sshd`, `flock` en Debian, la cadena Cloudflare → cloudflared → Caddy → app (y que Caddy fije `X-Forwarded-Proto: https`), Cloudflare Access con Bypass, el servidor real (x86_64, Docker 29.9.3, 7,7 GiB con ~2,6 GiB disponibles y swap en uso, 51 GB libres).
 Pendiente: tarea 607 (puesta en marcha) y la sesión de deploy con el checklist del servidor; pasos manuales en el runbook (clave restringida `authorized_keys`, `APP_PORT`, `.env` con secretos nuevos, alta del hostname). Decisión abierta: dónde van los backups fuera del servidor (el servidor solo sale a Internet por el túnel).
 
-## Fase F8 · Lógica de la sesión principal (en curso)
+## Fase F8 · Mapa, refresco, diseño conectado y pantallas (hecha y mergeada a `main`; sin push hasta el cierre)
 
-Rama `migration/f8-logica`. Reparto (2026-11-22): esta sesión hace SOLO lógica y funcionalidad; la sesión "Diseño visual por naciones" es dueña de lo visual (CSS, tokens, assets, `docs/design/**`). Decidido por el usuario: primero el mapa (arreglo + SVG con menú), después el refresco de respaldo de la partida. El chat de texto (v2.1) queda para después.
+Reparto (2026-11-22): la sesión principal hace lógica y funcionalidad; la sesión "Diseño visual por naciones" es dueña de lo visual (CSS, tokens, assets, `docs/design/**`). Las ramas de F7 (`f7-deploy-ajustes`, `f7-correcciones-621`) y de F8 están mergeadas a `main`.
 
-| # | Rol | Tarea | Fase | Estado | Depende de |
-|---|---|---|---|---|---|
-| 801 | qa | Tests del mapa interactivo (rojo hasta 803) | F8 | hecha | — |
-| 802 | frontend-dev | Lógica pura del mapa y constantes | F8 | hecha | 801 |
-| 803 | frontend-dev | Mapa SVG con menú de acciones | F8 | hecha | 802 |
-| 804 | qa | Tests del refresco de respaldo | F8 | descartada (ver nota) | 803 |
-| 805 | frontend-dev | Refresco de respaldo de la partida | F8 | hecha en versión mínima | 804 |
+| # | Rol | Tarea | Estado | Depende de |
+|---|---|---|---|---|
+| 801-803 | qa / frontend-dev | Mapa interactivo SVG con menú (tests, lógica, componente) | hecha | — |
+| 804-805 | qa / frontend-dev | Refresco de respaldo de la partida (intervalo de 15 s con guarda anti-solape + `visibilitychange`/`online`) | hecha (ver nota) | 803 |
+| 806-807 | qa / frontend-dev | Con sesión iniciada, `#/login` redirige al menú | hecha | — |
+| 808 | frontend-dev | Conectar el diseño: sprites en `Board`, `.game`/`.player`, menú flotante, colocar flota (arrastrar/girar), login sin texto, LOTUS en front, service worker | hecha (queda: flechas para mover el barco al colocarlo) | 810 |
+| 809 | backend-dev | Nación `LOTUS` (migración V4 expand-only) | hecha; `reviewer` aprobó | — |
+| 810-811 | qa | Tests del diseño y ajuste del test de login | hecha | — |
+| 812, 813, 815-817 | frontend-dev / qa | Perfil (`#/profile`), selector de nación en el registro (se guarda con PATCH tras registrarse), `GameMap` con `map.svg` | hecha | 808 |
+| 814 | qa | e2e con las etiquetas en español del mapa | hecha | — |
+| 818 | diseño | El ranking ya no desborda en 390 px | hecha | — |
+| 819 | backend-dev | Probar que una imagen anterior arranca sobre un esquema con V4 (el default `*:future` de Flyway basta; test `FlywayRollbackTest`) | hecha | 809 |
+| 620-622 | devops / reviewer | Deploy al servidor: 621 pidió cambios; 622 los corrigió (sin `@sha256` en `db`, uid 10001, `deploy.sh` a `legacy/`, runbook) y quedó aprobada | hecha; falta el `recibir` real | — |
 
-Nota F8: el refresco se redujo a recargar la partida al volver la pestaña a primer plano y al recuperar la conexión (sin intervalo de 15 s: el fallo no se reprodujo en 7 corridas). Arreglos del mapa tras la prueba manual: Escape cierra el menú desde cualquier foco, etiquetas accesibles en español, y tocar de nuevo una ubicación devuelve el foco al menú. Verificado: 92 tests de front, build, y E2E 3/3 contra el backend de desarrollo. Pendiente: aprobación del usuario para mergear `migration/f8-logica` a `main`.
+Nota F8: el PLAN anterior decía que 804 se descartaba y que el refresco se limitaba a volver a primer plano o recuperar la conexión (el fallo no se reprodujo en 7 corridas). Las tareas 804/805 seguían como `pendiente` y se ejecutaron: el front ahora también refresca cada 15 s. Es inofensivo (una petición cada 15 s, sin solapes, nada con la partida terminada) pero contradice esa decisión; si se prefiere la versión mínima, basta quitar el `setInterval` de `GameScreen.tsx`.
+Verificado por el chat central: 134 tests de front y 116 de backend en verde, build, e2e en verde y revisión visual a 390, 844x390 y 1280 (el ranking desbordaba a 390 y se corrigió con la 818).
+Hallazgos cerrados: el rollback de imagen con V4 arranca sin tocar la configuración (819); el "doble montaje del lobby tras el login" es `StrictMode` en desarrollo (no ocurre en producción); `kim_bauer` del seeder no tiene el rol `PLAYER` y por eso da 403 en `/api/players/me` (usar `marco@aaa.com` / `123`).
+Sin hacer, por decisión: chat de texto (v2.1), flechas para mover el barco al colocarlo, icono PWA de más resolución, sprite `sunk` en el tablero rival (el rival no expone sus barcos).

@@ -273,3 +273,32 @@ Formato de entrada:
 - Con un `JWT_SECRET` corto en `.env`, la versión anterior también falla (usa el mismo `.env`). El rollback automático protege contra imágenes malas, no contra una configuración mala: queda documentado.
 - Y: `profiles` de Compose no impiden que se **interpole** `${VAR:?}` de los servicios inactivos (`TUNNEL_TOKEN`), por eso es `${TUNNEL_TOKEN:-}`; un healthcheck sin `start_period` falló 1 de 4 arranques en frío porque `pg_isready` tarda ~20 s durante `initdb`; y `mem_limit` sin `memswap_limit` deja usar el swap del servidor.
 - **Concepto**: conocer los límites de cada mecanismo de seguridad, configuración vs. artefacto, comprobar el supuesto antes de aplicarlo.
+
+
+## F8 · Mapa, diseño conectado y pantallas
+
+### Una migración que ensancha es reversible; una que estrecha, no (prioridad alta)
+- **Antes**: el `check` de `nation` en V1 solo admitía 4 naciones; añadir `LOTUS` en el enum no bastaba.
+- **Problema**: editar V1 rompería el historial de Flyway; y si ya hay filas con `LOTUS`, volver a la imagen anterior (que no conoce ese valor) falla al leerlas.
+- **Después**: V4 hace `drop constraint` + `add constraint` con la lista ampliada (*expand-only*), sin tocar V1-V3. Para el rollback se documenta poner `nation = null` donde valga `LOTUS`, o restaurar el backup. La tarea 819 comprueba con un test que Flyway no se queja de una migración "futura" al volver atrás.
+- **Concepto**: migraciones expand/contract, nunca editar una migración aplicada, el rollback de imagen no revierte la base de datos.
+
+### Dividir una tarea cuando cambia su riesgo (prioridad alta)
+- La tarea 808 se escribió como "riesgo bajo" pero uno de sus siete puntos (`LOTUS`) necesitaba una migración de base de datos, riesgo alto según CLAUDE.md. Se separó en 809 (backend, con revisión) y 808 (front), y los tests del front (810) se escribieron antes de implementar.
+- **Concepto**: el riesgo de una tarea es el de su punto más arriesgado; test primero fija el contrato (y los contratos que el rol de tests inventa quedan escritos en su informe).
+
+### Un test que choca con el cambio no lo edita quien implementa (prioridad media)
+- Dos veces (811, 817) el desarrollador encontró un test existente en conflicto con el diseño (un heading que ya no existe; un `getAllByRole` que lanza si hay 0 resultados). En lugar de editarlo, creó una tarea para `qa`. Así quien implementa no puede "ponerse verde" debilitando la prueba.
+- **Concepto**: separación de roles como control; `getAllBy*` lanza con 0 coincidencias, `queryAllBy*` devuelve vacío.
+
+### Los selectores de e2e son un contrato con la interfaz (prioridad media)
+- El e2e buscaba `: empty` y la UI ya decía "libre" desde un commit anterior: los tests unitarios pasaban, el e2e no. Se detectó al correrlo, no antes. Y un clic justo después del login se perdía porque el componente se remonta: se arregló esperando el efecto visible ("Actualizar") y no con un `sleep`.
+- **Concepto**: esperar el resultado observable, no el tiempo; correr el e2e al cerrar cada fase.
+
+### Verificar una "mejora" contra la decisión ya registrada (prioridad media)
+- El PLAN decía que el refresco cada 15 s se descartaba, pero las tareas 804/805 seguían como `pendiente` y se ejecutaron tal cual. Resultado inofensivo, pero contradecía una decisión. Lección: al retomar trabajo, leer primero el PLAN y no solo los archivos de tarea; si no coinciden, preguntar o dejarlo anotado.
+- **Concepto**: una sola fuente de verdad del estado; las tareas obsoletas se marcan como descartadas en su propio archivo.
+
+### Medir en la app real, no solo mirar capturas (prioridad baja)
+- Las capturas del navegador integrado salen en baja resolución; el desborde del ranking en 390 px se encontró midiendo `scrollWidth` frente a `innerWidth` en la página real, y el arreglo se comprobó con la misma medida. Un 403 aparente resultó ser un dato del seeder (usuario sin rol `PLAYER`), no un bug.
+- **Concepto**: instrumentar en vez de adivinar; distinguir un fallo de la app de uno de los datos de prueba.
