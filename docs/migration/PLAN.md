@@ -200,4 +200,11 @@ Decisiones (2026-11-22): compilar en la PC de desarrollo y enviar la imagen por 
 | 610 | devops | Compose: puerto en loopback y túnel opcional (riesgo alto) | F7 | hecha | 609 |
 | 611 | devops | `ship.sh` y `deploy.sh` (envío, backup, healthcheck, rollback) (riesgo alto) | F7 | parcial (falta SSH real) | 610 |
 | 612 | reviewer | Revisión: loopback, SSH restringido, despliegue | F7 | hecha (1 bloqueante) | 610, 611 |
-| 613 | devops | Endurecimiento: rollback ante corte de SSH, lock, topes, memswap (riesgo alto) | F7 | pendiente | 612 |
+| 613 | devops | Endurecimiento: rollback ante corte de SSH, lock, topes, memswap (riesgo alto) | F7 | parcial (falta sshd real y flock en Debian) | 612 |
+
+### Resultado F7 · ajustes de deploy (rama `migration/f7-deploy-ajustes`, sin mergear)
+
+Construido y probado en Docker local aislado: `start_period` en el healthcheck de db (609), compose con la app solo en `127.0.0.1:APP_PORT` y túnel opcional por `profile` (610), `scripts/ship.sh` (PC de desarrollo: compila, `docker save | gzip | ssh`) y `scripts/deploy.sh` (servidor: `load`/`infra`/`up`/`rollback`/`status`/`ssh-entry` con lista blanca, backup previo, comprobación de salud y rollback automático) (611), revisión de seguridad (612: 1 bloqueante y 7 menores) y su cierre (613: rollback que sobrevive a un corte de SSH, `lock` en `load`/`infra`, topes de tamaño, `memswap_limit`, documentación de que la clave de despliegue equivale a root).
+Medido (Docker Desktop, 6 CPU, 8 GB): imagen 425 MB (jar 68 MB), `docker save` comprimido 131 MB, build en frío 115 s con pico de ~1,2 GB en toda la VM, stack en reposo ~330-380 MB (app ~250-295 MiB, db ~55-80 MiB), volumen de Postgres ~47 MB.
+No verificado: envío real por SSH y `restrict,command=` en `sshd`, `flock` en Debian, la cadena Cloudflare → cloudflared → Caddy → app (y que Caddy fije `X-Forwarded-Proto: https`), Cloudflare Access con Bypass, el servidor real (x86_64, Docker 29.9.3, 7,7 GiB con ~2,6 GiB disponibles y swap en uso, 51 GB libres).
+Pendiente: tarea 607 (puesta en marcha) y la sesión de deploy con el checklist del servidor; pasos manuales en el runbook (clave restringida `authorized_keys`, `APP_PORT`, `.env` con secretos nuevos, alta del hostname). Decisión abierta: dónde van los backups fuera del servidor (el servidor solo sale a Internet por el túnel).

@@ -250,3 +250,26 @@ Formato de entrada:
 - La tarea del front dio por hecho que el error llegaba como `errors.password` porque su test lo simulaba; el test de integración del backend mostró que llegaba como `passwordWithin72Bytes`. Un test que simula la respuesta del servidor no prueba que el servidor responda así.
 - También: el límite de bcrypt se **probó con el encoder real** antes de añadir código, y el test se validó con una **mutación** (quitar la validación → 500).
 - **Concepto**: pruebas de integración vs. dobles, mutación para comprobar que un test detecta el defecto.
+
+
+## F7 · Deploy en el servidor real
+
+### Reproducir el fallo antes de arreglarlo (prioridad alta)
+- **Antes**: `deploy.sh:8` usaba `trap '' HUP` pensando que así el despliegue sobrevivía a un corte de SSH.
+- **Problema**: al caer la sesión se cierran las tuberías de salida y el siguiente `echo` mata el script con **SIGPIPE** (con `set -e`, un `echo` fallido mata el script). Si caía durante la espera de salud (hasta 180 s) con una versión mala, el script moría **antes del rollback**: `app` en bucle de caídas y `.current_tag` apuntando a la versión mala. Justo el caso que el rollback debe cubrir.
+- **Después**: `detach()` redirige stdout/stderr a `.deploy.log` (con `tee`) antes de operar y `trap '' HUP PIPE`. La tarea exigió **reproducir el fallo contra el código viejo** (`up ... | head -n 1`) y luego demostrar el arreglo con el mismo caso.
+- **Concepto**: un `trap` de una señal no protege de otra; desacoplar la salida de la sesión; probar el camino de fallo, no el feliz; reproducir antes de arreglar.
+
+### Compilar una vez, fuera del servidor: artefacto inmutable (prioridad alta)
+- El servidor tiene poca RAM libre y **no sale a Internet salvo por el túnel**: no puede compilar ni hacer `docker pull`. Se compila en la PC de desarrollo y se envía **la imagen** (`docker save | gzip | ssh | docker load`, 131 MB medidos; incluye también las imágenes base la primera vez). Lo que se probó es lo que se ejecuta, y el servidor no necesita Maven, Node ni Internet.
+- Se midió en lugar de estimar: una estimación externa decía 150-200 MB comprimidos y el dato real fue 131 MB; el pico de RAM está en la **build** (~1,2 GB), no en funcionamiento (~350 MB).
+- **Concepto**: artefacto inmutable ("build once, run anywhere"), separar build y runtime, decidir con datos medidos.
+
+### Una lista blanca protege de la inyección, no del contenido (prioridad alta)
+- `ssh-entry` solo acepta cinco comandos con regex estricta y sin `eval`/`sh -c` (probado con 20 entradas hostiles y un archivo canario). Pero la clave restringida **equivale a root** del servidor: `docker load` acepta cualquier imagen y `infra` puede sustituir el compose. La barrera real es la clave: dedicada, con `from="IP"`, usuario sin sudo. Se documenta como riesgo aceptado.
+- **Concepto**: mínimo privilegio, distinguir validar el *comando* de validar el *contenido*, `restrict` en `authorized_keys`.
+
+### El rollback cubre la imagen, no la configuración (prioridad media)
+- Con un `JWT_SECRET` corto en `.env`, la versión anterior también falla (usa el mismo `.env`). El rollback automático protege contra imágenes malas, no contra una configuración mala: queda documentado.
+- Y: `profiles` de Compose no impiden que se **interpole** `${VAR:?}` de los servicios inactivos (`TUNNEL_TOKEN`), por eso es `${TUNNEL_TOKEN:-}`; un healthcheck sin `start_period` falló 1 de 4 arranques en frío porque `pg_isready` tarda ~20 s durante `initdb`; y `mem_limit` sin `memswap_limit` deja usar el swap del servidor.
+- **Concepto**: conocer los límites de cada mecanismo de seguridad, configuración vs. artefacto, comprobar el supuesto antes de aplicarlo.
