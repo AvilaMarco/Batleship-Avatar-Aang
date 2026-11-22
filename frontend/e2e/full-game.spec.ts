@@ -39,13 +39,15 @@ test("partida completa: A hunde la flota de B en 4 turnos", async ({ browser }) 
   const b = await (await browser.newContext()).newPage();
 
   await register(a, `a${id}`);
-  const create = a.getByRole("button", { name: /^Crear partida en / }).and(a.locator(":enabled")).first();
-  const label = (await create.getAttribute("aria-label"))!;
-  const loc = label.replace("Crear partida en ", "");
-  await create.click();
+  // dos pasos: pulsar la ubicación libre y luego "Crear partida en <id>"
+  const free = a.getByRole("button", { name: /: empty$/ }).first();
+  const loc = (await free.getAttribute("aria-label"))!.split(":")[0];
+  await free.click();
+  await a.getByRole("dialog").getByRole("button", { name: `Crear partida en ${loc}` }).click();
 
   await register(b, `b${id}`);
-  await b.getByRole("button", { name: `Unirse a la partida en ${loc}` }).click();
+  await b.getByRole("button", { name: `${loc}: join` }).click();
+  await b.getByRole("dialog").getByRole("button", { name: `Unirse a la partida en ${loc}` }).click();
 
   await placeFleet(a, fleetA, false);
   await placeFleet(b, fleetB, true);

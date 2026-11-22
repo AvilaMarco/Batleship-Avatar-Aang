@@ -1,5 +1,5 @@
 # 801 · qa · Tests del mapa interactivo (rojo hasta 802-803)
-Estado: pendiente
+Estado: hecha
 Fase: F8
 Depende de: —
 Paralelizable: no (toca LobbyScreen.test.tsx, GameMap y el E2E)
@@ -24,3 +24,11 @@ Criterios de aceptación:
 - Commit `test: mapa interactivo con SVG y menú (tarea 801, rojo hasta 803)`.
 
 ## Resultado
+
+Tests: `domain/map.test.ts` (locationState x5, initialCenter x2, constantes), `components/GameMap.test.tsx` (10 casos), `LobbyScreen.test.tsx` (4 actualizados a dos pasos), `e2e/full-game.spec.ts` (dos pasos; **no ejecutado**).
+Contrato asumido para 802/803: `GameMap` recibe la prop nueva `nation: Nation | null`; `locationState(id: string, games, myId)` (primer arg = id de ubicación) devuelve `{state}` sin la clave `game` cuando es `empty`; control = `role=button` con `aria-label="<id>: <estado>"` (estado = `empty|join|mine|full`, igual que `data-state`; el E2E usa `W1: empty`-style); `<image href>`; scroll comprobado comparando `scrollLeft` de FIRE < EARTH en los ancestros del svg.
+
+`cd frontend && npm test`: 15 rojos, 69 verdes (3 ficheros rojos, 12 verdes).
+- `map.test.ts` (fichero entero): `Failed to resolve import "./map" from "src/domain/map.test.ts"` (domain/map.ts no existe).
+- `GameMap.test.tsx` (10): Escape cierra, svg 1400x800, Cerrar cierra, contenedor centrado (`Cannot read properties of null (reading 'parentElement')`: no hay svg), Enter, Espacio, data-state, Unirse, partida llena, Volver, abrir menú sin crear; fallos por `Unable to find an accessible element with the role "button" and name /^E1:/` (no existe el control del mapa nuevo).
+- `LobbyScreen.test.tsx` (4): LOCATION_TAKEN, Unirse y navega, Volver, punto libre crea; `Unable to find role="button" and name /^E1:/` (idem).

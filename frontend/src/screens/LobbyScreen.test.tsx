@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import "@testing-library/jest-dom/vitest";
 import LobbyScreen from "./LobbyScreen";
@@ -52,21 +52,24 @@ it("sin nación muestra el selector y llama PATCH", async () => {
 it("partida ajena con 1 jugador ofrece Unirse y navega", async () => {
   stub([game(7, "E1", [2])], (m, u) => (m === "POST" && u === "/api/games/7/players" ? json(200, { id: 7 }) : undefined));
   render(<LobbyScreen />);
-  fireEvent.click(await screen.findByRole("button", { name: /unirse.*E1/i }));
+  fireEvent.click(await screen.findByRole("button", { name: /^E1:/ }));
+  fireEvent.click(within(screen.getByRole("dialog")).getByRole("button", { name: /unirse.*E1/i }));
   await waitFor(() => expect(location.hash).toBe("#/games/7"));
 });
 
 it("partida propia ofrece Volver", async () => {
   stub([game(8, "E2", [1])]);
   render(<LobbyScreen />);
-  fireEvent.click(await screen.findByRole("button", { name: /volver.*E2/i }));
+  fireEvent.click(await screen.findByRole("button", { name: /^E2:/ }));
+  fireEvent.click(within(screen.getByRole("dialog")).getByRole("button", { name: /volver.*E2/i }));
   expect(location.hash).toBe("#/games/8");
 });
 
 it("punto libre crea la partida y navega", async () => {
   const f = stub([], (m, u) => (m === "POST" && u === "/api/games" ? json(201, { id: 5 }) : undefined));
   render(<LobbyScreen />);
-  fireEvent.click(await screen.findByRole("button", { name: /crear.*W1/i }));
+  fireEvent.click(await screen.findByRole("button", { name: /^W1:/ }));
+  fireEvent.click(within(screen.getByRole("dialog")).getByRole("button", { name: /crear.*W1/i }));
   await waitFor(() => expect(location.hash).toBe("#/games/5"));
   const call = f.mock.calls.find(([, i]) => i?.method === "POST")!;
   expect(JSON.parse(call[1]!.body as string)).toEqual({ nation: "WATER", location: "W1" });
@@ -76,7 +79,8 @@ it("LOCATION_TAKEN muestra error y recarga", async () => {
   const f = stub([], (m, u) =>
     m === "POST" && u === "/api/games" ? json(409, { status: 409, code: "LOCATION_TAKEN", detail: "x" }) : undefined);
   render(<LobbyScreen />);
-  fireEvent.click(await screen.findByRole("button", { name: /crear.*W1/i }));
+  fireEvent.click(await screen.findByRole("button", { name: /^W1:/ }));
+  fireEvent.click(within(screen.getByRole("dialog")).getByRole("button", { name: /crear.*W1/i }));
   expect(await screen.findByRole("alert")).toHaveTextContent(/ocupad/i);
   await waitFor(() => expect(f.mock.calls.filter(([u, i]) => u === "/api/games" && i?.method === "GET").length).toBeGreaterThan(1));
 });
