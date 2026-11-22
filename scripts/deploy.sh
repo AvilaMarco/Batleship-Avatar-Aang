@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# REFERENCIA: base del runner root que escribe el administrador del servidor (docs/deploy/PRIMER-DESPLIEGUE.md). Ya no se usa tal cual: el despliegue va por scripts/ship.sh -> recibir.
 # SERVIDOR (Debian). Uso: scripts/deploy.sh load <tag> | infra | up <tag> | rollback | status | ssh-entry
 # ssh-entry es el punto de entrada de la clave SSH restringida (authorized_keys: restrict,command="/ruta/scripts/deploy.sh ssh-entry"):
 # lee SSH_ORIGINAL_COMMAND y solo acepta una lista blanca; nada del cliente llega a un shell (sin eval, sin sh -c, sin interpolar).

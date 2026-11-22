@@ -22,4 +22,6 @@ USER app
 # si falta el perfil, Spring usa dev (seeder + secreto conocido): prod fijo en la imagen
 ENV SPRING_PROFILES_ACTIVE=prod PORT=8080
 EXPOSE 8080
-ENTRYPOINT ["java", "-XX:MaxRAMPercentage=75", "-jar", "/app/app.jar"]
+# JVM acotada para el servidor (768m): el compose puede sobrescribirlo con JAVA_TOOL_OPTIONS
+ENV JAVA_TOOL_OPTIONS="-XX:MaxRAMPercentage=70 -XX:+UseSerialGC -Xss512k"
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]

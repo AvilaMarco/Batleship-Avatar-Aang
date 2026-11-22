@@ -1,0 +1,54 @@
+# Contrato "paquete" del servidor (docs/deploy/PRIMER-DESPLIEGUE.md): sin name/ports/build/redes propias/volumenes con nombre.
+# El servidor añade: puerto en 127.0.0.1, redes web/interna (subred fija), container_name, logging, restart.
+# ${VERSION} (tag de la imagen) lo fija el runner; ${JWT_SECRET} y ${POSTGRES_PASSWORD} los genera el servidor.
+services:
+  db:
+    image: postgres:17.11-alpine@sha256:e5d2edd28b1f8d40a0a6c0c9cdc545b19b56a0d5d88f94bc11a97d970d4700d0
+    user: "70:70"
+    environment:
+      POSTGRES_DB: shipbender
+      POSTGRES_USER: shipbender
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    command: ["postgres", "-c", "shared_buffers=64MB", "-c", "max_connections=20"]
+    volumes: ["./data/pgdata:/var/lib/postgresql/data"]
+    read_only: true
+    tmpfs: ["/var/run/postgresql", "/tmp"]
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    mem_limit: 256m
+    memswap_limit: 256m
+    pids_limit: 100
+    networks: [interna]
+    labels: { tva.backup: postgres }
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "shipbender", "-d", "shipbender"]
+      interval: 10s
+      timeout: 5s
+      start_period: 60s
+      retries: 10
+
+  app:
+    image: shipbender/app:${VERSION}
+    user: "10001:10001"
+    depends_on: { db: { condition: service_healthy } }
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/shipbender
+      SPRING_DATASOURCE_USERNAME: shipbender
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE: "8"
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION_MINUTES: "480"
+    read_only: true
+    tmpfs: ["/tmp"]
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    mem_limit: 768m
+    memswap_limit: 768m
+    pids_limit: 200
+    networks: [web, interna]
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/"]
+      interval: 30s
+      timeout: 5s
+      start_period: 60s
+      retries: 3
