@@ -2,12 +2,14 @@ import { useState, type FormEvent } from "react";
 import { ApiError } from "../api/http";
 import { useAuth } from "../auth/AuthContext";
 
+const FIELDS: Record<string, string> = { password: "Contraseña", email: "Email", name: "Nombre" };
+
 function messages(e: unknown): string[] {
   if (!(e instanceof ApiError)) return ["No se pudo conectar con el servidor."];
   if (e.code === "INVALID_CREDENTIALS") return ["Credenciales incorrectas."];
   if (e.code === "EMAIL_IN_USE") return ["Ese email ya está registrado."];
   if (e.code === "VALIDATION_FAILED" && e.errors)
-    return Object.entries(e.errors).flatMap(([f, ms]) => ms.map((m) => `${f}: ${m}`));
+    return Object.entries(e.errors).flatMap(([f, ms]) => ms.map((m) => `${FIELDS[f] ?? f}: ${m}`));
   return ["No se pudo completar la operación."];
 }
 
@@ -54,8 +56,10 @@ export default function LoginScreen() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
+          {...(registering && { minLength: 8, maxLength: 72, "aria-describedby": "password-help" })}
           autoComplete={registering ? "new-password" : "current-password"}
         />
+        {registering && <small id="password-help">Mínimo 8 caracteres</small>}
       </p>
       {errors.length > 0 && (
         <div role="alert">

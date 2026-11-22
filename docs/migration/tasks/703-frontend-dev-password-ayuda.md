@@ -1,5 +1,5 @@
 # 703 · frontend-dev · Registro: indicar el mínimo de 8 caracteres
-Estado: pendiente
+Estado: hecha
 Fase: F7
 Depende de: 702
 Paralelizable: no
@@ -18,3 +18,4 @@ Criterios de aceptación (tests primero):
 - Commit `feat(front): indicar el mínimo de 8 caracteres en el registro (tarea 703)`.
 
 ## Resultado
+Registro: contraseña con `minLength=8`, `maxLength=72` y ayuda "Mínimo 8 caracteres" enlazada con `aria-describedby`; en "Entrar" nada de eso. El error `VALIDATION_FAILED` llega en `errors.password` (array, igual para longitud o >72 bytes) y se muestra en el `role="alert"` con el nombre en español ("Contraseña: ..."). 3 tests nuevos (rojo verificado: 2 fallaban). `npm test && npm run build` exit 0.
