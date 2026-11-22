@@ -1,0 +1,41 @@
+/* Tokens de diseño (dirección "Pergamino / Pai Sho"). Fuente: docs/design/COMPONENTES.md.
+   Capa 1 = nación (data-nation en <body>, por defecto agua). Capa 2 = superficie (claro/oscuro). */
+@layer reset, tokens, base, components;
+
+@layer tokens {
+  :root {
+    color-scheme: light dark;
+    --target: 44px;
+    --font-title: "Permanent Marker", "Segoe Print", cursive;
+    --font-body: system-ui, sans-serif;
+    --radius: 18px; --radius-card: 22px; --border-w: 3px;
+    --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 24px; --space-6: 32px;
+    --ease: cubic-bezier(.23, 1, .32, 1);
+    /* papel (claro) */
+    --paper: #e8dcb5; --paper-2: #f4ebcf; --ink: #2a2112; --ink-2: #5b4a2a;
+    --hit: #a3281c; --miss: #f4ebcf; --ship: #2a2112; --sea: #cfe3e6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { /* pergamino de noche */
+      --paper: #1d1a14; --paper-2: #2a251b; --ink: #f1e6c4; --ink-2: #bfae85;
+      --hit: #ff7a6b; --miss: #1d1a14; --ship: #f1e6c4; --sea: #1f3a42;
+    }
+  }
+  :root, [data-nation="water"] { --n-lite: #82d0e6; --n-mid: #2b7a9b; --n-soft: #e3f3f8; --n-deep: #1e3360; }
+  [data-nation="earth"] { --n-lite: #6fcf7f; --n-mid: #3f7a2a; --n-soft: #e4efd3; --n-deep: #2a3d17; }
+  [data-nation="fire"]  { --n-lite: #e8905a; --n-mid: #af1b2b; --n-soft: #f8e1d3; --n-deep: #6e2410; }
+  [data-nation="air"]   { --n-lite: #f9d672; --n-mid: #9a5a12; --n-soft: #fbf1cf; --n-deep: #5e3a0e; }
+
+  /* derivados: se recalculan en body para que data-nation los cambie */
+  :root, body {
+    --bg: color-mix(in srgb, var(--paper) 82%, var(--n-soft));
+    --surface: color-mix(in srgb, var(--paper-2) 78%, var(--n-soft));
+    --line: var(--ink);
+    --accent: var(--n-deep); --accent-ink: #f4ebcf;
+    --shadow: 3px 3px 0 var(--ink);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root, body { --accent: var(--n-lite); --accent-ink: #1d1a14; --bg: color-mix(in srgb, var(--paper) 88%, var(--n-deep)); --surface: color-mix(in srgb, var(--paper-2) 85%, var(--n-deep)); }
+  }
+  @media (pointer: fine) { :root { --target: 36px; } }
+}
