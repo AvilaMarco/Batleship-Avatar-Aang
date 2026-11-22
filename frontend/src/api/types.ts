@@ -1,6 +1,7 @@
 // Tipos del contrato ADR 004 (Anexos A.3, B, C, F). snake_case tal cual viaja.
 
-export type Nation = "WATER" | "AIR" | "FIRE" | "EARTH";
+// LOTUS (Loto Blanco): solo para jugadores, no es ubicación del mapa (backend: tarea 809)
+export type Nation = "WATER" | "AIR" | "FIRE" | "EARTH" | "LOTUS";
 export type GameStatus = "CREATED" | "IN_GAME" | "FINISH";
 export type ShipType = "CARRIER" | "BATTLESHIP" | "SUBMARINE" | "DESTROYER" | "PATROL_BOAT";
 
@@ -41,7 +42,7 @@ export interface GameSummary {
 
 export interface ShipPlacement {
   type: ShipType;
-  cells: string[];
+  cells: readonly string[];
 }
 
 // Anexo F (v2.1)

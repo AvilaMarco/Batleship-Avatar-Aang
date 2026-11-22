@@ -28,3 +28,19 @@ export function canPlace(placed: ShipPlacement[], ship: ShipPlacement): boolean 
 
 export const isFleetComplete = (placed: ShipPlacement[]): boolean =>
   (Object.keys(SHIP_SIZES) as ShipType[]).every((t) => placed.some((p) => p.type === t));
+
+/** Flota aleatoria válida. `rng` inyectable para tests. Reintenta por barco hasta colocarlo (siempre cabe en 10×10). */
+export function randomFleet(rng: () => number = Math.random): ShipPlacement[] {
+  const placed: ShipPlacement[] = [];
+  for (const type of Object.keys(SHIP_SIZES) as ShipType[]) {
+    for (let tries = 0; ; tries++) {
+      // con rng constante el sorteo no varía: se avanza el origen por intentos para no colgarse
+      const k = Math.floor(rng() * 100 + tries) % 100;
+      const o: Orientation = rng() < 0.5 ? "H" : "V";
+      const cells = shipCells(type, `${ROWS[Math.floor(k / COLS)]}${(k % COLS) + 1}`, o);
+      if (cells && canPlace(placed, { type, cells })) { placed.push({ type, cells }); break; }
+      if (tries > 2000) return randomFleet(Math.random);
+    }
+  }
+  return placed;
+}

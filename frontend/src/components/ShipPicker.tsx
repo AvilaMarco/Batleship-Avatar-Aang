@@ -12,17 +12,19 @@ interface Props {
   orientation: Orientation;
   onSelect: (t: ShipType) => void;
   onRotate: () => void;
+  onDragStart?: (t: ShipType) => void;
 }
 
-export default function ShipPicker({ placed, selected, orientation, onSelect, onRotate }: Props) {
+export default function ShipPicker({ placed, selected, orientation, onSelect, onRotate, onDragStart }: Props) {
   return (
     <div>
       {(Object.keys(SHIP_SIZES) as ShipType[]).map((t) => (
-        <button key={t} type="button" disabled={placed.includes(t)} aria-pressed={selected === t} onClick={() => onSelect(t)}>
+        <button key={t} type="button" disabled={placed.includes(t)} aria-pressed={selected === t} onClick={() => onSelect(t)}
+          onPointerDown={() => onDragStart?.(t)} onDoubleClick={onRotate} style={{ touchAction: "none" }}>
           <img src={`/assets/ships/${t.toLowerCase()}.png`} alt="" height={24} /> {SHIP_NAMES[t]} ({SHIP_SIZES[t]})
         </button>
       ))}
-      <button type="button" onClick={onRotate}>Rotar ({orientation === "H" ? "horizontal" : "vertical"})</button>
+      <button type="button" onClick={onRotate}>⟳ Rotar ({orientation === "H" ? "horizontal" : "vertical"})</button>
     </div>
   );
 }

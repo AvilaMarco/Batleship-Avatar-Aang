@@ -1,6 +1,14 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { ApiError } from "../api/http";
 import { useAuth } from "../auth/AuthContext";
+
+// Orden = cues de intro.vtt (agua, tierra, fuego, aire); mobileN.png = silueta de cada nación
+const NATIONS = [
+  { key: "water", label: "Agua", img: "/assets/login/mobile1.png" },
+  { key: "earth", label: "Tierra", img: "/assets/login/mobile2.png" },
+  { key: "fire", label: "Fuego", img: "/assets/login/mobile3.png" },
+  { key: "air", label: "Aire", img: "/assets/login/mobile4.png" },
+];
 
 const FIELDS: Record<string, string> = { password: "Contraseña", email: "Email", name: "Nombre" };
 
@@ -21,6 +29,23 @@ export default function LoginScreen() {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
+  const [active, setActive] = useState(0);
+  const [muted, setMuted] = useState(false);
+  const audio = useRef<HTMLAudioElement>(null);
+
+  // Autoplay suele estar bloqueado: se arranca al primer toque.
+  useEffect(() => {
+    const start = () => void audio.current?.play?.()?.catch?.(() => {});
+    window.addEventListener("pointerdown", start, { once: true });
+    return () => window.removeEventListener("pointerdown", start);
+  }, []);
+
+  // La pista VTT (mode hidden: sin subtítulos) marca qué nación suena; mismo estado que las miniaturas.
+  const onCue = (t: TextTrack) => {
+    const cue = (t.activeCues?.[0] as VTTCue | undefined)?.text;
+    const i = NATIONS.findIndex((n) => n.key === cue);
+    if (i >= 0) setActive(i);
+  };
 
   async function submit(ev: FormEvent) {
     ev.preventDefault();
@@ -36,8 +61,15 @@ export default function LoginScreen() {
   }
 
   return (
-    <form onSubmit={submit} aria-labelledby="login-title">
-      <h2 id="login-title">{registering ? "Crear cuenta" : "Iniciar sesión"}</h2>
+    <div className="login">
+      <img className="login-silhouette" src={NATIONS[active].img} alt="" aria-hidden="true" data-nation={NATIONS[active].key} />
+      <audio ref={audio} src="/assets/login/intro.ogg" muted={muted} loop preload="auto">
+        <track kind="metadata" src="/assets/login/intro.vtt" default
+          onLoad={(e) => { if (e.currentTarget.track) e.currentTarget.track.mode = "hidden"; }}
+          ref={(t) => { if (t?.track) t.track.oncuechange = () => onCue(t.track); }} />
+      </audio>
+      <button type="button" className="login-mute" aria-pressed={muted} onClick={() => setMuted(!muted)}>Silenciar</button>
+    <form onSubmit={submit} aria-label={registering ? "Crear cuenta" : "Iniciar sesión"}>
       {registering && (
         <p>
           <label htmlFor="name">Nombre</label>
@@ -73,5 +105,13 @@ export default function LoginScreen() {
         {registering ? "Ya tengo cuenta" : "Registrarse"}
       </button>
     </form>
+      <div className="login-thumbs">
+        {NATIONS.map((n, i) => (
+          <button key={n.key} type="button" aria-label={n.label} aria-current={i === active ? "true" : undefined} onClick={() => setActive(i)}>
+            <img src={n.img} alt="" />
+          </button>
+        ))}
+      </div>
+    </div>
   );
 }
