@@ -34,7 +34,7 @@ Códigos de salida de `ship.sh` (los devuelve `recibir`):
 | 1 | Falló y el servidor volvió a la versión anterior | Mirar los logs del servidor (`app`) y corregir antes de reintentar |
 | 2 | Paquete rechazado (formato o validación) | Revisar `servidor.env` / `compose.yaml` |
 | 3 | Pendiente de aprobación del admin (el compose cambió respecto del aprobado) | El admin ejecuta `sudo server-app-aprobar shipbender`; no reenvíes en bucle |
-| 4 | Se cortó la espera del log; el despliegue sigue | Consultar el estado (paso 4) antes de reintentar |
+| 4 | Se cortó la espera del log; el despliegue sigue | Consultar el estado (paso 3) antes de reintentar |
 
 ## 3. Estado y logs
 
@@ -90,4 +90,4 @@ Prueba periódica: restaurar un dump en un proyecto de prueba. Un backup sin pro
 ## 8. Reglas de seguridad
 
 - No arranques la imagen con `docker run` sin `SPRING_PROFILES_ACTIVE=prod`: la imagen ya lo fija, pero no lo sobrescribas.
-- La clave SSH de despliegue equivale a acceso de administrador al servidor (grupo `docker`): solo para desplegar, con `from=` y `restrict` en `authorized_keys`, gestionada por el administrador.
+- La clave SSH de despliegue es de un usuario `deploy` sin docker ni sudo (git-shell, solo entrega el paquete): la gestiona el administrador, con `from=` y `restrict` en `authorized_keys`.
