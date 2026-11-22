@@ -1,6 +1,6 @@
 # 808 · frontend-dev · Conectar el diseño visual al front
 
-- Estado: pendiente (depende de 810; punto 6 backend = 809)
+- Estado: parcial (ver Resultado)
 - Origen: "pasalo como tarea" (usuario, 2026-11-22); diseños en https://claude.ai/artifact/KBrS8Wx75qZX6acFNe863E; detalle funcional en `docs/design/NOTAS-IMPLEMENTACION.md`.
 - Riesgo: bajo (presentación + componentes); dividir en varios commits si pasa ~400 líneas.
 
@@ -15,3 +15,12 @@ Ya en `main`: tokens (incl. `lotus`), `public/assets/sprite.svg`, texturas, mani
 7. **PWA**: service worker (p. ej. `vite-plugin-pwa`); manifest e iconos ya están.
 
 Hecho cuando: `npm test` y `npm run e2e` verdes, y revisión visual a 390, 844×390 y 1280.
+
+## Resultado
+
+- Estado: parcial (falta revisión visual a 390, 844×390 y 1280, y `npm run e2e`: lo hace el chat central).
+- Hecho: p1 tablero con sprites (`Board`: props `nation`, `ships`, `drop`; `data-drop`); p2 `.game`, `data-nation` del body, placas `.player`; p4 arrastre con pointer events, girar (⟳, R, rueda, clic derecho, doble toque), Al azar (`randomFleet` en `domain/fleet.ts`, con test), botón "Listo · enviar barcos" (así conviven `/^listo/` y el texto antiguo "Enviar barcos" de tests y e2e); p3 menú flotante con ficha + `localStorage` + arrastre de ratón en el mapa; p5 login con silueta, audio, pista VTT (`public/assets/login/intro.vtt`), silenciar y miniaturas; p6 `LOTUS` en `Nation` y selector; p7 `public/sw.js` escrito a mano (sin dependencia) registrado solo en producción.
+- `ShipPlacement.cells` pasa a `readonly string[]` (el test de 810 usa `as const` y rompía `tsc -b`).
+- Verificado: `npm test` 116/118 y `npm run build` verde.
+- Pendiente/conflicto: 2 tests de `App.test.tsx` esperan un heading "Iniciar sesión" que 810 prohíbe -> tarea 811 (qa).
+- No hecho: mapa con escala cover y marcadores de tamaño constante (`--s`); teclado de colocar con flechas/Enter (hoy: elegir barco + Enter en la celda); sprite `sunk` y `data-nation` de la silueta sin estilos finos.
