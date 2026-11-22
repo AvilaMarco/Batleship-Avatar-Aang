@@ -3,6 +3,9 @@
 
 /* ---------- Naciones ---------- */
 [data-nation="water"] { --n-lite:#82d0e6; --n-mid:#2b7a9b; --n-soft:#e3f3f8; --n-deep:#1e3360; }
+[data-nation="earth"] { --n-lite:#6fcf7f; --n-mid:#3f7a2a; --n-soft:#e4efd3; --n-deep:#2a3d17; }
+[data-nation="fire"]  { --n-lite:#e8905a; --n-mid:#af1b2b; --n-soft:#f8e1d3; --n-deep:#6e2410; }
+[data-nation="air"]   { --n-lite:#f9d672; --n-mid:#9a5a12; --n-soft:#fbf1cf; --n-deep:#5e3a0e; }
 
 /* ---------- Direcciones (todas leen --n-*) ---------- */
 /* A · Tinta y agua: papel blanco, línea fina, un azul de tinta */
@@ -16,7 +19,7 @@
 }
 /* B · Pergamino: papel cálido, borde grueso, marcador (el juego original) */
 [data-direction="pergamino"] {
-  --bg:#e8dcb5; --surface:#f4ebcf; --ink:#2a2112; --ink-2:#5b4a2a; --line:#2a2112;
+  --bg:color-mix(in srgb,#e8dcb5 80%,var(--n-soft)); --surface:color-mix(in srgb,#f4ebcf 75%,var(--n-soft)); --ink:#2a2112; --ink-2:#5b4a2a; --line:#2a2112;
   --accent:var(--n-deep); --accent-ink:#f4ebcf; --map-veil:#e8dcb533;
   --radius:18px; --radius-card:22px; --border-w:3px; --shadow:3px 3px 0 #2a2112;
   --font-title:'Permanent Marker',cursive; --title-weight:400; --title-tracking:.01em; --title-size:32px;

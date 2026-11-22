@@ -93,11 +93,12 @@ input{height:48px;padding:0 12px;border-radius:var(--radius);border:var(--border
 <script>
 const q=new URLSearchParams(location.search),N=q.get('n')||'water',D=q.get('d')||'tinta',C=q.get('compare');
 const DIRS=['tinta','pergamino','vidrio','plano'],SCR=['login','lobby','game'];
-function mk(id,d){const s=document.getElementById(id).content.cloneNode(true).firstElementChild;s.dataset.nation=N;s.dataset.direction=d;
- s.querySelector('.tag').textContent+=' · '+d;
+function mk(id,d,n=N){const s=document.getElementById(id).content.cloneNode(true).firstElementChild;s.dataset.nation=n;s.dataset.direction=d;
+ s.querySelector('.tag').textContent+=' · '+d+' · '+n;
  const fill=(el,f)=>el&&[...Array(100)].forEach((_,i)=>{const c=document.createElement('div');const[k,t]=f(i);c.className='cell '+k;c.textContent=t;el.append(c)});
  fill(s.querySelector('.enemy'),i=>i%11==0?['hit','X']:i%7==0?['miss','•']:i==23||i==57?['sel','◎']:['','?']);
  fill(s.querySelector('.own'),i=>i%10<4&&i<40&&i>=10?['ship','▣']:i==52?['hit','X']:i==63?['miss','•']:['','']);
  return s}
-(C?DIRS.map(d=>mk(C,d)):SCR.map(id=>mk(id,D))).forEach(s=>document.body.append(s));
+const NAT=['water','earth','fire','air'],CN=q.get('nations'); // ?nations=lobby&d=pergamino → 4 naciones lado a lado
+(CN?NAT.map(n=>mk(CN,D,n)):C?DIRS.map(d=>mk(C,d)):SCR.map(id=>mk(id,D))).forEach(s=>document.body.append(s));
 </script></body></html>
