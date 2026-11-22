@@ -208,3 +208,15 @@ Construido y probado en Docker local aislado: `start_period` en el healthcheck d
 Medido (Docker Desktop, 6 CPU, 8 GB): imagen 425 MB (jar 68 MB), `docker save` comprimido 131 MB, build en frío 115 s con pico de ~1,2 GB en toda la VM, stack en reposo ~330-380 MB (app ~250-295 MiB, db ~55-80 MiB), volumen de Postgres ~47 MB.
 No verificado: envío real por SSH y `restrict,command=` en `sshd`, `flock` en Debian, la cadena Cloudflare → cloudflared → Caddy → app (y que Caddy fije `X-Forwarded-Proto: https`), Cloudflare Access con Bypass, el servidor real (x86_64, Docker 29.9.3, 7,7 GiB con ~2,6 GiB disponibles y swap en uso, 51 GB libres).
 Pendiente: tarea 607 (puesta en marcha) y la sesión de deploy con el checklist del servidor; pasos manuales en el runbook (clave restringida `authorized_keys`, `APP_PORT`, `.env` con secretos nuevos, alta del hostname). Decisión abierta: dónde van los backups fuera del servidor (el servidor solo sale a Internet por el túnel).
+
+## Fase F8 · Lógica de la sesión principal (en curso)
+
+Rama `migration/f8-logica`. Reparto (2026-11-22): esta sesión hace SOLO lógica y funcionalidad; la sesión "Diseño visual por naciones" es dueña de lo visual (CSS, tokens, assets, `docs/design/**`). Decidido por el usuario: primero el mapa (arreglo + SVG con menú), después el refresco de respaldo de la partida. El chat de texto (v2.1) queda para después.
+
+| # | Rol | Tarea | Fase | Estado | Depende de |
+|---|---|---|---|---|---|
+| 801 | qa | Tests del mapa interactivo (rojo hasta 803) | F8 | pendiente | — |
+| 802 | frontend-dev | Lógica pura del mapa y constantes | F8 | pendiente | 801 |
+| 803 | frontend-dev | Mapa SVG con menú de acciones | F8 | pendiente | 802 |
+| 804 | qa | Tests del refresco de respaldo (rojo hasta 805) | F8 | pendiente | 803 |
+| 805 | frontend-dev | Refresco de respaldo de la partida | F8 | pendiente | 804 |
