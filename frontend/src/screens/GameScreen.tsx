@@ -44,7 +44,15 @@ export default function GameScreen({ id }: { id: number }) {
       onError: (p) => setError(p.detail),
     });
     setSendEmote(() => conn.sendEmote);
-    return () => conn.disconnect();
+    // respaldo si se pierde un evento (móvil dormido, red caída): recargar al volver visible u online
+    const resync = () => { if (document.visibilityState === "visible") void load(); };
+    document.addEventListener("visibilitychange", resync);
+    window.addEventListener("online", resync);
+    return () => {
+      document.removeEventListener("visibilitychange", resync);
+      window.removeEventListener("online", resync);
+      conn.disconnect();
+    };
   }, [id, load, setEmote]);
 
   if (loadError) {
