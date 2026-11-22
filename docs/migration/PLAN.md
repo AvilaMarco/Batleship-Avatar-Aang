@@ -197,6 +197,7 @@ Decisiones (2026-11-22): compilar en la PC de desarrollo y enviar la imagen por 
 | # | Rol | Tarea | Fase | Estado | Depende de |
 |---|---|---|---|---|---|
 | 609 | devops | `start_period` en el healthcheck de db | F7 | hecha | — |
-| 610 | devops | Compose: puerto en loopback y túnel opcional (riesgo alto) | F7 | pendiente | 609 |
-| 611 | devops | `ship.sh` y `deploy.sh` (envío, backup, healthcheck, rollback) (riesgo alto) | F7 | pendiente | 610 |
-| 612 | reviewer | Revisión: loopback, SSH restringido, despliegue | F7 | pendiente | 610, 611 |
+| 610 | devops | Compose: puerto en loopback y túnel opcional (riesgo alto) | F7 | hecha | 609 |
+| 611 | devops | `ship.sh` y `deploy.sh` (envío, backup, healthcheck, rollback) (riesgo alto) | F7 | parcial (falta SSH real) | 610 |
+| 612 | reviewer | Revisión: loopback, SSH restringido, despliegue | F7 | hecha (1 bloqueante) | 610, 611 |
+| 613 | devops | Endurecimiento: rollback ante corte de SSH, lock, topes, memswap (riesgo alto) | F7 | pendiente | 612 |
