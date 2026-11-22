@@ -1,5 +1,7 @@
 # 607 · central (con el usuario) · Puesta en marcha en el dominio y verificación
 Estado: pendiente
+
+Nota 2026-11-22 (servidor real): el servidor es Debian 13 con Caddy y un túnel existente; no hay túnel propio, la app publica en `127.0.0.1:APP_PORT` y el despliegue se hace con `scripts/ship.sh` y `scripts/deploy.sh` (tareas 610-611). Cloudflare Access con política Bypass para `shipbender.racnar.dev` la da de alta el administrador con su herramienta: se SUPONE hecho, pero este paso lo VERIFICA: `curl -sI https://shipbender.racnar.dev/` no debe redirigir a `cloudflareaccess.com` (200 esperado). Los criterios de abajo que mencionan `docker compose logs tunnel`, `netstat` en Windows o el reinicio de Windows se sustituyen por: `docker compose ps` en el servidor (db, app, backup), handshake WebSocket a través de Caddy (101; si da 403, Caddy no fija `X-Forwarded-Proto: https`), y reinicio del servidor Debian (los contenedores `restart: unless-stopped` vuelven solos sin iniciar sesión).
 Fase: F6
 Depende de: 605, 606 (sin BLOQUEANTES abiertos) y los pasos manuales 1-7 del ADR 007, que hace el usuario
 Paralelizable: no
