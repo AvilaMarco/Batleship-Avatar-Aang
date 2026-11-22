@@ -1,0 +1,43 @@
+/* Único archivo a editar en cada iteración. index.html solo usa var(--...).
+   Capa 1: NACIÓN = 4 colores. Capa 2: DIRECCIÓN = estructura + neutros + tipografía. */
+
+/* ---------- Naciones ---------- */
+[data-nation="water"] { --n-lite:#82d0e6; --n-mid:#2b7a9b; --n-soft:#e3f3f8; --n-deep:#1e3360; }
+
+/* ---------- Direcciones (todas leen --n-*) ---------- */
+/* A · Tinta y agua: papel blanco, línea fina, un azul de tinta */
+[data-direction="tinta"] {
+  --bg:#f7fafb; --surface:#fff; --ink:#14213d; --ink-2:#4a5a73; --line:#14213d26;
+  --accent:var(--n-mid); --accent-ink:#fff; --map-veil:#ffffff00;
+  --radius:10px; --radius-card:14px; --border-w:1px; --shadow:none;
+  --font-title:Georgia,'Times New Roman',serif; --title-weight:400; --title-tracking:-.01em; --title-size:30px;
+  --font-body:system-ui,sans-serif; --card-border:var(--line); --blur:0px;
+  --c-water:var(--n-soft); --c-ship:var(--n-deep); --c-hit:#b3261e; --c-miss:#fff; --c-sel:var(--accent);
+}
+/* B · Pergamino: papel cálido, borde grueso, marcador (el juego original) */
+[data-direction="pergamino"] {
+  --bg:#e8dcb5; --surface:#f4ebcf; --ink:#2a2112; --ink-2:#5b4a2a; --line:#2a2112;
+  --accent:var(--n-deep); --accent-ink:#f4ebcf; --map-veil:#e8dcb533;
+  --radius:18px; --radius-card:22px; --border-w:3px; --shadow:3px 3px 0 #2a2112;
+  --font-title:'Permanent Marker',cursive; --title-weight:400; --title-tracking:.01em; --title-size:32px;
+  --font-body:system-ui,sans-serif; --card-border:var(--line); --blur:0px;
+  --c-water:#cfe3e6; --c-ship:#2a2112; --c-hit:#a3281c; --c-miss:#f4ebcf; --c-sel:var(--n-mid);
+}
+/* C · Vidrio: noche azul, superficies translúcidas, luz de acento */
+[data-direction="vidrio"] {
+  --bg:linear-gradient(160deg,#0d1a36,var(--n-deep) 60%,#143e55); --surface:#ffffff14; --ink:#f2f8fb; --ink-2:#a9c0d0; --line:#ffffff2e;
+  --accent:var(--n-lite); --accent-ink:#0d1a36; --map-veil:#0d1a3655;
+  --radius:14px; --radius-card:20px; --border-w:1px; --shadow:0 8px 24px -8px #0008;
+  --font-title:system-ui,sans-serif; --title-weight:300; --title-tracking:.14em; --title-size:26px;
+  --font-body:system-ui,sans-serif; --card-border:var(--line); --blur:12px;
+  --c-water:#ffffff12; --c-ship:var(--n-lite); --c-hit:#ff6b5e; --c-miss:#ffffff05; --c-sel:#fff;
+}
+/* D · Plano: bloques sólidos, sin bordes, redondo y grande */
+[data-direction="plano"] {
+  --bg:var(--n-soft); --surface:#fff; --ink:#0f2a3a; --ink-2:#3d5b6c; --line:transparent;
+  --accent:var(--n-mid); --accent-ink:#fff; --map-veil:#ffffff00;
+  --radius:999px; --radius-card:28px; --border-w:0px; --shadow:0 6px 0 #0f2a3a14;
+  --font-title:system-ui,sans-serif; --title-weight:800; --title-tracking:-.03em; --title-size:34px;
+  --font-body:system-ui,sans-serif; --card-border:transparent; --blur:0px;
+  --c-water:#cdeaf3; --c-ship:var(--n-deep); --c-hit:#d9382c; --c-miss:#fff; --c-sel:var(--n-mid);
+}
