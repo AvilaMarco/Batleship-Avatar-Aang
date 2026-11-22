@@ -185,5 +185,7 @@ Rama `migration/f7-endurecimiento`. Parte 1 (esta): contraseña mínima de 8 car
 | 702 | backend-dev | Registro: `@Size(min=8, max=72)` y límite de 72 bytes | F7 | hecha | 701 |
 | 703 | frontend-dev | Registro: ayuda y `minLength` en el formulario | F7 | hecha | 702 |
 | 704 | qa | Test: contraseña de más de 72 bytes → 400 | F7 | hecha | 702 |
-| 705 | qa | Test: el error de bytes llega bajo la clave `password` (rojo hasta 706) | F7 | pendiente | 704 |
-| 706 | backend-dev | Restricción propia `MaxUtf8Bytes` sobre el campo | F7 | pendiente | 705 |
+| 705 | qa | Test: el error de bytes llega bajo la clave `password` (rojo hasta 706) | F7 | hecha | 704 |
+| 706 | backend-dev | Restricción propia `MaxUtf8Bytes` sobre el campo | F7 | hecha | 705 |
+
+Resultado F7 parte 1: registro exige contraseña de 8 a 72 caracteres y ≤ 72 bytes UTF-8 (restricción propia `@MaxUtf8Bytes` sobre el campo, mensaje en español bajo `errors.password`); el login no cambia (el seed `123` sigue entrando). 112 tests de backend y 73 de front verdes. Descubierto probando: con `@Size(max=72)` una contraseña de 40 caracteres de 2 bytes pasaba la validación y bcrypt lanzaba un 500. Pendiente: parte 2 (diseño visual del front); el error de contraseña se muestra en la alerta general, no junto al campo.

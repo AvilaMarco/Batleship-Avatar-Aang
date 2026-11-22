@@ -235,3 +235,18 @@ Formato de entrada:
 ### Un runbook solo es fiable si cada comando se ejecutó (prioridad media)
 - Al ejecutar cada comando contra el proyecto aislado aparecieron hallazgos que ninguna lectura habría dado: en Git Bash una ruta `/tmp/...` se monta en la VM de Docker y el dump no aparece en el host; `docker compose start` devuelve 0 aunque el servicio no exista, así que el código de salida no basta para decir "app arrancada".
 - **Concepto**: documentación verificable, no confiar en el código de salida de un comando, probar en entorno aislado.
+
+
+## F7 · Endurecimiento (parte 1: contraseña)
+
+### Validar con la misma unidad que usa el consumidor final (prioridad alta)
+- **Antes**: `RegisterRequest`: `@NotEmpty` y, tras F5, `@Size(max = 72)`. Parecía suficiente.
+- **Problema**: `@Size` cuenta **caracteres**, pero bcrypt corta en **bytes**. 40 caracteres "é" son 80 bytes: pasaban la validación y el encoder lanzaba `IllegalArgumentException` (500). Además, sin mínimo, una contraseña de 1 carácter era válida.
+- **Después**: `@Size(min = 8, max = 72)` y una restricción propia `@MaxUtf8Bytes(72)` sobre el campo (validador que cuenta bytes UTF-8). Un primer intento con `@AssertTrue` dejaba el error en una clave artificial (`passwordWithin72Bytes`, "must be true"), ilegible para el front; la restricción sobre el campo lo deja en `errors.password` con un mensaje claro.
+- **Por qué es mejor**: la validación vive en la frontera (el DTO), usa la unidad que importa (bytes) y devuelve 400 en vez de un 500. El login no cambia, para no romper cuentas existentes.
+- **Concepto**: validar en el *trust boundary*, restricciones a medida de Bean Validation (`ConstraintValidator`), contrato de errores por campo.
+
+### Probar el comportamiento real, no el simulado (prioridad media)
+- La tarea del front dio por hecho que el error llegaba como `errors.password` porque su test lo simulaba; el test de integración del backend mostró que llegaba como `passwordWithin72Bytes`. Un test que simula la respuesta del servidor no prueba que el servidor responda así.
+- También: el límite de bcrypt se **probó con el encoder real** antes de añadir código, y el test se validó con una **mutación** (quitar la validación → 500).
+- **Concepto**: pruebas de integración vs. dobles, mutación para comprobar que un test detecta el defecto.
