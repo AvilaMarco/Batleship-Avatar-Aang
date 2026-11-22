@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 
-export type Route = { name: "login" } | { name: "lobby" } | { name: "game"; id: number };
+export type Route = { name: "login" } | { name: "lobby" } | { name: "profile" } | { name: "game"; id: number };
 
 export function parseRoute(hash: string): Route {
   if (hash === "#/login") return { name: "login" };
+  if (hash === "#/profile") return { name: "profile" };
   const m = /^#\/games\/(\d+)$/.exec(hash);
   if (m) return { name: "game", id: Number(m[1]) };
   return { name: "lobby" };

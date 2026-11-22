@@ -66,6 +66,7 @@ export default function LobbyScreen() {
     <>
       <button type="button" className="menu-toggle" aria-expanded={menuOpen} aria-controls="lobby-menu" onClick={toggleMenu}>Menú</button>
       <div id="lobby-menu" className="lobby-menu" hidden={!menuOpen}>
+        <a href="#/profile">Perfil</a>
         <button type="button" onClick={logout}>Salir</button>
         {profile.nation !== null && <button type="button" onClick={() => void reload()}>Actualizar</button>}
         {profile.nation !== null && <Ranking entries={ranking} />}

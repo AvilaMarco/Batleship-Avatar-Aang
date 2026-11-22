@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { clearToken, getToken } from "../api/auth";
 import * as players from "../api/players";
-import type { PlayerProfile } from "../api/types";
+import type { Nation, PlayerProfile } from "../api/types";
 import { navigate } from "../router";
 
 interface Auth {
@@ -9,7 +9,7 @@ interface Auth {
   /** false mientras se valida el token guardado al montar */
   ready: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (name: string, email: string, password: string) => Promise<void>;
+  register: (name: string, email: string, password: string, nation?: Nation) => Promise<void>;
   logout: () => void;
   refreshProfile: () => Promise<void>;
 }
@@ -37,10 +37,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     navigate("#/");
   }, [refreshProfile]);
 
-  const register = useCallback(async (name: string, email: string, password: string) => {
+  const register = useCallback(async (name: string, email: string, password: string, nation?: Nation) => {
     await players.register(name, email, password);
-    await login(email, password);
-  }, [login]);
+    await players.login(email, password);
+    if (nation) await players.setNation(nation);
+    await refreshProfile();
+    navigate("#/");
+  }, [refreshProfile]);
 
   const logout = useCallback(() => {
     clearToken();
