@@ -56,7 +56,7 @@
   /* Tablero: cuadrícula de fichas sobre madera */
   .board { gap: 3px; padding: var(--space-2); background: color-mix(in srgb, #8a5a2b 55%, var(--paper)); border: var(--border-w) solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
   .cell { min-height: 0; min-width: 0; padding: 0; border: 1px solid color-mix(in srgb, var(--ink) 55%, transparent); border-radius: 6px; box-shadow: none;
-    background: var(--sea); color: var(--ink-2); font-weight: 700; font-size: clamp(.65rem, 2.6vw, 1rem); }
+    background: color-mix(in srgb, var(--n-lite) 40%, transparent) url(/assets/textures/water-texture.png) 0 0 / 44px; background-blend-mode: multiply; color: var(--ink-2); font-weight: 700; font-size: clamp(.65rem, 2.6vw, 1rem); }
   .cell:hover:not(:disabled) { transform: none; filter: brightness(1.08); }
   .cell.ship { background: var(--ship); color: var(--paper-2); }
   .cell.hit { background: var(--hit); color: #fff; }
@@ -67,8 +67,8 @@
 
   /* Mapa: marco de papel; el SVG se desplaza con el dedo */
   .map { overflow: auto; max-width: 100%; height: min(60dvh, 520px); border: var(--border-w) solid var(--line); border-radius: var(--radius-card); box-shadow: var(--shadow);
-    background: var(--n-deep); touch-action: pan-x pan-y; overscroll-behavior: contain; }
-  @media (orientation: landscape) { .map { height: min(78dvh, 640px); } }
+    background: var(--n-deep) url(/assets/textures/textura-mapa.jpg) center / cover; touch-action: pan-x pan-y; overscroll-behavior: contain; }
+  @media (orientation: landscape) { .map { height: 100dvh; border-radius: 0; border-width: 0; box-shadow: inset 0 0 70px 6px rgba(110, 70, 25, .6); } }
   .map-spot { cursor: pointer; --spot-fill: var(--paper-2); }
   .map-spot circle { fill: var(--spot-fill); stroke: var(--ink); stroke-width: 5; transition: transform .15s var(--ease); transform-box: fill-box; transform-origin: center; }
   .map-spot[data-state="empty"] circle { fill-opacity: .55; stroke-dasharray: 7 6; }
@@ -89,4 +89,11 @@
   .map-sheet:focus { outline: none; }
   .map-sheet button:first-child:not(:last-child) { background: var(--accent); color: var(--accent-ink); min-height: 48px; }
   .map-sheet p { margin: 0; text-align: center; font-weight: 600; }
+
+  /* Escena y jugador (para GameScreen): fondo por nación + placa de jugador */
+  .game { background: radial-gradient(120% 90% at 50% 0%, color-mix(in srgb, var(--scene) 78%, #fff), var(--scene) 55%, color-mix(in srgb, var(--scene) 70%, #000)); }
+  .player { display: inline-flex; align-items: center; gap: 10px; padding: 4px 16px 4px 4px; border: var(--border-w) solid var(--line); border-radius: 999px; background: var(--n-deep); color: #f4ebcf; box-shadow: var(--shadow); }
+  .player svg { width: 40px; height: 40px; flex: none; background: var(--n-lite); border-radius: 50%; }
+  [data-nation="water"] { --scene: #5a7abd; } [data-nation="earth"] { --scene: #438a17; }
+  [data-nation="fire"] { --scene: #6f1e15; } [data-nation="air"] { --scene: #72c3e5; } [data-nation="lotus"] { --scene: #b8a572; }
 }
