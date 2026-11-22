@@ -1,0 +1,104 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Shipbender · brainstorm visual</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap">
+<link rel="stylesheet" href="tokens.css">
+<!-- ?d=tinta|pergamino|vidrio|plano  ?n=water  ?compare=login|lobby|game (4 direcciones lado a lado) -->
+<style>
+*{box-sizing:border-box}
+html{background:#6b7280}
+body{margin:0;padding:16px;font:14px/1.4 system-ui,sans-serif;display:flex;flex-wrap:wrap;gap:16px;justify-content:center;align-items:flex-start}
+.phone{width:min(360px,100%);min-height:740px;background:var(--bg);color:var(--ink);font-family:var(--font-body);padding:16px;display:flex;flex-direction:column;gap:16px;border-radius:24px;overflow:hidden;position:relative}
+.tag{position:absolute;top:4px;right:10px;font-size:10px;opacity:.55}
+h1,h2{font-family:var(--font-title);font-weight:var(--title-weight);letter-spacing:var(--title-tracking);margin:0;line-height:1.1}
+h1{font-size:var(--title-size)} h2{font-size:20px}
+.muted{color:var(--ink-2);font-size:13px}
+.card{background:var(--surface);border:var(--border-w) solid var(--line);border-radius:var(--radius-card);box-shadow:var(--shadow);padding:16px;backdrop-filter:blur(var(--blur))}
+.btn{min-height:48px;padding:0 20px;border-radius:var(--radius);border:var(--border-w) solid var(--line);background:var(--surface);color:var(--ink);font:600 16px var(--font-body);box-shadow:var(--shadow);cursor:pointer}
+.btn.primary{background:var(--accent);color:var(--accent-ink)}
+.btn:disabled{opacity:.5}
+.btn:focus-visible,input:focus-visible,.dot:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.link{background:none;border:0;color:var(--ink-2);text-decoration:underline;min-height:44px;font:inherit}
+label{display:grid;gap:6px;font-size:13px;color:var(--ink-2)}
+input{height:48px;padding:0 12px;border-radius:var(--radius);border:var(--border-w) solid var(--line);background:var(--surface);color:var(--ink);font:16px var(--font-body)}
+.alert{padding:12px;border-radius:var(--radius);border:var(--border-w) solid var(--c-hit);color:var(--ink);background:var(--surface);font-size:13px}
+.alert::before{content:"⚠ ";color:var(--c-hit)}
+.head{display:flex;align-items:center;gap:10px}.head img{height:36px}.head b{flex:1}
+.nations{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.nation{padding:0;border:var(--border-w) solid var(--card-border);border-radius:var(--radius-card);overflow:hidden;background:var(--surface);aspect-ratio:500/650;position:relative;cursor:pointer;opacity:.7}
+.nation img{width:100%;height:100%;object-fit:cover;display:block}
+.nation[aria-pressed=true]{opacity:1;outline:3px solid var(--accent);outline-offset:2px}
+.nation[aria-pressed=true]::after{content:"✓";position:absolute;top:4px;right:4px;background:var(--accent);color:var(--accent-ink);border-radius:50%;width:20px;height:20px;font-size:13px;display:grid;place-items:center}
+.map{position:relative;border-radius:var(--radius-card);overflow:hidden;border:var(--border-w) solid var(--line);aspect-ratio:1395/950;box-shadow:var(--shadow)}
+.map>img{width:100%;height:100%;display:block}.map::before{content:"";position:absolute;inset:0;background:var(--map-veil)}
+.dot{position:absolute;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;border:2px solid var(--ink);background:var(--surface);color:var(--ink);font:700 16px var(--font-body);display:grid;place-items:center;cursor:pointer}
+.dot.open{opacity:.75}.dot.join{background:var(--accent);color:var(--accent-ink)}
+.dot.mine{background:var(--accent);color:var(--accent-ink);outline:3px solid var(--surface);outline-offset:1px}
+.dot.full{opacity:.45;border-style:dashed}
+.rank div{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)}.rank div:last-child{border:0}
+.rank span:last-child{font-variant-numeric:tabular-nums;color:var(--ink-2)}
+.banner{display:flex;justify-content:space-between;align-items:center}
+.board{display:grid;grid-template-columns:repeat(10,1fr);gap:2px;aspect-ratio:1}
+.cell{display:grid;place-items:center;background:var(--c-water);border:1px solid var(--line);border-radius:3px;font-size:12px;font-weight:700;color:var(--ink-2)}
+.cell.ship{background:var(--c-ship);color:var(--surface)}
+.cell.hit{background:var(--c-hit);color:#fff}
+.cell.miss{background:var(--c-miss)}
+.cell.sel{background:var(--c-sel);color:var(--accent-ink);outline:2px solid var(--ink);outline-offset:-2px}
+.board.mini{max-width:200px;margin:auto;font-size:9px}
+.ships{display:flex;gap:8px;overflow:auto}.ships button{flex:0 0 auto;border:var(--border-w) solid var(--line);background:var(--surface);border-radius:var(--radius);padding:4px 8px;min-height:44px}.ships img{height:32px;display:block}
+.emotes{display:flex;gap:8px;justify-content:center}.emotes button{width:44px;height:44px;padding:4px;border-radius:50%;border:var(--border-w) solid var(--line);background:var(--surface)}.emotes img{width:100%;height:100%;object-fit:contain}
+.result{text-align:center;display:grid;gap:12px}.result img{width:100%}
+.spacer{flex:1}
+</style></head><body>
+<template id="login"><section class="phone"><span class="tag">login</span>
+<div class="spacer"></div>
+<div style="text-align:center;display:grid;gap:8px"><img src="../../../frontend/public/assets/img/logo.png" alt="" style="height:72px;margin:auto"><h1>Shipbender</h1><p class="muted" style="margin:0">Batalla naval 1 contra 1</p></div>
+<div class="card" style="display:grid;gap:16px">
+<label>Correo<input type="email" value="aang@aire.test" autocomplete="email"></label>
+<label>Contraseña<input type="password" value="••••••••" autocomplete="current-password"></label>
+<div class="alert">Contraseña incorrecta. Inténtalo de nuevo.</div>
+<button class="btn primary">Entrar</button>
+</div>
+<button class="link">Crear cuenta</button>
+<div class="spacer"></div></section></template>
+
+<template id="lobby"><section class="phone"><span class="tag">lobby</span>
+<div class="head"><img src="../../../frontend/public/assets/img/nacionAgua.png" alt=""><b>Katara</b><button class="btn" style="min-height:44px">Ranking</button></div>
+<h2>Elige tu nación</h2>
+<div class="nations">
+<button class="nation" aria-pressed="true" aria-label="Agua"><img src="../../../frontend/public/assets/img/card-agua.png" alt=""></button>
+<button class="nation" aria-pressed="false" aria-label="Tierra"><img src="../../../frontend/public/assets/img/card-tierra.png" alt=""></button>
+<button class="nation" aria-pressed="false" aria-label="Fuego"><img src="../../../frontend/public/assets/img/card-fuego.png" alt=""></button>
+<button class="nation" aria-pressed="false" aria-label="Aire"><img src="../../../frontend/public/assets/img/card-viento.png" alt=""></button></div>
+<h2>Toca un punto del mapa</h2>
+<div class="map"><img src="../../../frontend/public/assets/img/fondo-mapa.png" alt="Mapa">
+<button class="dot open" style="left:45.5%;top:9%" aria-label="Crear partida en W1">+</button>
+<button class="dot join" style="left:46%;top:23.7%" aria-label="Unirse en E2">1</button>
+<button class="dot mine" style="left:29.4%;top:30.7%" aria-label="Tu partida en E1">2</button>
+<button class="dot full" style="left:51.6%;top:37.9%" aria-label="Llena en E3">2</button>
+<button class="dot open" style="left:36.9%;top:74.5%" aria-label="Crear partida en W2">+</button></div>
+<p class="muted" style="margin:0">+ crear · 1 unirse · 2 llena · resaltada = tu partida</p>
+<div class="card rank"><div><span>1. Toph</span><span>12 victorias</span></div><div><span>2. Katara</span><span>9 victorias</span></div><div><span>3. Zuko</span><span>7 victorias</span></div></div>
+</section></template>
+
+<template id="game"><section class="phone"><span class="tag">partida</span>
+<div class="banner"><h2>Tu turno</h2><span class="muted">Salvo 2 / 3</span></div>
+<div><p class="muted" style="margin:0 0 6px">Tablero rival — elige 3 objetivos</p><div class="board enemy"></div></div>
+<button class="btn primary">Disparar (2/3)</button>
+<div><p class="muted" style="margin:0 0 6px">Tu flota</p><div class="board mini own"></div></div>
+<div class="ships"><button aria-label="Portaaviones"><img src="../../../frontend/public/assets/ships/carrier.png" alt=""></button><button aria-label="Acorazado"><img src="../../../frontend/public/assets/ships/battleship.png" alt=""></button><button aria-label="Destructor"><img src="../../../frontend/public/assets/ships/destroyer.png" alt=""></button><button aria-label="Submarino"><img src="../../../frontend/public/assets/ships/submarine.png" alt=""></button></div>
+<div class="emotes"><button><img src="../../../frontend/public/assets/emotes/emote-1.png" alt="emote 1"></button><button><img src="../../../frontend/public/assets/emotes/emote-2.png" alt="emote 2"></button><button><img src="../../../frontend/public/assets/emotes/emote-3.png" alt="emote 3"></button></div>
+<div class="card result"><img src="../../../frontend/public/assets/img/victory.png" alt="Victoria"><h2>¡Victoria!</h2><button class="btn primary">Volver al mapa</button></div>
+</section></template>
+
+<script>
+const q=new URLSearchParams(location.search),N=q.get('n')||'water',D=q.get('d')||'tinta',C=q.get('compare');
+const DIRS=['tinta','pergamino','vidrio','plano'],SCR=['login','lobby','game'];
+function mk(id,d,n=N){const s=document.getElementById(id).content.cloneNode(true).firstElementChild;s.dataset.nation=n;s.dataset.direction=d;
+ s.querySelector('.tag').textContent+=' · '+d+' · '+n;
+ const fill=(el,f)=>el&&[...Array(100)].forEach((_,i)=>{const c=document.createElement('div');const[k,t]=f(i);c.className='cell '+k;c.textContent=t;el.append(c)});
+ fill(s.querySelector('.enemy'),i=>i%11==0?['hit','X']:i%7==0?['miss','•']:i==23||i==57?['sel','◎']:['','?']);
+ fill(s.querySelector('.own'),i=>i%10<4&&i<40&&i>=10?['ship','▣']:i==52?['hit','X']:i==63?['miss','•']:['','']);
+ return s}
+const NAT=['water','earth','fire','air'],CN=q.get('nations'); // ?nations=lobby&d=pergamino → 4 naciones lado a lado
+(CN?NAT.map(n=>mk(CN,D,n)):C?DIRS.map(d=>mk(C,d)):SCR.map(id=>mk(id,D))).forEach(s=>document.body.append(s));
+</script></body></html>
