@@ -20,6 +20,9 @@ Una sola persona opera el juego en un PC con Windows 11 + Docker Desktop, que ta
 12. **Fin de línea**: `.gitattributes` con `mvnw` y `*.sh` en `eol=lf`. Con `core.autocrlf=true` hoy `mvnw` queda en CRLF en el disco y `sh mvnw` falla dentro del contenedor (lo mismo pasaría con `backup.sh` montado).
 13. **Operación**: runbook en `docs/deploy/runbook.md` (borrador en el Anexo E). Versiones = imagen `shipbender:${APP_TAG}` con el sha corto de git. Rollback = volver al `APP_TAG` anterior (la imagen sigue en local). Si la versión nueva migró el esquema, hay que restaurar antes el backup previo a la actualización (Flyway solo avanza). Se despliega desde un clon limpio en `main`, nunca desde la copia de trabajo de desarrollo.
 
+## Actualización 2026-11-22 (tarea 610)
+En el servidor real (Debian, Caddy + túnel existente) `app` publica solo en `127.0.0.1:APP_PORT` y `tunnel` pasa a ser opcional (`profiles: ["tunnel"]`); Caddy debe fijar `X-Forwarded-Proto: https`. Reemplaza el "Ningún servicio tiene `ports:`" del punto 3 y el `TUNNEL_TOKEN` obligatorio del punto 4 (ahora vacío por defecto: Compose interpola también los perfiles inactivos). Ver `docs/deploy/runbook.md`.
+
 ## Alternativas descartadas
 - **Un solo stage con `-Pfrontend`** (el plugin baja Node): funciona, pero cualquier cambio en Java reinstala Node y repite `npm ci` sin caché. **Jar por capas (`-Djarmode=tools extract`)**: sirve para subir imágenes a un registry; acá se construye y se ejecuta en la misma máquina.
 - **Imagen JRE Ubuntu/distroless**: no trae `wget`, que el healthcheck necesita. **`maven:3.9-temurin-21`** en lugar de `mvnw`: desacopla la versión de Maven de la del wrapper.

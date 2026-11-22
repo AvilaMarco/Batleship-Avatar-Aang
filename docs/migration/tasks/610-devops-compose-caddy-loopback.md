@@ -1,5 +1,5 @@
 # 610 · devops · Compose adaptado al servidor real (Caddy + puerto en loopback, túnel opcional)
-Estado: pendiente
+Estado: hecha
 Fase: F7
 Depende de: 609
 Paralelizable: no (toca docker-compose.yml, .env.example y el runbook)
@@ -26,3 +26,7 @@ Criterios de aceptación (proyecto aislado `COMPOSE_PROJECT_NAME=shipbender-test
 - Commit `build: compose con puerto en loopback y túnel opcional para el servidor real (tarea 610)`.
 
 ## Resultado
+- `docker-compose.yml`: `app` con `ports: 127.0.0.1:${APP_PORT:?...}:8080`; `tunnel` con `profiles: ["tunnel"]`. Desvío del diseño: `TUNNEL_TOKEN` pasa de `:?` a `:-` porque Compose interpola también los servicios de perfiles inactivos (con `:?`, `config -q` fallaba sin token aunque el perfil estuviera apagado). Costo: sin token, `tunnel` falla al arrancar en vez de en `config`.
+- `.env.example` (APP_PORT, TUNNEL_TOKEN), runbook (secciones "Publicación detrás de Caddy" y "Túnel propio") y ADR 007 (nota de actualización) actualizados.
+- Verificado (proyecto `shipbender-test`, APP_PORT=4756): `config -q` sin TUNNEL_TOKEN OK; sin APP_PORT falla con el mensaje; un solo `ports:` (`host_ip 127.0.0.1`, 4756->8080); `--profile tunnel config` lista `tunnel`; db y app healthy; `127.0.0.1:4756/` 200; `192.168.0.221:4756` rechazado (000) y netstat solo `127.0.0.1:4756 LISTENING`; handshake 101 (Origin propio + XFP https), 403 (Origin ajeno), 403 (XFP http), 403 (sin XFP).
+- Limpieza hecha: down -v del proyecto de prueba, imagen `shipbender:test610`, `.env` y carpeta de backups temporal.

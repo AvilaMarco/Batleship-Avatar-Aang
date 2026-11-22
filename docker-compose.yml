@@ -42,16 +42,18 @@ services:
       timeout: 5s
       start_period: 60s
       retries: 3
+    ports: ["127.0.0.1:${APP_PORT:?falta APP_PORT en .env (el administrador del servidor lo asigna)}:8080"]   # solo loopback; Caddy del host reparte
     networks: [backend, edge]
     mem_limit: 768m
     logging: *logging
 
   tunnel:
     image: cloudflare/cloudflared:2026.11.1   # estable a 2026-11-21 (Docker Hub + GitHub releases); subir de versión a propósito
+    profiles: ["tunnel"]   # opcional: docker compose --profile tunnel up -d (en el servidor real no se usa)
     command: tunnel --no-autoupdate run
     restart: unless-stopped
     environment:
-      TUNNEL_TOKEN: ${TUNNEL_TOKEN:?falta TUNNEL_TOKEN en .env}
+      TUNNEL_TOKEN: ${TUNNEL_TOKEN:-}   # no puede ser :? (Compose interpola también los perfiles inactivos); vacío => cloudflared falla al arrancar
     depends_on: { app: { condition: service_healthy } }
     networks: [edge]
     mem_limit: 128m
