@@ -1,3 +1,4 @@
+@import "./screens.css" layer(components);
 /* Estilos por elemento/rol: no dependen de clases, salvo .map*, .board, .cell, .emote (ya existentes). */
 @layer base {
   *, *::before, *::after { box-sizing: border-box; }
