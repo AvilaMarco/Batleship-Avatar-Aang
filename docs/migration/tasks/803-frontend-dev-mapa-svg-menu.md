@@ -1,5 +1,5 @@
 # 803 · frontend-dev · Mapa SVG con menú de acciones
-Estado: pendiente
+Estado: parcial
 Fase: F8
 Depende de: 802
 Paralelizable: no
@@ -19,3 +19,5 @@ Criterios de aceptación:
 - Commit `feat(front): mapa SVG con menú de acciones (tarea 803)`.
 
 ## Resultado
+`GameMap` ahora es un SVG 1400x800 (`<image>` + un `<g role="button" tabindex=0 class="map-spot" data-state aria-label="<id>: <estado>">` por ubicación) dentro de `.map` (overflow auto, scroll inicial con `initialCenter(nation, ...)`), y un menú `.map-sheet` (`role="dialog"`, Escape y "Cerrar" devuelven el foco a la ubicación; llena = solo aviso). `LobbyScreen` pasa `nation`. Asset `mapa-game-mobile.png` recuperado de git (1400x800). Solo estilo inline funcional (overflow/tamaño del SVG). Verificado: `npm test` 15 archivos / 92 tests en verde, `npm run build` ok, greps de `dangerouslySetInnerHTML` y pureza sin salida.
+Pendiente de verificar (chat central): prueba manual en navegador (puntos sobre ubicaciones, menú, crear/unirse/volver, centrado por nación) y E2E.

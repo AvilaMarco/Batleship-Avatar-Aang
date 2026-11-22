@@ -67,6 +67,7 @@ export default function LobbyScreen() {
           <GameMap
             games={games}
             myId={profile.id}
+            nation={profile.nation}
             onCreate={(l) => act(() => gamesApi.createGame(l.nation, l.id))}
             onJoin={(id) => act(() => gamesApi.joinGame(id))}
             onOpen={(id) => navigate(`#/games/${id}`)}
