@@ -29,3 +29,10 @@ Nación = **paleta (≈6 tokens) + 1 motivo + 1 acento**. Mismo CSS, mismos comp
 
 ## Proceso barato en tokens
 Brainstorm = editar **solo** `board/tokens.css` (o `data-direction`/`data-nation` en `<body>`); jamás reescribir `index.html`. Una captura 0.5× por dirección. Aprobado → `COMPONENTES.md` → un `frontend-dev` lo aplica a `frontend/src`.
+
+## Reglas de Modern Web Guidance (guías `css`, `dark-mode`, `form-factor-adaptation`, `motion`)
+- **CSS**: orden de capas declarado arriba (`@layer reset, base, theme, components;`); tokens en `:root`, sin resets globales agresivos.
+- **Oscuro**: `<meta name="color-scheme" content="light dark">` + `color-scheme: light dark` en `:root`; tokens con `light-dark(claro, oscuro)` y, para navegadores antiguos, variables + `@media (prefers-color-scheme: dark)`; `accent-color` de la nación en controles nativos. Pergamino oscuro = “pergamino de noche” (por hacer).
+- **Táctil**: `--target-size: 24px` y `44px` con `@media (pointer: coarse)`; nunca menos de 24 (WCAG 2.5.8).
+- **Móvil**: contenedores con `@container` para componentes (tablero, carta); `viewport-fit=cover` + `env(safe-area-inset-bottom)` en la barra de Disparar/emotes; `scroll-padding-bottom` si hay barra fija.
+- **Movimiento**: animar solo dentro de `@media (prefers-reduced-motion: no-preference)`; nada de `animation-duration: .01ms` global.
