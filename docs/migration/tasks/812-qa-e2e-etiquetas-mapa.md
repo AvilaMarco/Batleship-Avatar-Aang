@@ -1,5 +1,5 @@
 # 812 · qa · e2e: el selector de ubicación libre usa la etiqueta vieja
-Estado: pendiente
+Estado: hecha
 Fase: F8
 Depende de: —
 Paralelizable: sí (solo `frontend/e2e`)
@@ -11,3 +11,4 @@ Objetivo: dejar `npm run e2e` en verde (backend en 4704 y Vite en 4705 ya levant
 Criterios: `cd frontend && npm run e2e` → exit 0; `npm test` verde. Commit `test: e2e con las etiquetas en español del mapa (tarea 812)` terminado con la línea Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>.
 
 ## Resultado
+Selectores adaptados en `frontend/e2e/full-game.spec.ts`: `/: libre$/`, `: con un jugador` (antes `: join`), `/Rotar/` (el botón es "⟳ Rotar"), `/^Listo/` (antes "Enviar barcos"). Además el clic en "Agua" se reintenta (`toPass`) hasta que aparece "Actualizar": el lobby se remonta tras el login y el primer clic se perdía (sin PATCH). `npm run e2e` verde 2 veces seguidas (~9 s); `npm test` verde. Sin bugs de la app; la pérdida del clic es una carrera de montaje, no un fallo funcional.
