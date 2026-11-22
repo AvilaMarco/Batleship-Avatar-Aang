@@ -48,7 +48,7 @@ Capturas: `capturas/original/01..09`. Objetivo: **atmósfera del mundo de Avatar
 `web/mapa-game-mobile.png` (mapa real), `web/assets/wallpapers/bg-{WATER,EARTH,FIRE,AIR}.png`, `img/mobile1-4.png`, `main.ogg`, `img/audio.png`/`no-audio.png` (o SVG), opcional `texturas/textura-mapa.jpg`.
 Ojo licencias: el logo de Avatar, el mapa fan-made y los `bg-*` (firma de su autor) son de terceros; vale para un proyecto personal, no para publicarlo como propio.
 
-## 7. Decisiones abiertas (del usuario)
-1. Orientación: el original era horizontal; ¿vertical primero (más cómodo a una mano) con horizontal para el mapa, o todo horizontal?
-2. Mapa: ¿reescalar el actual o redibujarlo en SVG plano?
-3. ¿Cuánto Pai Sho? (solo fichas/marcadores, o también el tablero de la partida)
+## 7. Decisiones tomadas (Marco, 2026-11-22)
+1. **Orientación**: login en **vertical**; menú/mapa y partida pensados para **horizontal**, con adaptación a vertical (`@media (orientation: portrait)`: mapa a pantalla completa con scroll, tableros apilados).
+2. **Mapa**: **redibujar en SVG plano** sobre el lienzo 1400×800 (coordenadas intactas).
+3. **Pai Sho**: fichas y marcadores **y** el tablero de la partida sobre madera estilo Pai Sho.
