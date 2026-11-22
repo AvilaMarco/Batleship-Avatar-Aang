@@ -83,8 +83,8 @@ class AuthIntegrationTest {
         postJson("/api/players", creds("bytes@t.com", "é".repeat(40)))
           .andExpect(status().isBadRequest())
           .andExpect(jsonPath("$.code").value("VALIDATION_FAILED"))
-          // caracterización: la clave es el nombre de la propiedad del @AssertTrue, no "password"
-          .andExpect(jsonPath("$.errors.passwordWithin72Bytes").exists());
+          .andExpect(jsonPath("$.errors.password[0]").value(org.hamcrest.Matchers.containsString("72 bytes")))
+          .andExpect(jsonPath("$.errors.passwordWithin72Bytes").doesNotExist());
     }
 
     @Test
