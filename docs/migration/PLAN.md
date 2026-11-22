@@ -189,3 +189,14 @@ Rama `migration/f7-endurecimiento`. Parte 1 (esta): contraseña mínima de 8 car
 | 706 | backend-dev | Restricción propia `MaxUtf8Bytes` sobre el campo | F7 | hecha | 705 |
 
 Resultado F7 parte 1: registro exige contraseña de 8 a 72 caracteres y ≤ 72 bytes UTF-8 (restricción propia `@MaxUtf8Bytes` sobre el campo, mensaje en español bajo `errors.password`); el login no cambia (el seed `123` sigue entrando). 112 tests de backend y 73 de front verdes. Descubierto probando: con `@Size(max=72)` una contraseña de 40 caracteres de 2 bytes pasaba la validación y bcrypt lanzaba un 500. Pendiente: parte 2 (diseño visual del front); el error de contraseña se muestra en la alerta general, no junto al campo.
+
+### F7 · Ajustes de deploy (servidor real: Debian 13 con Caddy, túnel existente)
+
+Decisiones (2026-11-22): compilar en la PC de desarrollo y enviar la imagen por SSH (`docker save | gzip | ssh ... docker load`); sin túnel propio (el del compose pasa a `profile tunnel`, desactivado por defecto); la app publica solo en `127.0.0.1:APP_PORT` (lo asigna el administrador del servidor) y Caddy reparte; el servidor no tiene salida a Internet salvo el túnel, así que la imagen de Postgres también se envía.
+
+| # | Rol | Tarea | Fase | Estado | Depende de |
+|---|---|---|---|---|---|
+| 609 | devops | `start_period` en el healthcheck de db | F7 | hecha | — |
+| 610 | devops | Compose: puerto en loopback y túnel opcional (riesgo alto) | F7 | pendiente | 609 |
+| 611 | devops | `ship.sh` y `deploy.sh` (envío, backup, healthcheck, rollback) (riesgo alto) | F7 | pendiente | 610 |
+| 612 | reviewer | Revisión: loopback, SSH restringido, despliegue | F7 | pendiente | 610, 611 |
