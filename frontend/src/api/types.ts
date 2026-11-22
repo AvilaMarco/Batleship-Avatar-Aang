@@ -41,7 +41,7 @@ export interface GameSummary {
 
 export interface ShipPlacement {
   type: ShipType;
-  cells: string[];
+  cells: readonly string[];
 }
 
 // Anexo F (v2.1)

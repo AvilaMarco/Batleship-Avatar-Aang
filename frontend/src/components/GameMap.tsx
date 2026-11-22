@@ -43,13 +43,23 @@ export default function GameMap({ games, myId, nation, onCreate, onJoin, onOpen 
     window.addEventListener("keydown", esc);
     return () => window.removeEventListener("keydown", esc);
   });
+  // Arrastre con ratón; el táctil ya desplaza nativo (touch-action: pan-x pan-y)
+  const pan = useRef<{ x: number; y: number } | null>(null);
   const run = (fn: () => void) => { setSelected(null); fn(); };
 
   const info = selected ? locationState(selected.id, games, myId) : null;
 
   return (
     <>
-      <div ref={scroller} className="map" style={{ overflow: "auto", maxWidth: "100%" }}>
+      <div ref={scroller} className="map" style={{ overflow: "auto", maxWidth: "100%" }}
+        onPointerDown={(e) => { if (e.pointerType === "mouse") pan.current = { x: e.clientX, y: e.clientY }; }}
+        onPointerMove={(e) => {
+          const el = scroller.current;
+          if (!pan.current || !el) return;
+          el.scrollLeft -= e.clientX - pan.current.x; el.scrollTop -= e.clientY - pan.current.y;
+          pan.current = { x: e.clientX, y: e.clientY };
+        }}
+        onPointerUp={() => { pan.current = null; }} onPointerLeave={() => { pan.current = null; }}>
         <svg viewBox={`0 0 ${MAP_W} ${MAP_H}`} width={MAP_W} height={MAP_H} style={{ display: "block", maxWidth: "none" }}>
           <image href="/assets/img/mapa-game-mobile.png" width={MAP_W} height={MAP_H} />
           {MAP_LOCATIONS.map((loc) => {
