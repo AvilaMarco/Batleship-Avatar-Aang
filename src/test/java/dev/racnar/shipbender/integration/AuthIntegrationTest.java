@@ -78,6 +78,16 @@ class AuthIntegrationTest {
     }
 
     @Test
+    void register_withPasswordOver72BytesButUnder72Chars_returns400ValidationFailed () throws Exception {
+        // 40 x "é" = 40 caracteres pero 80 bytes UTF-8: bcrypt lanzaría excepción (500) sin la validación
+        postJson("/api/players", creds("bytes@t.com", "é".repeat(40)))
+          .andExpect(status().isBadRequest())
+          .andExpect(jsonPath("$.code").value("VALIDATION_FAILED"))
+          // caracterización: la clave es el nombre de la propiedad del @AssertTrue, no "password"
+          .andExpect(jsonPath("$.errors.passwordWithin72Bytes").exists());
+    }
+
+    @Test
     void register_withPasswordUnder8Chars_returns400ValidationFailed () throws Exception {
         postJson("/api/players", creds("short@t.com", "x".repeat(7)))
           .andExpect(status().isBadRequest())
