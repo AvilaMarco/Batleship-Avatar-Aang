@@ -1,0 +1,35 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark">
+<title>Shipbender · app real (estilos de frontend/)</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap">
+<!-- Marcado equivalente al de los .tsx; usa los CSS REALES de frontend/src/styles. ?n=water|earth|fire|air  #login|#lobby|#game -->
+<link rel="stylesheet" href="../../../frontend/src/styles/tokens.css">
+<link rel="stylesheet" href="../../../frontend/src/styles/app.css">
+</head><body><div id="root"><h1>The Last Shipbender</h1><main id="m"></main></div>
+<template id="login"><form aria-labelledby="t"><h2 id="t">Crear cuenta</h2>
+<p><label for="a">Nombre</label><input id="a" value="Katara"></p><p><label for="b">Email</label><input id="b" type="email" value="katara@test"></p>
+<p><label for="c">Contraseña</label><input id="c" type="password" value="1234"><small>Mínimo 8 caracteres</small></p>
+<div role="alert"><p>Contraseña: debe tener al menos 8 caracteres</p></div>
+<button type="submit">Crear cuenta</button><button type="button">Ya tengo cuenta</button></form></template>
+<template id="lobby"><button type="button">Salir</button>
+<section aria-labelledby="nation-title"><h2 id="nation-title">Elige tu nación</h2>
+<button><img src="../../../frontend/public/assets/img/card-agua.png" alt=""></button><button><img src="../../../frontend/public/assets/img/card-tierra.png" alt=""></button><button><img src="../../../frontend/public/assets/img/card-fuego.png" alt=""></button><button><img src="../../../frontend/public/assets/img/card-viento.png" alt=""></button></section>
+<button type="button">Actualizar</button>
+<div class="map"><svg viewBox="0 0 1400 800" width="1400" height="800" style="display:block;max-width:none"><image href="../../../frontend/public/assets/img/mapa-game-mobile.png" width="1400" height="800"/>
+<g class="map-spot" data-state="empty" tabindex="0" role="button"><circle cx="635" cy="85" r="30"/></g>
+<g class="map-spot" data-state="join" tabindex="0" role="button"><circle cx="657.5" cy="225" r="30"/></g>
+<g class="map-spot" data-state="mine" tabindex="0" role="button"><circle cx="410" cy="292" r="30"/></g>
+<g class="map-spot" data-state="full" tabindex="0" role="button"><circle cx="720" cy="360" r="30"/></g>
+<g class="map-spot" data-state="empty" tabindex="0" role="button"><circle cx="515" cy="707.5" r="30"/></g></svg></div>
+<div class="map-sheet" role="dialog"><button type="button">Crear partida en W1</button><button type="button">Cerrar</button></div>
+<section aria-labelledby="ranking-title"><h2 id="ranking-title">Ranking</h2><table><thead><tr><th>Jugador</th><th>Puntos</th><th>Ganadas</th></tr></thead><tbody><tr><td>Toph</td><td>36</td><td>12</td></tr><tr><td>Katara</td><td>27</td><td>9</td></tr></tbody></table></section></template>
+<template id="game"><p role="status">Turno 4</p><h3>Tu flota</h3><div role="group" class="board" id="b1" style="display:grid;grid-template-columns:repeat(10,1fr);max-width:480px"></div>
+<h3>Tablero rival</h3><div role="group" class="board" id="b2" style="display:grid;grid-template-columns:repeat(10,1fr);max-width:480px"></div>
+<div><button aria-pressed="true"><img src="../../../frontend/public/assets/ships/carrier.png" alt="" height="24"> Portaaviones (5)</button><button><img src="../../../frontend/public/assets/ships/submarine.png" alt="" height="24"> Submarino (3)</button></div>
+<button type="button">Disparar (2/3)</button></template>
+<script>
+const q=new URLSearchParams(location.search);document.body.dataset.nation=q.get('n')||'water';
+const m=document.getElementById('m');m.append(document.getElementById(location.hash.slice(1)||'login').content.cloneNode(true));
+const fill=(id,f)=>{const el=document.getElementById(id);if(!el)return;for(let i=0;i<100;i++){const [k,t]=f(i),c=document.createElement('button');c.className='cell '+k;c.textContent=t;el.append(c)}};
+fill('b1',i=>i>=10&&i<14?['ship','▣']:i==52?['hit','X']:i==63?['miss','•']:['','']);
+fill('b2',i=>i%11==0?['hit','X']:i%7==0?['miss','•']:i==23||i==57?['selected','◎']:['','?']);
+</script></body></html>
