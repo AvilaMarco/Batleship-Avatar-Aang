@@ -1,5 +1,5 @@
 # 805 · frontend-dev · Refresco de respaldo de la partida
-Estado: pendiente
+Estado: hecha
 Fase: F8
 Depende de: 804
 Paralelizable: no
@@ -15,3 +15,4 @@ Diseño (cerrado): un intervalo de 15 s que llama a la misma función de recarga
 Criterios: `cd frontend && npm test && npm run build` exit 0; commit `feat(front): refresco de respaldo de la partida (tarea 805)`.
 
 ## Resultado
+`GameScreen.tsx`: `setInterval` de 15 s que llama a `load` con guarda `inFlight` (sin solape), omitido con `status === "FINISH"`, limpiado al desmontar. visibilitychange/online ya existían. Sin CSS.

@@ -12,7 +12,9 @@ import { SALVO_SIZE, toggleTarget } from "../domain/salvo";
 
 const RESULT = { WON: ["Ganaste", "victory"], LOST: ["Perdiste", "defeat"], TIED: ["Empate", "defeat"] } as const;
 
-const message = (e: unknown) => (e instanceof Error ? e.message : "Error inesperado");
+const REFRESH_MS = 15_000;
+
+const message =(e: unknown) => (e instanceof Error ? e.message : "Error inesperado");
 
 export default function GameScreen({ id }: { id: number }) {
   const [view, setView] = useState<GameView | null>(null);
@@ -48,7 +50,15 @@ export default function GameScreen({ id }: { id: number }) {
     const resync = () => { if (document.visibilityState === "visible") void load(); };
     document.addEventListener("visibilitychange", resync);
     window.addEventListener("online", resync);
+    // refresco periódico con guarda anti-solape; se omite con la partida terminada
+    let inFlight = false;
+    const timer = setInterval(() => {
+      if (inFlight || viewRef.current?.status === "FINISH") return;
+      inFlight = true;
+      void load().finally(() => { inFlight = false; });
+    }, REFRESH_MS);
     return () => {
+      clearInterval(timer);
       document.removeEventListener("visibilitychange", resync);
       window.removeEventListener("online", resync);
       conn.disconnect();

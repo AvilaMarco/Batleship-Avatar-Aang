@@ -1,0 +1,99 @@
+/* Estilos por elemento/rol: no dependen de clases, salvo .map*, .board, .cell, .emote (ya existentes). */
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.45 var(--font-body); min-height: 100dvh;
+    padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); }
+  #root { max-width: 480px; margin-inline: auto; }
+  @media (orientation: landscape) and (min-width: 700px) { #root { max-width: 1100px; } }
+  h1, h2, h3 { font-family: var(--font-title); font-weight: 400; letter-spacing: .01em; margin: 0 0 var(--space-3); line-height: 1.15; text-wrap: balance; }
+  h1 { font-size: 1.9rem; text-align: center; padding-block: var(--space-3); }
+  h2 { font-size: 1.4rem; } h3 { font-size: 1.1rem; }
+  main { display: grid; gap: var(--space-4); }
+  main > button { justify-self: start; }
+  a { color: var(--ink); text-decoration-color: var(--ink-2); text-underline-offset: 3px; }
+  small { color: var(--ink-2); display: block; margin-top: var(--space-1); }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+  p { margin: 0 0 var(--space-3); }
+}
+
+@layer components {
+  /* Botones: ficha con borde grueso y sombra dura (Pai Sho) */
+  button { min-height: var(--target); min-width: var(--target); padding: 0 var(--space-4); font: 600 1rem var(--font-body);
+    color: var(--ink); background: var(--surface); border: var(--border-w) solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow); cursor: pointer; transition: transform .15s var(--ease), box-shadow .15s var(--ease); }
+  button:hover:not(:disabled) { transform: translate(-1px, -1px); }
+  button:active:not(:disabled) { transform: translate(3px, 3px); box-shadow: 0 0 0 var(--ink); }
+  button:disabled { opacity: .5; cursor: not-allowed; }
+  button[type="submit"], button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+  @media (prefers-reduced-motion: reduce) { button { transition: none; } button:hover:not(:disabled), button:active:not(:disabled) { transform: none; } }
+
+  /* Formularios: una columna, label arriba, 16 px */
+  form { display: grid; gap: var(--space-3); background: var(--surface); border: var(--border-w) solid var(--line); border-radius: var(--radius-card); box-shadow: var(--shadow); padding: var(--space-4); }
+  form p { margin: 0; display: grid; gap: 6px; }
+  label { font-size: .85rem; color: var(--ink-2); }
+  input { min-height: 48px; padding: 0 var(--space-3); font: 1rem var(--font-body); color: var(--ink); background: var(--paper-2); border: var(--border-w) solid var(--line); border-radius: var(--radius); }
+  [role="alert"] { background: var(--surface); border: var(--border-w) solid var(--hit); border-radius: var(--radius); padding: var(--space-3); }
+  [role="alert"]::before { content: "⚠ "; color: var(--hit); }
+  [role="status"] { text-align: center; }
+
+  /* Selector de nación: 4 cartas */
+  section[aria-labelledby="nation-title"] { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-2); }
+  section[aria-labelledby="nation-title"] { max-width: 560px; }
+  section[aria-labelledby="nation-title"] h2 { grid-column: 1 / -1; }
+  section[aria-labelledby="nation-title"] button { padding: 0; overflow: hidden; border-radius: var(--radius-card); aspect-ratio: 500 / 650; }
+  section[aria-labelledby="nation-title"] img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  /* Ranking */
+  table { width: 100%; border-collapse: collapse; background: var(--surface); border: var(--border-w) solid var(--line); border-radius: var(--radius-card); box-shadow: var(--shadow); font-variant-numeric: tabular-nums; }
+  th { font: 400 .9rem var(--font-title); text-align: left; }
+  th, td { padding: var(--space-2) var(--space-3); border-bottom: 1px solid color-mix(in srgb, var(--ink) 25%, transparent); }
+  tr:last-child td { border-bottom: 0; }
+
+  /* Selector de barcos */
+  div > button:has(> img[src*="/ships/"]) { display: inline-flex; align-items: center; gap: var(--space-2); margin: 0 var(--space-2) var(--space-2) 0; }
+  div > button:has(> img[src*="/ships/"])[aria-pressed="true"] { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+  /* Tablero: cuadrícula de fichas sobre madera */
+  .board { gap: 3px; padding: var(--space-2); background: color-mix(in srgb, #8a5a2b 55%, var(--paper)); border: var(--border-w) solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
+  .cell { min-height: 0; min-width: 0; padding: 0; border: 1px solid color-mix(in srgb, var(--ink) 55%, transparent); border-radius: 6px; box-shadow: none;
+    background: color-mix(in srgb, var(--n-lite) 40%, transparent) url(/assets/textures/water-texture.png) 0 0 / 44px; background-blend-mode: multiply; color: var(--ink-2); font-weight: 700; font-size: clamp(.65rem, 2.6vw, 1rem); }
+  .cell:hover:not(:disabled) { transform: none; filter: brightness(1.08); }
+  .cell.ship { background: var(--ship); color: var(--paper-2); }
+  .cell.hit { background: var(--hit); color: #fff; }
+  .cell.miss { background: var(--miss); color: var(--ink-2); }
+  .cell.pending { background: var(--n-lite); color: var(--ink); }
+  .cell.selected { background: var(--n-mid); color: #fff; outline: 2px dashed var(--paper-2); outline-offset: -4px; }
+  .emote { min-width: 44px; min-height: 44px; padding: 4px; border-radius: 50%; margin: 2px; }
+
+  /* Mapa: marco de papel; el SVG se desplaza con el dedo */
+  .map { overflow: auto; max-width: 100%; height: min(60dvh, 520px); border: var(--border-w) solid var(--line); border-radius: var(--radius-card); box-shadow: var(--shadow);
+    background: var(--n-deep) url(/assets/textures/textura-mapa.jpg) center / cover; touch-action: pan-x pan-y; overscroll-behavior: contain; }
+  @media (orientation: landscape) { .map { height: 100dvh; border-radius: 0; border-width: 0; box-shadow: inset 0 0 70px 6px rgba(110, 70, 25, .6); } }
+  .map-spot { cursor: pointer; --spot-fill: var(--paper-2); }
+  .map-spot circle { fill: var(--spot-fill); stroke: var(--ink); stroke-width: 5; transition: transform .15s var(--ease); transform-box: fill-box; transform-origin: center; }
+  .map-spot[data-state="empty"] circle { fill-opacity: .55; stroke-dasharray: 7 6; }
+  .map-spot[data-state="join"] { --spot-fill: var(--n-lite); }
+  .map-spot[data-state="mine"] { --spot-fill: var(--accent); }
+  .map-spot[data-state="mine"] circle { stroke: var(--paper-2); stroke-width: 7; paint-order: stroke; filter: drop-shadow(0 0 0 var(--ink)); }
+  .map-spot[data-state="full"] { cursor: not-allowed; }
+  .map-spot[data-state="full"] circle { fill-opacity: .45; stroke-dasharray: 2 4; }
+  .map-spot:hover circle, .map-spot:focus-visible circle { transform: scale(1.18); }
+  .map-spot:focus-visible { outline: none; }
+  .map-spot:focus-visible circle { stroke: var(--accent); stroke-width: 8; }
+  @media (prefers-reduced-motion: reduce) { .map-spot circle { transition: none; } }
+
+  /* Menú de la ubicación: hoja inferior */
+  .map-sheet { position: fixed; inset: auto 0 0 0; z-index: 10; display: grid; gap: var(--space-3); max-width: 480px; margin-inline: auto;
+    padding: var(--space-4) var(--space-4) max(var(--space-4), env(safe-area-inset-bottom)); background: var(--surface);
+    border: var(--border-w) solid var(--line); border-bottom: 0; border-radius: var(--radius-card) var(--radius-card) 0 0; box-shadow: 0 -4px 0 color-mix(in srgb, var(--ink) 25%, transparent); }
+  .map-sheet:focus { outline: none; }
+  .map-sheet button:first-child:not(:last-child) { background: var(--accent); color: var(--accent-ink); min-height: 48px; }
+  .map-sheet p { margin: 0; text-align: center; font-weight: 600; }
+
+  /* Escena y jugador (para GameScreen): fondo por nación + placa de jugador */
+  .game { background: radial-gradient(120% 90% at 50% 0%, color-mix(in srgb, var(--scene) 78%, #fff), var(--scene) 55%, color-mix(in srgb, var(--scene) 70%, #000)); }
+  .player { display: inline-flex; align-items: center; gap: 10px; padding: 4px 16px 4px 4px; border: var(--border-w) solid var(--line); border-radius: 999px; background: var(--n-deep); color: #f4ebcf; box-shadow: var(--shadow); }
+  .player svg { width: 40px; height: 40px; flex: none; background: var(--n-lite); border-radius: 50%; }
+  [data-nation="water"] { --scene: #5a7abd; } [data-nation="earth"] { --scene: #438a17; }
+  [data-nation="fire"] { --scene: #6f1e15; } [data-nation="air"] { --scene: #72c3e5; } [data-nation="lotus"] { --scene: #b8a572; }
+}
