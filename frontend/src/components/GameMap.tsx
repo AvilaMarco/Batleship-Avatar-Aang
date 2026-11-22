@@ -19,14 +19,29 @@ export default function GameMap({ games, myId, nation, onCreate, onJoin, onOpen 
   const scroller = useRef<HTMLDivElement>(null);
   const sheet = useRef<HTMLDivElement>(null);
   const spots = useRef(new Map<string, SVGGElement>());
+  const [scale, setScale] = useState(1);
+
+  // Escala "cover": el mapa llena el contenedor conservando proporción; los marcadores se contraescalan (--s) para no cambiar de tamaño en pantalla.
+  useLayoutEffect(() => {
+    const el = scroller.current;
+    if (!el) return;
+    const fit = () => { const k = Math.max(el.clientWidth / MAP_W, el.clientHeight / MAP_H); if (k > 0) setScale(k); };
+    fit();
+    if (typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(fit);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   useLayoutEffect(() => {
     const el = scroller.current;
     if (!el) return;
     const c = initialCenter(nation, MAP_LOCATIONS);
-    el.scrollLeft = c.x - el.clientWidth / 2;
-    el.scrollTop = c.y - el.clientHeight / 2;
-  }, [nation]);
+    el.scrollLeft = c.x * scale - el.clientWidth / 2;
+    el.scrollTop = c.y * scale - el.clientHeight / 2;
+    // solo al cambiar de nación o al fijarse la escala inicial
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [nation, scale > 0]);
 
   useEffect(() => { if (selected) sheet.current?.focus(); }, [selected]);
 
@@ -60,7 +75,7 @@ export default function GameMap({ games, myId, nation, onCreate, onJoin, onOpen 
           pan.current = { x: e.clientX, y: e.clientY };
         }}
         onPointerUp={() => { pan.current = null; }} onPointerLeave={() => { pan.current = null; }}>
-        <svg viewBox={`0 0 ${MAP_W} ${MAP_H}`} width={MAP_W} height={MAP_H} style={{ display: "block", maxWidth: "none" }}>
+        <svg viewBox={`0 0 ${MAP_W} ${MAP_H}`} width={MAP_W * scale} height={MAP_H * scale} style={{ display: "block", maxWidth: "none", "--s": 1 / scale } as React.CSSProperties}>
           <image href="/assets/img/mapa-game-mobile.png" width={MAP_W} height={MAP_H} />
           {MAP_LOCATIONS.map((loc) => {
             const { state } = locationState(loc.id, games, myId);
@@ -77,7 +92,7 @@ export default function GameMap({ games, myId, nation, onCreate, onJoin, onOpen 
                 onClick={open}
                 onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); } }}
               >
-                <circle cx={loc.x} cy={loc.y} r={loc.r} />
+                <circle cx={loc.x} cy={loc.y} r={loc.r / scale} />
               </g>
             );
           })}

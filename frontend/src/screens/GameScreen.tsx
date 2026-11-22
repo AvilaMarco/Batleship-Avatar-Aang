@@ -90,7 +90,7 @@ export default function GameScreen({ id }: { id: number }) {
   }, []);
 
   if (loadError) {
-    return <div><p role="alert">{loadError}</p><a href="#/">Volver al lobby</a></div>;
+    return <div><p role="alert">{loadError}</p><span className="result-actions"><a href="#/">Volver al lobby</a></span></div>;
   }
   if (!view) return <p>Cargando…</p>;
 
@@ -111,9 +111,9 @@ export default function GameScreen({ id }: { id: number }) {
     return (
       <div className="game">
         {p === "FINISHED" ? (
-          <div role="status">
+          <div role="status" className="result" data-outcome={res ?? undefined}>
             {res && <><img src={`/assets/img/${RESULT[res][1]}.png`} alt="" width={160} /><h2>{RESULT[res][0]}</h2></>}
-            <a href="#/">Volver al lobby</a>
+            <span className="result-actions"><a href="#/">Volver al lobby</a></span>
           </div>
         ) : (
           <p role="status">Turno {v.turn}{p === "WAITING_OPPONENT_SALVO" && ": esperando el salvo del rival…"}</p>
@@ -122,7 +122,7 @@ export default function GameScreen({ id }: { id: number }) {
           <Plate name={v.me.player.name} nation={v.me.player.nation ?? v.nation} />{" "}
           {v.me.sunk.length > 0 && `(hundidos: ${v.me.sunk.length})`}
         </h3>
-        <Board label="Tu tablero" cells={myBoard(v)} ships={v.me.ships} nation={v.me.player.nation ?? v.nation} disabled />
+        <Board label="Tu tablero" cells={myBoard(v)} ships={v.me.ships} sunk={v.me.sunk} nation={v.me.player.nation ?? v.nation} disabled />
         <h3>
           <Plate name={v.opponent?.player.name ?? "Rival"} nation={v.opponent?.player.nation ?? v.nation} />{" "}
           {(v.opponent?.sunk.length ?? 0) > 0 && `(hundidos: ${v.opponent?.sunk.length})`}

@@ -13,6 +13,8 @@ interface Props {
   nation?: Nation;
   ships?: ShipPlacement[];
   drop?: Drop | null;
+  /** Barcos propios hundidos: se tachan con el sprite `sunk`. */
+  sunk?: ShipType[];
 }
 
 const SPRITE = "/assets/sprite.svg#";
@@ -31,24 +33,27 @@ function Mark({ state, nation }: { state: CellState; nation: Nation }) {
   return <svg viewBox="0 0 40 40" aria-hidden="true" width="100%" height="100%"><use href={`${SPRITE}${id}`} /></svg>;
 }
 
-function ShipSprite({ ship }: { ship: ShipPlacement }) {
+function ShipSprite({ ship, sunk }: { ship: ShipPlacement; sunk: boolean }) {
   const n = ship.cells.length;
   const [r, c] = [ROWS.indexOf(ship.cells[0][0]), Number(ship.cells[0].slice(1)) - 1];
   const vertical = n > 1 && ship.cells[1][0] !== ship.cells[0][0];
   const href = `${SPRITE}${SPRITE_ID[ship.type]}`;
   // fila/columna +2: la 1ª es la cabecera; position:absolute no altera el autoflujo de las celdas
   return (
-    <svg aria-hidden="true" data-ship={ship.type} viewBox={vertical ? `0 0 40 ${n * 40}` : `0 0 ${n * 40} 40`} preserveAspectRatio="none"
+    <svg aria-hidden="true" data-ship={ship.type} data-sunk={sunk || undefined} viewBox={vertical ? `0 0 40 ${n * 40}` : `0 0 ${n * 40} 40`} preserveAspectRatio="none"
       style={{ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none",
         gridColumn: `${c + 2} / span ${vertical ? 1 : n}`, gridRow: `${r + 2} / span ${vertical ? n : 1}` }}>
       {vertical
         ? <use href={href} width={n * 40} height={40} transform="translate(40 0) rotate(90)" />
         : <use href={href} width={n * 40} height={40} />}
+      {sunk && Array.from({ length: n }, (_, i) => (
+        <use key={i} href={`${SPRITE}sunk`} width={40} height={40} transform={vertical ? `translate(0 ${i * 40})` : `translate(${i * 40} 0)`} />
+      ))}
     </svg>
   );
 }
 
-export default function Board({ cells, onCellClick, disabled, label = "Tablero", nation = "WATER", ships = [], drop }: Props) {
+export default function Board({ cells, onCellClick, disabled, label = "Tablero", nation = "WATER", ships = [], drop, sunk = [] }: Props) {
   const cols = Array.from({ length: COLS }, (_, i) => i + 1);
   return (
     <div role="group" aria-label={label} className="board"
@@ -72,7 +77,7 @@ export default function Board({ cells, onCellClick, disabled, label = "Tablero",
           );
         }),
       ])}
-      {ships.map((s) => <ShipSprite key={s.type} ship={s} />)}
+      {ships.map((s) => <ShipSprite key={s.type} ship={s} sunk={sunk.includes(s.type)} />)}
     </div>
   );
 }

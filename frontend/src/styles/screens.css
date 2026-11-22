@@ -33,3 +33,4 @@
   .result[data-outcome="WON"] { background: radial-gradient(circle at 50% 0%, var(--n-mid), var(--surface) 70%); }
   .profile { background: linear-gradient(160deg, var(--n-deep), var(--surface)); }
 }
+svg[data-sunk] { filter: grayscale(.8) brightness(.8); }

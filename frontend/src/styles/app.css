@@ -73,16 +73,16 @@
     background: var(--n-deep) url(/assets/textures/textura-mapa.jpg) center / cover; touch-action: pan-x pan-y; overscroll-behavior: contain; }
   @media (orientation: landscape) { .map { height: 100dvh; border-radius: 0; border-width: 0; box-shadow: inset 0 0 70px 6px rgba(110, 70, 25, .6); } }
   .map-spot { cursor: pointer; --spot-fill: var(--paper-2); }
-  .map-spot circle { fill: var(--spot-fill); stroke: var(--ink); stroke-width: 5; transition: transform .15s var(--ease); transform-box: fill-box; transform-origin: center; }
-  .map-spot[data-state="empty"] circle { fill-opacity: .55; stroke-dasharray: 7 6; }
+  .map-spot circle { fill: var(--spot-fill); stroke: var(--ink); stroke-width: calc(4px * var(--s, 1)); transition: transform .15s var(--ease); transform-box: fill-box; transform-origin: center; }
+  .map-spot[data-state="empty"] circle { fill-opacity: .55; stroke-dasharray: calc(7px * var(--s, 1)) calc(6px * var(--s, 1)); }
   .map-spot[data-state="join"] { --spot-fill: var(--n-lite); }
   .map-spot[data-state="mine"] { --spot-fill: var(--accent); }
-  .map-spot[data-state="mine"] circle { stroke: var(--paper-2); stroke-width: 7; paint-order: stroke; filter: drop-shadow(0 0 0 var(--ink)); }
+  .map-spot[data-state="mine"] circle { stroke: var(--paper-2); stroke-width: calc(6px * var(--s, 1)); paint-order: stroke; filter: drop-shadow(0 0 0 var(--ink)); }
   .map-spot[data-state="full"] { cursor: not-allowed; }
-  .map-spot[data-state="full"] circle { fill-opacity: .45; stroke-dasharray: 2 4; }
+  .map-spot[data-state="full"] circle { fill-opacity: .45; stroke-dasharray: calc(2px * var(--s, 1)) calc(4px * var(--s, 1)); }
   .map-spot:hover circle, .map-spot:focus-visible circle { transform: scale(1.18); }
   .map-spot:focus-visible { outline: none; }
-  .map-spot:focus-visible circle { stroke: var(--accent); stroke-width: 8; }
+  .map-spot:focus-visible circle { stroke: var(--accent); stroke-width: calc(6px * var(--s, 1)); }
   @media (prefers-reduced-motion: reduce) { .map-spot circle { transition: none; } }
 
 
