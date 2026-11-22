@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# OBSOLETO, solo referencia (tarea 622). No ejecutar: el despliegue vigente es scripts/ship.sh -> recibir (PRIMER-DESPLIEGUE.md).
+# Sin permiso de ejecucion a proposito; no se usa en el servidor.
 # REFERENCIA: base del runner root que escribe el administrador del servidor (docs/deploy/PRIMER-DESPLIEGUE.md). Ya no se usa tal cual: el despliegue va por scripts/ship.sh -> recibir.
 # SERVIDOR (Debian). Uso: scripts/deploy.sh load <tag> | infra | up <tag> | rollback | status | ssh-entry
 # ssh-entry es el punto de entrada de la clave SSH restringida (authorized_keys: restrict,command="/ruta/scripts/deploy.sh ssh-entry"):
