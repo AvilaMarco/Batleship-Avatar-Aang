@@ -154,3 +154,72 @@ it("emotes: envía el propio y muestra solo los conocidos del rival", async () =
   act(() => handlers.onEvent({ type: "EMOTE", game_id: 1, player_id: 2, emote: "emote-3" }));
   expect(screen.getByRole("img", { name: /emote 3/i })).toHaveAttribute("src", "/assets/emotes/emote-3.png");
 });
+
+// --- Refresco de respaldo (tarea 804): rojo hasta 805 ---
+const REFRESH_MS = 15_000;
+const tick = (ms: number) => act(async () => { await vi.advanceTimersByTimeAsync(ms); });
+const setVisibility = (v: "visible" | "hidden") =>
+  Object.defineProperty(document, "visibilityState", { value: v, configurable: true });
+
+async function renderWithClock(v = toPlace()) {
+  vi.useFakeTimers();
+  m.getGame.mockResolvedValue(v);
+  const r = render(<GameScreen id={1} />);
+  await tick(0);
+  expect(m.getGame).toHaveBeenCalledTimes(1);
+  return r;
+}
+
+afterEach(() => {
+  vi.useRealTimers();
+  setVisibility("visible");
+});
+
+it("refresco: con la partida en curso vuelve a pedirla cada 15 s sin eventos", async () => {
+  await renderWithClock();
+  await tick(REFRESH_MS);
+  expect(m.getGame).toHaveBeenCalledTimes(2);
+  await tick(REFRESH_MS);
+  expect(m.getGame).toHaveBeenCalledTimes(3);
+});
+
+it("refresco: no solapa peticiones si la anterior sigue en curso", async () => {
+  await renderWithClock();
+  m.getGame.mockReturnValue(new Promise(() => {}));
+  await tick(REFRESH_MS);
+  expect(m.getGame).toHaveBeenCalledTimes(2);
+  await tick(REFRESH_MS * 2);
+  expect(m.getGame).toHaveBeenCalledTimes(2);
+});
+
+it("refresco: al volver a visible y al evento online se vuelve a pedir", async () => {
+  await renderWithClock();
+  setVisibility("hidden");
+  document.dispatchEvent(new Event("visibilitychange"));
+  await tick(0);
+  expect(m.getGame).toHaveBeenCalledTimes(1);
+  setVisibility("visible");
+  document.dispatchEvent(new Event("visibilitychange"));
+  await tick(0);
+  expect(m.getGame).toHaveBeenCalledTimes(2);
+  window.dispatchEvent(new Event("online"));
+  await tick(0);
+  expect(m.getGame).toHaveBeenCalledTimes(3);
+});
+
+it("refresco: al desmontar no quedan temporizadores ni listeners", async () => {
+  const { unmount } = await renderWithClock();
+  unmount();
+  expect(vi.getTimerCount()).toBe(0);
+  m.getGame.mockClear();
+  document.dispatchEvent(new Event("visibilitychange"));
+  window.dispatchEvent(new Event("online"));
+  await tick(REFRESH_MS * 2);
+  expect(m.getGame).not.toHaveBeenCalled();
+});
+
+it("refresco: con la partida FINISH no hay refresco periódico", async () => {
+  await renderWithClock(view({ status: "FINISH", turn: 3, opponent: {} }));
+  await tick(REFRESH_MS * 2);
+  expect(m.getGame).toHaveBeenCalledTimes(1);
+});
