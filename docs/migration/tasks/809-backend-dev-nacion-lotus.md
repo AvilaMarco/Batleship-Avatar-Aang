@@ -1,5 +1,5 @@
 # 809 · backend-dev · Nación LOTUS (Loto Blanco)
-Estado: pendiente
+Estado: hecha
 Fase: F8
 Depende de: —
 Paralelizable: sí (solo backend)
@@ -16,3 +16,4 @@ Criterios de aceptación:
 - Commit `feat(backend): nación LOTUS (tarea 809)`; terminar el mensaje con la línea Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>.
 
 ## Resultado
+Estado: hecha. `LOTUS` en `NationType`; `V4__nation_lotus.sql` (drop/add de `game_nation_check` y `player_nation_check`, expand-only). Tests nuevos en `NationLotusIntegrationTest` (PATCH /me y POST /games con LOTUS, PLUTO -> 400, definición del check). `./mvnw test` exit 0, 116 tests. Sin listas fijas de naciones en DTOs/Swagger (enum). No se probó migrar sobre una BD con datos reales; solo amplía el check, así que no puede invalidar filas.
