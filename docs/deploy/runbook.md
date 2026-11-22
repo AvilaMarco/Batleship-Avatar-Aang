@@ -45,7 +45,7 @@ Edita `.env` y completa `POSTGRES_PASSWORD`, `JWT_SECRET`, `APP_PORT` y `BACKUP_
 
 ```bash
 docker compose config -q                 # valida .env (si falta un secreto o APP_PORT, lo dice)
-docker compose up -d --build             # la primera vez tarda varios minutos; no arranca tunnel
+docker compose up -d --build             # SOLO máquinas con Internet. El servidor real no compila: usa scripts/ship.sh --with-db desde la PC de desarrollo (sección 3)
 docker compose ps                        # db y app "healthy"; app publicada en 127.0.0.1:APP_PORT
 ```
 
@@ -82,32 +82,39 @@ docker compose logs -f --tail 200 app        # también: tunnel, backup, db (Ctr
 docker compose logs --tail 50 db backup      # varios servicios a la vez
 ```
 
-## 3. Actualizar a una versión nueva
+## 3. Desplegar una versión
 
-Cada versión es una imagen `shipbender:<APP_TAG>` con el sha corto de git.
+El servidor **no compila ni hace pull** (solo sale a Internet por el túnel): la imagen se compila en la PC de desarrollo y se envía por SSH. Cada versión es `shipbender:<sha corto de git>`.
+
+Desde la PC de desarrollo (Git Bash/WSL), en `main` y con el árbol limpio:
 
 ```bash
-docker image ls shipbender                                 # anota el APP_TAG actual (para el rollback)
-git pull
-docker compose exec backup sh /scripts/backup.sh           # backup previo; anota el nombre del dump
-sed -i "s/^APP_TAG=.*/APP_TAG=$(git rev-parse --short HEAD)/" .env   # o edita APP_TAG a mano
-docker compose up -d --build app
-docker compose ps                                          # app "healthy" (puede tardar ~1 min)
-docker compose logs --tail 50 app                          # sin errores de Flyway ni de arranque
+cp .ship.env.example .ship.env      # una vez: SHIP_HOST, SHIP_USER, SHIP_KEY (no versionado)
+scripts/ship.sh --with-db           # la primera vez (incluye postgres:17-alpine); después: scripts/ship.sh
 ```
 
-Probar el login en `https://shipbender.racnar.dev`.
+`ship.sh` compila (`linux/amd64`), envía imagen + `docker-compose.yml` + `scripts/` y ejecuta `deploy.sh up <tag>` en el servidor, que: hace backup si hay una versión corriendo (Flyway no se deshace: el dump es la salvaguarda), guarda `.current_tag`/`.previous_tag`, levanta con `--no-build` y espera `healthy` (máx. 180 s). Si no llega, **vuelve solo a la versión anterior** y termina con error (si la nueva traía una migración `V*__`, restaura el dump con `scripts/restore.sh`, sección 5). Un fallo causado por `.env` (p. ej. `JWT_SECRET` corto) afecta también a la versión anterior: no hay rollback que lo arregle; corrige `.env` y repite `deploy.sh up <tag>`.
+
+En el servidor, usa siempre `scripts/deploy.sh` (`status`, `rollback`, `up <tag>`) y no `docker compose up` a mano: `APP_TAG` lo fija `deploy.sh`, el de `.env` no es la versión real. Las imágenes viejas se acumulan (51 GB libres): borra a mano las antiguas con `docker image rm shipbender:<tag>`, nunca `prune -a` (el rollback las necesita).
+
+### Clave SSH restringida (la instala el administrador del servidor)
+
+En la PC de desarrollo: `ssh-keygen -t ed25519 -f ~/.ssh/shipbender_deploy` (solo para desplegar). En el servidor, en `~/.ssh/authorized_keys` del usuario de despliegue (que debe poder usar docker), una línea:
+
+```
+restrict,command="/ruta/al/clon/scripts/deploy.sh ssh-entry" ssh-ed25519 AAAA... deploy-shipbender
+```
+
+`ssh-entry` solo acepta `load <tag>`, `up <tag>`, `rollback`, `status` e `infra` (el tag debe cumplir `^[0-9a-f]{7,12}$`); cualquier otra cosa se rechaza sin ejecutar nada. La clave privada no sale de tu PC. Nota: quien tenga esa clave puede desplegar código arbitrario (es el propósito), así que protégela como una credencial de producción.
 
 ## 4. Rollback
 
 ```bash
-docker image ls shipbender                                  # tags disponibles (siguen en local)
-sed -i "s/^APP_TAG=.*/APP_TAG=<tag-anterior>/" .env
-docker compose up -d app
-docker compose ps
+scripts/deploy.sh status      # versión actual y anterior
+scripts/deploy.sh rollback    # intercambia actual y anterior (hace backup antes); otro rollback vuelve a la de ahora
 ```
 
-Si la versión nueva traía una migración `V*__` nueva en `src/main/resources/db/migration` (Flyway solo avanza: la BD ya tiene el esquema nuevo), **antes** restaura el dump previo a la actualización con `scripts/restore.sh <dump>` (sección 5) y luego levanta el tag anterior como arriba. Se pierden los datos creados desde ese backup.
+(Remoto: `ssh -i <clave> usuario@servidor rollback`.) Si la versión que dejas traía una migración `V*__` nueva (Flyway solo avanza), restaura **después** el dump previo con `scripts/restore.sh <dump>` (sección 5): se pierden los datos creados desde ese backup.
 
 ## 5. Backups y restauración
 

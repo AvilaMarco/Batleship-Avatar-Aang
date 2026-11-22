@@ -1,5 +1,5 @@
 # 611 · devops · Envío de la imagen compilada y despliegue en el servidor (ship.sh + deploy.sh)
-Estado: pendiente
+Estado: parcial
 Fase: F7
 Depende de: 610
 Paralelizable: no
@@ -25,3 +25,17 @@ Criterios de aceptación: no hay servidor SSH disponible en esta máquina; verif
 - Commit `build: ship.sh y deploy.sh para enviar la imagen compilada y desplegar con rollback (tarea 611)`.
 
 ## Resultado
+
+Hecho: `scripts/deploy.sh` (servidor: `load|infra|up|rollback|status|ssh-entry`), `scripts/ship.sh` (PC de desarrollo), `.ship.env.example`, `.gitignore` (`.ship.env`, `.current_tag`, `.previous_tag`, `.deploy.lock`, `*.new`), runbook secciones 3 y 4 (+ clave restringida).
+
+Verificado (Docker local, `COMPOSE_PROJECT_NAME=shipbender-test`, APP_PORT=4756, BACKUP_DIR temporal, `.env`/`.ship.env` de prueba ya borrados):
+- `bash -n` ok; LF ok; shellcheck NO instalado (no ejecutado).
+- `ship.sh --with-db` completo (build + save|gzip|ssh|load + tar `infra` + `up`) con un `ssh` falso que ejecuta `deploy.sh ssh-entry` con `SSH_ORIGINAL_COMMAND`: despliega healthy, carga también `postgres:17-alpine`.
+- `up` con dos TAGs: `.current_tag`/`.previous_tag` correctos; backup previo con `backup.sh` (dump nuevo en cada `up`/`rollback`); `rollback` manual y rollback doble (swap) ok.
+- Rollback AUTOMATICO: imagen en crashloop (falla en ~20 s por reinicios) e imagen colgada (`DEPLOY_WAIT=20`): vuelve sola a la anterior, estado restaurado, `rc=1`, mensaje y logs.
+- 24 entradas hostiles a `ssh-entry` (`load ../x`, `up $(id)`, `load abc; rm -rf /`, vacío, sin variable, saltos de línea, mayúsculas, espacios, backticks, `|`, `&&`...): todas `rc=126` y el archivo canario no se creó. `infra` rechaza hardlinks, rutas ajenas, nombres ocultos y basura; `load` rechaza no-gzip; `up` con imagen inexistente no toca nada.
+- Hallazgo (causa raiz): con `JWT_SECRET` corto en `.env` el `up` falla y el rollback automático TAMBIEN falla (mismo `.env`), `rc=1` con "CRITICO"; es una limitación inherente: el rollback solo cubre fallos de la imagen, no de la configuración (documentado en el runbook). Bug propio hallado y corregido en las pruebas: `trap EXIT` con variable `local` (unbound variable) dejaba temporales.
+
+NO verificado: envío real por SSH, `authorized_keys` con `restrict,command=` y el comportamiento de sshd con la clave; la ruta `flock` (Git Bash no lo trae; en Debian si, sin probar); `ssh-entry` bajo `sh` no-bash no aplica (shebang bash); rechazo de symlinks en `infra` (no se pudo crear uno en Windows; el mismo filtro de tipo rechazó un hardlink); `docker save|ssh` solo contra canal local; tamaño/tiempo de transferencia real.
+
+Decisiones/desviaciones: se omite `SHIP_DIR` (el comando forzado fija el directorio en el servidor; el cliente no lo elige) y se añade `SHIP_BRANCH` (por defecto `main`). `deploy.sh` ignora SIGHUP para terminar un despliegue aunque se corte el ssh.
