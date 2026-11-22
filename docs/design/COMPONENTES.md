@@ -38,3 +38,11 @@ Ver: `?compare=lobby` (direcciones) · `?nations=game&d=pergamino` (naciones). S
 3. Mantener símbolos en celdas (el color no es la única señal); validar AA con `--ink` sobre `--surface` en las 4 naciones.
 4. Un solo cambio de tokens por iteración; no tocar el marcado para retocar estilo.
 5. Pendiente: dibujar los 4 motivos, comprimir `fondo-mapa.png` y `border-*.png`, recuperar texturas del front viejo si se quieren.
+
+## Pantallas añadidas (v2)
+- **Resultado** `.result[data-outcome]`: victoria con degradado de la nación, derrota desaturada, empate neutro.
+- **Perfil** `.profile` + `.profile-stats`: fondo con la nación del jugador, 3 cifras en fuente de pincel.
+- **Registro** `.nation-choice`: botones con emblema; la nación elegida se pinta, las demás en gris.
+- **Mapa** `assets/map.svg`: versión plana 1400×800 (mismas coordenadas que `MAP_LOCATIONS`); el PNG queda como fallback.
+- **Noche**: tablero, celdas, mapa, resultado y perfil tienen ajuste propio en `styles/screens.css`.
+- Pendiente de arte: icono PWA en vector (hoy 96 px ampliado) y licencias de logo/mapa/fondos de Avatar (terceros).

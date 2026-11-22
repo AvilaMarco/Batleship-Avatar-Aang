@@ -1,0 +1,35 @@
+/* Pantallas nuevas: resultado, perfil y registro. Las clases las añade frontend-dev (tarea 812). */
+.result { display: grid; justify-items: center; gap: var(--space-3); padding: var(--space-5) var(--space-4); text-align: center;
+  background: var(--surface); border: var(--border-w) solid var(--line); border-radius: var(--radius-card); box-shadow: var(--shadow); }
+.result h2 { font-size: 2.4rem; margin: 0; }
+.result img { width: min(60vw, 220px); height: auto; }
+.result[data-outcome="WON"] { background: radial-gradient(circle at 50% 0%, var(--n-lite), var(--surface) 70%); }
+.result[data-outcome="WON"] h2 { color: var(--n-deep); text-shadow: 2px 2px 0 var(--n-lite); }
+.result[data-outcome="LOST"] { filter: saturate(.7); }
+.result[data-outcome="TIED"] h2 { color: var(--ink-2); }
+.result-actions { display: flex; flex-wrap: wrap; gap: var(--space-3); justify-content: center; }
+
+/* Perfil: fondo y placa con los colores de la nación del jugador */
+.profile { display: grid; gap: var(--space-4); padding: var(--space-4); border: var(--border-w) solid var(--line); border-radius: var(--radius-card);
+  box-shadow: var(--shadow); background: linear-gradient(160deg, var(--n-soft), var(--surface)); }
+.profile-head { display: flex; align-items: center; gap: var(--space-3); }
+.profile-head svg { width: 64px; height: 64px; background: var(--n-lite); border-radius: 50%; }
+.profile-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-2); margin: 0; }
+.profile-stats div { text-align: center; padding: var(--space-2); background: var(--paper-2); border: 2px solid var(--line); border-radius: var(--radius); }
+.profile-stats dt { font-size: .8rem; color: var(--ink-2); }
+.profile-stats dd { margin: 0; font: 400 1.6rem var(--font-title); color: var(--n-deep); font-variant-numeric: tabular-nums; }
+
+/* Selector de nación en el registro: la elegida se pinta, las demás en gris */
+.nation-choice { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-2); }
+.nation-choice button { padding: var(--space-2); display: grid; justify-items: center; gap: 4px; filter: grayscale(1); opacity: .8; }
+.nation-choice button[aria-pressed="true"] { filter: none; opacity: 1; background: var(--n-lite); color: var(--ink); outline: 3px solid var(--accent); outline-offset: 2px; }
+.nation-choice svg { width: 40px; height: 40px; }
+
+/* Noche: madera y mapa menos brillantes */
+@media (prefers-color-scheme: dark) {
+  .board { background: color-mix(in srgb, #8a5a2b 40%, var(--paper)); }
+  .cell { background-color: color-mix(in srgb, var(--n-mid) 45%, transparent); }
+  .map { filter: brightness(.78) saturate(.9); }
+  .result[data-outcome="WON"] { background: radial-gradient(circle at 50% 0%, var(--n-mid), var(--surface) 70%); }
+  .profile { background: linear-gradient(160deg, var(--n-deep), var(--surface)); }
+}
