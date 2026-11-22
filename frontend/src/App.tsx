@@ -10,12 +10,15 @@ function Routes() {
   const { profile, ready } = useAuth();
   const needsLogin = ready && !profile && route.name !== "login";
 
+  const loggedAtLogin = ready && !!profile && route.name === "login";
+
   useEffect(() => {
     if (needsLogin) navigate("#/login");
-  }, [needsLogin]);
+    else if (loggedAtLogin) navigate("#/");
+  }, [needsLogin, loggedAtLogin]);
 
-  if (!ready || needsLogin) return <p>Cargando…</p>;
-  if (route.name === "login") return profile ? <p>Ya has iniciado sesión.</p> : <LoginScreen />;
+  if (!ready || needsLogin || loggedAtLogin) return <p>Cargando…</p>;
+  if (route.name === "login") return <LoginScreen />;
   return route.name === "lobby" ? <LobbyScreen /> : <GameScreen key={route.id} id={route.id} />;
 }
 

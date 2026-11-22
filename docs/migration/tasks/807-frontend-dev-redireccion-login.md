@@ -1,5 +1,5 @@
 # 807 · frontend-dev · Redirigir al menú si ya hay sesión
-Estado: pendiente
+Estado: hecha
 Fase: F8
 Depende de: 806
 Paralelizable: no
@@ -17,3 +17,4 @@ Criterios de aceptación:
 - Commit `fix(front): con sesión iniciada #/login redirige al menú (tarea 807)`.
 
 ## Resultado
+`App.tsx`: `loggedAtLogin` (ready + perfil + ruta login) navega a `#/` en el mismo `useEffect` que `needsLogin`; mientras tanto muestra "Cargando…". Prueba manual pendiente (chat central).
