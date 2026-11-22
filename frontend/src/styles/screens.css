@@ -34,3 +34,11 @@
   .profile { background: linear-gradient(160deg, var(--n-deep), var(--surface)); }
 }
 svg[data-sunk] { filter: grayscale(.8) brightness(.8); }
+
+/* Ranking en móvil: la tabla no ensancha la página; compacta y, si aun así no cabe, desplaza dentro de su sección */
+section[aria-labelledby="ranking-title"] { min-width: 0; overflow-x: auto; }
+@media (max-width: 480px) {
+  section[aria-labelledby="ranking-title"] th, section[aria-labelledby="ranking-title"] td { padding: var(--space-2) 6px; font-size: .8rem; }
+  section[aria-labelledby="ranking-title"] th { font-size: .72rem; overflow-wrap: anywhere; }
+  section[aria-labelledby="ranking-title"] td:first-child { overflow-wrap: anywhere; }
+}
