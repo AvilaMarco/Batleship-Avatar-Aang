@@ -30,7 +30,7 @@ it("elegir una nación la marca con aria-pressed y desmarca la anterior", () => 
   const { container } = setup();
   register();
   const c = choice(container);
-  expect(within(c).getAllByRole("button", { pressed: true })).toHaveLength(0);
+  expect(within(c).queryAllByRole("button", { pressed: true })).toHaveLength(0);
   fireEvent.click(within(c).getByRole("button", { name: "Loto Blanco" }));
   fireEvent.click(within(c).getByRole("button", { name: "Fuego" }));
   expect(within(c).getAllByRole("button", { pressed: true }).map((b) => b.getAttribute("aria-label"))).toEqual(["Fuego"]);
