@@ -18,3 +18,16 @@ it("la pantalla final lleva la clase result con el desenlace", async () => {
   expect(box).toHaveClass("result");
   expect(box).toHaveAttribute("data-outcome", "WON");
 });
+
+it.each([
+  ["LOST", { sunk: [] as never[] }, { sunk: [...five] }, "Perdiste"],
+  ["TIED", { sunk: [...five] }, { sunk: [...five] }, "Empate"],
+])("la pantalla final %s muestra su título, imagen y acciones", async (outcome, opponent, me, title) => {
+  m.getGame.mockResolvedValue(view({ status: "FINISH", opponent, me }));
+  render(<GameScreen id={1} />);
+  const box = await waitFor(() => screen.getByRole("status"));
+  expect(box).toHaveAttribute("data-outcome", outcome);
+  expect(box.querySelector("h2")).toHaveTextContent(title);
+  expect(box.querySelector("img")).not.toBeNull();
+  expect(box.querySelector(".result-actions a")).toHaveAttribute("href", "#/");
+});
