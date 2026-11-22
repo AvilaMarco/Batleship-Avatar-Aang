@@ -94,6 +94,18 @@
       padding: var(--space-3); background: var(--surface); border: var(--border-w) solid var(--line); border-radius: var(--radius-card); box-shadow: var(--shadow); }
     .map { position: relative; z-index: 0; }
   }
+
+  /* Login: silueta de nación a pantalla completa + miniaturas (solo escritorio) */
+  .login { display: grid; gap: var(--space-4); }
+  .login-silhouette { position: fixed; inset: 0; width: 100%; height: 100%; object-fit: contain; opacity: .35; z-index: -1; pointer-events: none; }
+  .login-mute { justify-self: end; }
+  .login-thumbs { display: none; }
+  @media (pointer: fine) and (min-width: 700px) {
+    .login-thumbs { display: flex; justify-content: center; gap: var(--space-3); }
+    .login-thumbs button { padding: 0; width: 72px; height: 72px; border-radius: 50%; overflow: hidden; filter: grayscale(1); }
+    .login-thumbs button[aria-current="true"] { filter: none; outline: 3px solid var(--accent); outline-offset: 3px; }
+    .login-thumbs img { width: 100%; height: 100%; object-fit: cover; }
+  }
   /* Menú de la ubicación: hoja inferior */
   .map-sheet { position: fixed; inset: auto 0 0 0; z-index: 10; display: grid; gap: var(--space-3); max-width: 480px; margin-inline: auto;
     padding: var(--space-4) var(--space-4) max(var(--space-4), env(safe-area-inset-bottom)); background: var(--surface);
