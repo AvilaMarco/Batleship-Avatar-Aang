@@ -1,5 +1,5 @@
 # 609 · devops · Healthcheck de la base de datos con `start_period`
-Estado: pendiente
+Estado: hecha
 Fase: F7
 Depende de: —
 Paralelizable: sí
@@ -20,3 +20,5 @@ Criterios de aceptación (proyecto aislado `COMPOSE_PROJECT_NAME=shipbender-test
 - Commit `build: start_period en el healthcheck de db (tarea 609)`.
 
 ## Resultado
+
+Healthcheck de `db`: `start_period: 60s` y `retries: 6`; una línea en "Problemas conocidos" del runbook. Verificado en proyecto aislado `shipbender-test`: `config -q` OK; `docker inspect` muestra StartPeriod 1m0s, Retries 6; arranque en frío x3 con `down -v` entre medias: `up -d db app` exit 0 las 3 veces, app healthy en 47 s, 33 s y 43 s. Limpieza hecha (down -v, .env, carpeta temporal, imagen de prueba). No se reprodujo el fallo original (era intermitente); el margen ahora es 60 s sin contar fallos + 6 x 10 s.

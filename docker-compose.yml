@@ -19,7 +19,8 @@ services:
       test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
       interval: 10s
       timeout: 5s
-      retries: 5
+      start_period: 60s
+      retries: 6
     networks: [backend]
     mem_limit: 512m
     logging: *logging

@@ -138,6 +138,7 @@ docker compose up -d       # vuelve a arrancar con los datos intactos
 - **El WebSocket (chat/partida) da 403 tras el túnel**: Tomcat debe ver `X-Forwarded-Proto: https` y el `Host` original (`server.forward-headers-strategy=native`, ADR 007 punto 6). Revisa `docker compose logs app`, que el hostname del túnel apunte a `app:8080` sin *HTTP Host Header* y que *Network → WebSockets* esté activado. Plan B del ADR: `allowedOriginPatterns` con el origen público.
 - **Git Bash convierte rutas** (`/backups/...` pasa a `C:/Program Files/Git/backups/...`): ejecuta `export MSYS_NO_PATHCONV=1` en cada sesión nueva.
 - **Tras reiniciar el servidor el juego no vuelve** hasta que Docker esté en marcha (Windows: hasta que alguien inicie sesión; U7). Comprueba `docker compose ps`.
+- **`up` falla con "container db is unhealthy" en un arranque en frío lento**: Postgres tarda ~20 s en inicializar el clúster; el healthcheck de `db` tiene `start_period: 60s` para tolerarlo. Si persiste, mira `docker compose logs db` (disco o CPU saturados).
 - **`docker compose` dice `falta X en .env`**: falta un secreto en `.env`; es intencional, el stack no arranca sin ellos.
 - **`tunnel` en `Restarting`** con "Provided Tunnel token is not valid": `TUNNEL_TOKEN` mal copiado o caducado; ver sección 6.
 - **El dump no aparece en el host (Windows)**: `BACKUP_DIR` es una ruta de Git Bash (`/tmp/...`) en vez de una ruta de Windows (`D:/...`).
