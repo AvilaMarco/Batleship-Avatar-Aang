@@ -1,0 +1,13 @@
+# SOLO PRUEBAS LOCALES: imita lo que el servidor añade al compose (redes web/interna, puerto en loopback, nombres).
+# Uso: docker compose -p app-shipbender-test -f compose.yaml -f deploy/compose.local.yaml --env-file <env de prueba> up -d
+services:
+  db:
+    container_name: app-shipbender-test-db
+    volumes: ["pgdata:/var/lib/postgresql/data"]   # NTFS no admite chmod en bind mounts; en el servidor (Linux) es ./data/pgdata
+  app:
+    container_name: app-shipbender-test-app
+    ports: ["127.0.0.1:${APP_PORT:-4756}:8080"]
+volumes: { pgdata: {} }
+networks:
+  web: {}
+  interna: { internal: true }

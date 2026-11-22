@@ -1,5 +1,5 @@
 # 620 · devops · Adaptar el despliegue al diseño del servidor (paquete + runner root)
-Estado: pendiente (bloqueada por la respuesta del administrador a `docs/deploy/RESPUESTA-AL-SERVIDOR.md`, preguntas 1-6)
+Estado: parcial (compose, manifiesto y ship.sh probados en local; falta recibir/validador reales del servidor y la revisión 621)
 Fase: F7
 Depende de: 611, 613; respuesta del administrador
 Paralelizable: no
@@ -26,3 +26,9 @@ Criterios de aceptación (proyecto aislado `COMPOSE_PROJECT_NAME`, puertos 4756,
 - Commit `refactor(deploy): paquete + compose endurecido para el runner del servidor (tarea 620)`.
 
 ## Resultado
+Hecho (2026-11-22), según la Respuesta 2 del servidor (contrato `paquete`, v1):
+- `compose.yaml` (renombrado; sin name/ports/build/edge/backup/tunnel/`latest`): `db` con `postgres:17.11-alpine@sha256:e5d2edd2…` (17 días), `user 70:70`, read_only + tmpfs, label `tva.backup: postgres`; `app` con `shipbender/app:${VERSION}`, `user 10001`, read_only + tmpfs `/tmp`, Hikari 8, `cap_drop ALL`, no-new-privileges, `mem_limit = memswap_limit` (768m/256m), `pids_limit`. Redes `web`/`interna` sin definir (las pone el override del servidor).
+- `deploy/servidor.env` (manifiesto de 9 campos) y `deploy/compose.local.yaml` (imita el override del servidor SOLO para pruebas; usa volumen con nombre porque NTFS no admite chmod en bind mounts).
+- `scripts/ship.sh`: compila `shipbender/app:<sha>`, arma el tar sin comprimir (servidor.env, compose.yaml, imagenes.tar.gz), valida espejo de las reglas de `recibir` (tres nombres, sin carpetas, ≤ 1 GiB, APP, nombre de imagen) y envía con `ssh tva-deploy recibir shipbender <sha>`; mapea códigos 0-4; `--dry-run`. `Dockerfile`: JVM por `JAVA_TOOL_OPTIONS` (70 %, SerialGC, Xss512k) en vez de `-XX:MaxRAMPercentage=75` en el ENTRYPOINT. Retirados `backup.sh`/`restore.sh`; `deploy.sh` queda solo como referencia del runner. `.env.example`/`.ship.env.example` reducidos a pruebas locales / alias.
+Verificado en local (proyecto `app-shipbender-test`, 127.0.0.1:4756): `config -q` ok; `db` y `app` healthy con read_only y cap_drop ALL; `/` 200; WebSocket 101 con Origin propio + `X-Forwarded-Proto: https`, 403 con origen ajeno y 403 sin la cabecera (`native` confía en el gateway de la red Docker); `/swagger` 404; memoria en reposo app 253 MiB / 768, db 45 MiB / 256, pids 36/14; paquete de 137 MB (131 MB de imagen) validado con `ship.sh --dry-run`; limpieza hecha.
+Falta / no verificado: el `recibir` y el validador reales (el compose puede ser rechazado por una regla que no conozco), cómo el runner inyecta `${VERSION}` (SUPUESTO, preguntado al administrador), bind mount `./data/pgdata` con uid 70 (solo en Linux), ssh real, `from=` y `tva-deploy`.
