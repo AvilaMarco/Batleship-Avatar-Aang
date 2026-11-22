@@ -17,3 +17,8 @@ Criterios de aceptación:
 
 ## Resultado
 Estado: hecha. `LOTUS` en `NationType`; `V4__nation_lotus.sql` (drop/add de `game_nation_check` y `player_nation_check`, expand-only). Tests nuevos en `NationLotusIntegrationTest` (PATCH /me y POST /games con LOTUS, PLUTO -> 400, definición del check). `./mvnw test` exit 0, 116 tests. Sin listas fijas de naciones en DTOs/Swagger (enum). No se probó migrar sobre una BD con datos reales; solo amplía el check, así que no puede invalidar filas.
+
+### Revisión (reviewer, solo lectura)
+Aprobado, sin bloqueantes. V4 es expand-only; los nombres `game_nation_check`/`player_nation_check` coinciden con los que Postgres da a los checks inline de V1 (V2/V3 no los tocan); drop+add en la misma migración transaccional; sin listas fijas de naciones en backend ni en el ADR 004.
+MENOR 1: si ya existe una fila con `LOTUS`, la imagen anterior falla al leerla (enum sin ese valor). Antes de un rollback: `update player set nation = null where nation = 'LOTUS'` y lo mismo en `game`. Anotar en el runbook.
+MENOR 2: el test de migración solo comprueba el texto del check; no prueba que una fila antigua sobreviva (aceptado: ensanchar no puede invalidar filas).
