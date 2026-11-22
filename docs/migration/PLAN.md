@@ -181,6 +181,9 @@ Rama `migration/f7-endurecimiento`. Parte 1 (esta): contraseña mínima de 8 car
 
 | # | Rol | Tarea | Fase | Estado | Depende de |
 |---|---|---|---|---|---|
-| 701 | qa | Tests: contraseña mínima de 8 caracteres (rojo hasta 702) | F7 | pendiente | — |
-| 702 | backend-dev | Registro: `@Size(min=8, max=72)` (y bytes si hace falta) | F7 | pendiente | 701 |
-| 703 | frontend-dev | Registro: ayuda y `minLength` en el formulario | F7 | pendiente | 702 |
+| 701 | qa | Tests: contraseña mínima de 8 caracteres (rojo hasta 702) | F7 | hecha | — |
+| 702 | backend-dev | Registro: `@Size(min=8, max=72)` y límite de 72 bytes | F7 | hecha | 701 |
+| 703 | frontend-dev | Registro: ayuda y `minLength` en el formulario | F7 | hecha | 702 |
+| 704 | qa | Test: contraseña de más de 72 bytes → 400 | F7 | hecha | 702 |
+| 705 | qa | Test: el error de bytes llega bajo la clave `password` (rojo hasta 706) | F7 | pendiente | 704 |
+| 706 | backend-dev | Restricción propia `MaxUtf8Bytes` sobre el campo | F7 | pendiente | 705 |
