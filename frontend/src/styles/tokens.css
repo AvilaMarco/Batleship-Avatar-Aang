@@ -6,7 +6,7 @@
   :root {
     color-scheme: light dark;
     --target: 44px;
-    --font-title: "Permanent Marker", "Segoe Print", cursive;
+    --font-title: "Yuji Boku", "Kaushan Script", "Segoe Script", cursive;
     --font-body: system-ui, sans-serif;
     --radius: 18px; --radius-card: 22px; --border-w: 3px;
     --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 24px; --space-6: 32px;
@@ -25,12 +25,15 @@
   [data-nation="earth"] { --n-lite: #6fcf7f; --n-mid: #3f7a2a; --n-soft: #e4efd3; --n-deep: #2a3d17; }
   [data-nation="fire"]  { --n-lite: #e8905a; --n-mid: #af1b2b; --n-soft: #f8e1d3; --n-deep: #6e2410; }
   [data-nation="air"]   { --n-lite: #f9d672; --n-mid: #9a5a12; --n-soft: #fbf1cf; --n-deep: #5e3a0e; }
+  /* Loto Blanco: futura nación solo para jugadores (no es ubicación del mapa) */
+  [data-nation="lotus"] { --n-lite: #efe6c8; --n-mid: #8a6a1f; --n-soft: #faf6e8; --n-deep: #3a3a5c; }
 
   /* derivados: se recalculan en body para que data-nation los cambie */
   :root, body {
     --bg: color-mix(in srgb, var(--paper) 82%, var(--n-soft));
     --surface: color-mix(in srgb, var(--paper-2) 78%, var(--n-soft));
     --line: var(--ink);
+    --acc: var(--n-mid); --acc2: var(--n-lite); /* los usa sprite.svg (barcos y salvos) */
     --accent: var(--n-deep); --accent-ink: #f4ebcf;
     --shadow: 3px 3px 0 var(--ink);
   }
